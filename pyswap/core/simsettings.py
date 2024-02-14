@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import date as d
-from .dtypes import DateList, FloatList, StringList, Section, Subsection
+from .utils.dtypes import DateList, FloatList, StringList, Section, Subsection
 from pathlib import Path
-from .dtypes import DateList
+from .utils.dtypes import DateList
 from typing import List
 from datetime import date as d
 

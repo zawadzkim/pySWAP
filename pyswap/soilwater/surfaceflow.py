@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from pandas import DataFrame
-from ..core.dtypes import Section, Subsection
+from ..core.utils.dtypes import Section, Subsection
 
 
 @dataclass

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from pyswap.core.dtypes import Subsection
+from pyswap.core.utils.dtypes import Subsection
 
 
 @dataclass

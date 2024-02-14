@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from ..core.dtypes import Section, Subsection, Table
+from ..core.utils.dtypes import Section, Subsection, Table
 from ..core.metadata import Metadata
 from ..core.utils import save_file
 from pandas import DataFrame, read_csv, to_datetime

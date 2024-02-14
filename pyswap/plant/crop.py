@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any
-from ..base.utils import open_file
-from ..base.dtypes import Section, Table
+from ..core.utils import open_file
+from ..core.utils.dtypes import Section, Table
 from pandas import DataFrame
 
 
