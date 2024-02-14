@@ -35,3 +35,4 @@ env2/
 Thumbs.db
 
 *.sqlite
+/legacy
