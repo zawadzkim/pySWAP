@@ -1,0 +1,239 @@
+**********************************************************************************
+* Filename: swap.dra                  
+* Contents: SWAP 4 - Input data for basic and extended drainage
+**********************************************************************************
+* Comment area:
+* Testbank of SWAP: build with template of dra-file
+*
+**********************************************************************************
+
+*** EXTENDED DRAINAGE SECTION ***
+
+**********************************************************************************
+* Part 0: General
+
+  SWDIVD = {{SWDIVD}}        ! Calculate vertical distribution of drainage flux in groundwater [Y=1, N=0]
+
+{{#SWITCH_SWDIVD_OPTION_1}}
+* If SWDIVD = 1, specify anisotropy factor COFANI (horizontal/vertical saturated hydraulic
+* conductivity) for each soil layer (maximum MAHO), [0.0001..1000 -, R]:
+  COFANI = {{COFANI}}
+{{/SWITCH_SWDIVD_OPTION_1}}
+
+* Switch to adjust upper boundary of model discharge layer
+  SWDISLAY = 0               ! switch to adjust discharge layer  [0,1,2, -, I]
+
+**********************************************************************************
+
+
+**********************************************************************************
+* Part 0: Reference level
+
+  ALTCU = 0.0                ! Altitude of the control unit relative to reference level [-300000..300000 cm, R]
+
+**********************************************************************************
+* Part 1: drainage characteristics 
+
+  NRSRF  = {{NRSRF}}         ! number of subsurface drainage levels [1..5, I]
+
+* Table with physical characteristics of each subsurface drainage level:
+* Variables RENTRY, REXIT, WIDTHR and TALUDR must have realistic values when the type of drainage medium is open
+* LEVEL   = Drainage level number [1..NRSRF, I]
+* SWDTYP  = Type of drainage medium [open=0, closed=1] 
+* L       = Spacing between channels/drains [1..100000 m, R]
+* ZBOTDRE = Altitude of bottom of channel or drain [ALTCU-1000..ALTCU-0.01 cm,R]
+* GWLINF  = Groundwater level for maximum infiltration [-1000..0 cm rel. to soil surf., R]
+* RDRAIN  = Drainage resistance [1..100000 d, R]
+* RINFI   = Infiltration resistance  [1..100000 d, R]
+* RENTRY  = Entry resistance  [0..100 d, R]
+* REXIT   = Exit resistance   [0..100 d, R]
+* WIDTHR  = Bottom width of channel [0..10000 cm, R]
+* TALUDR  = Side-slope (dh/dw) of channel [0.01..5, R]
+
+{{#TABLE_DRNTB}}
+  {{LEV}} {{SWDTYP}} {{L}} {{ZBOTDRE}} {{GWLINF}} {{RDRAIN}} {{RINFI}} {{RENTRY}} {{REXIT}} {{WIDTHR}} {{TALUDR}}
+{{/TABLE_DRNTB}}
+* End of table
+
+* Switch to introduce rapid subsurface drainage [0..2, I]
+  SWNRSRF = {{SWNRSRF}}      ! 0 = No rapid drainage
+                             ! 1 = Rapid drainage in the highest drainage system (implies adjustment of RDRAIN of highest drainage system)
+                             ! 2 = Rapid drainage as interflow according to a power relation (implies adjustment of RDRAIN of highest drainage system)
+
+{{#SWITCH_SWNRSRF_OPTION_1}}
+* In case of SWRNSRF=1, specify rapid drainage
+  RSURFDEEP    = {{RSURFDEEP}} ! Maximum resistance of rapid subsurface drainage [0.001..1000.0 d, R]
+  RSURFSHALLOW = {{RSURFSHALLOW}} ! Minimum resistance of rapid subsurface drainage [0.001..1000.0 d, R]
+{{/SWITCH_SWNRSRF_OPTION_1}}
+{{#SWITCH_SWNRSRF_OPTION_2}}
+* In case of SWRNSRF=2, specify coefficients of power function
+ COFINTFL = {{COFINTFL}}     ! Coefficient of interflow relation [0.01..10.0 d-1, R]
+ EXPINTFL = {{EXPINTFL}}     ! Exponent of interflow relation [0.1...1.0 -, R]
+{{/SWITCH_SWNRSRF_OPTION_2}}
+
+* Switch to adjust the bottom of the model discharge layer in case of lateral (SWDIVD=1) interflow or rapid drainage (SWNRSRF=1 or SWNRSRF=2). 
+* In case of SWTOPNRSRF=1) then the bottom of the highest order drainage system (ZBORDR(NUMDRAIN)) represents the max depth of the interflow.  
+ SWTOPNRSRF = {{SWTOPNRSRF}} ! Switch to enable adjustment of model discharge layer [0,1, I] 
+
+**********************************************************************************
+
+
+**********************************************************************************
+* Part 2: Specification and control of surface water system
+
+* Switch for interaction with surface water system [1..3, I] 
+  SWSRF = {{SWSRF}}          ! 1 = No interaction with surface water system
+                             ! 2 = Surface water system is simulated with no separate primary system 
+                             ! 3 = Surface water system is simulated with separate primary system
+
+{{#SWITCH_SWSRF_OPTION_2}}
+* If SWSRF=2, specify option for surface water level of secondary system [1..2, I]
+  SWSEC = {{SWSEC}}          ! 1 = Surface water level is input
+                             ! 2 = Surface water level is simulated
+
+
+{{#SWITCH_SWSEC_OPTION_1}}
+* Water level in secondary water course [ALTCU-1000..ALTCU-0.01 cm, R] as function of DATE2 [dd-mmm-yyyy] 
+{{#TABLE_SECWATLVL}}
+  {{DATE2}} {{WLS}}
+{{/TABLE_SECWATLVL}}
+* End of table
+{{/SWITCH_SWSEC_OPTION_1}}
+{{#SWITCH_SWSEC_OPTION_2}}
+* Miscellaneous parameters
+  WLACT  = {{WLACT}}         ! Initial surface water level [ALTCU-1000..ALTCU cm,R]
+  OSSWLM = {{OSSWLM}}        ! Criterium for warning about oscillation [0..10 cm, R]
+
+* Management of surface water levels
+  NMPER  =  {{NMPER}}        ! Number of management periods [1..3660, I]
+
+* For each management period specify:
+* IMPER  = Index of management period [1..NMPER, I]
+* IMPEND = Date that period ends [dd-mm-yyyy]
+* SWMAN  = Type of water management 1 = fixed weir crest (see part 4c and 4d) 2 = automatic weir (see part 4e) [1..2, I]
+* WSCAP  = Surface water supply capacity [0..100 cm/d, R]
+* WLDIP  = Allowed dip of surface water level before starting supply [0..100 cm, R]
+* INTWL  = Length of water-level adjustment period (SWMAN=2 only) [1..31 d, I]
+
+{{#TABLE_MANSECWATLVL}}
+  {{IMPER_4B}} {{IMPEND}} {{SWMAN}} {{WSCAP}} {{WLDIP}} {{INTWL}}
+{{/TABLE_MANSECWATLVL}}
+* End of table
+
+* Switch for type of discharge relationship [1..2, I]
+  SWQHR = {{SWQHR}}          ! 1 = Exponential relationship
+                             ! 2 = Table
+
+{{#SWITCH_SWQHR_OPTION_1}}
+* If SWQHR=1, specify:
+  SOFCU = {{SOFCU}}          ! Size of the control unit [0.1..100000.0 ha, R]
+
+* If SWQHR=1, specify exponential discharge relation for all periods: 
+* IMPER  = Index of management period [1..NMPER, I]
+* HBWEIR = Weir crest; levels above soil surface are allowed, but simulated surface water levels should remain below 100 cm above soil surface; 
+*          the crest must be higher than the deepest channel bottom of the secondary system (ZBOTDR(1 or 2), [ALTCU-ZBOTDR..ALTCU+100 cm,R].
+*          If SWMAN=2, HBWEIR represents the lowest possible weir position.
+* ALPHAW = Alpha-coefficient of discharge formula [0.1..50.0, R]
+* BETAW  = Beta-coefficient of discharge formula [0.5..3.0, R]
+
+{{#TABLE_QWEIR}}
+  {{IMPER_4C}} {{HBWEIR}} {{ALPHAW}} {{BETAW}}
+{{/TABLE_QWEIR}}
+* End of table
+{{/SWITCH_SWQHR_OPTION_1}}
+{{#SWITCH_SWQHR_OPTION_2}}
+* If SWQHR=2, specify table discharge relation:
+* IMPER  = Index of management period [1..NMPER, I]
+* IMPTAB = Index per management period [1..10, I]
+* HTAB   = Surface water level [ALTCU-1000..ALTCU+100 cm, R] (first value for each period = ALTCU + 100 cm)
+* QTAB   = Discharge [0..500 cm/d, R] (should go down to a value of zero at a level that is higher than the deepest channel bottom of secondary surface water system)
+
+{{#TABLE_QWEIRTB}}
+  {{IMPER_4D}} {{IMPTAB}} {{HTAB}} {{QTAB}}
+{{/TABLE_QWEIRTB}}
+* End of table
+{{/SWITCH_SWQHR_OPTION_2}}
+{{/SWITCH_SWSEC_OPTION_2}}
+{{/SWITCH_SWSRF_OPTION_2}}
+{{#SWITCH_SWSRF_OPTION_3}}
+* If SWSRF=3, specify water levels in the primary system [max. = 52]
+* No levels above soil surface for primary system      
+ 
+* Water level in primary water course [ALTCU-1000..ALTCU-0.01 cm, R] as function of DATE1 [date]
+{{#TABLE_PRIWATLVL}}
+  {{DATE1}} {{WLP}}
+{{/TABLE_PRIWATLVL}}
+* End of table
+
+* If SWSRF=3, specify option for surface water level of secondary system [1..2, I]
+  SWSEC = {{SWSEC}}          ! 1 = Surface water level is input
+                             ! 2 = Surface water level is simulated
+
+{{#SWITCH_SWSEC_OPTION_1}}
+* Water level in secondary water course [ALTCU-1000..ALTCU-0.01 cm, R] as function of DATE2 [dd-mmm-yyyy] 
+{{#TABLE_SECWATLVL}}
+  {{DATE2}} {{WLS}}
+{{/TABLE_SECWATLVL}}
+* End of table
+{{/SWITCH_SWSEC_OPTION_1}}
+{{#SWITCH_SWSEC_OPTION_2}}
+* Miscellaneous parameters
+  WLACT  = {{WLACT}}         ! Initial surface water level [ALTCU-1000..ALTCU cm,R]
+  OSSWLM = {{OSSWLM}}        ! Criterium for warning about oscillation [0..10 cm, R]
+
+* Management of surface water levels
+  NMPER  =  {{NMPER}}        ! Number of management periods [1..3660, I]
+
+* For each management period specify:
+* IMPER  = Index of management period [1..NMPER, I]
+* IMPEND = Date that period ends [dd-mm-yyyy]
+* SWMAN  = Type of water management 1 = fixed weir crest (see part 4c and 4d) 2 = automatic weir (see part 4e) [1..2, I]
+* WSCAP  = Surface water supply capacity [0..100 cm/d, R]
+* WLDIP  = Allowed dip of surface water level before starting supply [0..100 cm, R]
+* INTWL  = Length of water-level adjustment period (SWMAN=2 only) [1..31 d, I]
+
+{{#TABLE_MANSECWATLVL}}
+  {{IMPER_4B}} {{IMPEND}} {{SWMAN}} {{WSCAP}} {{WLDIP}} {{INTWL}}
+{{/TABLE_MANSECWATLVL}}
+* End of table
+
+* Switch for type of discharge relationship [1..2, I]
+  SWQHR = {{SWQHR}}          ! 1 = Exponential relationship
+                             ! 2 = Table
+
+{{#SWITCH_SWQHR_OPTION_1}}
+* If SWQHR=1, specify:
+  SOFCU = {{SOFCU}}          ! Size of the control unit [0.1..100000.0 ha, R]
+
+* If SWQHR=1, specify exponential discharge relation for all periods: 
+* IMPER  = Index of management period [1..NMPER, I]
+* HBWEIR = Weir crest; levels above soil surface are allowed, but simulated surface water levels should remain below 100 cm above soil surface; 
+*          the crest must be higher than the deepest channel bottom of the secondary system (ZBOTDR(1 or 2), [ALTCU-ZBOTDR..ALTCU+100 cm,R].
+*          If SWMAN=2, HBWEIR represents the lowest possible weir position.
+* ALPHAW = Alpha-coefficient of discharge formula [0.1..50.0, R]
+* BETAW  = Beta-coefficient of discharge formula [0.5..3.0, R]
+
+{{#TABLE_QWEIR}}
+  {{IMPER_4C}} {{HBWEIR}} {{ALPHAW}} {{BETAW}}
+{{/TABLE_QWEIR}}
+* End of table
+{{/SWITCH_SWQHR_OPTION_1}}
+{{#SWITCH_SWQHR_OPTION_2}}
+* If SWQHR=2, specify table discharge relation:
+* IMPER  = Index of management period [1..NMPER, I]
+* IMPTAB = Index per management period [1..10, I]
+* HTAB   = Surface water level [ALTCU-1000..ALTCU+100 cm, R] (first value for each period = ALTCU + 100 cm)
+* QTAB   = Discharge [0..500 cm/d, R] (should go down to a value of zero at a level that is higher than the deepest channel bottom of secondary surface water system)
+
+{{#TABLE_QWEIRTB}}
+  {{IMPER_4D}} {{IMPTAB}} {{HTAB}} {{QTAB}}
+{{/TABLE_QWEIRTB}}
+* End of table
+{{/SWITCH_SWQHR_OPTION_2}}
+{{/SWITCH_SWSEC_OPTION_2}}
+{{/SWITCH_SWSRF_OPTION_3}}
+{{/SWITCH_SWDRA_OPTION_2}}
+
+**********************************************************************************
+
+* End of .dra file!

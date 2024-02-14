@@ -1,0 +1,54 @@
+**********************************************************************************
+
+*** METEOROLOGY SECTION ***
+
+**********************************************************************************
+* General data
+
+* File name
+  METFIL = '{METFIL}'        ! File name of meteorological data, in case of yearly files without extension .YYY, [A200]
+                             ! Extension is equal to last 3 digits of year, e.g. 022 denotes year 2022
+                             ! In case of meteorological in one file use extension .met
+
+* Details of meteo station:
+  LAT = {LAT}                 ! Latitude of meteo station [-90..90 degrees, R, North = +]
+
+* Type of weather data for potential evapotranspiration
+  SWETR = {SWETR}                  ! 0 = Use basic weather data and apply Penman-Monteith equation
+                             ! 1 = Use reference evapotranspiration data in combination with crop factors
+
+* In case of Penman-Monteith (SWETR = 0), specify:
+  ALT = {ALT}                 ! Altitude of meteo station [-400..3000 m, R]
+  ALTW = {ALTW}                ! Height of wind speed measurement above soil surface (10 m is default) [0..99 m, R]
+  ANGSTROMA = {ANGSTROMA}           ! Fraction of extraterrestrial radiation reaching the earth on overcast days [0..1 -, R]
+  ANGSTROMB = {ANGSTROMB}           ! Additional fraction of extraterrestrial radiation reaching the earth on clear days [0..1 -, R]
+
+* Switch for distribution of E and T:
+  SWDIVIDE = {SWDIVIDE}               ! 0 = Based on crop and soil factors
+                             ! 1 = Based on direct application of Penman-Monteith
+
+* In case of SWETR = 0, specify time interval of evapotranspiration and rainfall weather data
+  SWMETDETAIL = {SWMETDETAIL}            ! 0 = time interval is equal to one day
+                             ! 1 = time interval is less than one day
+
+* In case of detailed meteorological weather records (SWMETDETAIL = 1), specify:
+  NMETDETAIL = {NMETDETAIL}            ! Number of weather data records each day [1..96 -, I]
+
+* In case of daily meteorological weather records (only if SWETR = 1):
+  SWETSINE = {SWETSINE}               ! Switch, distribute daily Tp and Ep according to sinus wave [Y=1, N=0]
+
+* Switch for use of actual rainfall intensity (only if SWETR = 1):
+  SWRAIN = {SWRAIN}                 ! 0 = Use daily rainfall amounts
+                             ! 1 = Use daily rainfall amounts + mean intensity
+                             ! 2 = Use daily rainfall amounts + duration
+                             ! 3 = Use detailed rainfall records (dt < 1 day), as supplied in separate file
+
+* If SWRAIN = 1, then specify mean rainfall intensity RAINFLUX [0.d0..1000.d0 mm/d, R]
+* as function of time TIME [0..366 d, R], maximum 30 records
+
+{RAINFLUX}
+* End of table
+
+* If SWRAIN = 3, then specify file name of file with detailed rainfall data
+  RAINFIL = '{RAINFIL}'        ! File name of detailed rainfall data without extension .YYY, [A200]
+                             ! Extension is equal to last 3 digits of year, e.g. 003 denotes year 2003

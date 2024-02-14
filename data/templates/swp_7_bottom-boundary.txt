@@ -1,0 +1,133 @@
+**********************************************************************************
+
+*** BOTTOM BOUNDARY SECTION ***
+
+**********************************************************************************
+* Bottom boundary condition
+
+* Switch for file with bottom boundary data:
+  SWBBCFILE = {SWBBCFILE}              ! 0 = data are specified in current file
+                             ! 1 = data are specified in a separate file
+
+* Select one of the following options:
+  SWBOTB = {SWBOTB}                 ! 1  Prescribe groundwater level
+                             ! 2  Prescribe bottom flux
+                             ! 3  Calculate bottom flux from hydraulic head of deep aquifer
+                             ! 4  Calculate bottom flux as function of groundwater level
+                             ! 5  Prescribe soil water pressure head of bottom compartment
+                             ! 6  Bottom flux equals zero
+                             ! 7  Free drainage of soil profile
+                             ! 8  Free outflow at soil-air interface
+
+* Options 1-5 require additional bottom boundary data below
+
+**********************************************************************************
+
+**********************************************************************************
+* In case of SWBOTB = 1, prescribe groundwater level
+
+* specify DATE1 [YYYY-MM-DD] and GWLEVEL [cm, -10000..1000, R]:
+{DATE1_GWLEVEL}
+* End of table
+
+**********************************************************************************
+
+**********************************************************************************
+* In case of SWBOTB = 2, prescribe bottom flux
+
+* Specify whether a sinus function or a table are used for the bottom flux:
+  SW2 = {SW2}                    ! 1 = sinus function
+                             ! 2 = table
+
+* In case of sinus function (SW2 = 1), specify:
+  SINAVE = {SINAVE}               ! Average value of bottom flux [-10..10 cm/d, R, + = upwards]
+  SINAMP = {SINAMP}              ! Amplitude of bottom flux sine function [-10..10 cm/d, R]
+  SINMAX = {SINMAX}              ! Time of the year with maximum bottom flux [0..366 d, R]
+
+* In case of table (SW2 = 2), specify date DATE2 [YYYY-MM-DD] and bottom flux QBOT2 [-100..100 cm/d, R, positive = upwards]:
+
+{DATE1_QBOT2}
+* End of table
+
+**********************************************************************************
+
+**********************************************************************************
+* In case of SWBOTB = 3, calculate bottom flux from hydraulic head in deep aquifer
+
+* Switch for vertical hydraulic resistance between bottom boundary and groundwater level
+  SWBOTB3RESVERT = {SWBOTB3RESVERT}         ! 0 = Include vertical hydraulic resistance
+                             ! 1 = Suppress vertical hydraulic resistance
+
+* Switch for numerical solution of bottom flux: 0 = explicit, 1 = implicit
+  SWBOTB3IMPL = {SWBOTB3IMPL}            ! 0 = explicit solution (choose always when SHAPE < 1.0)
+                             ! 1 = implicit solution
+
+* Specify:
+  SHAPE = {SHAPE}               ! Shape factor to derive average groundwater level [0..1 -, R]
+  HDRAIN = {HDRAIN}            ! Mean drain base to correct for average groundwater level [-10000..0 cm, R]
+  RIMLAY = {RIMLAY}             ! Vertical resistance of aquitard [0..100000 d, R]
+
+* Specify whether a sinus function or a table are used for the hydraulic head in the deep aquifer:
+  SW3 = {SW3}                    ! 1 = sinus function
+                             ! 2 = table
+
+* In case of sinus function (SW3 = 1), specify:
+  AQAVE = {AQAVE}             ! Average hydraulic head in underlaying aquifer [-10000..1000 cm, R]
+  AQAMP = {AQAMP}               ! Amplitude hydraulic head sinus wave [0..1000 cm, R]
+  AQTMAX = {AQTMAX}             ! First time of the year with maximum hydraulic head [0..366 d, R]
+  AQPER = {AQPER}              ! Period hydraulic head sinus wave [0..366 d, I]
+
+* In case of table (SW3 = 2), specify date DATE3 [YYYY-MM-DD] and average pressure head in underlaying aquifer HAQUIF [-10000..1000 cm, R]:
+
+{DATE3_HAQUIF}
+* End of table
+
+* An extra groundwater flux can be specified which is added to above specified flux
+  SW4 = {SW4}                    ! 0 = no extra flux
+                             ! 1 = include extra flux
+
+* If SW4 = 1, specify date DATE4 [YYYY-MM-DD] and bottom flux QBOT4 [-100..100 cm/d, R]
+* QTAB is positive when flux is upward:
+
+{DATE4_QBOT4}
+* End of table
+
+**********************************************************************************
+
+**********************************************************************************
+* In case of SWBOTB = 4, calculate bottom flux as function of groundwater level
+
+* Specify whether an exponential relation or a table is used [1..2 -,I]:
+  SWQHBOT = {SWQHBOT}                ! 1 = bottom flux is calculated with an exponential relation
+                             ! 2 = bottom flux is derived from a table
+
+* In case of an exponential relation (SWQHBOT = 1),
+* specify coefficients of relation qbot = A exp (B*abs(groundwater level))
+  COFQHA = {COFQHA}               ! Coefficient A, [-100..100 cm/d, R]
+  COFQHB = {COFQHB}               ! Coefficient B  [-1..1 /cm, R]
+
+* If SWQHBOT = 1, an extra flux can be added to the exponential relation
+  COFQHC = {COFQHC}              ! Water flux (positive upward) in addition to flux from exponential relation [-10..10 cm/d, R]
+
+* In case of a table (SWQHBOT  = 2),
+* specify groundwaterlevel HTAB [-10000..1000, cm, R] and bottom flux QTAB [-100..100 cm/d, R]
+* HTAB is negative below the soil surface, QTAB is positive when flux is upward:
+
+{HTAB_QTAB}
+* End of table
+
+**********************************************************************************
+
+**********************************************************************************
+* In case of SWBOTB = 5, prescribe soil water pressure head of bottom compartment
+
+* Specify date DATE5 [YYYY-MM-DD] and bottom compartment pressure head HBOT5 [-1.d10..1000 cm, R]:
+
+{DATE5_HBOT5}
+* End of table
+
+**********************************************************************************
+
+**********************************************************************************
+* If SWBBCFILE = 1 specify name of file with bottom boundary data:
+  BBCFIL = {BBCFIL}               ! File name without extension .BBC [A32]

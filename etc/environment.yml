@@ -1,0 +1,9 @@
+name: pyswap
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pip
+  
+  - python>=3.10
+  - sqlalchemy>=2.0

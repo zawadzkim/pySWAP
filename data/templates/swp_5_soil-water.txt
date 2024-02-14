@@ -1,0 +1,194 @@
+**********************************************************************************
+
+*** SOIL WATER SECTION ***
+
+**********************************************************************************
+* Part 1: Initial soil moisture condition
+
+* Switch, type of initial soil moisture condition:
+  SWINCO = {SWINCO}                 ! 1 = pressure head as function of soil depth
+                             ! 2 = pressure head of each compartment is in hydrostatic equilibrium with initial groundwater level
+                             ! 3 = read final pressure heads from output file of previous Swap simulation
+
+* If SWINCO = 1, specify soil depth ZI [-1.d5..0 cm, R] and initial
+* soil water pressure head H [-1.d10..1.d4 cm, R] (maximum MACP):
+
+{ZI_H}
+* End of table
+
+* If SWINCO = 2, specify initial groundwater level:
+  GWLI   = {GWLI}            ! Initial groundwater level, [-10000..100 cm, R]
+
+* If SWINCO = 3, specify output file with initial values for current run:
+  INIFIL = '{INFIL}'        ! name of output file *.END which contains initial values [A200]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 2: Ponding, runoff and runon
+
+* Ponding
+* Switch for variation ponding threshold for runoff
+  SWPONDMX = {SWPONDMX}               ! 0 = Ponding threshold for runoff is constant
+                             ! 1 = Ponding threshold for runoff varies in time
+
+* If SWPONDMX = 0, specify
+  PONDMX = {PONDMX}               ! In case of ponding, minimum thickness for runoff [0..1000 cm, R]
+
+* If SWPONDMX = 1, specify minimum thickness for runoff PONDMXTB [0..1000 cm, R] as function of time
+
+{DATE_PONDMXTB}
+* End of table
+
+* Runoff
+  RSRO = {RSRO}                 ! Drainage resistance for surface runoff [0.001..1.0 d, R]
+  RSROEXP = {RSROEXP}              ! Exponent in drainage equation of surface runoff [0.01..10.0 -, R]
+
+* Runon
+  SWRUNON = {SWRUNON}                ! Switch, use of runon data [Y=1, N=0]
+
+* If SWRUNON = 1, specify name of file with runon input data
+* This file may be an output file *.INC (with only 1 header line) of a previous Swap-simulation
+  RUFIL = '{RUFIL}'         ! File name with extension [A80]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 3: Soil evaporation
+
+  CFEVAPPOND = 1.25          ! When ETref is used, evaporation coefficient in case of ponding  [0..3 -, R]
+
+* Switch for use of soil factor CFBS to calculate Epot from ETref:
+  SWCFBS = 0                 ! 0 = soil factor is not used
+                             ! 1 = soil factor is used
+
+* If SWCFBS = 1, specify coefficient CFBS:
+  CFBS = 0.5                 ! Coefficient for potential soil evaporation, [0.5..1.5 -, R]
+
+* If SWDIVIDE = 1 (partitioning according to PMdirect) specify minimum soil resistance
+  RSOIL  =  30.0             ! Soil resistance of wet soil [0..1000.0 s/m, R]
+
+* Switch, method for reduction of potential soil evaporation:
+  SWREDU = 1                 ! 0 = reduction to maximum Darcy flux
+                             ! 1 = reduction to maximum Darcy flux and to maximum Black (1969)
+                             ! 2 = reduction to maximum Darcy flux and to maximum Boesten/Stroosnijder (1986)
+
+* If SWREDU = 1, specify:
+ COFREDBL = 0.35             ! Soil evaporation coefficient of Black [0..1 cm/d1/2, R]
+ RSIGNI = 0.5                ! Minimum rainfall to reset method of Black [0..1 cm/d, R]
+
+* If SWREDU = 2, specify:
+ COFREDBO = 0.35             ! Soil evaporation coefficient of Boesten/Stroosnijder [0..1 cm1/2, R]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 4: Vertical discretization of soil profile
+
+* Specify the following data (maximum MACP lines):
+* ISUBLAY  = number of sub layer, start with 1 at soil surface [1..MACP, I]
+* ISOILLAY = number of soil physical layer, start with 1 at soil surface [1..MAHO, I]
+* HSUBLAY  = height of sub layer [0..1.d4 cm, R]
+* HCOMP    = height of compartments in the sub layer [0.0..1000.0 cm, R]
+* NCOMP    = number of compartments in the sub layer (Mind NCOMP = HSUBLAY/HCOMP) [1..MACP, I]
+
+{VERT_DISCR}
+* End of table
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 5: Soil hydraulic functions
+
+* Switch for analytical functions or tabular input:
+  SWSOPHY = {SWSOPHY}                ! 0 = Analytical functions with input of Mualem - van Genuchten parameters
+                             ! 1 = Soil physical tables
+
+* If SWSOPHY = 0, specify MvG parameters for each soil physical layer:
+* ORES = Residual water content [0..1 cm3/cm3, R]
+* OSAT = Saturated water content [0..1 cm3/cm3, R]
+* ALFA = Parameter alfa of main drying curve [0.0001..100 /cm, R]
+* NPAR = Parameter n [1.001..9 -, R]
+* KSATFIT = Fitting parameter Ksat of hydraulic conductivity function [1.d-5..1d5 cm/d, R]
+* LEXP = Exponent in hydraulic conductivity function [-25..25 -, R]
+* ALFAW = Alfa parameter of main wetting curve in case of hysteresis [0.0001..100 /cm, R]
+* H_ENPR = Air entry pressure head [-40.0..0.0 cm, R]
+* KSATEXM = Measured hydraulic conductivity at saturated conditions [1.d-5..1d5 cm/d, R]
+* BDENS = Dry soil bulk density [100..1d4 mg/cm3, R]
+
+{MVG_PARAMETERS}
+* End of table
+
+* If SWSOPHY = 1, specify names of input files [A80] with soil hydraulic tables for each soil layer:
+  FILENAMESOPHY = {FILENAMESOPHY}
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 6: Hysteresis of soil water retention function
+
+* Switch for hysteresis:
+  SWHYST = {SWHYST}                 ! 0 = no hysteresis
+                             ! 1 = hysteresis, initial condition wetting
+                             ! 2 = hysteresis, initial condition drying
+
+* If SWHYST = 1 or 2, specify:
+  TAU = {TAU}                  ! Minimum pressure head difference to change wetting-drying, [0..1 cm, R]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 7: Preferential flow due to macropores
+
+* Switch for macropore flow [0..2, I]:
+  SWMACRO = {SWMACRO}                ! 0 = no macropore flow
+                             ! 1 = macropore flow
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 8: Snow and frost
+
+* Switch, calculate snow accumulation and melt:
+  SWSNOW = {SWSNOW}                 ! 0 = no simulation of snow
+                             ! 1 = simulation of snow accumulation and melt
+
+* If SWSNOW = 1, specify:
+  SNOWINCO = {SNOWINCO}            ! Initial snow water equivalent [0..1000 cm, R]
+  TEPRRAIN = {TEPRRAIN}             ! Temperature above which all precipitation is rain[ 0..10 degree C, R]
+  TEPRSNOW = {TEPRSNOW}            ! Temperature below which all precipitation is snow[-10..0 degree C, R]
+  SNOWCOEF = {SNOWCOEF}             ! Snowmelt calibration factor [0...10 -, R]
+
+* Switch, in case of frost reduce soil water flow:
+  SWFROST = {SWFROST}                ! 0 = no simulation of frost
+                             ! 1 = simulation of reduction soil water flow due to frost
+
+* If SWFROST = 1, then specify soil temperature range in which soil water flow is reduced
+  TFROSTSTA = {TFROSTSTA}            ! Soil temperature where reduction of water fluxes starts [-10.0,5.0, degree C, R]
+  TFROSTEND = {TFROSTEND}           ! Soil temperature where reduction of water fluxes ends [-10.0,5.0, degree C, R]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 9: Numerical solution of Richards' equation for soil water flow
+
+  DTMIN = {DTMIN}           ! Minimum timestep [1.d-7..0.1 d, R]
+  DTMAX = {DTMAX}               ! Maximum timestep [dtmin..1 d, R]
+  GWLCONV = {GWLCONV}            ! Maximum difference of groundwater level between time steps [1.d-5..1000 cm, R]
+  CRITDEVH1CP = {CRITDEVH1CP}         ! Maximum relative difference in pressure heads per compartment [1.0d-10..1.d3 -, R]
+  CRITDEVH2CP = {CRITDEVH2CP}          ! Maximum absolute difference in pressure heads per compartment [1.0d-10..1.d3 cm, R]
+  CRITDEVPONDDT = {CRITDEVPONDDT}     ! Maximum water balance error of ponding layer [1.0d-6..0.1 cm, R]
+  MAXIT = {MAXIT}                 ! Maximum number of iteration cycles [5..100 -, I]
+  MAXBACKTR = {MAXBACKTR}              ! Maximum number of back track cycles within an iteration cycle [1..10 -,I]
+
+* Switch for averaging method of hydraulic conductivity [1..4 -, I]:
+  SWKMEAN = {SWKMEAN}                ! 1 = unweighted arithmic mean
+                             ! 2 = weighted arithmic mean
+                             ! 3 = unweighted geometric mean
+                             ! 4 = weighted geometric mean
+                             ! 5 = unweighted harmonic mean
+                             ! 6 = weighted harmonic mean
+
+* Switch for updating hydraulic conductivity during iteration [0..1 -, I]:
+  SWKIMPL = {SWKIMPL}                ! 0 = no update
+                             ! 1 = update

@@ -1,0 +1,99 @@
+**********************************************************************************
+
+*** SOLUTE SECTION ***
+
+**********************************************************************************
+* Part 0: Specify whether simulation includes solute transport
+
+* Switch for simulation of solute transport
+  SWSOLU = {SWSOLU}                 ! 0 = no simulation of solute transport
+                             ! 1 = simulation of solute transport
+
+**********************************************************************************
+* Part 1: Boundary and initial conditions
+
+  CPRE = {CPRE}                 ! Solute concentration in precipitation, [0..100 mg/cm3 R]
+  CDRAIN = {CDRAIN}              ! Solute concentration in surface water [0..100 mg/cm3 R]
+
+* Switch for groundwater concentration in case of upward flow (seepage):
+  SWBOTBC = {SWBOTBC}                ! 0 = Equal to surface water concentration CDRAIN
+                             ! 1 = Constant concentration CSEEP
+                             ! 2 = Concentration as function of time
+
+* In case of constant concentration (SWBOTBC = 1), specify:
+  CSEEP = {CSEEP}                ! Solute concentration in surface water [0..100 mg/cm3, R]
+
+* In case of SWBOTBC = 2, specify groundwater conc. CSEEPARR [0..100 mg/cm3, R] as function of date DATEC [YYYY-MM-DD]:
+
+{DATEC_CSEEPARR}
+* End of table
+
+* If SWINCO = 1 or 2, list initial solute concentration CML [0..1000 mg/cm3, R] as function of soil depth ZC [-100000..0 cm, R]:
+
+{ZC_CML}
+* End of table
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 2: Miscellaneous parameters as function of soil depth
+
+* Specify for each soil layer:
+* LDIS = Dispersion length [0..100 cm, R]
+* KF = Freundlich adsorption coefficient [0..1d4 cm3/mg, R]
+* DECPOT = Potential decomposition rate [0..10 /d, R]
+* FDEPTH = Reduction factor for decomposition [0..1 -, R]
+
+{LDIS_KF_DECPOT_FDEPTH}
+* End of Table
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 3: Diffusion constant and solute uptake by roots
+
+  DDIF = {DDIF}                 ! Molecular diffusion coefficient [0..10 cm2/d, R]
+  TSCF = {TSCF}                 ! Relative uptake of solutes by roots [0..10 -, R]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 4: Adsorption
+
+* Switch, consider solute adsorption
+  SWSP = {SWSP}                   ! 0 = no solute adsorption
+                             ! 1 = simulation of solute adsorption
+
+* In case of adsorption (SWSP = 1), specify:
+  FREXP = {FREXP}                ! Freundlich exponent [0..10 -, R]
+  CREF = {CREF}                ! Reference solute concentration for adsorption [0..1000 mg/cm3, R]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 5: Decomposition
+
+* Switch, consider solute decomposition
+  SWDC = {SWDC}                   ! 0 = no solute decomposition
+                             ! 1 = simulation of solute decomposition
+
+* In case of solute decomposition (SWDC = 1), specify:
+  GAMPAR = {GAMPAR}               ! Factor reduction decomposition due to temperature [0..0.5 /degree C, R]
+  RTHETA = {RTHETA}               ! Minimum water content for potential decomposition [0..0.4 cm3/cm3, R]
+  BEXP = {BEXP}                 ! Exponent in reduction decomposition due to dryness [0..2 -, R]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 6: Solute residence time in the saturated zone
+
+  SWBR = {SWBR}                   ! Switch, consider mixed reservoir of saturated zone [Y=1, N=0]
+
+* In case of mixed reservoir (SWBR = 1), specify:
+  DAQUIF = {DAQUIF}             ! Thickness saturated part of aquifer [0..10000 cm, R]
+  POROS = {POROS}                ! Porosity of aquifer [0..0.6 -, R]
+  KFSAT = {KFSAT}                ! Linear adsorption coefficient in aquifer [0..100 cm3/mg, R]
+  DECSAT = {DECSAT}              ! Decomposition rate in aquifer [0..10 /d, R]
+  CDRAINI = {CDRAINI}              ! Initial solute concentration in groundwater [0..100 mg/cm3, R]
+
+**********************************************************************************

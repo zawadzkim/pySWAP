@@ -1,0 +1,166 @@
+**********************************************************************************
+* Filename: swap.bbc
+* Contents: SWAP 4 - Main input data
+**********************************************************************************
+* Comment area:
+* Testbank of SWAP: build with template of bbc-file
+*
+**********************************************************************************
+
+*** BOTTOM BOUNDARY SECTION ***
+
+**********************************************************************************
+* Bottom boundary condition
+
+* Select one of the following options:
+  SWBOTB = {{SWBOTB}}        ! 1  Prescribe groundwater level
+                             ! 2  Prescribe bottom flux
+                             ! 3  Calculate bottom flux from hydraulic head of deep aquifer
+                             ! 4  Calculate bottom flux as function of groundwater level
+                             ! 5  Prescribe soil water pressure head of bottom compartment
+                             ! 6  Bottom flux equals zero
+                             ! 7  Free drainage of soil profile
+                             ! 8  Free outflow at soil-air interface
+
+* Options 1-5 require additional bottom boundary data below
+
+**********************************************************************************
+
+
+{{#SWITCH_SWBOTB_OPTION_1}}
+**********************************************************************************
+* In case of SWBOTB = 1, prescribe groundwater level
+
+* specify DATE1 [date] and GWLEVEL [cm, -10000..1000, R]:
+
+{{#TABLE_SWBOTBTB1}}
+  {{DATE1}} {{GWLEVEL}}
+{{/TABLE_SWBOTBTB1}}
+* End of table
+
+**********************************************************************************
+{{/SWITCH_SWBOTB_OPTION_1}}
+{{#SWITCH_SWBOTB_OPTION_2}}
+**********************************************************************************
+* In case of SWBOTB = 2, prescribe bottom flux
+
+* Specify whether a sinus function or a table are used for the bottom flux:
+  SW2    = {{SW2}}           ! 1 = sinus function
+                             ! 2 = table
+
+{{#SWITCH_SW2_OPTION_1}}
+* In case of sinus function (SW2 = 1), specify:
+  SINAVE = {{SINAVE}}        ! Average value of bottom flux [-10..10 cm/d, R, + = upwards]
+  SINAMP = {{SINAMP}}        ! Amplitude of bottom flux sine function [-10..10 cm/d, R]
+  SINMAX = {{SINMAX}}        ! Time of the year with maximum bottom flux [0..366 d, R]  
+{{/SWITCH_SW2_OPTION_1}}
+{{#SWITCH_SW2_OPTION_2}}
+* In case of table (SW2 = 2), specify date DATE2 [date] and bottom flux QBOT2 [-100..100 cm/d, R, positive = upwards]:
+
+{{#TABLE_SWBOTBTB2}}
+  {{DATE2}} {{QBOT2}}
+{{/TABLE_SWBOTBTB2}}
+* End of table
+{{/SWITCH_SW2_OPTION_2}}
+
+**********************************************************************************
+{{/SWITCH_SWBOTB_OPTION_2}}
+{{#SWITCH_SWBOTB_OPTION_3}}
+**********************************************************************************
+* In case of SWBOTB = 3, calculate bottom flux from hydraulic head in deep aquifer
+
+* Switch for vertical hydraulic resistance between bottom boundary and groundwater level
+  SWBOTB3RESVERT = {{SWBOTB3RESVERT}} ! 0 = Include vertical hydraulic resistance
+                             ! 1 = Suppress vertical hydraulic resistance
+
+* Switch for numerical solution of bottom flux: 0 = explicit, 1 = implicit
+  SWBOTB3IMPL = {{SWBOTB3IMPL}} ! 0 = explicit solution (choose always when SHAPE < 1.0)
+                             ! 1 = implicit solution
+
+* Specify:
+  SHAPE  = {{SHAPE}}         ! Shape factor to derive average groundwater level [0..1 -, R]
+  HDRAIN = {{HDRAIN}}        ! Mean drain base to correct for average groundwater level [-10000..0 cm, R]
+  RIMLAY = {{RIMLAY}}        ! Vertical resistance of aquitard [0..100000 d, R]
+
+* Specify whether a sinus function or a table are used for the hydraulic head in the deep aquifer:
+  SW3    = {{SW3}}           ! 1 = sinus function  
+                             ! 2 = table 
+
+{{#SWITCH_SW3_OPTION_1}}
+* In case of sinus function (SW3  = 1), specify:
+  AQAVE  = {{AQAVE}}         ! Average hydraulic head in underlaying aquifer [-10000..1000 cm, R] 
+  AQAMP  = {{AQAMP}}         ! Amplitude hydraulic head sinus wave [0..1000 cm, R]
+  AQTMAX = {{AQTMAX}}        ! First time of the year with maximum hydraulic head [0..366 d, R]
+  AQPER  = {{AQPER}}         ! Period hydraulic head sinus wave [0..366 d, I]
+{{/SWITCH_SW3_OPTION_1}}
+{{#SWITCH_SW3_OPTION_2}}
+* In case of table (SW3  = 2), specify date DATE3 [date] and average pressure head in underlaying aquifer HAQUIF [-10000..1000 cm, R]:
+
+{{#TABLE_SWBOTBTB3A}}
+  {{DATE3}} {{HAQUIF}}
+{{/TABLE_SWBOTBTB3A}}
+* End of table
+{{/SWITCH_SW3_OPTION_2}}
+
+* An extra groundwater flux can be specified which is added to above specified flux
+  SW4   = {{SW4}}            ! 0 = no extra flux 
+                             ! 1 = include extra flux
+
+{{#SWITCH_SW4_OPTION_1}}
+* If SW4 = 1, specify date DATE4 [date] and bottom flux QBOT4 [-100..100 cm/d, R]
+* QTAB is positive when flux is upward:
+
+{{#TABLE_SWBOTBTB3B}}
+  {{DATE4}} {{QBOT4}}
+{{/TABLE_SWBOTBTB3B}}
+* End of table
+
+{{/SWITCH_SW4_OPTION_1}}
+**********************************************************************************
+{{/SWITCH_SWBOTB_OPTION_3}}
+{{#SWITCH_SWBOTB_OPTION_4}}
+**********************************************************************************
+* In case of SWBOTB = 4, calculate bottom flux as function of groundwater level
+
+
+* Specify whether an exponential relation or a table is used [1..2 -,I]:
+  SWQHBOT = {{SWQHBOT}}      ! 1 = bottom flux is calculated with an exponential relation
+                             ! 2 = bottom flux is derived from a table
+
+{{#SWITCH_SWQHBOT_OPTION_1}}
+* In case of an exponential relation (SWQHBOT = 1),
+* specify coefficients of relation qbot = A exp (B*abs(groundwater level))
+  COFQHA = {{COFQHA}}        ! Coefficient A, [-100..100 cm/d, R]
+  COFQHB = {{COFQHB}}        ! Coefficient B  [-1..1 /cm, R]
+
+* If SWQHBOT = 1, an extra flux can be added to the exponential relation
+  COFQHC = {{COFQHC}}        ! Water flux (positive upward) in addition to flux from exponential relation [-10..10 cm/d, R]
+{{/SWITCH_SWQHBOT_OPTION_1}}
+{{#SWITCH_SWQHBOT_OPTION_2}}
+* In case of a table (SWQHBOT = 2),
+* specify groundwaterlevel HTAB [-10000..1000, cm, R]  and bottom flux QTAB [-100..100 cm/d, R]
+* HTAB is negative below the soil surface, QTAB is positive when flux is upward:
+
+{{#TABLE_SWBOTBTB4}}
+  {{HTAB}} {{QTAB}}
+{{/TABLE_SWBOTBTB4}}
+* End of table
+{{/SWITCH_SWQHBOT_OPTION_2}}
+
+**********************************************************************************
+{{/SWITCH_SWBOTB_OPTION_4}}
+{{#SWITCH_SWBOTB_OPTION_5}}
+**********************************************************************************
+* In case of SWBOTB = 5, prescribe soil water pressure head of bottom compartment
+ 
+* Specify date DATE5 [date] and bottom compartment pressure head HBOT5 [-1.d10..1000 cm, R]:
+
+{{#TABLE_SWBOTBTB5}}
+  {{DATE5}} {{HBOT5}}
+{{/TABLE_SWBOTBTB5}}
+* End of table
+
+**********************************************************************************
+{{/SWITCH_SWBOTB_OPTION_5}}
+
+* End of input file .BBC!

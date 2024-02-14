@@ -1,0 +1,37 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pyzw
+
+# Virtual Environments
+venv/
+env/
+env.bak/
+env1/
+env2/
+.env
+
+# IDEs
+.vscode/
+.idea/
+
+# Compiled files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
+
+*.sqlite
