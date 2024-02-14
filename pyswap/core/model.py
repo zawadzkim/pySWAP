@@ -11,8 +11,8 @@ from ..soilwater.evaporation import Evaporation
 from ..soilwater.soilprofile import SoilProfile
 from ..soilwater.snow import SnowAndFrost
 from ..soilwater.richards import RichardsSettings
-from ..base.boundary import LateralDrainage
-from ..base.boundary import BottomBoundary
+from ..core.boundary import LateralDrainage
+from ..core.boundary import BottomBoundary
 
 
 @dataclass
@@ -32,6 +32,10 @@ class Model:
     lateraldrainage: LateralDrainage
     bottomboundary: BottomBoundary
     drainage: Drainage | None = None
+
+    def save(self):
+        """Saves the model to a .json file."""
+        pass
 
     def run():
         """Runs the model and saves the results.

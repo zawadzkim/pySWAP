@@ -1,6 +1,6 @@
 """Heat flow"""
 from dataclasses import dataclass
-from pyswap.base.dtypes import Subsection
+from pyswap.core.dtypes import Subsection
 from pandas import DataFrame
 
 

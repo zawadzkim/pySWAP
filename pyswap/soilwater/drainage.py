@@ -1,6 +1,6 @@
 import os
 from dataclasses import dataclass, field
-from ..base.utils import open_file
+from ..core.utils import open_file
 
 
 @dataclass

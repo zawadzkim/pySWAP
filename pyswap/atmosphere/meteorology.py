@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
-from ..base.dtypes import Section, Subsection, Table
-from ..base.metadata import Metadata
-from ..base.utils import save_file
+from ..core.dtypes import Section, Subsection, Table
+from ..core.metadata import Metadata
+from ..core.utils import save_file
 from pandas import DataFrame, read_csv, to_datetime
 from datetime import datetime as dt
 import urllib.request
@@ -185,6 +185,7 @@ class Meteorology(Section):
                 assert self.rainfil, "RAINFIL is required when SWRAIN is 3"
 
     def __setattr__(self, name, value):
+        """Overrides the default __setattr__ method to check the validity of the new attributes."""
         if name == "penman_monteith" and value is not None:
             assert isinstance(
                 value, PenmanMonteith), "penman_monteith must be an instance of PenmanMonteith"

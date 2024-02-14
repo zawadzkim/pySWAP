@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime as dt
-from ..base.metadata import Metadata
-from ..base.dtypes import Section, Subsection
+from ..core.metadata import Metadata
+from ..core.dtypes import Section, Subsection
 from pandas import DataFrame, read_csv
 
 

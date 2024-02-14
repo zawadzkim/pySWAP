@@ -11,7 +11,7 @@ sys.path.append(str(pyswap_path.resolve()))
 class TestEnvironment(unittest.TestCase):
 
     def test_environment_creation(self):
-        from pyswap.base.simsettings import Environment
+        from pyswap.core.simsettings import Environment
         pathwork = Path("/path/to/work")
         pathatm = Path("/path/to/atm")
         pathcrop = Path("/path/to/crop")
@@ -28,7 +28,7 @@ class TestEnvironment(unittest.TestCase):
 class TestSimPeriod(unittest.TestCase):
 
     def test_sim_period_creation(self):
-        from pyswap.base.simsettings import SimPeriod
+        from pyswap.core.simsettings import SimPeriod
 
         tstart = datetime(2022, 1, 1)
         tend = datetime(2022, 12, 31)
@@ -37,7 +37,7 @@ class TestSimPeriod(unittest.TestCase):
         self.assertEqual(sim_period.tend, tend)
 
     def test_sim_period_tstart_str(self):
-        from pyswap.base.simsettings import SimPeriod
+        from pyswap.core.simsettings import SimPeriod
 
         tstart = datetime(2022, 1, 1)
         tend = datetime(2022, 12, 31)
@@ -45,7 +45,7 @@ class TestSimPeriod(unittest.TestCase):
         self.assertEqual(sim_period.tstart_str, "2022-01-01")
 
     def test_sim_period_tend_str(self):
-        from pyswap.base.simsettings import SimPeriod
+        from pyswap.core.simsettings import SimPeriod
 
         tstart = datetime(2022, 1, 1)
         tend = datetime(2022, 12, 31)
@@ -56,7 +56,7 @@ class TestSimPeriod(unittest.TestCase):
 class TestOutputDates(unittest.TestCase):
 
     def test_output_dates_creation(self):
-        from pyswap.base.simsettings import OutputDates
+        from pyswap.core.simsettings import OutputDates
         output_dates = OutputDates()
         self.assertEqual(output_dates.nprintday, 1)
         self.assertTrue(output_dates.swmonth)
@@ -72,7 +72,7 @@ class TestOutputDates(unittest.TestCase):
 class TestOutputFiles(unittest.TestCase):
 
     def test_output_files_creation(self):
-        from pyswap.base.simsettings import OutputFiles
+        from pyswap.core.simsettings import OutputFiles
         output_files = OutputFiles()
         self.assertEqual(output_files.outfil, "result")
         self.assertFalse(output_files.swheader)

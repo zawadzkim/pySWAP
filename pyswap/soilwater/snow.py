@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from ..base.dtypes import Section, Subsection
+from ..core.dtypes import Section, Subsection
 from pandas import DataFrame
 
 
