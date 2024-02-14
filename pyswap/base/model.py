@@ -23,7 +23,6 @@ class Model:
     meteorology: Meteorology
     crop: Crop
     irrigation: Irrigation
-    drainage: Drainage
     soilmoisture: SoilMoisture
     surfaceflow: SurfaceFlow
     evaporation: Evaporation
@@ -32,3 +31,10 @@ class Model:
     richards: RichardsSettings
     lateraldrainage: LateralDrainage
     bottomboundary: BottomBoundary
+    drainage: Drainage | None = None
+
+    def run():
+        """Runs the model and saves the results.
+        Added line of docstring,
+        """
+        pass
