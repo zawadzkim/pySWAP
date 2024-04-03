@@ -5,7 +5,8 @@ class PySWAPBaseModel(BaseModel):
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
-        validate_assignment=True
+        validate_assignment=True,
+        extra='forbid'
     )
 
     def model_string(self):
