@@ -1,7 +1,7 @@
 from typing import Optional, List
 from ..core.utils.files import open_file
 from ..core.utils.basemodel import PySWAPBaseModel
-from pandas import DataFrame
+from ..core.utils.fields import Table
 from pydantic import computed_field, Field
 
 
@@ -20,7 +20,7 @@ class Crop(PySWAPBaseModel):
 
     swcrop: bool
     rds: Optional[float] = Field(default=None, ge=1, le=5000)
-    croprotation: Optional[DataFrame] = None
+    croprotation: Optional[Table] = None
     cropfiles: Optional[List[CropFile]] = None
 
     def _validate_crop_section(self):

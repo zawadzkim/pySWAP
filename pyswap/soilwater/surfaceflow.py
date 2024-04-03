@@ -1,4 +1,4 @@
-from pandas import DataFrame
+from ..core.utils.fields import Table
 from ..core.utils.basemodel import PySWAPBaseModel
 from pydantic import model_validator
 from typing import Optional, Literal
@@ -11,7 +11,7 @@ class SurfaceFlow(PySWAPBaseModel):
     rsroexp: float = 1.0
     pondmx: Optional[float] = None
     rufil: Optional[str] = None
-    pondmxtb: Optional[DataFrame] = None
+    pondmxtb: Optional[Table] = None
 
     @model_validator(mode='after')
     def _validate_surface_flow(self) -> None:

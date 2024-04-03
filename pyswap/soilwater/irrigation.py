@@ -47,11 +47,11 @@ class ScheduledIrrigation(PySWAPBaseModel):
     tcsfix: Optional[int] = None
     dcrit: Optional[float] = None
     irgdayfix: Optional[int] = None
-    dvs_tc1: Optional[DataFrame] = None
-    dvs_tc2: Optional[DataFrame] = None
-    dvs_tc3: Optional[DataFrame] = None
-    dvs_tc4: Optional[DataFrame] = None
-    dvs_tc5: Optional[DataFrame] = None
+    dvs_tc1: Optional[Table] = None
+    dvs_tc2: Optional[Table] = None
+    dvs_tc3: Optional[Table] = None
+    dvs_tc4: Optional[Table] = None
+    dvs_tc5: Optional[Table] = None
 
     def __post_init__(self) -> None:
         if self.tcs == 1:

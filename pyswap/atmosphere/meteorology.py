@@ -1,4 +1,5 @@
 from ..core.utils.basemodel import PySWAPBaseModel
+from ..core.utils.fields import Table
 from pandas import DataFrame, read_csv, to_datetime
 import urllib.request
 from pydantic import Field, model_validator
@@ -119,7 +120,7 @@ class Meteorology(PySWAPBaseModel):
     penman_monteith: Optional[PenmanMonteith] = Field(default=None, repr=False)
     swmetdetail: Optional[Literal[0, 1]] = None
     swrain: Optional[Literal[0, 1, 2, 3]] = None
-    rainflux: Optional[DataFrame] = None
+    rainflux: Optional[Table] = None
     rainfil: Optional[str] = None
     nmetdetail: Optional[int] = Field(default=None, ge=1, le=96)
 

@@ -1,6 +1,5 @@
-from dataclasses import dataclass, field
-from ..core.utils.basemodel import Section, Subsection, PySWAPBaseModel
-from pandas import DataFrame
+from ..core.utils.basemodel import PySWAPBaseModel
+from ..core.utils.fields import Table
 from pydantic import model_validator
 from typing import Literal, Optional
 
@@ -9,7 +8,7 @@ class SoilMoisture(PySWAPBaseModel):
     """Soil moisture content and water balance."""
 
     swinco: Literal[1, 2, 3]
-    head_soildepth: Optional[DataFrame] = None
+    head_soildepth: Optional[Table] = None
     gwli: Optional[int] = None
     inifil: Optional[str] = None
 

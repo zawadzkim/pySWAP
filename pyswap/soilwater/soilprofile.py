@@ -1,19 +1,18 @@
-from dataclasses import dataclass, field
-from ..core.utils.basemodel import Section, Subsection, PySWAPBaseModel
-from pandas import DataFrame
+from ..core.utils.basemodel import PySWAPBaseModel
+from ..core.utils.fields import Table
 from pydantic import model_validator
 from typing import Literal, Optional
 
 
 class SoilProfile(PySWAPBaseModel):
     """Vertical discretization of soil profile, soil hydraulic functions and hysteresis of soil water retention."""
-    soilprofile: DataFrame
+    soilprofile: Table
     swsophy: bool
     swhyst: Literal[0, 1, 2]
     swmacro: bool
     filenamesophy: Optional[str] = None,
     tau: Optional[float] = None
-    soilhydrfunc: Optional[DataFrame] = None
+    soilhydrfunc: Optional[Table] = None
 
     @model_validator(mode='after')
     def _validate_soil_profile(self) -> None:

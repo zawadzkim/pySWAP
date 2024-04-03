@@ -1,7 +1,7 @@
 """Solute transport."""
 
 from pyswap.core.utils.basemodel import PySWAPBaseModel
-from pandas import DataFrame
+from pyswap.core.utils.fields import Table
 from typing import Literal, Optional
 
 
@@ -27,6 +27,6 @@ class SoluteTransport(PySWAPBaseModel):
     kfsat: Optional[float] = None
     decsat: Optional[float] = None
     cdraini: Optional[float] = None
-    cseeparrtb: Optional[DataFrame] = None
-    inissoil: Optional[DataFrame] = None
-    miscellaneous: Optional[DataFrame] = None
+    table_cseeparrtb: Optional[Table] = None
+    table_inissoil: Optional[Table] = None
+    table_miscellaneous: Optional[Table] = None
