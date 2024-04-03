@@ -1,7 +1,7 @@
 from typing import Optional, Literal
 from .utils.basemodel import PySWAPBaseModel
+from .utils.fields import Table
 from pydantic import model_validator, Field
-from pandas import DataFrame
 
 
 class BottomBoundary(PySWAPBaseModel):
@@ -21,7 +21,7 @@ class BottomBoundary(PySWAPBaseModel):
     sinmax: Optional[float] = Field(
         ge=0.0, le=366.0, description='Time of the year with maximum bottom flux [d].', default=None)
     # if sw2 == 2
-    qbot: Optional[DataFrame] = None
+    table_qbot: Optional[Table] = None
     # if swbotb == 3
     swbotb3resvert: Optional[int] = None
     swbotb3impl: Optional[int] = None
@@ -35,10 +35,10 @@ class BottomBoundary(PySWAPBaseModel):
     aqtmax: Optional[float] = None
     aqtper: Optional[float] = None
     # if sw3 == 2
-    haquif: Optional[DataFrame] = None
+    table_haquif: Optional[Table] = None
     sw4: Optional[int] = None
     # if sw4 == 1
-    qbot4: Optional[DataFrame] = None
+    table_qbot4: Optional[Table] = None
     # if swbotb == 4
     swqhbot: Optional[int] = None
     # if swqhbot == 1
@@ -46,9 +46,9 @@ class BottomBoundary(PySWAPBaseModel):
     cofqhb: Optional[float] = None
     cofqhc: Optional[float] = None
     # if swqhbot == 2
-    qtab: Optional[DataFrame] = None
+    table_qtab: Optional[Table] = None
     # if swbotb == 5
-    hbot5: Optional[DataFrame] = None
+    table_hbot5: Optional[Table] = None
 
     @model_validator(mode='after')
     def _check_swbotb(self):
@@ -61,7 +61,7 @@ class BottomBoundary(PySWAPBaseModel):
                 assert self.sinamp, 'sinamp must be provided if sw2 is 1'
                 assert self.sinmax, 'sinmax must be provided if sw2 is 1'
             elif self.sw2 == 2:
-                assert self.qbot, 'qbot must be provided if sw2 is 2'
+                assert self.table_qbot, 'qbot must be provided if sw2 is 2'
         elif self.swbotb == 3:
             assert self.sw3, 'sw3 must be provided if swbotb is 3'
             if self.sw3 == 1:
@@ -70,7 +70,7 @@ class BottomBoundary(PySWAPBaseModel):
                 assert self.aqtmax, 'aqtmax must be provided if sw3 is 1'
                 assert self.aqtper, 'aqtper must be provided if sw3 is 1'
             elif self.sw3 == 2:
-                assert self.haquif, 'haquif must be provided if sw3 is 2'
+                assert self.table_haquif, 'haquif must be provided if sw3 is 2'
         elif self.swbotb == 4:
             assert self.swqhbot, 'swqhbot must be provided if swbotb is 4'
             if self.swqhbot == 1:
@@ -78,6 +78,6 @@ class BottomBoundary(PySWAPBaseModel):
                 assert self.cofqhb, 'cofqhb must be provided if swqhbot is 1'
                 assert self.cofqhc, 'cofqhc must be provided if swqhbot is 1'
             elif self.swqhbot == 2:
-                assert self.qtab, 'qtab must be provided if swqhbot is 2'
+                assert self.table_qtab, 'qtab must be provided if swqhbot is 2'
         elif self.swbotb == 5:
-            assert self.hbot5, 'hbot5 must be provided if swbotb is 5'
+            assert self.table_hbot5, 'hbot5 must be provided if swbotb is 5'

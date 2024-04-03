@@ -11,7 +11,7 @@ class SurfaceFlow(PySWAPBaseModel):
     rsroexp: float = 1.0
     pondmx: Optional[float] = None
     rufil: Optional[str] = None
-    pondmxtb: Optional[Table] = None
+    table_pondmxtb: Optional[Table] = None
 
     @model_validator(mode='after')
     def _validate_surface_flow(self) -> None:
@@ -19,7 +19,7 @@ class SurfaceFlow(PySWAPBaseModel):
         if self.swpondmx == 0:
             assert self.pondmx is not None, "pondmx is required when swpondmx is 0"
         else:
-            assert self.pondmxtb is not None, "pondmxtb is required when swpondmx is 1"
+            assert self.table_pondmxtb is not None, "pondmxtb is required when swpondmx is 1"
 
         if self.swrunon == 1:
             assert self.rufil is not None, "runfil is required when swrunon is 1"

@@ -120,7 +120,7 @@ class Meteorology(PySWAPBaseModel):
     penman_monteith: Optional[PenmanMonteith] = Field(default=None, repr=False)
     swmetdetail: Optional[Literal[0, 1]] = None
     swrain: Optional[Literal[0, 1, 2, 3]] = None
-    rainflux: Optional[Table] = None
+    table_rainflux: Optional[Table] = None
     rainfil: Optional[str] = None
     nmetdetail: Optional[int] = Field(default=None, ge=1, le=96)
 
@@ -131,7 +131,7 @@ class Meteorology(PySWAPBaseModel):
             assert self.swetsine is not None, "SWETSINE is required when SWETR is True"
             assert self.swrain is not None, "SWRAIN is required when SWETR is True"
             if self.swrain == 1:
-                assert self.rainflux is not None, "RAINFLUX is required when SWRAIN is 1"
+                assert self.table_rainflux is not None, "RAINFLUX is required when SWRAIN is 1"
             elif self.swrain == 3:
                 assert self.rainfil, "RAINFIL is required when SWRAIN is 3"
 

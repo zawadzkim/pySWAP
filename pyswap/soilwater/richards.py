@@ -1,6 +1,4 @@
-from dataclasses import dataclass, field
-from ..core.utils.basemodel import Section, Subsection, PySWAPBaseModel
-from pandas import DataFrame
+from ..core.utils.basemodel import PySWAPBaseModel
 
 
 class RichardsSettings(PySWAPBaseModel):

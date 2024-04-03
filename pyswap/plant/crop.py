@@ -20,13 +20,13 @@ class Crop(PySWAPBaseModel):
 
     swcrop: bool
     rds: Optional[float] = Field(default=None, ge=1, le=5000)
-    croprotation: Optional[Table] = None
+    table_croprotation: Optional[Table] = None
     cropfiles: Optional[List[CropFile]] = None
 
     def _validate_crop_section(self):
         if self.swcrop:
             assert self.rds is not None, "rds must be specified if swcrop is True"
-            assert self.croprotation is not None, "croprotation must be specified if swcrop is True"
+            assert self.table_croprotation is not None, "croprotation must be specified if swcrop is True"
 
     def save_crop(self, path: str):
         return NotImplemented('Method not implemented yet')
