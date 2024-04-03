@@ -1,21 +1,22 @@
-from dataclasses import dataclass, field
-from ..core.utils.dtypes import Section, Subsection
+from typing import Optional
+from ..core.utils.basemodel import Section, Subsection, PySWAPBaseModel
 from pandas import DataFrame
+from pydantic import model_validator
 
 
-@dataclass
-class SnowAndFrost(Subsection):
+class SnowAndFrost(PySWAPBaseModel):
 
     swsnow: bool
     swfrost: bool
-    snowinco: float | None = None
-    teprrain: float | None = None
-    teprsnow: float | None = None
-    snowcoef: float | None = None
-    tfrostst: float | None = None
-    tfrostend: float | None = None
+    snowinco: Optional[float] = None
+    teprrain: Optional[float] = None
+    teprsnow: Optional[float] = None
+    snowcoef: Optional[float] = None
+    tfrostst: Optional[float] = None
+    tfrostend: Optional[float] = None
 
-    def __post_init__(self) -> None:
+    @model_validator(mode='after')
+    def _validate_snow_and_frost(self) -> None:
 
         if self.swsnow:
             assert self.snowinco is not None, "snowinco is required when swsnow is True"

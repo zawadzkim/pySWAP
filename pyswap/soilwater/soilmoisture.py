@@ -1,21 +1,20 @@
 from dataclasses import dataclass, field
-from ..core.utils.dtypes import Section, Subsection
+from ..core.utils.basemodel import Section, Subsection, PySWAPBaseModel
 from pandas import DataFrame
+from pydantic import model_validator
+from typing import Literal, Optional
 
 
-@dataclass
-class SoilMoisture(Subsection):
+class SoilMoisture(PySWAPBaseModel):
     """Soil moisture content and water balance."""
 
-    swinco: int
-    head_soildepth: DataFrame | None = None
-    gwli: int | None = None
-    inifil: str | None = None
+    swinco: Literal[1, 2, 3]
+    head_soildepth: Optional[DataFrame] = None
+    gwli: Optional[int] = None
+    inifil: Optional[str] = None
 
-    def __post_init__(self) -> None:
-
-        if self.swinco not in range(1, 4):
-            raise ValueError("swinco must be 1, 2, or 3")
+    @model_validator(mode='after')
+    def _validate_soil_moisture(self) -> None:
 
         if self.swinco == 1:
             assert self.head_soildepth is not None, "head_soildepth is required when swinco is 1"

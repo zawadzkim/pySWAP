@@ -1,21 +1,20 @@
 """Heat flow"""
-from dataclasses import dataclass
-from pyswap.core.utils.dtypes import Subsection
-from pandas import DataFrame
+from pyswap.core.utils.basemodel import PySWAPBaseModel
+from pyswap.core.utils.fields import Table
+from typing import Literal, Optional
 
 
-@dataclass
-class HeatFlow(Subsection):
+class HeatFlow(PySWAPBaseModel):
 
-    swhea: bool
-    swcalt: int | None = None
-    tampli: float | None = None
-    tmean: float | None = None
-    timref: float | None = None
-    ddamp: float | None = None
-    swtopbhea: int | None = None
-    tsoilfile: str | None = None
-    swbotbhea: int | None = None
-    soiltextures: DataFrame | None = None
-    initsoil: DataFrame | None = None
-    bbctsoil: DataFrame | None = None
+    swhea: Literal[0, 1]
+    swcalt: Optional[Literal[0, 1]] = None
+    tampli: Optional[float] = None
+    tmean: Optional[float] = None
+    timref: Optional[float] = None
+    ddamp: Optional[float] = None
+    swtopbhea: Optional[Literal[0, 1]] = None
+    tsoilfile: Optional[str] = None
+    swbotbhea: Optional[Literal[0, 1]] = None
+    table_soiltextures: Optional[Table] = None
+    table_initsoil: Optional[Table] = None
+    table_bbctsoil: Optional[Table] = None

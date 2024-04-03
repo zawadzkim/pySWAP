@@ -1,46 +1,38 @@
 from dataclasses import dataclass, field
-from ..core.utils.dtypes import Section, Subsection
+from ..core.utils.basemodel import Section, Subsection, PySWAPBaseModel
 from pandas import DataFrame
+from pydantic import model_validator
+from typing import Literal, Optional
 
 
-@dataclass
-class SoilProfile(Subsection):
+class SoilProfile(PySWAPBaseModel):
     """Vertical discretization of soil profile, soil hydraulic functions and hysteresis of soil water retention."""
     soilprofile: DataFrame
     swsophy: bool
-    swhyst: int
+    swhyst: Literal[0, 1, 2]
     swmacro: bool
-    filenamesophy: str | None = None,
-    tau: float | None = None
-    soilhydrfunc: DataFrame | None = None
+    filenamesophy: Optional[str] = None,
+    tau: Optional[float] = None
+    soilhydrfunc: Optional[DataFrame] = None
 
-    def __post_init__(self) -> None:
+    @model_validator(mode='after')
+    def _validate_soil_profile(self) -> None:
 
         if self.soilprofile is not None:
-            assert "ISUBLAY" in self.soilprofile.columns, "ISUBLAY is required in soilprofile"
-            assert "ISOILLAY" in self.soilprofile.columns, "ISOILLAY is required in soilprofile"
-            assert "HSUBLAY" in self.soilprofile.columns, "HSUBLAY is required in soilprofile"
-            assert "HCOMP" in self.soilprofile.columns, "HCOMP is required in soilprofile"
-            assert "NCOMP" in self.soilprofile.columns, "NCOMP is required in soilprofile"
+            required_columns_soil_profile = [
+                "ISUBLAY", "ISOILLAY", "HSUBLAY", "HCOMP", "NCOMP"]
+            for column in required_columns_soil_profile:
+                assert column in self.soilprofile.columns, f"{column} is required in soilprofile"
 
         if self.swsophy:
+            required_columns_hydraulic_functions = [
+                "ORES", "OSAT", "ALFA", "NPAR", "KSATFIT", "LEXP", "ALFAW", "H_ENPR", "KSATEXM", "BDENS"]
             assert self.soilhydrfunc is not None, "soilhydrfunc is required when swsophy is True"
-            assert "ORES" in self.soilhydrfunc.columns, "ORES is required in soilhydrfunc"
-            assert "OSAT" in self.soilhydrfunc.columns, "OSAT is required in soilhydrfunc"
-            assert "ALFA" in self.soilhydrfunc.columns, "ALFA is required in soilhydrfunc"
-            assert "NPAR" in self.soilhydrfunc.columns, "NPAR is required in soilhydrfunc"
-            assert "KSATFIT" in self.soilhydrfunc.columns, "KSATFIT is required in soilhydrfunc"
-            assert "LEXP" in self.soilhydrfunc.columns, "LEXP is required in soilhydrfunc"
-            assert "ALFAW" in self.soilhydrfunc.columns, "ALFAW is required in soilhydrfunc"
-            assert "H_ENPR" in self.soilhydrfunc.columns, "H_ENPR is required in soilhydrfunc"
-            assert "KSATEXM" in self.soilhydrfunc.columns, "KSATEXM is required in soilhydrfunc"
-            assert "BDENS" in self.soilhydrfunc.columns, "BDENS is required in soilhydrfunc"
+            for column in required_columns_hydraulic_functions:
+                assert column in self.soilhydrfunc.columns, f"{column} is required in soilhydrfunc"
 
         else:
             assert self.filenamesophy is not None, "filenamesophy is required when swsophy is True"
-
-        if self.swhyst not in range(0, 3):
-            raise ValueError("swhyst must be 0, 1, or 2")
 
         if self.swhyst in range(1, 3):
             assert self.tau is not None, "tau is required when swhyst is 1 or 2"

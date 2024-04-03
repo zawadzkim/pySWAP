@@ -1,33 +1,32 @@
 """Solute transport."""
 
-from dataclasses import dataclass
-from pyswap.core.utils.dtypes import Subsection
+from pyswap.core.utils.basemodel import PySWAPBaseModel
 from pandas import DataFrame
+from typing import Literal, Optional
 
 
-@dataclass
-class SoluteTransport(Subsection):
+class SoluteTransport(PySWAPBaseModel):
 
-    swsolu: bool
-    cpre: float | None = None
-    cdrain: float | None = None
-    swbotbc: int | None = None
-    cseep: float | None = None
-    ddif: float | None = None
-    tscf: float | None = None
-    swsp: bool | None = None
-    frexp: float | None = None
-    cref: float | None = None
-    swdc: bool | None = None
-    gampar: float | None = None
-    rtheta: float | None = None
-    bexp: float | None = None
-    swbr: bool | None = None
-    daquif: float | None = None
-    poros: float | None = None
-    kfsat: float | None = None
-    decsat: float | None = None
-    cdraini: float | None = None
-    cseeparrtb: DataFrame | None = None
-    inissoil: DataFrame | None = None
-    miscellaneous: DataFrame | None = None
+    swsolu: Literal[0, 1]
+    cpre: Optional[float] = None
+    cdrain: Optional[float] = None
+    swbotbc: Optional[Literal[0, 1]] = None
+    cseep: Optional[float] = None
+    ddif: Optional[float] = None
+    tscf: Optional[float] = None
+    swsp: Optional[Literal[0, 1]] = None
+    frexp: Optional[float] = None
+    cref: Optional[float] = None
+    swdc: Optional[Literal[0, 1]] = None
+    gampar: Optional[float] = None
+    rtheta: Optional[float] = None
+    bexp: Optional[float] = None
+    swbr: Optional[Literal[0, 1]] = None
+    daquif: Optional[float] = None
+    poros: Optional[float] = None
+    kfsat: Optional[float] = None
+    decsat: Optional[float] = None
+    cdraini: Optional[float] = None
+    cseeparrtb: Optional[DataFrame] = None
+    inissoil: Optional[DataFrame] = None
+    miscellaneous: Optional[DataFrame] = None

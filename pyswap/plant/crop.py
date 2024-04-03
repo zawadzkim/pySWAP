@@ -1,39 +1,32 @@
-from dataclasses import dataclass, field
-from typing import Any
-from ..core.utils import open_file
-from ..core.utils.dtypes import Section, Table
+from typing import Optional, List
+from ..core.utils.files import open_file
+from ..core.utils.basemodel import PySWAPBaseModel
 from pandas import DataFrame
+from pydantic import computed_field, Field
 
 
-@dataclass
-class CropData:
+class CropFile(PySWAPBaseModel):
 
-    file_names: list
-    file_paths: list
-    files: dict = field(default_factory=dict)
+    name: str
+    path: str
 
-    def __post_init__(self):
-        for file_name, file_path in zip(self.file_names, self.file_paths):
-            self.files[file_name] = open_file(file_path, encoding='ascii')
+    @computed_field(return_type=str)
+    def content(self):
+        return open_file(self.path, encoding='ascii')
 
 
-@dataclass
-class Crop(Section):
+class Crop(PySWAPBaseModel):
     """Holds the crop settings of the simulation."""
 
     swcrop: bool
-    rds: float = None,
-    croprotation: dict[list] | DataFrame = None,
+    rds: Optional[float] = Field(default=None, ge=1, le=5000)
+    croprotation: Optional[DataFrame] = None
+    cropfiles: Optional[List[CropFile]] = None
 
-    def __post_init__(self):
+    def _validate_crop_section(self):
         if self.swcrop:
             assert self.rds is not None, "rds must be specified if swcrop is True"
             assert self.croprotation is not None, "croprotation must be specified if swcrop is True"
 
-    def __setattr__(self, name, value) -> None:
-        if name == "croprotation" and value is not None:
-            assert isinstance(value, dict) or isinstance(
-                value, DataFrame), "croprotation must be an instance of dict or DataFrame"
-            if isinstance(value, dict):
-                value = Table(value)
-        super().__setattr__(name, value)
+    def save_crop(self, path: str):
+        return NotImplemented('Method not implemented yet')

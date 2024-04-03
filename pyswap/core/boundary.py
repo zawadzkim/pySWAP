@@ -1,70 +1,83 @@
-from dataclasses import dataclass, field
-from .utils.dtypes import Section, Subsection
+from typing import Optional, Literal
+from .utils.basemodel import PySWAPBaseModel
+from pydantic import model_validator, Field
 from pandas import DataFrame
 
 
-@dataclass
-class LateralDrainage(Subsection):
-    """Lateral drainage to surface water."""
+class BottomBoundary(PySWAPBaseModel):
 
-    swdra: int
-    drfil: str | None = None
-
-    def __post_init__(self):
-        if self.swdra not in range(0, 3):
-            raise ValueError('swdra must be 0, 1, or 2')
-
-        if self.swdra in range(1, 3):
-            assert self.drfil, 'drfil must be provided if swdra is 1 or 2'
-
-
-@dataclass
-class BottomBoundary(Subsection):
-
-    swbbcfile: bool
-    swbotb: int
-    bbcfile: str | None = None
+    swbbcfile: Literal[0, 1]
+    swbotb: Literal[1, 2, 3, 4, 5, 6, 7, 8]
+    bbcfile: Optional[str] = None
     # if swbotb == 1
-    gwlevel: DataFrame | None = None
+    gwlevel: Optional[PySWAPBaseModel] = None
     # if swbotb == 2
-    sw2: int | None = None
+    sw2: Literal[1, 2] = None
     # if sw2 == 1
-    sinave: float | None = None
-    sinamp: float | None = None
-    sinmax: float | None = None
+    sinave: Optional[float] = Field(
+        ge=-10.0, le=10.0, description='Average value of bottom flux [cm/d].', default=None)
+    sinamp: Optional[float] = Field(
+        ge=-10.0, le=10.0, description='Amplitude of bottom flux sine function [cm/d].', default=None)
+    sinmax: Optional[float] = Field(
+        ge=0.0, le=366.0, description='Time of the year with maximum bottom flux [d].', default=None)
     # if sw2 == 2
-    qbot: DataFrame | None = None
+    qbot: Optional[DataFrame] = None
     # if swbotb == 3
-    swbotb3resvert: int | None = None
-    swbotb3impl: int | None = None
-    shape: float | None = None
-    hdrain: float | None = None
-    rimlay: float | None = None
-    sw3: int | None = None
+    swbotb3resvert: Optional[int] = None
+    swbotb3impl: Optional[int] = None
+    shape: Optional[float] = None
+    hdrain: Optional[float] = None
+    rimlay: Optional[float] = None
+    sw3: Optional[int] = None
     # if sw3 == 1
-    aquave: float | None = None
-    aquamp: float | None = None
-    aqtmax: float | None = None
-    aqtper: float | None = None
+    aquave: Optional[float] = None
+    aquamp: Optional[float] = None
+    aqtmax: Optional[float] = None
+    aqtper: Optional[float] = None
     # if sw3 == 2
-    haquif: DataFrame | None = None
-    sw4: int | None = None
+    haquif: Optional[DataFrame] = None
+    sw4: Optional[int] = None
     # if sw4 == 1
-    qbot4: DataFrame | None = None
+    qbot4: Optional[DataFrame] = None
     # if swbotb == 4
-    swqhbot: int | None = None
+    swqhbot: Optional[int] = None
     # if swqhbot == 1
-    cofqha: float | None = None
-    cofqhb: float | None = None
-    cofqhc: float | None = None  # optional
+    cofqha: Optional[float] = None
+    cofqhb: Optional[float] = None
+    cofqhc: Optional[float] = None
     # if swqhbot == 2
-    qtab: DataFrame | None = None
+    qtab: Optional[DataFrame] = None
     # if swbotb == 5
-    hbot5: DataFrame | None = None
+    hbot5: Optional[DataFrame] = None
 
-    def __post_init__(self):
-        if self.swbotb not in range(1, 9):
-            raise ValueError('swbotb must be 1 to 8')
-
-        if self.swbbcfile:
-            assert self.gwlevel is not None, 'gwlevel must be provided if swbbcfile is True'
+    @model_validator(mode='after')
+    def _check_swbotb(self):
+        if self.swbotb == 1:
+            assert self.gwlevel, 'gwlevel must be provided if swbotb is 1'
+        elif self.swbotb == 2:
+            assert self.sw2, 'sw2 must be provided if swbotb is 2'
+            if self.sw2 == 1:
+                assert self.sinave, 'sinave must be provided if sw2 is 1'
+                assert self.sinamp, 'sinamp must be provided if sw2 is 1'
+                assert self.sinmax, 'sinmax must be provided if sw2 is 1'
+            elif self.sw2 == 2:
+                assert self.qbot, 'qbot must be provided if sw2 is 2'
+        elif self.swbotb == 3:
+            assert self.sw3, 'sw3 must be provided if swbotb is 3'
+            if self.sw3 == 1:
+                assert self.aquave, 'aquave must be provided if sw3 is 1'
+                assert self.aquamp, 'aquamp must be provided if sw3 is 1'
+                assert self.aqtmax, 'aqtmax must be provided if sw3 is 1'
+                assert self.aqtper, 'aqtper must be provided if sw3 is 1'
+            elif self.sw3 == 2:
+                assert self.haquif, 'haquif must be provided if sw3 is 2'
+        elif self.swbotb == 4:
+            assert self.swqhbot, 'swqhbot must be provided if swbotb is 4'
+            if self.swqhbot == 1:
+                assert self.cofqha, 'cofqha must be provided if swqhbot is 1'
+                assert self.cofqhb, 'cofqhb must be provided if swqhbot is 1'
+                assert self.cofqhc, 'cofqhc must be provided if swqhbot is 1'
+            elif self.swqhbot == 2:
+                assert self.qtab, 'qtab must be provided if swqhbot is 2'
+        elif self.swbotb == 5:
+            assert self.hbot5, 'hbot5 must be provided if swbotb is 5'

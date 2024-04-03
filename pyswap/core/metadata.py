@@ -1,17 +1,13 @@
-from dataclasses import dataclass, field
-from pyswap.core.utils.dtypes import Subsection
+from .utils.basemodel import PySWAPBaseModel
+from typing import Optional
 
 
-@dataclass
-class Metadata(Subsection):
-    """Metadata of a SWAP model. 
-
-    When model with the same metedata object is saved multiple times in the database, it's always considered as "model version".
-    """
+class Metadata(PySWAPBaseModel):
+    """Metadata of a SWAP model."""
 
     author: str
     institution: str
     email: str
     project_name: str
     swap_ver: str
-    comment: str | None = None
+    comment: Optional[str] = None

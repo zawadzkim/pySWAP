@@ -1,52 +1,24 @@
-from dataclasses import dataclass, field
-from ..core.utils.dtypes import Section, Subsection, Table
-from ..core.metadata import Metadata
-from ..core.utils import save_file
+from ..core.utils.basemodel import PySWAPBaseModel
 from pandas import DataFrame, read_csv, to_datetime
-from datetime import datetime as dt
 import urllib.request
+from pydantic import Field, model_validator
+from typing import Optional, Literal
 
 
-@dataclass
-class MeteorologicalData:
-    """
-    Handles creation and operations on meteorological data file for swap.
+class MeteorologicalData(PySWAPBaseModel):
+    """Handles creation and operations on meteorological data file for swap."""
 
-    Currently, only .met file is supported.
-    For Belgium, there is no possibility to obtain the precipitation duration for the model. There is only
-    max intensity. Therefore, the WET parameter is always set to -99.0 for simulations using Belgian data.
-    TODO: check if the meteodata has all the required columns
-    TODO: include a method to download data from KMI
-    """
-
-    required_header = ['Station', 'DD', 'MM', 'YYYY', 'RAD', 'Tmin', 'Tmax',
-                       'HUM', 'WIND', 'RAIN', 'ETref', 'WET']
-
-    metadata: Metadata
-    station: str = None
-    meteodata: DataFrame | None = None
+    station: str = '377'
+    meteodata: Optional[DataFrame] = None
 
     def load_from_csv(self,
                       csv_path: str,
-                      station: str,
-                      station_lon: float,
-                      station_lat: float,
-                      station_alt: float):
+                      station: str):
 
         self.meteodata = read_csv(csv_path)
         self.station = station
 
-        self.met_file_params.update({'{STATION}': str(station),
-                                     '{PROJECT_NAME}': self.metadata.project_name,
-                                     '{FILENAME}': f'{station}',
-                                     '{LON}': station_lon,
-                                     '{LAT}': station_lat,
-                                     '{ALT}': station_alt,
-                                     '{AUTHOR}': f'{self.metadata.author}, {self.metadata.email}',
-                                     '{TIMESTAMP}': dt.now().strftime("%Y-%m-%d %H:%M:%S")})
-
     def weather_kmni(self,
-                     stations: str = '377',
                      start_date: str = '20000101',
                      end_date: str = '20200101',
                      parameters: str = 'TEMP:PRCP:Q:UG:FG:UX:UN'):
@@ -72,8 +44,8 @@ class MeteorologicalData:
         """
 
         # Define the parameters for the URL
-        stns = stations
-        vars = parameters
+        stns = self.station
+        params = parameters
         start = start_date
         end = end_date
 
@@ -81,7 +53,7 @@ class MeteorologicalData:
         # Concatenate the URL and send request
         site_url = 'https://www.daggegevens.knmi.nl/klimatologie/daggegevens?' + \
                    'stns=' + stns + '&' + \
-                   'vars=' + vars + '&' + \
+                   'vars=' + params + '&' + \
                    'start=' + start + '&' + \
                    'end=' + end + '.csv'
 
@@ -125,73 +97,51 @@ class MeteorologicalData:
 
         self.meteodata = weather_df
 
-    @staticmethod
-    def save_metfile(meteodata: DataFrame,
-                     fname: str,
-                     path: str):
 
-        save_file(string=meteodata.to_string(index=False), path=path, extension='met', fname=fname,
-                  mode='w')
-
-
-@dataclass
-class PenmanMonteith(Subsection):
+class PenmanMonteith(PySWAPBaseModel):
     """Holds the Penman-Monteith settings of the simulation."""
 
-    alt: float
-    altw: float = field(default=10.0)
-    angstroma: float = field(default=0.25)
-    angstromb: float = field(default=0.5)
-    swmetdetail: bool = field(default=False)
-    nmetdetail: int | None = field(default=None)
-
-    def __post_init__(self):
-        assert -400 <= self.alt <= 3000, "ALT must be between -400 and 3000 meters"
-        assert 0 <= self.altw <= 99, "ALTW must be between 0 and 99 meters"
-        assert 0 <= self.angstroma <= 1, "ANGSTROMA must be between 0 and 1"
-        assert 0 <= self.angstromb <= 1, "ANGSTROMB must be between 0 and 1"
-        if self.swmetdetail:
-            assert 1 <= self.nmetdetail <= 96, "NMETDETAIL must be between 1 and 96 when SWMETDETAIL is True"
+    alt: float = Field(ge=-400.0, le=3000.0)
+    altw: float = Field(default=10.0, ge=0.0, le=99.0)
+    angstroma: float = Field(default=0.25, ge=0.0, le=1.0)
+    angstromb: float = Field(default=0.5, ge=0.0, le=1.0)
 
 
-@dataclass
-class Meteorology(Section):
+class Meteorology(PySWAPBaseModel):
     """Holds the meteorological settings of the simulation."""
 
     metfil: str
-    lat: float
-    swetr: bool
-    swdivide: bool
-    meteo_data: MeteorologicalData = field(repr=False)
-    swetsine: bool | None = field(default=None)
-    swrain: int | None = field(default=None)
-    rainfil: str | None = field(default=None)
-    rainflux: DataFrame | dict[list] | None = field(default=None)
-    penman_monteith: PenmanMonteith | None = field(default=None)
+    lat: float = Field(ge=-90, le=90)
+    swetr: Literal[0, 1]
+    swdivide: Literal[0, 1]
+    swetsine: Optional[Literal[0, 1]] = None
+    meteo_data: Optional[MeteorologicalData] = Field(default=None, repr=False)
+    penman_monteith: Optional[PenmanMonteith] = Field(default=None, repr=False)
+    swmetdetail: Optional[Literal[0, 1]] = None
+    swrain: Optional[Literal[0, 1, 2, 3]] = None
+    rainflux: Optional[DataFrame] = None
+    rainfil: Optional[str] = None
+    nmetdetail: Optional[int] = Field(default=None, ge=1, le=96)
 
-    def __post_init__(self):
+    @model_validator(mode='after')
+    def _validate_meteo_section(self):
 
-        self.metfil += '.met' if not self.metfil.endswith('.met') else ''
-
-        assert -90 <= self.lat <= 90, "LAT must be between -90 and 90 degrees"
-        if not self.swetr:
-            assert self.penman_monteith is not None, "PENMAN-MONTEITH settings are required when SWETR is False"
-        else:
+        if self.swetr == 1:  # if PM method is NOT used
             assert self.swetsine is not None, "SWETSINE is required when SWETR is True"
-            assert self.swrain in [0, 1, 2, 3], "SWRAIN must be 0, 1, 2, or 3"
+            assert self.swrain is not None, "SWRAIN is required when SWETR is True"
             if self.swrain == 1:
                 assert self.rainflux is not None, "RAINFLUX is required when SWRAIN is 1"
             elif self.swrain == 3:
                 assert self.rainfil, "RAINFIL is required when SWRAIN is 3"
 
-    def __setattr__(self, name, value):
-        """Overrides the default __setattr__ method to check the validity of the new attributes."""
-        if name == "penman_monteith" and value is not None:
-            assert isinstance(
-                value, PenmanMonteith), "penman_monteith must be an instance of PenmanMonteith"
-        elif name == "rainflux" and value is not None:
-            assert isinstance(value, dict) or isinstance(
-                value, DataFrame), "rainflux must be an instance of dict or DataFrame"
-            if isinstance(value, dict):
-                value = Table(value)
-        super().__setattr__(name, value)
+        else:
+            assert self.penman_monteith is not None, "PENMAN-MONTEITH settings are required when SWETR is False"
+            assert self.swmetdetail is not None, "SWMETDETAIL is required when SWETR is False"
+            if self.swmetdetail == 1:
+                assert self.nmetdetail is not None, "NMETDETAIL is required when SWMETDETAIL is True"
+            else:
+                assert self.swetsine is not None, "SWETSINE is required when SWETR is True"
+                assert self.swrain is not None, "SWRAIN must be 0, 1, 2, or 3"
+
+    def save_met(self, path: str):
+        return NotImplemented('Method not implemented yet')

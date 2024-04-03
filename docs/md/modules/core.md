@@ -1,4 +1,6 @@
-# Base module
+# Core module
+
+Core module contains sevarl modules and submodules.
 
 ## Metadata
 
@@ -9,7 +11,7 @@ NOTE: As of end of 2023, the metadata object is only used in the .SWP file to pr
 Use example:
 
 ```Python
-from pyswap.base.metadata import Metadata
+from pyswap.core.metadata import Metadata
 
 meta = Metadata(author="John Doe",
                 institution="University of Somewhere",

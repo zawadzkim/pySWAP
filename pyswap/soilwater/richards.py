@@ -1,10 +1,9 @@
 from dataclasses import dataclass, field
-from ..core.utils.dtypes import Section, Subsection
+from ..core.utils.basemodel import Section, Subsection, PySWAPBaseModel
 from pandas import DataFrame
 
 
-@dataclass
-class RichardsSettings(Subsection):
+class RichardsSettings(PySWAPBaseModel):
     swkmean: int
     swkimpl: bool
     dtmin: float = 1e-06

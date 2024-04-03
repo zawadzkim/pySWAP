@@ -1,14 +1,14 @@
 from sqlalchemy.orm import state, session
 
-from models import ModelIteration, SWAPModel
+from models import ModelRun, SWAPModel
 from sqlalchemy import event, text, func, bindparam, select, insert
 from sqlalchemy.orm import Session
 
 
-@event.listens_for(ModelIteration, 'before_insert')
+@event.listens_for(ModelRun, 'before_insert')
 def auto_set_iteration(mapper, connection, target):
 
-    query = select(func.max(ModelIteration.iteration)).where(ModelIteration.model_id == bindparam('model_id')).\
+    query = select(func.max(ModelRun.iteration)).where(ModelRun.model_id == bindparam('model_id')).\
         params(model_id=target.model_id)
 
     result = connection.execute(query).scalar()

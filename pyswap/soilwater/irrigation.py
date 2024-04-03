@@ -1,42 +1,37 @@
-from dataclasses import dataclass, field
-from datetime import datetime as dt
-from ..core.metadata import Metadata
-from ..core.utils.dtypes import Section, Subsection
+
+from ..core.utils.basemodel import PySWAPBaseModel
+from ..core.utils.fields import Table
 from pandas import DataFrame, read_csv
+from typing import Optional, Literal
+from pydantic import model_validator, computed_field
 
 
-@dataclass
-class IrrigationData:
+class IrrigationFile(PySWAPBaseModel):
 
-    metadata: Metadata
-    csv_path: str
-    irrigation_data: DataFrame | None = None
+    name: str
+    path: str
 
-    def load_from_csv(self, csv_path: str) -> None:
-
-        self.irrigation_data = read_csv(csv_path)
-
-    def __post_init__(self) -> None:
-        self.load_from_csv(self.csv_path)
+    @computed_field(return_type=DataFrame)
+    def content(self):
+        return read_csv(self.path)
 
 
-@dataclass
-class FixedIrrigation(Subsection):
+class FixedIrrigation(PySWAPBaseModel):
     """ Holds the settings for fixed irrigation."""
 
-    swirgfil: bool
-    irrigevents: DataFrame | None = None
-    irgfil: str | None = None
+    swirgfil: Literal[0, 1]
+    table_irrigevents: Optional[Table] = None
+    irgfil: Optional[str] = None
 
-    def __post_init__(self) -> None:
+    @model_validator(mode='after')
+    def _validate_fixed_irrigation(self) -> None:
         if self.swirgfil:
             assert self.irgfil is not None, "irgfil is required when swirgfil is True"
         else:
-            assert self.irrigevents is not None, "irrigevents is required when swirgfil is False"
+            assert self.table_irrigevents is not None, "irrigevents is required when swirgfil is False"
 
 
-@dataclass
-class ScheduledIrrigation(Subsection):
+class ScheduledIrrigation(PySWAPBaseModel):
 
     startirr: str
     endirr: str
@@ -44,19 +39,19 @@ class ScheduledIrrigation(Subsection):
     isuas: int
     phFieldCapacity: float
     tcs: int
-    phormc: int | None = None
-    swcirrthres: bool | None = None
-    cirrthres: float | None = None
-    perirrsurp: float | None = None
-    irgthreshold: float | None = None
-    tcsfix: int | None = None
-    dcrit: float | None = None
-    irgdayfix: int | None = None
-    dvs_tc1: DataFrame | dict[list] | None = None
-    dvs_tc2: DataFrame | dict[list] | None = None
-    dvs_tc3: DataFrame | dict[list] | None = None
-    dvs_tc4: DataFrame | dict[list] | None = None
-    dvs_tc5: DataFrame | dict[list] | None = None
+    phormc: Optional[int] = None
+    swcirrthres: Optional[bool] = None
+    cirrthres: Optional[float] = None
+    perirrsurp: Optional[float] = None
+    irgthreshold: Optional[float] = None
+    tcsfix: Optional[int] = None
+    dcrit: Optional[float] = None
+    irgdayfix: Optional[int] = None
+    dvs_tc1: Optional[DataFrame] = None
+    dvs_tc2: Optional[DataFrame] = None
+    dvs_tc3: Optional[DataFrame] = None
+    dvs_tc4: Optional[DataFrame] = None
+    dvs_tc5: Optional[DataFrame] = None
 
     def __post_init__(self) -> None:
         if self.tcs == 1:
@@ -81,15 +76,15 @@ class ScheduledIrrigation(Subsection):
                 assert self.irgdayfix is not None, "irgdayfix is required when tcsfix is True"
 
 
-@dataclass
-class Irrigation(Section):
+class Irrigation(PySWAPBaseModel):
     """ Holds the irrigation settings of the simulation."""
     swirfix: bool
     schedule: bool
-    fixedirrig: FixedIrrigation | None = None
-    scheduledirrig: ScheduledIrrigation | None = None
+    fixedirrig: Optional[FixedIrrigation] = None
+    scheduledirrig: Optional[ScheduledIrrigation] = None
 
-    def __post_init__(self) -> None:
+    @model_validator(mode='after')
+    def _validate_irrigation(self) -> None:
         if self.swirfix:
             assert self.fixedirrig is not None, "fixedirrig is required when swirfix is True"
         if self.schedule:

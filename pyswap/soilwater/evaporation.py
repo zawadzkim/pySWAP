@@ -1,26 +1,23 @@
-from dataclasses import dataclass, field
-from ..core.utils.dtypes import Section, Subsection
-from pandas import DataFrame
+from ..core.utils.basemodel import PySWAPBaseModel
+from typing import Literal, Optional
+from pydantic import model_validator
 
 
-@dataclass
-class Evaporation(Subsection):
-    swcfbs: bool
-    swredu: int
-    cfevappond: float | None = None  # this is used if ETref is used
-    cfbs: float | None = None
-    rsoil: float | None = None
-    cofredbl: float | None = None
-    rsigni: float | None = None
-    cofredbo: float | None = None
+class Evaporation(PySWAPBaseModel):
+    swcfbs: Literal[0, 1]
+    swredu: Literal[0, 1, 2]
+    cfevappond: Optional[float] = None  # this is used if ETref is used
+    cfbs: Optional[float] = None
+    rsoil: Optional[float] = None
+    cofredbl: Optional[float] = None
+    rsigni: Optional[float] = None
+    cofredbo: Optional[float] = None
 
-    def __post_init__(self) -> None:
+    @model_validator(mode='after')
+    def _validate_evaporation(self) -> None:
 
         if self.swcfbs:
             assert self.cfbs is not None, "cfbs is required when swcfbs is True"
-
-        if self.swredu not in range(0, 3):
-            raise ValueError("swredu must be 0, 1, or 2")
 
         if self.swredu == 1:
             assert self.cofredbl is not None, "cofredbl is required when swredu is 1"
