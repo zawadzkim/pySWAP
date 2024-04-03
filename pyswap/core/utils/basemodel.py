@@ -10,10 +10,20 @@ class PySWAPBaseModel(BaseModel):
 
     def model_string(self):
         string = ''
-        for attr, value in self.model_dump(mode='json', exclude_none=True).items():
+
+        def formatter(attr, value, string):
             if attr.startswith('table_'):
-                string += value
+                return string + value
+            elif attr.startswith('file_'):
+                return string
             else:
-                string += f"{attr.upper()} = {value}\n"
+                return string + f"{attr.upper()} = {value}\n"
+
+        for attr, value in self.model_dump(mode='json', exclude_none=True).items():
+            if isinstance(value, dict):
+                for k, v in value.items():
+                    string = formatter(k, v, string)
+            else:
+                string = formatter(attr, value, string)
 
         return string

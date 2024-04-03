@@ -1,6 +1,7 @@
 from ..core.utils.basemodel import PySWAPBaseModel
-from ..core.utils.fields import Table
-from pandas import DataFrame, read_csv, to_datetime
+from ..core.utils.fields import Table, CSVTable
+from ..core.utils.files import save_file
+from pandas import read_csv, to_datetime
 import urllib.request
 from pydantic import Field, model_validator
 from typing import Optional, Literal
@@ -9,17 +10,17 @@ from typing import Optional, Literal
 class MeteorologicalData(PySWAPBaseModel):
     """Handles creation and operations on meteorological data file for swap."""
 
-    station: str = '377'
-    meteodata: Optional[DataFrame] = None
+    file_meteo: Optional[CSVTable] = None
 
     def load_from_csv(self,
                       csv_path: str,
                       station: str):
 
-        self.meteodata = read_csv(csv_path)
+        self.file_meteo = read_csv(csv_path)
         self.station = station
 
     def weather_kmni(self,
+                     station: str,
                      start_date: str = '20000101',
                      end_date: str = '20200101',
                      parameters: str = 'TEMP:PRCP:Q:UG:FG:UX:UN'):
@@ -45,7 +46,7 @@ class MeteorologicalData(PySWAPBaseModel):
         """
 
         # Define the parameters for the URL
-        stns = self.station
+        stns = station
         params = parameters
         start = start_date
         end = end_date
@@ -96,7 +97,7 @@ class MeteorologicalData(PySWAPBaseModel):
         weather_df['WET'] = weather_df['WET'] * \
             0.1 * 24  # the required unit is days
 
-        self.meteodata = weather_df
+        self.file_meteo = weather_df
 
 
 class PenmanMonteith(PySWAPBaseModel):
@@ -116,7 +117,7 @@ class Meteorology(PySWAPBaseModel):
     swetr: Literal[0, 1]
     swdivide: Literal[0, 1]
     swetsine: Optional[Literal[0, 1]] = None
-    meteo_data: Optional[MeteorologicalData] = Field(default=None, repr=False)
+    file_meteo: Optional[MeteorologicalData] = Field(default=None, repr=False)
     penman_monteith: Optional[PenmanMonteith] = Field(default=None, repr=False)
     swmetdetail: Optional[Literal[0, 1]] = None
     swrain: Optional[Literal[0, 1, 2, 3]] = None
@@ -145,4 +146,11 @@ class Meteorology(PySWAPBaseModel):
                 assert self.swrain is not None, "SWRAIN must be 0, 1, 2, or 3"
 
     def save_met(self, path: str):
-        return NotImplemented('Method not implemented yet')
+        save_file(
+            string=self.file_meteo.model_dump(mode='json')['file_meteo'],
+            extension='met',
+            fname=self.metfil,
+            path=path,
+            mode='w'
+        )
+        return 'Meteorological data saved successfully.'

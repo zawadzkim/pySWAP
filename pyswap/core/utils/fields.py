@@ -1,8 +1,8 @@
 """Module for custom field types"""
 
 from typing_extensions import Annotated
-from typing import List, Literal
-from .serializers import serialize_table
+from typing import List
+from .serializers import serialize_table, serialize_csv_table
 from pandas import DataFrame
 from datetime import datetime as d
 from pydantic.functional_serializers import PlainSerializer
@@ -10,6 +10,9 @@ from pydantic.functional_serializers import PlainSerializer
 
 Table = Annotated[DataFrame, PlainSerializer(
     lambda x: serialize_table(x), return_type=str, when_used='json')]
+
+CSVTable = Annotated[DataFrame, PlainSerializer(
+    lambda x: serialize_csv_table(x), return_type=str, when_used='json')]
 
 DayMonth = Annotated[d, PlainSerializer(
     lambda x: x.strftime('%d %m'), return_type=str, when_used='json')]
