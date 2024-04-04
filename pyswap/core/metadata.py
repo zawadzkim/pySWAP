@@ -8,6 +8,10 @@ class Metadata(PySWAPBaseModel):
     author: str
     institution: str
     email: str
-    project_name: str
+    project: str
     swap_ver: str
     comment: Optional[str] = None
+
+    @property
+    def include(self) -> set:
+        return {'project'}

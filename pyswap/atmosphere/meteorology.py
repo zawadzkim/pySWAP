@@ -125,6 +125,10 @@ class Meteorology(PySWAPBaseModel):
     rainfil: Optional[str] = None
     nmetdetail: Optional[int] = Field(default=None, ge=1, le=96)
 
+    @property
+    def exclude(self) -> set:
+        return {'file_meteo'}
+
     @model_validator(mode='after')
     def _validate_meteo_section(self):
 

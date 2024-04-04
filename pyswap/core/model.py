@@ -3,17 +3,16 @@ from .simsettings import SimSettings
 from ..atmosphere.meteorology import Meteorology
 from ..plant.crop import Crop
 from ..soilwater.irrigation import Irrigation
-from ..soilwater.drainage import Drainage
+from ..soilwater.drainage import LateralDrainage
 from ..soilwater.soilmoisture import SoilMoisture
 from ..soilwater.surfaceflow import SurfaceFlow
 from ..soilwater.evaporation import Evaporation
 from ..soilwater.soilprofile import SoilProfile
 from ..soilwater.snow import SnowAndFrost
 from ..soilwater.richards import RichardsSettings
-from ..core.boundary import LateralDrainage
 from ..core.boundary import BottomBoundary
 from .utils.basemodel import PySWAPBaseModel
-from typing import Optional
+from typing import Optional, Any
 from pathlib import Path
 import shutil
 import tempfile
@@ -23,27 +22,27 @@ import os
 
 class Model(PySWAPBaseModel):
 
-    metadata: Metadata
-    simsettings: SimSettings
-    meteorology: Meteorology
-    crop: Crop
-    irrigation: Irrigation
-    soilmoisture: SoilMoisture
-    surfaceflow: SurfaceFlow
-    evaporation: Evaporation
-    soilprofile: SoilProfile
-    snowandfrost: SnowAndFrost
-    richards: RichardsSettings
-    lateraldrainage: LateralDrainage
-    bottomboundary: BottomBoundary
-    drainage: Optional[Drainage] = None
+    metadata: Any
+    simsettings: Any
+    meteorology: Any
+    crop: Any
+    irrigation: Any
+    soilmoisture: Any
+    surfaceflow: Any
+    evaporation: Any
+    soilprofile: Any
+    snowandfrost: Any
+    richards: Any
+    lateraldrainage: Any
+    bottomboundary: Any
+    drainage: Optional[Any] = None
 
     def concat_swp(self, save: bool = False) -> str:
         string = ''
         for k, v in dict(self).items():
-            print(k, v)
+            if v is None:
+                continue
             string += v.model_string()
-
         if save:
             with open('swap.swp', 'w') as f:
                 f.write(string)
