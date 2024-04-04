@@ -1,53 +1,101 @@
 from typing import Optional, Literal
+from pydantic import model_validator, Field
 from .utils.basemodel import PySWAPBaseModel
 from .utils.fields import Table
-from pydantic import model_validator, Field
 
 
 class BottomBoundary(PySWAPBaseModel):
+    """Bottom boundary settings for SWAP model.
+
+    Attrs:
+        swbbcfile (Literal[0, 1]): Switch for file with bottom boundary data. 
+            Options: 
+                0 - data are specified in current file; 
+                1 - data are specified in separate file
+        swbotb (Literal[1, 2, 3, 4, 5, 6, 7, 8]): Switch for type of bottom boundary.
+            Options:
+                1 - prescribe groundwater level;
+                2 - prescribe bottom flux;
+                3 - calculate bottom flux from hydraulic head of deep aquifer;
+                4 - calculate bottom flux as function of groundwater level;
+                5 - prescribe soil water pressure head of bottom compartment;
+                6 - bottom flux equals zero;
+                7 - free drainage of soil profile;
+                8 - free outflow at soil-air interface.
+        sw2 (Optional[Literal[1, 2]]): Specify whether a sinus function or a table are used for the bottom flux.
+            Options:
+                1 - sinus function;
+                2 - table.
+        sw3 (Optional[Literal[1, 2]]): Specify whether a sinus function or a table are used for the hydraulic head in the deep aquifer.
+            Options:
+                1 - sinus function;
+                2 - table.
+        sw4 (Optional[Literal[0, 1]]): An extra groundwater flux can be specified which is added to above specified flux.
+            Options:
+                0 - no extra flux;
+                1 - extra flux.
+        swbotb3resvert (Optional[Literal[0, 1]]): Switch for vertical hydraulic resistance between bottom boundary and groundwater level.
+            Options:
+                0 - Include vertical hydraulic resistance
+                1 - Suppress vertical hydraulic resistance
+        swbotb3impl (Optional[Literal[0, 1]]): Switch for numerical solution of bottom flux.
+            Options:
+                0 - Explicit solution (choose always when SHAPE < 1.0);
+                1 - Implicit solution.
+        swqhbot (Optional[Literal[1, 2]]): Specify whether an exponential relation or a table is used.
+            Options:
+                1 - bottom flux is calculated with an exponential relation
+                2 - bottom flux is derived from a table
+        bbcfile (Optional[str]): Name of file with bottom boundary data (without .BBC extension).
+        sinave (Optional[float]): Average value of bottom flux.
+        sinamp (Optional[float]): Amplitude of bottom flux sine function.
+        sinmax (Optional[float]): Time of the year with maximum bottom flux.
+        shape (Optional[float]): Shape factor to derive average groundwater level.
+        hdrain (Optional[float]): Mean drain base to correct for average groundwater level.
+        rimlay (Optional[float]): Vertical resistance of aquitard.
+        aquave (Optional[float]): Average hydraulic head in underlaying aquifer.
+        aquamp (Optional[float]): Amplitude hydraulic head sinus wave.
+        aqtmax (Optional[float]): First time of the year with maximum hydraulic head.
+        aqtper (Optional[float]): Period of hydraulic head sinus wave.
+        cofqha (Optional[float]): Coefficient A for exponential relation for bottom flux.
+        cofqhb (Optional[float]): Coefficient B for exponential relation for bottom flux.
+        cofqhc (Optional[float]): Coefficient C for exponential relation for bottom flux.
+        gwlevel (Optional[Table]): Table with groundwater level data.
+        table_qbot (Optional[Table]): Table with bottom flux data.
+        table_haquif (Optional[Table]): Table with average pressure head in underlaying aquifer.
+        table_qbot4 (Optional[Table]): Table with bottom flux data.
+        table_qtab (Optional[Table]): Table with groundwater level-bottom flux relation
+        table_hbot (Optional[Table]): Table with the bottom compartment pressure head.
+
+    """
 
     swbbcfile: Literal[0, 1]
     swbotb: Literal[1, 2, 3, 4, 5, 6, 7, 8]
+    sw2: Optional[Literal[1, 2]] = None
+    sw3: Optional[Literal[1, 2]] = None
+    sw4: Optional[Literal[0, 1]] = None
+    swbotb3resvert: Optional[Literal[0, 1]] = None
+    swbotb3impl: Optional[Literal[0, 1]] = None
+    swqhbot: Optional[Literal[1, 2]] = None
     bbcfile: Optional[str] = None
-    # if swbotb == 1
-    gwlevel: Optional[PySWAPBaseModel] = None
-    # if swbotb == 2
-    sw2: Literal[1, 2] = None
-    # if sw2 == 1
-    sinave: Optional[float] = Field(
-        ge=-10.0, le=10.0, description='Average value of bottom flux [cm/d].', default=None)
-    sinamp: Optional[float] = Field(
-        ge=-10.0, le=10.0, description='Amplitude of bottom flux sine function [cm/d].', default=None)
-    sinmax: Optional[float] = Field(
-        ge=0.0, le=366.0, description='Time of the year with maximum bottom flux [d].', default=None)
-    # if sw2 == 2
-    table_qbot: Optional[Table] = None
-    # if swbotb == 3
-    swbotb3resvert: Optional[int] = None
-    swbotb3impl: Optional[int] = None
+    sinave: Optional[float] = Field(ge=-10.0, le=10.0, default=None)
+    sinamp: Optional[float] = Field(ge=-10.0, le=10.0, default=None)
+    sinmax: Optional[float] = Field(ge=0.0, le=366.0, default=None)
     shape: Optional[float] = None
     hdrain: Optional[float] = None
     rimlay: Optional[float] = None
-    sw3: Optional[int] = None
-    # if sw3 == 1
     aquave: Optional[float] = None
     aquamp: Optional[float] = None
     aqtmax: Optional[float] = None
     aqtper: Optional[float] = None
-    # if sw3 == 2
-    table_haquif: Optional[Table] = None
-    sw4: Optional[int] = None
-    # if sw4 == 1
-    table_qbot4: Optional[Table] = None
-    # if swbotb == 4
-    swqhbot: Optional[int] = None
-    # if swqhbot == 1
     cofqha: Optional[float] = None
     cofqhb: Optional[float] = None
     cofqhc: Optional[float] = None
-    # if swqhbot == 2
+    table_gwlevel: Optional[Table] = None
+    table_qbot: Optional[Table] = None
+    table_haquif: Optional[Table] = None
+    table_qbot4: Optional[Table] = None
     table_qtab: Optional[Table] = None
-    # if swbotb == 5
     table_hbot5: Optional[Table] = None
 
     @model_validator(mode='after')
