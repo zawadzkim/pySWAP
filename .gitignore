@@ -36,3 +36,7 @@ Thumbs.db
 
 /legacy
 *.egg-info
+/docs/build
+/docs/source
+*.bat
+Makefile
