@@ -4,7 +4,7 @@ from ..core.utils.basemodel import PySWAPBaseModel
 class RichardsSettings(PySWAPBaseModel):
     swkmean: int
     swkimpl: bool
-    dtmin: float = 1e-06
+    dtmin: float = 1.0e-06
     dtmax: float = 0.04
     gwlconv: float = 100.0
     critdevh1cp: float = 0.01

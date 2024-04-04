@@ -9,7 +9,7 @@ from pydantic.functional_serializers import PlainSerializer
 
 
 Table = Annotated[DataFrame, PlainSerializer(
-    lambda x: f'{serialize_table(x)}\n', return_type=str, when_used='json')]
+    lambda x: serialize_table(x), return_type=str, when_used='json')]
 
 CSVTable = Annotated[DataFrame, PlainSerializer(
     lambda x: serialize_csv_table(x), return_type=str, when_used='json')]

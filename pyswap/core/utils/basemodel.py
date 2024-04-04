@@ -1,4 +1,5 @@
 from pydantic import BaseModel, ConfigDict
+from .serializers import quote_string
 
 
 class PySWAPBaseModel(BaseModel):
@@ -24,7 +25,7 @@ class PySWAPBaseModel(BaseModel):
             if attr.startswith('table_'):
                 return string + value
             else:
-                return string + f"{attr.upper()} = {value}\n"
+                return string + f"{attr.upper()} = {quote_string(value)}\n"
 
         for attr, value in self.model_dump(
                 mode='json', exclude_none=True, exclude=self.exclude, include=self.include).items():
