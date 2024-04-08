@@ -8,12 +8,13 @@ import subprocess
 import os
 from importlib import resources
 from pydantic import BaseModel, ConfigDict
-from pandas import DataFrame, read_csv
+from pandas import DataFrame, read_csv, to_datetime
 
 
 class Result(BaseModel):
     summary: Optional[str]
     output: Optional[DataFrame]
+    vap: Optional[Any]
     log: Optional[str]
 
     model_config = ConfigDict(
@@ -21,12 +22,6 @@ class Result(BaseModel):
         validate_assignment=True,
         extra='forbid'
     )
-
-    def plot(self, variable: Optional[str | List[str]]):
-        if variable is not None:
-            self.output[variable].plot()
-        else:
-            self.output.plot()
 
 
 class Model(PySWAPBaseModel):
@@ -67,10 +62,7 @@ class Model(PySWAPBaseModel):
 
     @staticmethod
     def _run_exe(tempdir: Path) -> str:
-        # print files in the temporary directory
-        print('Files in temporary directory:')
-        print(os.listdir(tempdir))
-        executable = os.path.join(tempdir, 'swap420')
+
         result = subprocess.run('./swap420',
                                 stdout=subprocess.PIPE,
                                 cwd=tempdir)
@@ -85,23 +77,25 @@ class Model(PySWAPBaseModel):
             log_data = f.read()
             return log_data
 
+    @staticmethod
+    def _read_output(path: Path):
+        df = read_csv(path, comment='*', index_col='DATETIME')
+        df.index = to_datetime(df.index)
+
+        return df
+
     def run(self):
         """Main function that runs the model.
         """
 
         with tempfile.TemporaryDirectory(dir=r'./') as tempdir:
 
-            # copy the executable
-            print('Copying executable into temporary directory...')
             self._copy_swap(tempdir)
             print('Executable copied successfully!')
 
             print('Preparing SWP file...')
-            # Prepare and save SWP file
             self.concat_swp(save=True, path=tempdir)
             print('SWP file saved successfully!')
-            # Save accompanying files
-            print('Saving accompanying files...')
             self.meteorology.save_met(tempdir)
             print('Meteorology file saved successfully!')
             self.lateraldrainage.save_drainage(tempdir)
@@ -116,9 +110,15 @@ class Model(PySWAPBaseModel):
             self._run_exe(tempdir)
             # create a Result object
             print('Model run successfully!')
+            # print the content of the temporary directory
+            print('Files in temporary directory:')
+            print(os.listdir(tempdir))
+
             result = Result(
-                summary=open_file('./result.blc', 'ascii'),
-                output=read_csv('./result_output.csv', comment='*'),
+                summary=open_file(Path(tempdir, 'result.blc')),
+                output=self._read_output(
+                    Path(tempdir, 'result_output.csv')),
+                vap=open_file(Path(tempdir, 'result.vap')),
                 log=self._read_log(tempdir)
             )
 
