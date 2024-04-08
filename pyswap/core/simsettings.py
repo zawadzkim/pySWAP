@@ -10,10 +10,10 @@ from pydantic import Field, model_validator
 class SimSettings(PySWAPBaseModel):
     """Holds the general settings of the simulation."""
 
-    pathwork: Path = Path.cwd()
-    pathatm: Path = Path.cwd()
-    pathcrop: Path = Path.cwd()
-    pathdrain: Path = Path.cwd()
+    pathwork: str = './'
+    pathatm: str = './'
+    pathcrop: str = './'
+    pathdrain: str = './'
     swscre: Literal[0, 1, 3] = 0
     swerror: Literal[0, 1] = 1
 
