@@ -1,23 +1,32 @@
-from .metadata import Metadata
-from .simsettings import SimSettings
-from ..atmosphere.meteorology import Meteorology
-from ..plant.crop import Crop
-from ..soilwater.irrigation import Irrigation
-from ..soilwater.drainage import LateralDrainage
-from ..soilwater.soilmoisture import SoilMoisture
-from ..soilwater.surfaceflow import SurfaceFlow
-from ..soilwater.evaporation import Evaporation
-from ..soilwater.soilprofile import SoilProfile
-from ..soilwater.snow import SnowAndFrost
-from ..soilwater.richards import RichardsSettings
-from ..core.boundary import BottomBoundary
 from .utils.basemodel import PySWAPBaseModel
-from typing import Optional, Any
+from .utils.files import save_file, open_file
+from typing import Optional, Any, List
 from pathlib import Path
 import shutil
 import tempfile
 import subprocess
 import os
+from importlib import resources
+from pydantic import BaseModel, ConfigDict
+from pandas import DataFrame, read_csv
+
+
+class Result(BaseModel):
+    summary: Optional[str]
+    output: Optional[DataFrame]
+    log: Optional[str]
+
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+        extra='forbid'
+    )
+
+    def plot(self, variable: Optional[str | List[str]]):
+        if variable is not None:
+            self.output[variable].plot()
+        else:
+            self.output.plot()
 
 
 class Model(PySWAPBaseModel):
@@ -35,28 +44,34 @@ class Model(PySWAPBaseModel):
     richards: Any
     lateraldrainage: Any
     bottomboundary: Any
-    drainage: Optional[Any] = None
+    heatflow: Any
+    solutetransport: Any
 
-    def concat_swp(self, save: bool = False) -> str:
+    def concat_swp(self, save: bool = False, path: Optional[str] = None) -> str:
         string = ''
         for k, v in dict(self).items():
             if v is None:
                 continue
             string += v.model_string()
         if save:
-            with open('swap.swp', 'w') as f:
-                f.write(string)
+            save_file(string=string, extension='swp',
+                      fname='swap', mode='w', path=path)
         return string
 
     @staticmethod
     def _copy_swap(tempdir: Path) -> None:
-        shutil.copy('../libs/swap.exe', tempdir)
+        # Use a context manager to ensure the temporary file is cleaned up
+        with resources.path("pyswap.libs.swap420-linux", "swap420") as exec_path:
+            shutil.copy(str(exec_path), str(tempdir))
         print('Copying executable into temporary directory...')
 
     @staticmethod
     def _run_exe(tempdir: Path) -> str:
-
-        result = subprocess.run([os.path.join(tempdir, 'swap.exe')],
+        # print files in the temporary directory
+        print('Files in temporary directory:')
+        print(os.listdir(tempdir))
+        executable = os.path.join(tempdir, 'swap420')
+        result = subprocess.run('./swap420',
                                 stdout=subprocess.PIPE,
                                 cwd=tempdir)
 
@@ -74,23 +89,37 @@ class Model(PySWAPBaseModel):
         """Main function that runs the model.
         """
 
-        with tempfile.TemporaryDirectory(dir=r'../') as tempdir:
+        with tempfile.TemporaryDirectory(dir=r'./') as tempdir:
 
             # copy the executable
+            print('Copying executable into temporary directory...')
             self._copy_swap(tempdir)
+            print('Executable copied successfully!')
+
+            print('Preparing SWP file...')
             # Prepare and save SWP file
-            self.concat_swp(save=True)
+            self.concat_swp(save=True, path=tempdir)
+            print('SWP file saved successfully!')
             # Save accompanying files
-            self.meteorology.save_met()
-            self.drainage.make_dra()
-            self.crop.save_crop()
-            self.irrigation.make_irrigation()
+            print('Saving accompanying files...')
+            self.meteorology.save_met(tempdir)
+            print('Meteorology file saved successfully!')
+            self.lateraldrainage.save_drainage(tempdir)
+            print('Drainage file saved successfully!')
+            self.crop.save_crop(tempdir)
+            print('Crop file saved successfully!')
+            # self.irrigation.make_irrigation(tempdir)
+            # print('Irrigation file saved successfully!')
 
+            print('Preparing to run the model...')
             # run the model
-            result = self._run_exe(tempdir)
+            self._run_exe(tempdir)
+            # create a Result object
+            print('Model run successfully!')
+            result = Result(
+                summary=open_file('./result.blc', 'ascii'),
+                output=read_csv('./result_output.csv', comment='*'),
+                log=self._read_log(tempdir)
+            )
 
-            print(result)
-
-            log_data = self._read_log(tempdir)
-
-            print(log_data)
+        return result
