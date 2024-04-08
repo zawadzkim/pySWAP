@@ -4,7 +4,7 @@ from typing_extensions import Annotated
 from typing import List
 from .serializers import serialize_table, serialize_csv_table
 from pandas import DataFrame
-from datetime import datetime as d
+from datetime import date as d
 from pydantic.functional_serializers import PlainSerializer
 
 
@@ -15,7 +15,7 @@ CSVTable = Annotated[DataFrame, PlainSerializer(
     lambda x: serialize_csv_table(x), return_type=str, when_used='json')]
 
 DayMonth = Annotated[d, PlainSerializer(
-    lambda x: x.strftime('%d %m'), return_type=str, when_used='json')]
+    lambda x: f"{x.strftime('%d %m')}", return_type=str, when_used='json')]
 
 StringList = Annotated[List[str], PlainSerializer(
     lambda x: ','.join(x), return_type=str, when_used='json')]
