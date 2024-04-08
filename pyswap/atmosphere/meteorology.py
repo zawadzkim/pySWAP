@@ -152,7 +152,6 @@ class Meteorology(PySWAPBaseModel):
     def save_met(self, path: str):
         save_file(
             string=self.file_meteo.model_dump(mode='json')['file_meteo'],
-            extension='met',
             fname=self.metfil,
             path=path,
             mode='w'
