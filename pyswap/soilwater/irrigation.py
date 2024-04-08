@@ -2,7 +2,7 @@
 from ..core.utils.basemodel import PySWAPBaseModel
 from ..core.utils.fields import Table
 from pandas import DataFrame, read_csv
-from typing import Optional, Literal
+from typing import Optional, Literal, Any
 from pydantic import model_validator, computed_field
 
 
@@ -78,14 +78,14 @@ class ScheduledIrrigation(PySWAPBaseModel):
 
 class Irrigation(PySWAPBaseModel):
     """ Holds the irrigation settings of the simulation."""
-    swirfix: bool
-    schedule: bool
-    fixedirrig: Optional[FixedIrrigation] = None
-    scheduledirrig: Optional[ScheduledIrrigation] = None
+    swirfix: Literal[0, 1]
+    schedule: Literal[0, 1]
+    fixedirrig: Optional[Any] = None
+    scheduledirrig: Optional[Any] = None
 
     @model_validator(mode='after')
     def _validate_irrigation(self) -> None:
-        if self.swirfix:
+        if self.swirfix == 1:
             assert self.fixedirrig is not None, "fixedirrig is required when swirfix is True"
-        if self.schedule:
+        if self.schedule == 1:
             assert self.scheduledirrig is not None, "scheduledirrig is required when schedule is True"
