@@ -19,10 +19,10 @@ def open_file(file_path: str,
 
 
 def save_file(string: str,
-              extension: str,
               fname: str,
               path: str,
               mode: str,
+              extension: str | None = None,
               encoding: str = 'ascii'):
     """
     Saves a string to a file.
@@ -41,6 +41,8 @@ def save_file(string: str,
     Raises:
         Any exceptions raised by the open() or write() functions.
     """
+    if extension is not None:
+        fname = f'{fname}.{extension}'
 
-    with open(f'{path}/{fname}.{extension}', f'{mode}', encoding=f'{encoding}') as f:
+    with open(f'{path}/{fname}', f'{mode}', encoding=f'{encoding}') as f:
         f.write(string)
