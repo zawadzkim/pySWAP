@@ -116,11 +116,13 @@ class Meteorology(PySWAPBaseModel):
     lat: float = Field(ge=-90, le=90)
     swetr: Literal[0, 1]
     swdivide: Literal[0, 1]
-    swetsine: Optional[Literal[0, 1]] = None
+    # TODO: SWRAIN should be optional, but Fortran code evaluates its presence anyway
+    swrain: Optional[Literal[0, 1, 2, 3]] = 0
+    # TODO: SWETSINE should be optional, but Fortran code evaluates its presence anyway
+    swetsine: Literal[0, 1] = 0
     file_meteo: Optional[MeteorologicalData] = Field(default=None, repr=False)
     penman_monteith: Optional[PenmanMonteith] = Field(default=None, repr=False)
     swmetdetail: Optional[Literal[0, 1]] = None
-    swrain: Optional[Literal[0, 1, 2, 3]] = None
     table_rainflux: Optional[Table] = None
     rainfil: Optional[str] = None
     nmetdetail: Optional[int] = Field(default=None, ge=1, le=96)
@@ -133,21 +135,18 @@ class Meteorology(PySWAPBaseModel):
     def _validate_meteo_section(self):
 
         if self.swetr == 1:  # if PM method is NOT used
-            assert self.swetsine is not None, "SWETSINE is required when SWETR is True"
-            assert self.swrain is not None, "SWRAIN is required when SWETR is True"
+            assert self.swetsine is not None, "SWETSINE is required when SWETR is 1"
+            assert self.swrain is not None, "SWRAIN is required when SWETR is 1"
             if self.swrain == 1:
                 assert self.table_rainflux is not None, "RAINFLUX is required when SWRAIN is 1"
             elif self.swrain == 3:
                 assert self.rainfil, "RAINFIL is required when SWRAIN is 3"
 
         else:
-            assert self.penman_monteith is not None, "PENMAN-MONTEITH settings are required when SWETR is False"
-            assert self.swmetdetail is not None, "SWMETDETAIL is required when SWETR is False"
+            assert self.penman_monteith is not None, "PENMAN-MONTEITH settings are required when SWETR is 0"
+            assert self.swmetdetail is not None, "SWMETDETAIL is required when SWETR is 0"
             if self.swmetdetail == 1:
-                assert self.nmetdetail is not None, "NMETDETAIL is required when SWMETDETAIL is True"
-            else:
-                assert self.swetsine is not None, "SWETSINE is required when SWETR is True"
-                assert self.swrain is not None, "SWRAIN must be 0, 1, 2, or 3"
+                assert self.nmetdetail is not None, "NMETDETAIL is required when SWMETDETAIL is 1"
 
     def save_met(self, path: str):
         save_file(
