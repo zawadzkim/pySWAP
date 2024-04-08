@@ -9,7 +9,7 @@ class SoilMoisture(PySWAPBaseModel):
 
     swinco: Literal[1, 2, 3]
     table_head_soildepth: Optional[Table] = None
-    gwli: Optional[int] = None
+    gwli: Optional[float] = None
     inifil: Optional[str] = None
 
     @model_validator(mode='after')
