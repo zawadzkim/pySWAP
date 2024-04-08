@@ -1,21 +1,11 @@
-def open_file(file_path: str,
-              encoding: str) -> str:
-    """
-    Opens, reads and closes a file.
-
-    Args:
-        file_path: The path to the file to be opened.
-        encoding: encoding while opening.
+import chardet
 
 
-    Raises:
-        Any exceptions raised by the open() or read() functions.
-    """
-
-    with open(str(file_path), encoding=encoding, mode='r') as fhandle:
-        string = fhandle.read()
-
-    return string
+def open_file(file_path):
+    with open(file_path, 'rb') as f:
+        raw_data = f.read()
+    encoding = chardet.detect(raw_data)['encoding']
+    return raw_data.decode(encoding)
 
 
 def save_file(string: str,
