@@ -11,7 +11,7 @@ class DrainageFile(PySWAPBaseModel):
 
     @computed_field(return_type=str)
     def content(self):
-        return open_file(self.path, encoding='ascii')
+        return open_file(self.path)
 
 
 class LateralDrainage(PySWAPBaseModel):

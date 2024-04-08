@@ -1,8 +1,7 @@
 from typing import Optional, List, Literal
-from ..core.utils.files import open_file
 from ..core.utils.basemodel import PySWAPBaseModel
 from ..core.utils.fields import Table
-from ..core.utils.files import save_file
+from ..core.utils.files import save_file, open_file
 from pydantic import computed_field, Field
 
 
@@ -13,7 +12,7 @@ class CropFile(PySWAPBaseModel):
 
     @computed_field(return_type=str)
     def content(self):
-        return open_file(self.path, encoding='ascii')
+        return open_file(self.path)
 
 
 class Crop(PySWAPBaseModel):
