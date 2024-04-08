@@ -7,10 +7,10 @@ from typing import Literal, Optional
 class SoilProfile(PySWAPBaseModel):
     """Vertical discretization of soil profile, soil hydraulic functions and hysteresis of soil water retention."""
     table_soilprofile: Table
-    swsophy: bool
+    swsophy: Literal[0, 1]
     swhyst: Literal[0, 1, 2]
-    swmacro: bool
-    filenamesophy: Optional[str] = None,
+    swmacro: Literal[0, 1]
+    filenamesophy: Optional[str] = None
     tau: Optional[float] = None
     table_soilhydrfunc: Optional[Table] = None
 
@@ -23,7 +23,7 @@ class SoilProfile(PySWAPBaseModel):
             for column in required_columns_soil_profile:
                 assert column in self.table_soilprofile.columns, f"{column} is required in soilprofile"
 
-        if self.swsophy:
+        if self.swsophy == 0:
             required_columns_hydraulic_functions = [
                 "ORES", "OSAT", "ALFA", "NPAR", "KSATFIT", "LEXP", "ALFAW", "H_ENPR", "KSATEXM", "BDENS"]
             assert self.table_soilhydrfunc is not None, "soilhydrfunc is required when swsophy is True"
