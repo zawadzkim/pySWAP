@@ -1,4 +1,4 @@
-from typing import Optional, List, Literal
+from typing import Optional, List, Literal, Any
 from ..core.utils.basemodel import PySWAPBaseModel
 from ..core.utils.fields import Table
 from ..core.utils.files import save_file, open_file
@@ -7,12 +7,31 @@ from pydantic import computed_field, Field
 
 class CropFile(PySWAPBaseModel):
 
-    name: str
-    path: str
+    name: str = Field(exclude=True)
+    path: Optional[str] = None
+    prep: Optional[Any] = None
+    cropdev_settings: Optional[Any] = None
+    oxygenstress: Optional[Any] = None
+    droughtstress: Optional[Any] = None
+    saltstress: Optional[Any] = None
+    compensaterwu: Optional[Any] = None
+    interception: Optional[Any] = None
+    scheduledirrigation: Optional[Any] = None
+
+    def _concat_crp(self):
+        string = ''
+        for k, v in dict(self).items():
+            if v is None or isinstance(v, str):
+                continue
+            string += v.model_string()
+        return string
 
     @computed_field(return_type=str)
     def content(self):
-        return open_file(self.path)
+        if self.path:
+            return open_file(self.path)
+        else:
+            return self._concat_crp()
 
 
 class Crop(PySWAPBaseModel):
