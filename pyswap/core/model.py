@@ -9,6 +9,7 @@ import os
 from importlib import resources
 from pydantic import BaseModel, ConfigDict
 from pandas import DataFrame, read_csv, to_datetime
+from numpy import nan
 
 
 class Result(BaseModel):
@@ -84,6 +85,13 @@ class Model(PySWAPBaseModel):
 
         return df
 
+    @staticmethod
+    def _read_vap(path: Path):
+        df = read_csv(path, skiprows=11, encoding_errors='replace')
+        df.columns = df.columns.str.strip()
+        df.replace(r'^\s*$', nan, regex=True, inplace=True)
+        return df
+
     def run(self):
         """Main function that runs the model.
         """
@@ -118,7 +126,7 @@ class Model(PySWAPBaseModel):
                 summary=open_file(Path(tempdir, 'result.blc')),
                 output=self._read_output(
                     Path(tempdir, 'result_output.csv')),
-                vap=open_file(Path(tempdir, 'result.vap')),
+                vap=self._read_vap(Path(tempdir, 'result.vap')),
                 log=self._read_log(tempdir)
             )
 
