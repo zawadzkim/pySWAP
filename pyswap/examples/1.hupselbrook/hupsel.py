@@ -1,6 +1,6 @@
 from pyswap.core.metadata import Metadata
 from pyswap.core.simsettings import SimSettings
-from pyswap.plant.crop import Crop, CropFile
+from pyswap.plant.createcrop import Crop, CropFile
 from pyswap.soilwater.irrigation import Irrigation, FixedIrrigation
 from pyswap.atmosphere.meteorology import Meteorology, MeteorologicalData, PenmanMonteith
 from pyswap.soilwater.soilmoisture import SoilMoisture
