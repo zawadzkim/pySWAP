@@ -8,6 +8,10 @@ def serialize_table(table: DataFrame):
     return f'{table.to_string(index=False)}\n'
 
 
+def serialize_arrays(table: DataFrame):
+    return f'\n{table.to_string(index=False, header=False)}\n'
+
+
 def serialize_csv_table(table: DataFrame):
     table.Station = table.Station.apply(
         lambda x: f"'{x}'" if not str(x).startswith("'") else x)
