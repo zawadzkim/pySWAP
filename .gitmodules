@@ -1,0 +1,3 @@
+[submodule "pyswap/libs/WOFOST_crop_parameters"]
+	path = pyswap/libs/WOFOST_crop_parameters
+	url = https://github.com/zawadzkim/WOFOST_crop_parameters.git
