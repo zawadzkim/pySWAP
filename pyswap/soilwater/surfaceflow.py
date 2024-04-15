@@ -1,24 +1,25 @@
-from dataclasses import dataclass, field
-from pandas import DataFrame
-from ..base.dtypes import Section, Subsection
+from ..core.utils.fields import Table
+from ..core.utils.basemodel import PySWAPBaseModel
+from pydantic import model_validator
+from typing import Optional, Literal
 
 
-@dataclass
-class SurfaceFlow(Subsection):
-    swpondmx: bool
-    swrunon: bool
+class SurfaceFlow(PySWAPBaseModel):
+    swpondmx: Literal[0, 1]
+    swrunon: Literal[0, 1]
     rsro: float = 0.5
     rsroexp: float = 1.0
-    pondmx: float | None = None
-    rufil: str | None = None
-    pondmxtb: DataFrame | None = None
+    pondmx: Optional[float] = None
+    rufil: Optional[str] = None
+    table_pondmxtb: Optional[Table] = None
 
-    def __post_init__(self) -> None:
+    @model_validator(mode='after')
+    def _validate_surface_flow(self) -> None:
 
-        if not self.swpondmx:
-            assert self.pondmx is not None, "pondmx is required when swpondmx is False"
+        if self.swpondmx == 0:
+            assert self.pondmx is not None, "pondmx is required when swpondmx is 0"
         else:
-            assert self.pondmxtb is not None, "pondmxtb is required when swpondmx is True"
+            assert self.table_pondmxtb is not None, "pondmxtb is required when swpondmx is 1"
 
-        if self.swrunon:
-            assert self.rufil is not None, "runfil is required when swrunon is True"
+        if self.swrunon == 1:
+            assert self.rufil is not None, "runfil is required when swrunon is 1"

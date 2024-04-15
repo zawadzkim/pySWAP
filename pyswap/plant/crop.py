@@ -1,39 +1,65 @@
-from dataclasses import dataclass, field
-from typing import Any
-from ..base.utils import open_file
-from ..base.dtypes import Section, Table
-from pandas import DataFrame
+from typing import Optional, List, Literal, Any
+from ..core.utils.basemodel import PySWAPBaseModel
+from ..core.utils.fields import Table
+from ..core.utils.files import save_file, open_file
+from pydantic import computed_field, Field
 
 
-@dataclass
-class CropData:
+class CropFile(PySWAPBaseModel):
 
-    file_names: list
-    file_paths: list
-    files: dict = field(default_factory=dict)
+    name: str = Field(exclude=True)
+    path: Optional[str] = None
+    prep: Optional[Any] = None
+    cropdev_settings: Optional[Any] = None
+    oxygenstress: Optional[Any] = None
+    droughtstress: Optional[Any] = None
+    saltstress: Optional[Any] = None
+    compensaterwu: Optional[Any] = None
+    interception: Optional[Any] = None
+    scheduledirrigation: Optional[Any] = None
 
-    def __post_init__(self):
-        for file_name, file_path in zip(self.file_names, self.file_paths):
-            self.files[file_name] = open_file(file_path, encoding='ascii')
+    def _concat_crp(self):
+        string = ''
+        for k, v in dict(self).items():
+            if v is None or isinstance(v, str):
+                continue
+            string += v.model_string()
+        return string
+
+    @computed_field(return_type=str)
+    def content(self):
+        if self.path:
+            return open_file(self.path)
+        else:
+            return self._concat_crp()
 
 
-@dataclass
-class Crop(Section):
+class Crop(PySWAPBaseModel):
     """Holds the crop settings of the simulation."""
 
-    swcrop: bool
-    rds: float = None,
-    croprotation: dict[list] | DataFrame = None,
+    swcrop: Literal[0, 1]
+    rds: Optional[float] = Field(default=None, ge=1, le=5000)
+    table_croprotation: Optional[Table] = None
+    cropfiles: Optional[List[CropFile]] = None
 
-    def __post_init__(self):
-        if self.swcrop:
+    @property
+    def exclude(self) -> set:
+        return {'cropfiles'}
+
+    def _validate_crop_section(self):
+        if self.swcrop == 1:
             assert self.rds is not None, "rds must be specified if swcrop is True"
-            assert self.croprotation is not None, "croprotation must be specified if swcrop is True"
+            assert self.table_croprotation is not None, "croprotation must be specified if swcrop is True"
 
-    def __setattr__(self, name, value) -> None:
-        if name == "croprotation" and value is not None:
-            assert isinstance(value, dict) or isinstance(
-                value, DataFrame), "croprotation must be an instance of dict or DataFrame"
-            if isinstance(value, dict):
-                value = Table(value)
-        super().__setattr__(name, value)
+    def save_crop(self, path: str):
+        count = 0
+        for cropfile in self.cropfiles:
+            count += 1
+            save_file(
+                string=cropfile.content,
+                extension='crp',
+                fname=cropfile.name,
+                path=path,
+                mode='w'
+            )
+        return f'{count} crop file(s) saved successfully.'

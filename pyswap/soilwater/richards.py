@@ -1,13 +1,11 @@
-from dataclasses import dataclass, field
-from ..base.dtypes import Section, Subsection
-from pandas import DataFrame
+from ..core.utils.basemodel import PySWAPBaseModel
+from typing import Literal
 
 
-@dataclass
-class RichardsSettings(Subsection):
+class RichardsSettings(PySWAPBaseModel):
     swkmean: int
-    swkimpl: bool
-    dtmin: float = 1e-06
+    swkimpl: Literal[0, 1]
+    dtmin: float = 0.000001
     dtmax: float = 0.04
     gwlconv: float = 100.0
     critdevh1cp: float = 0.01

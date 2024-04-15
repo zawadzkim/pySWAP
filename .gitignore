@@ -34,4 +34,9 @@ env2/
 .DS_Store
 Thumbs.db
 
-*.sqlite
+/legacy
+*.egg-info
+/docs/build
+/docs/source
+*.bat
+Makefile
