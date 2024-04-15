@@ -1,5 +1,5 @@
 """Field serializers"""
-from pandas import DataFrame
+from pandas import DataFrame, DatetimeIndex
 import re
 
 
@@ -13,6 +13,14 @@ def serialize_arrays(table: DataFrame):
 
 
 def serialize_csv_table(table: DataFrame):
+    if isinstance(table.index, DatetimeIndex):
+        table['DD'] = table.index.day
+        table['MM'] = table.index.month
+        table['YYYY'] = table.index.year
+        required_order = ['Station', 'DD', 'MM', 'YYYY', 'RAD',
+                          'Tmin', 'Tmax', 'HUM', 'WIND', 'RAIN', 'ETref', 'WET']
+        table = table[required_order]
+
     table.Station = table.Station.apply(
         lambda x: f"'{x}'" if not str(x).startswith("'") else x)
     return table.to_csv(index=False)
