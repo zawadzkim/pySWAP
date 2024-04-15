@@ -2,13 +2,23 @@ from ..core.utils.basemodel import PySWAPBaseModel
 from ..core.utils.fields import Table, CSVTable
 from ..core.utils.files import save_file
 from pandas import read_csv, to_datetime
+from datetime import datetime as dt
 import urllib.request
 from pydantic import Field, model_validator
 from typing import Optional, Literal
+import knmi
 
 
 class MeteorologicalData(PySWAPBaseModel):
-    """Handles creation and operations on meteorological data file for swap."""
+    """Handles creation and operations on meteorological data file for swap.
+
+    Attrs:
+        file_meteo (pyswap.core.utils.fields.CSVTable): meteorological data file
+
+    Methods:
+        load_from_csv: loads meteorological data from a csv file
+        weather_kmni: downloads weather data from KNMI and formats it according to SWAP specification
+    """
 
     file_meteo: Optional[CSVTable] = None
 
@@ -16,10 +26,26 @@ class MeteorologicalData(PySWAPBaseModel):
                       csv_path: str,
                       station: str):
 
-        self.file_meteo = read_csv(csv_path)
-        self.station = station
+        self.file_meteo = read_csv(csv_path, index_col=0)
 
-    def weather_kmni(self,
+    # def weather_knmi(self,
+    #                  stations: str | list,
+    #                  variables: str | list = [
+    #                      'TEMP', 'PRCP', 'Q', 'UG',  'FG', 'UX', 'UN'],
+    #                  start: str | dt = '20000101',
+    #                  end: str | dt = '20200101',
+    #                  inseason: bool = False):
+
+    #     if isinstance(stations, str):
+    #         stations = [stations]
+
+    #     self.file_meteo = knmi.get_day_data_dataframe(stations=stations,
+    #                                                   start=start,
+    #                                                   end=end,
+    #                                                   variables=variables,
+    #                                                   inseason=inseason)
+
+    def weather_knmi(self,
                      station: str,
                      start_date: str = '20000101',
                      end_date: str = '20200101',
@@ -120,16 +146,13 @@ class Meteorology(PySWAPBaseModel):
     swrain: Optional[Literal[0, 1, 2, 3]] = 0
     # TODO: SWETSINE should be optional, but Fortran code evaluates its presence anyway
     swetsine: Literal[0, 1] = 0
-    file_meteo: Optional[MeteorologicalData] = Field(default=None, repr=False)
+    file_meteo: Optional[MeteorologicalData] = Field(
+        default=None, repr=False, exclude=True)
     penman_monteith: Optional[PenmanMonteith] = Field(default=None, repr=False)
     swmetdetail: Optional[Literal[0, 1]] = None
     table_rainflux: Optional[Table] = None
     rainfil: Optional[str] = None
     nmetdetail: Optional[int] = Field(default=None, ge=1, le=96)
-
-    @property
-    def exclude(self) -> set:
-        return {'file_meteo'}
 
     @model_validator(mode='after')
     def _validate_meteo_section(self):
