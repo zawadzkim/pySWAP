@@ -1,74 +1,71 @@
 from ..core.utils.basemodel import PySWAPBaseModel
 from ..core.utils.fields import Table, CSVTable
 from ..core.utils.files import save_file
-from pandas import read_csv, to_datetime
+from pandas import read_csv
 from datetime import datetime as dt
-import urllib.request
 from pydantic import Field, model_validator
 from typing import Optional, Literal
 import knmi
 
 
 class MeteorologicalData(PySWAPBaseModel):
-    """Handles creation and operations on meteorological data file for swap.
+    """Meteorological data for the SWAP model.
+
+    This object is created by functions fetching or loading meteorological data
+    from various sources.
 
     Attrs:
         file_meteo (pyswap.core.utils.fields.CSVTable): meteorological data file
-
-    Methods:
-        load_from_csv: loads meteorological data from a csv file
-        weather_kmni: downloads weather data from KNMI and formats it according to SWAP specification
     """
 
     file_meteo: Optional[CSVTable] = None
 
-    def load_from_csv(self,
-                      csv_path: str,
-                      station: str):
 
-        self.file_meteo = read_csv(csv_path, index_col=0)
+def load_from_csv(csv_path: str):
 
-    def weather_knmi(self,
-                     stations: str | list,
-                     variables: str | list = [
-                         'TEMP', 'PRCP', 'Q', 'UG',  'FG', 'UX', 'UN'],
-                     start: str | dt = '20000101',
-                     end: str | dt = '20200101',
-                     inseason: bool = False):
-        """Method for retrieving the meteo data from KNMI API.
+    return MeteorologicalData(file_meteo=read_csv(csv_path, index_col=0))
 
-        New version uses the KNMI-PY package. Some of the old functionality was moved to csv table serializer.
-        """
 
-        if isinstance(stations, str):
-            stations = [stations]
+def weather_knmi(stations: str | list,
+                 variables: str | list = [
+                     'TEMP', 'PRCP', 'Q', 'UG',  'FG', 'UX', 'UN'],
+                 start: str | dt = '20000101',
+                 end: str | dt = '20200101',
+                 inseason: bool = False):
+    """Method for retrieving the meteo data from KNMI API.
 
-        df = knmi.get_day_data_dataframe(stations=stations,
-                                         start=start,
-                                         end=end,
-                                         variables=variables,
-                                         inseason=inseason)
+    New version uses the KNMI-PY package. Some of the old functionality was moved to csv table serializer.
+    """
 
-        # rename some columns
-        required_column_names = {'STN': 'Station',
-                                 'TN': 'Tmin',
-                                 'TX': 'Tmax',
-                                 'UG': 'HUM',
-                                 'DR': 'WET',
-                                 'FG': 'WIND',
-                                 'RH': 'RAIN',
-                                 'EV24': 'ETref',
-                                 'Q': 'RAD'}
+    if isinstance(stations, str):
+        stations = [stations]
 
-        df = df.rename(columns=required_column_names)
+    df = knmi.get_day_data_dataframe(stations=stations,
+                                     start=start,
+                                     end=end,
+                                     variables=variables,
+                                     inseason=inseason)
 
-        # recalculation of the parameters
-        df[['Tmin', 'Tmax', 'ETref', 'RAIN', 'WIND']] = df[['Tmin', 'Tmax', 'ETref', 'RAIN',
-                                                                            'WIND']] * 0.1  # the original unit is 0.1 Unit
-        df['WET'] = df['WET'] * \
-            0.1 * 24  # the required unit is days
+    # rename some columns
+    required_column_names = {'STN': 'Station',
+                             'TN': 'Tmin',
+                             'TX': 'Tmax',
+                             'UG': 'HUM',
+                             'DR': 'WET',
+                             'FG': 'WIND',
+                             'RH': 'RAIN',
+                             'EV24': 'ETref',
+                             'Q': 'RAD'}
 
-        self.file_meteo = df
+    df = df.rename(columns=required_column_names)
+
+    # recalculation of the parameters
+    df[['Tmin', 'Tmax', 'ETref', 'RAIN', 'WIND']] = df[['Tmin', 'Tmax', 'ETref', 'RAIN',
+                                                                        'WIND']] * 0.1  # the original unit is 0.1 Unit
+    df['WET'] = df['WET'] * \
+        0.1 * 24  # the required unit is days
+
+    return MeteorologicalData(file_meteo=df)
 
 
 class PenmanMonteith(PySWAPBaseModel):
