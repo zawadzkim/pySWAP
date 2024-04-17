@@ -10,6 +10,9 @@ from importlib import resources
 from pydantic import BaseModel, ConfigDict
 from pandas import DataFrame, read_csv, to_datetime
 from numpy import nan
+from ..soilwater import SnowAndFrost
+from .richards import RichardsSettings
+from ..extras import HeatFlow, SoluteTransport
 
 
 class Result(BaseModel):
@@ -36,12 +39,12 @@ class Model(PySWAPBaseModel):
     surfaceflow: Any
     evaporation: Any
     soilprofile: Any
-    snowandfrost: Any
-    richards: Any
+    snowandfrost: Optional[Any] = SnowAndFrost(swsnow=0, swfrost=0)
+    richards: Optional[Any] = RichardsSettings(swkmean=1, swkimpl=0)
     lateraldrainage: Any
     bottomboundary: Any
-    heatflow: Any
-    solutetransport: Any
+    heatflow: Optional[Any] = HeatFlow(swhea=0)
+    solutetransport: Optional[Any] = SoluteTransport(swsolu=0)
 
     def concat_swp(self, save: bool = False, path: Optional[str] = None) -> str:
         string = ''
@@ -94,6 +97,9 @@ class Model(PySWAPBaseModel):
 
     def run(self):
         """Main function that runs the model.
+
+        TODO: implement asynchronous function that would run the swap exe and then check once in a few seconds if the swap.log is there.
+        If it is there, read it and check status. If status is error, exit the with/while clause.
         """
 
         with tempfile.TemporaryDirectory(dir=r'./') as tempdir:
@@ -120,7 +126,6 @@ class Model(PySWAPBaseModel):
             print('Model run successfully!')
             # print the content of the temporary directory
             print('Files in temporary directory:')
-            print(os.listdir(tempdir))
 
             result = Result(
                 summary=open_file(Path(tempdir, 'result.blc')),
