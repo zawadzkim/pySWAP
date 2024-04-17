@@ -8,6 +8,7 @@ const pkg = require("vitepress/package.json");
 export default defineConfig({
   title: "pySWAP",
   description: "python wrapper for SWAP model",
+  base: "/pySWAP/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: nav(),
