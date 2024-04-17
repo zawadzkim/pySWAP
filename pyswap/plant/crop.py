@@ -2,6 +2,7 @@ from typing import Optional, List, Literal, Any
 from ..core.utils.basemodel import PySWAPBaseModel
 from ..core.utils.fields import Table
 from ..core.utils.files import save_file, open_file
+from .createcrop import *
 from pydantic import computed_field, Field
 
 
@@ -13,10 +14,10 @@ class CropFile(PySWAPBaseModel):
     cropdev_settings: Optional[Any] = None
     oxygenstress: Optional[Any] = None
     droughtstress: Optional[Any] = None
-    saltstress: Optional[Any] = None
-    compensaterwu: Optional[Any] = None
+    saltstress: Optional[Any] = SaltStress(swsalinity=0)
+    compensaterwu: Optional[Any] = CompensateRWUStress(swcompensate=0)
     interception: Optional[Any] = None
-    scheduledirrigation: Optional[Any] = None
+    scheduledirrigation: Optional[Any] = ScheduledIrrigation(schedule=0)
 
     def _concat_crp(self):
         string = ''

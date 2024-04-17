@@ -40,3 +40,6 @@ Thumbs.db
 /docs/source
 *.bat
 Makefile
+node_modules
+docs/.vitepress/dist
+docs/.vitepress/cache
