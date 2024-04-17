@@ -1,4 +1,4 @@
-from ..core.utils.basemodel import PySWAPBaseModel
+from .utils.basemodel import PySWAPBaseModel
 from typing import Literal
 
 
