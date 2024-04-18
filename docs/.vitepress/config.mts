@@ -19,7 +19,7 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/vuejs/vitepress" },
+      { icon: "github", link: "https://github.com/zawadzkim/pySWAP" },
     ],
     footer: {
       message: "Released under the MIT License.",
@@ -35,11 +35,11 @@ function nav(): DefaultTheme.NavItem[] {
       link: "/guide/what-is-pyswap",
       activeMatch: "/guide/",
     },
-    // {
-    //   text: "Reference",
-    //   link: "/reference/site-config",
-    //   activeMatch: "/reference/",
-    // },
+    {
+      text: "Reference",
+      link: "/reference/api-reference",
+      activeMatch: "/reference/",
+    },
     {
       text: pkg.version,
       items: [
