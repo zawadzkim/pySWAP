@@ -5,23 +5,23 @@ layout: home
 hero:
   name: "pySWAP"
   text: "python wrapper for SWAP model"
-  tagline: My great project tagline
+  tagline: Do everythin you need with SWAP model within Python environemnt
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: Guide
+      link: /guide/what-is-pyswap
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: API Reference
+      link: /reference/api-reference
   image:
-    src: /pyswaplogo.webp
+    src: public/logo.webp
     alt: pySWAP
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Setting up models in Jupyter notebook
+    details: Jupyter notebooks are great for documenting your code. Let's use it!
+  - title: Input validation
+    details: Each section of the input files is validated using Pydantic validation library. It ensures smooth execution of the model.
+  - title: Let's make it better together
+    details: pySWAP is open for contribution from the community. Please help us make it better!
 ---
