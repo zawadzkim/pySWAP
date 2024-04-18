@@ -47,3 +47,11 @@ def quote_string(string):
         return f"'{string}'"
     else:
         return string
+
+
+def serialize_object_list(list):
+    string = ''
+    for item in list:
+        string += item.model_string()
+
+    return string
