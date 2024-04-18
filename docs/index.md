@@ -14,7 +14,7 @@ hero:
       text: API Reference
       link: /reference/api-reference
   image:
-    src: public/logo.webp
+    src: /logo.webp
     alt: pySWAP
 
 features:
