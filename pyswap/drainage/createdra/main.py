@@ -2,8 +2,10 @@
 from pyswap.core.utils.basemodel import PySWAPBaseModel
 from pyswap.core.utils.fields import FloatList, Table, ObjectList
 from pyswap.core.utils.valueranges import UNITRANGE
-from pydantic import Field, model_validator
+from pyswap.core.utils.files import open_file
+from pydantic import Field, model_validator, computed_field
 from typing import Literal, Optional, Any
+from pandas import DataFrame
 
 
 class DraSettings(PySWAPBaseModel):
@@ -27,11 +29,11 @@ class DrainageFormula(PySWAPBaseModel):
     ipos: Literal[1, 2, 3, 4, 5]
     basegw: float = Field(ge=-1.0e4, le=0.0)
     khtop: float = Field(ge=0.0, le=1000.0)
-    khbot: float = Field(ge=0.0, le=1000.0)
-    zintf: float = Field(ge=-1.0e4, le=0.0)
-    kvtop: float = Field(ge=0.0, le=1000.0)
-    kvbot: float = Field(ge=0.0, le=1000.0)
-    geofac: float = Field(ge=0.0, le=100.0)
+    khbot: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
+    zintf: Optional[float] = Field(default=None, ge=-1.0e4, le=0.0)
+    kvtop: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
+    kvbot: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
+    geofac: Optional[float] = Field(default=None, ge=0.0, le=100.0)
 
     @model_validator(mode='after')
     def _validate_settings(self):
@@ -87,10 +89,3 @@ class Flux(PySWAPBaseModel):
                 new_d[key + suffix] = value
             return new_d
         return d
-
-
-class DraFile(PySWAPBaseModel):
-    general: Any
-    fluxtable: Optional[Any] = None
-    drainageformula: Optional[Any] = None
-    drainageinfiltrationres: Optional[Any] = None

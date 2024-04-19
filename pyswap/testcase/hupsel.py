@@ -9,10 +9,11 @@ from pyswap.plant import CropFile, Crop
 from pyswap.irrigation import Irrigation, FixedIrrigation
 from pyswap.soilwater import (
     SoilMoisture, SurfaceFlow, Evaporation, SoilProfile)
-from pyswap.drainage import DrainageFile, LateralDrainage
+from pyswap.drainage import LateralDrainage, DraFile
 from pyswap.core.boundary import BottomBoundary
 from pyswap.core.model import Model
 from pathlib import Path
+from pyswap.drainage.createdra.main import DraSettings, DrainageFormula
 
 
 def _run_hupsel():
@@ -408,14 +409,38 @@ def _run_hupsel():
 
     # %% drainage settings
 
-    dra = Path(__file__).parent.joinpath('./data/hupsel_swap.dra')
-    dranage_file = DrainageFile(
-        name='swap', path=str(dra))
+    dra_settings = DraSettings(
+        dramet=2,
+        swdivd=1,
+        cofani=[1.0, 1.0],
+        swdislay=0
+    )
+
+    dra_formula = DrainageFormula(
+        lm2=11.0,
+        shape=0.8,
+        wetper=30.0,
+        zbotdr=-80.0,
+        entres=20.0,
+        ipos=2,
+        basegw=-200.0,
+        khtop=25.0
+    )
+
+    dra_file = DraFile(
+        name='swap',
+        general=dra_settings,
+        drainageformula=dra_formula
+    )
+    # # this is the working solution that just copies the predefined file
+    # dra = Path(__file__).parent.joinpath('./data/hupsel_swap.dra')
+    # dranage_file = DrainageFile(
+    #     name='swap', path=str(dra))
 
     lateral_drainage = LateralDrainage(
         swdra=1,
         drfil='swap',
-        drainagefile=dranage_file
+        drainagefile=dra_file
     )
 
     # %% bottom boundary

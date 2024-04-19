@@ -1,17 +1,32 @@
 from ..core.utils.files import open_file, save_file
 from ..core.utils.basemodel import PySWAPBaseModel
-from pydantic import computed_field, model_validator
+from pydantic import computed_field, model_validator, Field
 from typing import Literal, Optional, Any
 
 
-class DrainageFile(PySWAPBaseModel):
+class DraFile(PySWAPBaseModel):
 
-    name: str
-    path: str
+    name: str = Field(exclude=True)
+    path: Optional[str] = None
+    general: Any
+    fluxtable: Optional[Any] = None
+    drainageformula: Optional[Any] = None
+    drainageinfiltrationres: Optional[Any] = None
+
+    def _concat_dra(self):
+        string = ''
+        for k, v in dict(self).items():
+            if v is None or isinstance(v, str):
+                continue
+            string += v.model_string()
+        return string
 
     @computed_field(return_type=str)
     def content(self):
-        return open_file(self.path)
+        if self.path:
+            return open_file(self.path)
+        else:
+            return self._concat_dra()
 
 
 class LateralDrainage(PySWAPBaseModel):
