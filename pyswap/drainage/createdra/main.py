@@ -14,6 +14,10 @@ class DraSettings(PySWAPBaseModel):
     cofani: Optional[FloatList]
     swdislay: Literal[0, 2, 3, '-']
 
+    # @model_validator(mode='after')
+    # def _validate_drasettings(self):
+    #     if
+
 
 class DrainageFluxTable(PySWAPBaseModel):
     lm1: float = Field(ge=1.0, le=1000.0)

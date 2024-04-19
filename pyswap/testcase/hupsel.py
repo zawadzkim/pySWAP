@@ -25,9 +25,6 @@ def _run_hupsel():
                     project="pySWAP test - hupsel brook",
                     swap_ver="4.2")
 
-    inlist_csv = ['rain', 'irrig', 'interc', 'runoff', 'drainage',
-                  'dstor', 'epot', 'eact', 'tpot', 'tact', 'qbottom', 'gwl']
-
     simset = SimSettings(
         tstart='2002-01-01',
         tend='2004-12-31',
@@ -316,6 +313,7 @@ def _run_hupsel():
                               'cropend': [dt(2002, 10, 15), dt(2003, 9, 29), dt(2004, 12, 31)],
                               'cropfil': ["'maizes'", "'potatod'", "'grassd'"],
                               'croptype': [1, 2, 3]})
+
     crp_grass = Path(__file__).parent.joinpath('./data/hupsel_grassd.crp')
 
     crop_grassd = CropFile(name='grassd', path=str(crp_grass))
