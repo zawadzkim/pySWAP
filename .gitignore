@@ -20,7 +20,6 @@ env2/
 .idea/
 
 # Compiled files
-*.exe
 *.dll
 *.so
 *.dylib
@@ -43,3 +42,5 @@ Makefile
 node_modules
 docs/.vitepress/dist
 docs/.vitepress/cache
+CD_Erika/
+RD_Erika/

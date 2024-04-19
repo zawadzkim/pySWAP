@@ -1,19 +1,19 @@
 from datetime import date as d
 from .utils.basemodel import PySWAPBaseModel
 from .utils.fields import (DayMonth, DateList, StringList, FloatList)
-from pathlib import Path
 from typing import Literal, Optional
 from datetime import date as d
 from pydantic import Field, model_validator
+from .utils.system import get_base_path
 
 
 class SimSettings(PySWAPBaseModel):
     """Holds the general settings of the simulation."""
 
-    pathwork: str = './'
-    pathatm: str = './'
-    pathcrop: str = './'
-    pathdrain: str = './'
+    pathwork: str = Field(default_factory=get_base_path)
+    pathatm: str = Field(default_factory=get_base_path)
+    pathcrop: str = Field(default_factory=get_base_path)
+    pathdrain: str = Field(default_factory=get_base_path)
     swscre: Literal[0, 1, 3] = 0
     swerror: Literal[0, 1] = 1
 

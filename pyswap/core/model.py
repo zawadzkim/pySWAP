@@ -13,6 +13,7 @@ from numpy import nan
 from ..soilwater import SnowAndFrost
 from .richards import RichardsSettings
 from ..extras import HeatFlow, SoluteTransport
+from .utils.system import get_base_path, is_windows
 
 
 class Result(BaseModel):
@@ -58,6 +59,13 @@ class Model(PySWAPBaseModel):
         return string
 
     @staticmethod
+    def _copy_swap_exe(tempdir: Path):
+        # Use a context manager to ensure the temporary file is cleaned up
+        with resources.path("pyswap.libs.swap420-exe", "swap.exe") as exec_path:
+            shutil.copy(str(exec_path), str(tempdir))
+        print('Copying the windows version of SWAP into temporary directory...')
+
+    @staticmethod
     def _copy_swap(tempdir: Path) -> None:
         # Use a context manager to ensure the temporary file is cleaned up
         with resources.path("pyswap.libs.swap420-linux", "swap420") as exec_path:
@@ -66,8 +74,9 @@ class Model(PySWAPBaseModel):
 
     @staticmethod
     def _run_exe(tempdir: Path) -> str:
+        swap_path = '.\\swap.exe' if is_windows() else './swap420'
 
-        result = subprocess.run('./swap420',
+        result = subprocess.run(swap_path,
                                 stdout=subprocess.PIPE,
                                 cwd=tempdir)
 
@@ -102,10 +111,12 @@ class Model(PySWAPBaseModel):
         If it is there, read it and check status. If status is error, exit the with/while clause.
         """
 
-        with tempfile.TemporaryDirectory(dir=r'./') as tempdir:
+        with tempfile.TemporaryDirectory(dir=get_base_path()) as tempdir:
 
-            self._copy_swap(tempdir)
-            print('Executable copied successfully!')
+            if is_windows():
+                self._copy_swap_exe(tempdir)
+            else:
+                self._copy_swap(tempdir)
 
             print('Preparing SWP file...')
             self.concat_swp(save=True, path=tempdir)

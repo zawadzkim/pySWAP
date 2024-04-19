@@ -2,7 +2,7 @@
 
 from typing_extensions import Annotated
 from typing import List
-from .serializers import serialize_table, serialize_csv_table, serialize_arrays
+from .serializers import serialize_table, serialize_csv_table, serialize_arrays, serialize_object_list
 from pandas import DataFrame
 from datetime import date as d
 from pydantic.functional_serializers import PlainSerializer
@@ -35,3 +35,7 @@ DateList = Annotated[List[d], PlainSerializer(
 
 Switch = Annotated[bool | int, PlainSerializer(
     lambda x: int(x), return_type=int, when_used='json')]
+
+ObjectList = Annotated[list, PlainSerializer(
+    lambda x: serialize_object_list(x), return_type=str, when_used='json'
+)]
