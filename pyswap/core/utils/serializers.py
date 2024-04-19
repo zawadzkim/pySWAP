@@ -23,7 +23,7 @@ def serialize_csv_table(table: DataFrame):
 
     table.Station = table.Station.apply(
         lambda x: f"'{x}'" if not str(x).startswith("'") else x)
-    return table.to_csv(index=False)
+    return table.to_csv(index=False, lineterminator='\n')
 
 
 def is_scientific_notation(s):
@@ -35,15 +35,16 @@ def is_scientific_notation(s):
 
 def quote_string(string):
     """Quote the string if it contains alphabetic characters or './', except for scientific notation."""
-    # Convert to string to ensure compatibility with re.search
+
     string = str(string)
 
     # Check for scientific notation first
     if is_scientific_notation(string):
-        return string.upper()  # Return unchanged if it's scientific notation
+        return string.upper()
 
-    # Apply original quoting logic (simplified here for demonstration)
     if re.search("[a-zA-Z/]", string):
+        return f"'{string}'"
+    if re.search(r".\\", string):
         return f"'{string}'"
     else:
         return string

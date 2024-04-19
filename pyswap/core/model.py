@@ -74,8 +74,8 @@ class Model(PySWAPBaseModel):
 
     @staticmethod
     def _run_exe(tempdir: Path) -> str:
-        swap_path = '.\\swap.exe' if is_windows() else './swap420'
-
+        swap_path = Path(tempdir, 'swap.exe') if is_windows() else './swap420'
+        print(swap_path)
         result = subprocess.run(swap_path,
                                 stdout=subprocess.PIPE,
                                 cwd=tempdir)
@@ -118,6 +118,7 @@ class Model(PySWAPBaseModel):
             else:
                 self._copy_swap(tempdir)
 
+
             print('Preparing SWP file...')
             self.concat_swp(save=True, path=tempdir)
             print('SWP file saved successfully!')
@@ -130,6 +131,7 @@ class Model(PySWAPBaseModel):
             # self.irrigation.make_irrigation(tempdir)
             # print('Irrigation file saved successfully!')
 
+            print(os.listdir(tempdir))
             print('Preparing to run the model...')
             # run the model
             self._run_exe(tempdir)
