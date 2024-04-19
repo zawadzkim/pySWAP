@@ -11,7 +11,7 @@ export default defineConfig({
   base: "/pySWAP/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    logo: "public/logo.webp",
+    logo: "/logo.webp",
     nav: nav(),
 
     sidebar: {

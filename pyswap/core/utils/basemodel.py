@@ -43,7 +43,7 @@ class PySWAPBaseModel(BaseModel):
         string = ''
 
         def formatter(attr, value, string):
-            if attr.startswith('table_'):
+            if attr.startswith('table_') or attr.startswith('list_'):
                 return string + value
             else:
                 return string + f'{attr.upper()} = {quote_string(value)}\n'
