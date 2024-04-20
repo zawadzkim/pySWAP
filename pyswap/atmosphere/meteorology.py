@@ -10,6 +10,7 @@ The module contains the following classes:
 
 from ..core.utils.basemodel import PySWAPBaseModel
 from ..core.utils.fields import Table
+from ..core.utils.files import save_file
 from ..core.utils.valueranges import UNITRANGE
 from .meteodata import MeteoData
 from pydantic import Field, model_validator
@@ -64,6 +65,9 @@ class Meteorology(PySWAPBaseModel):
         table_rainflux (Table): rainfall intensity RAINFLUX as function of time TIME.
         rainfil (str): file name of file with detailed rainfall data.
         nmetdetail (int): Number of weather data records each day.
+
+    Methods:
+        write_met: Writes the .met file.
     """
 
     metfil: str
@@ -98,3 +102,21 @@ class Meteorology(PySWAPBaseModel):
             assert self.swmetdetail is not None, "SWMETDETAIL is required when SWETR is 0"
             if self.swmetdetail == 1:
                 assert self.nmetdetail is not None, "NMETDETAIL is required when SWMETDETAIL is 1"
+
+    def write_met(self, path: str):
+        """Writes the .met file.
+
+        Note: in this function the extension is not passed because
+        swp file requires the metfile parameter to be passed already with 
+        the extension.
+
+        Args:
+            path (str): Path to the file.
+        """
+        save_file(
+            string=self.meteodata.model_dump(mode='json')['content'],
+            fname=self.metfil,
+            path=path
+        )
+
+        print(f'{self.metfil} saved.')
