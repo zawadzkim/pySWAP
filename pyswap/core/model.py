@@ -7,26 +7,14 @@ import tempfile
 import subprocess
 import os
 from importlib import resources
-from pydantic import BaseModel, ConfigDict
 from pandas import DataFrame, read_csv, to_datetime
 from numpy import nan
 from ..soilwater import SnowAndFrost
 from .richards import RichardsSettings
 from ..extras import HeatFlow, SoluteTransport
 from .utils.system import get_base_path, is_windows
-
-
-class Result(BaseModel):
-    summary: Optional[str]
-    output: Optional[DataFrame]
-    vap: Optional[Any]
-    log: Optional[str]
-
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-        extra='forbid'
-    )
+from .result import Result
+import warnings
 
 
 class Model(PySWAPBaseModel):
@@ -114,6 +102,17 @@ class Model(PySWAPBaseModel):
             if self.irrigation.fixedirrig.irrigationdata:
                 self.irrigation.fixedirrig.write_irg(path)
 
+    @staticmethod
+    def _identify_warnings(log: str) -> list[Warning]:
+        lines = log.split('\n')
+        warnings = [line for line in lines
+                    if line.strip().lower().startswith('warning')]
+
+        return warnings
+
+    def _raise_swap_warning(self, message):
+        warnings.warn(message, Warning, stacklevel=3)
+
     def run(self, path: str | Path):
         """Main function that runs the model.
 
@@ -139,12 +138,21 @@ class Model(PySWAPBaseModel):
             else:
                 print(result)
 
+                log = self._read_log(tempdir)
+                warnings = self._identify_warnings(log)
+
+                if warnings:
+                    print('Warnings:')
+                    for warning in warnings:
+                        self._raise_swap_warning(message=warning)
+
                 result = Result(
                     summary=open_file(Path(tempdir, 'result.blc')),
                     output=self._read_output(
                         Path(tempdir, 'result_output.csv')),
                     vap=self._read_vap(Path(tempdir, 'result.vap')),
-                    log=self._read_log(tempdir)
+                    log=log,
+                    warning=warnings
                 )
 
                 return result
