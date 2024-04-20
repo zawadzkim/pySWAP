@@ -11,7 +11,7 @@ def open_file(file_path):
 def save_file(string: str,
               fname: str,
               path: str,
-              mode: str,
+              mode: str = 'w',
               extension: str | None = None,
               encoding: str = 'ascii'):
     """
