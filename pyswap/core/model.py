@@ -1,6 +1,6 @@
 from .utils.basemodel import PySWAPBaseModel
-from .utils.files import save_file, open_file
-from typing import Optional, Any, List
+from .utils.files import open_file
+from typing import Optional, Any
 from pathlib import Path
 import shutil
 import tempfile
@@ -47,16 +47,11 @@ class Model(PySWAPBaseModel):
     heatflow: Optional[Any] = HeatFlow(swhea=0)
     solutetransport: Optional[Any] = SoluteTransport(swsolu=0)
 
-    def concat_swp(self, save: bool = False, path: Optional[str] = None) -> str:
-        string = ''
-        for k, v in dict(self).items():
-            if v is None:
-                continue
-            string += v.model_string()
-        if save:
-            save_file(string=string, extension='swp',
-                      fname='swap', mode='w', path=path)
-        return string
+    def write_swp(self, path: str) -> None:
+        string = self._concat_sections()
+        self.save_element(string=string, path=path,
+                          filename='swap', extension='swp')
+        print('swap.swp saved.')
 
     @staticmethod
     def _copy_swap_exe(tempdir: Path):
@@ -70,17 +65,19 @@ class Model(PySWAPBaseModel):
         # Use a context manager to ensure the temporary file is cleaned up
         with resources.path("pyswap.libs.swap420-linux", "swap420") as exec_path:
             shutil.copy(str(exec_path), str(tempdir))
-        print('Copying executable into temporary directory...')
+        print('Copying linux executable into temporary directory...')
 
     @staticmethod
     def _run_exe(tempdir: Path) -> str:
         swap_path = Path(tempdir, 'swap.exe') if is_windows() else './swap420'
-        print(swap_path)
-        result = subprocess.run(swap_path,
-                                stdout=subprocess.PIPE,
-                                cwd=tempdir)
 
-        return result.stdout.decode()
+        p = subprocess.Popen(swap_path,
+                             stdout=subprocess.PIPE,
+                             stdin=subprocess.PIPE,
+                             stderr=subprocess.STDOUT,
+                             cwd=tempdir)
+
+        return p.communicate(input=b'\n')[0].decode()
 
     @staticmethod
     def _read_log(tempdir: Path):
@@ -104,48 +101,50 @@ class Model(PySWAPBaseModel):
         df.replace(r'^\s*$', nan, regex=True, inplace=True)
         return df
 
-    def run(self):
+    def _write_inputs(self, path: str) -> None:
+        print('Preparing files...')
+        self.write_swp(path)
+        if self.lateraldrainage.drainagefile:
+            self.lateraldrainage.write_dra(path)
+        if self.crop.cropfiles:
+            self.crop.write_crop(path)
+        if self.meteorology.meteodata:
+            self.meteorology.write_met(path)
+        if self.irrigation.fixedirrig:
+            if self.irrigation.fixedirrig.irrigationdata:
+                self.irrigation.fixedirrig.write_irg(path)
+
+    def run(self, path: str | Path):
         """Main function that runs the model.
 
         TODO: implement asynchronous function that would run the swap exe and then check once in a few seconds if the swap.log is there.
         If it is there, read it and check status. If status is error, exit the with/while clause.
+        TODO: implement catching and printing errors and terminating the with statement if there
+        is an error in the model run.
         """
-
-        with tempfile.TemporaryDirectory(dir=get_base_path()) as tempdir:
+        with tempfile.TemporaryDirectory(dir=path) as tempdir:
 
             if is_windows():
                 self._copy_swap_exe(tempdir)
             else:
                 self._copy_swap(tempdir)
 
+            self._write_inputs(tempdir)
 
-            print('Preparing SWP file...')
-            self.concat_swp(save=True, path=tempdir)
-            print('SWP file saved successfully!')
-            self.meteorology.save_met(tempdir)
-            print('Meteorology file saved successfully!')
-            self.lateraldrainage.save_drainage(tempdir)
-            print('Drainage file saved successfully!')
-            self.crop.save_crop(tempdir)
-            print('Crop file saved successfully!')
-            # self.irrigation.make_irrigation(tempdir)
-            # print('Irrigation file saved successfully!')
+            result = self._run_exe(tempdir)
 
-            print(os.listdir(tempdir))
-            print('Preparing to run the model...')
-            # run the model
-            self._run_exe(tempdir)
-            # create a Result object
-            print('Model run successfully!')
-            # print the content of the temporary directory
-            print('Files in temporary directory:')
+            if 'normal completion' not in result:
+                raise Exception(
+                    f'Model run failed. \n {result}')
+            else:
+                print(result)
 
-            result = Result(
-                summary=open_file(Path(tempdir, 'result.blc')),
-                output=self._read_output(
-                    Path(tempdir, 'result_output.csv')),
-                vap=self._read_vap(Path(tempdir, 'result.vap')),
-                log=self._read_log(tempdir)
-            )
+                result = Result(
+                    summary=open_file(Path(tempdir, 'result.blc')),
+                    output=self._read_output(
+                        Path(tempdir, 'result_output.csv')),
+                    vap=self._read_vap(Path(tempdir, 'result.vap')),
+                    log=self._read_log(tempdir)
+                )
 
-        return result
+                return result
