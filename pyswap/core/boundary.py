@@ -1,3 +1,7 @@
+"""
+boundary.py contains the bottom boundary condition settings for the SWAP model.
+"""
+
 from typing import Optional, Literal
 from pydantic import model_validator, Field
 from .utils.basemodel import PySWAPBaseModel
@@ -9,43 +13,35 @@ class BottomBoundary(PySWAPBaseModel):
 
     Attrs:
         swbbcfile (Literal[0, 1]): Switch for file with bottom boundary data. 
-            Options: 
-                0 - data are specified in current file; 
-                1 - data are specified in separate file
+            0 - data are specified in current file; 
+            1 - data are specified in separate file
         swbotb (Literal[1, 2, 3, 4, 5, 6, 7, 8]): Switch for type of bottom boundary.
-            Options:
-                1 - prescribe groundwater level;
-                2 - prescribe bottom flux;
-                3 - calculate bottom flux from hydraulic head of deep aquifer;
-                4 - calculate bottom flux as function of groundwater level;
-                5 - prescribe soil water pressure head of bottom compartment;
-                6 - bottom flux equals zero;
-                7 - free drainage of soil profile;
-                8 - free outflow at soil-air interface.
+            1 - prescribe groundwater level;
+            2 - prescribe bottom flux;
+            3 - calculate bottom flux from hydraulic head of deep aquifer;
+            4 - calculate bottom flux as function of groundwater level;
+            5 - prescribe soil water pressure head of bottom compartment;
+            6 - bottom flux equals zero;
+            7 - free drainage of soil profile;
+            8 - free outflow at soil-air interface.
         sw2 (Optional[Literal[1, 2]]): Specify whether a sinus function or a table are used for the bottom flux.
-            Options:
-                1 - sinus function;
-                2 - table.
+            1 - sinus function;
+            2 - table.
         sw3 (Optional[Literal[1, 2]]): Specify whether a sinus function or a table are used for the hydraulic head in the deep aquifer.
-            Options:
-                1 - sinus function;
-                2 - table.
+            1 - sinus function;
+            2 - table.
         sw4 (Optional[Literal[0, 1]]): An extra groundwater flux can be specified which is added to above specified flux.
-            Options:
-                0 - no extra flux;
-                1 - extra flux.
+            0 - no extra flux;
+            1 - extra flux.
         swbotb3resvert (Optional[Literal[0, 1]]): Switch for vertical hydraulic resistance between bottom boundary and groundwater level.
-            Options:
-                0 - Include vertical hydraulic resistance
-                1 - Suppress vertical hydraulic resistance
+            0 - Include vertical hydraulic resistance
+            1 - Suppress vertical hydraulic resistance
         swbotb3impl (Optional[Literal[0, 1]]): Switch for numerical solution of bottom flux.
-            Options:
-                0 - Explicit solution (choose always when SHAPE < 1.0);
-                1 - Implicit solution.
+            0 - Explicit solution (choose always when SHAPE < 1.0);
+            1 - Implicit solution.
         swqhbot (Optional[Literal[1, 2]]): Specify whether an exponential relation or a table is used.
-            Options:
-                1 - bottom flux is calculated with an exponential relation
-                2 - bottom flux is derived from a table
+            1 - bottom flux is calculated with an exponential relation
+            2 - bottom flux is derived from a table
         bbcfile (Optional[str]): Name of file with bottom boundary data (without .BBC extension).
         sinave (Optional[float]): Average value of bottom flux.
         sinamp (Optional[float]): Amplitude of bottom flux sine function.
@@ -66,7 +62,6 @@ class BottomBoundary(PySWAPBaseModel):
         table_qbot4 (Optional[Table]): Table with bottom flux data.
         table_qtab (Optional[Table]): Table with groundwater level-bottom flux relation
         table_hbot (Optional[Table]): Table with the bottom compartment pressure head.
-
     """
 
     swbbcfile: Literal[0, 1]
