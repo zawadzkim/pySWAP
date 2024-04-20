@@ -63,11 +63,25 @@ class PySWAPBaseModel(BaseModel):
                 return string + f'{attr.upper()} = {quote_string(value)}\n'
 
         for attr, value in self.model_dump(
-                mode='json', exclude_none=True, exclude=self.exclude, include=self.include).items():
+                mode='json', exclude_none=True).items():
             if isinstance(value, dict):
                 for k, v in value.items():
                     string = formatter(k, v, string)
             else:
                 string = formatter(attr, value, string)
 
+        return string
+
+    def _concat_sections(self) -> str:
+        """Concatenate a string from individual sections.
+
+        This method is meant to be used on models that collect other
+        models, like DraFile, or Model.
+        """
+
+        string = ''
+        for k, v in dict(self).items():
+            if v is None or isinstance(v, str):
+                continue
+            string += v.model_string()
         return string
