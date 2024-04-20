@@ -3,7 +3,7 @@ from ..core.utils.basemodel import PySWAPBaseModel
 from ..core.utils.fields import Table
 from pandas import DataFrame, read_csv
 from typing import Optional, Literal, Any
-from pydantic import model_validator, computed_field
+from pydantic import model_validator, computed_field, Field
 
 
 class IrrigationFile(PySWAPBaseModel):
@@ -22,11 +22,15 @@ class FixedIrrigation(PySWAPBaseModel):
     swirgfil: Literal[0, 1]
     table_irrigevents: Optional[Table] = None
     irgfil: Optional[str] = None
+    irrigationdata: Optional[IrrigationFile] = Field(
+        default=None, repr=None, exclude=True)
 
     @model_validator(mode='after')
     def _validate_fixed_irrigation(self) -> None:
         if self.swirgfil:
             assert self.irgfil is not None, "irgfil is required when swirgfil is True"
+            assert self.irrigationdata is not None, "irrigationdata is required when swirgfil is True"
+
         else:
             assert self.table_irrigevents is not None, "irrigevents is required when swirgfil is False"
 
