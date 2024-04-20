@@ -13,7 +13,7 @@ from pyswap.drainage import LateralDrainage, DraFile
 from pyswap.core.boundary import BottomBoundary
 from pyswap.core.model import Model
 from pathlib import Path
-from pyswap.drainage.createdra.main import DraSettings, DrainageFormula
+from pyswap.drainage.createdra.drafile import DraSettings, DrainageFormula
 
 
 def _run_hupsel():
