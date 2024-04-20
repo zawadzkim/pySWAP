@@ -19,20 +19,12 @@ class CropFile(PySWAPBaseModel):
     interception: Optional[Any] = None
     scheduledirrigation: Optional[Any] = ScheduledIrrigation(schedule=0)
 
-    def _concat_crp(self):
-        string = ''
-        for k, v in dict(self).items():
-            if v is None or isinstance(v, str):
-                continue
-            string += v.model_string()
-        return string
-
     @computed_field(return_type=str)
     def content(self):
         if self.path:
             return open_file(self.path)
         else:
-            return self._concat_crp()
+            return self._concat_sections()
 
 
 class Crop(PySWAPBaseModel):
@@ -41,18 +33,14 @@ class Crop(PySWAPBaseModel):
     swcrop: Literal[0, 1]
     rds: Optional[float] = Field(default=None, ge=1, le=5000)
     table_croprotation: Optional[Table] = None
-    cropfiles: Optional[List[CropFile]] = None
-
-    @property
-    def exclude(self) -> set:
-        return {'cropfiles'}
+    cropfiles: Optional[List[CropFile]] = Field(default=None, exclude=True)
 
     def _validate_crop_section(self):
         if self.swcrop == 1:
             assert self.rds is not None, "rds must be specified if swcrop is True"
             assert self.table_croprotation is not None, "croprotation must be specified if swcrop is True"
 
-    def save_crop(self, path: str):
+    def write_crop(self, path: str):
         count = 0
         for cropfile in self.cropfiles:
             count += 1
@@ -60,7 +48,7 @@ class Crop(PySWAPBaseModel):
                 string=cropfile.content,
                 extension='crp',
                 fname=cropfile.name,
-                path=path,
-                mode='w'
+                path=path
             )
-        return f'{count} crop file(s) saved successfully.'
+
+        print(f'{count} crop file(s) saved.')
