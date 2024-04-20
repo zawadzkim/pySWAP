@@ -1,5 +1,7 @@
+from __future__ import annotations
 from pydantic import BaseModel, ConfigDict
 from .serializers import quote_string
+from .files import save_file
 
 
 class PySWAPBaseModel(BaseModel):
@@ -22,13 +24,25 @@ class PySWAPBaseModel(BaseModel):
         extra='forbid'
     )
 
-    @property
-    def exclude(self) -> set | None:
-        return None
+    @staticmethod
+    def save_element(string: str, path: str, filename: str, extension: str | None = None) -> str:
+        """Saves model element to a file.
 
-    @property
-    def include(self) -> set | None:
-        return None
+        Args:
+            string (str): String to be saved.
+            path (str): Path to the file.
+            filename (str): File name.
+
+        Returns:
+            str: Success message.
+        """
+        save_file(
+            string=string,
+            fname=filename,
+            extension=extension,
+            path=path
+        )
+        return f'{filename}.{extension} saved successfully.'
 
     def model_string(self):
         """Returns a custom model string representation that matches the requirements of .swp file.
