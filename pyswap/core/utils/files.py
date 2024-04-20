@@ -1,10 +1,20 @@
+"""
+Simple module to interact with files.
+"""
+
 import chardet
 
 
-def open_file(file_path):
+def open_file(file_path) -> str:
+    """Open file and detect encoding.
+
+    Args:
+        file_path: Path to the file to be opened.
+    """
     with open(file_path, 'rb') as f:
         raw_data = f.read()
     encoding = chardet.detect(raw_data)['encoding']
+
     return raw_data.decode(encoding)
 
 
@@ -13,7 +23,7 @@ def save_file(string: str,
               path: str,
               mode: str = 'w',
               extension: str | None = None,
-              encoding: str = 'ascii'):
+              encoding: str = 'ascii') -> None:
     """
     Saves a string to a file.
 
@@ -31,6 +41,7 @@ def save_file(string: str,
     Raises:
         Any exceptions raised by the open() or write() functions.
     """
+
     if extension is not None:
         fname = f'{fname}.{extension}'
 

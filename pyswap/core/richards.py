@@ -1,8 +1,16 @@
+"""
+richards.py contains the settings for the Richards' equation with some reasonable defaults included.
+
+The module contains the following classes:
+    - RichardsSettings: Holds the settings for the Richards' equation.
+"""
+
 from .utils.basemodel import PySWAPBaseModel
 from typing import Literal
 
 
 class RichardsSettings(PySWAPBaseModel):
+    """Settings for the Richards' equation."""
     swkmean: int
     swkimpl: Literal[0, 1]
     dtmin: float = 0.000001
