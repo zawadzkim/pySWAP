@@ -1,84 +1,70 @@
+"""
+meteorology.py contains models for handling the settings included in the 
+meteorological section of the .swp file. It also handles the creation of
+the .met file.
+
+The module contains the following classes:
+    - PenmanMonteith: Holds the Penman-Monteith settings of the simulation.
+    - Meteorology: Holds the settings of the meteo section of the .swp file.
+"""
+
 from ..core.utils.basemodel import PySWAPBaseModel
-from ..core.utils.fields import Table, CSVTable
-from ..core.utils.files import save_file
-from pandas import read_csv
-from datetime import datetime as dt
+from ..core.utils.fields import Table
+from ..core.utils.valueranges import UNITRANGE
+from .meteodata import MeteoData
 from pydantic import Field, model_validator
 from typing import Optional, Literal
-import knmi
-
-
-class MeteorologicalData(PySWAPBaseModel):
-    """Meteorological data for the SWAP model.
-
-    This object is created by functions fetching or loading meteorological data
-    from various sources.
-
-    Attrs:
-        file_meteo (pyswap.core.utils.fields.CSVTable): meteorological data file
-    """
-
-    file_meteo: Optional[CSVTable] = None
-
-
-def load_from_csv(csv_path: str):
-
-    return MeteorologicalData(file_meteo=read_csv(csv_path, index_col=0))
-
-
-def weather_knmi(stations: str | list,
-                 variables: str | list = [
-                     'TEMP', 'PRCP', 'Q', 'UG',  'FG', 'UX', 'UN'],
-                 start: str | dt = '20000101',
-                 end: str | dt = '20200101',
-                 inseason: bool = False):
-    """Method for retrieving the meteo data from KNMI API.
-
-    New version uses the KNMI-PY package. Some of the old functionality was moved to csv table serializer.
-    """
-
-    if isinstance(stations, str):
-        stations = [stations]
-
-    df = knmi.get_day_data_dataframe(stations=stations,
-                                     start=start,
-                                     end=end,
-                                     variables=variables,
-                                     inseason=inseason)
-
-    # rename some columns
-    required_column_names = {'STN': 'Station',
-                             'TN': 'Tmin',
-                             'TX': 'Tmax',
-                             'UG': 'HUM',
-                             'DR': 'WET',
-                             'FG': 'WIND',
-                             'RH': 'RAIN',
-                             'EV24': 'ETref',
-                             'Q': 'RAD'}
-
-    df = df.rename(columns=required_column_names)
-
-    # recalculation of the parameters
-    df[['Tmin', 'Tmax', 'ETref', 'RAIN', 'WIND']] = df[['Tmin', 'Tmax', 'ETref', 'RAIN',
-                                                                        'WIND']] * 0.1  # the original unit is 0.1 Unit
-    df['WET'] = df['WET'] * \
-        0.1 * 24  # the required unit is days
-
-    return MeteorologicalData(file_meteo=df)
 
 
 class PenmanMonteith(PySWAPBaseModel):
-    """Holds the Penman-Monteith settings of the simulation."""
+    """Penman-Monteith settings of the simulation.
+
+    PenmanMonteith is a nested model (an optional attribute) of 
+    Meteorology. It is used when the Penman-Monteith method is used to
+    calculate the evapotranspiration.
+
+    Attrs:
+        alt (float): altitude of meteo station [m].
+        altw (float): height of wind speed measurement above soil surface, defaults to 10.0 [m].
+        angstroma (float): Fraction of extraterrestrial radiation reaching the earth on overcast days, defaults to 0.25 [-]
+        angstromb (float): Fraction of extraterrestrial radiation reaching the earth on clear days, defaults to 0.5 [-]
+    """
 
     alt: float = Field(ge=-400.0, le=3000.0)
     altw: float = Field(default=10.0, ge=0.0, le=99.0)
-    angstroma: float = Field(default=0.25, ge=0.0, le=1.0)
-    angstromb: float = Field(default=0.5, ge=0.0, le=1.0)
+    angstroma: float = Field(default=0.25, **UNITRANGE)
+    angstromb: float = Field(default=0.5, **UNITRANGE)
 
 
 class Meteorology(PySWAPBaseModel):
-    """Holds the meteorological settings of the simulation."""
+    """Meteorological settings of the simulation.
+
+    Attrs:
+        metfil (str): name of the .met file.
+        lat (float): latitude of the meteo station [degrees].
+        swetr (int): Switch type of weather data for potential evapotranspiration:
+            0 - Use basic weather data and apply Penman-Monteith equation.
+            1 - Use reference evapotranspiration data in combination with crop factors.
+        swdivide (int): Switch for distribution of E and T, defaults to 0:
+            0 - Based on crop and soil factors.
+            1 - Based on direct application of Penman-Monteith.
+        swmetdetail (int): Switch for time interval of evapotranspiration and rainfall weather data:
+            0 - Daily data.
+            1 - Subdaily data.
+        swrain (int): Switch for use of actual rainfall intensity, defaults to 0:
+            0 - Use daily rainfall amounts.
+            1 - Use daily rainfall amounts + mean intensity.
+            2 - Use daily rainfall amounts + duration.
+            3 - Use detailed rainfall records (dt < 1 day), as supplied in separate file.
+        swetsine (int): Switch, distribute daily Tp and Ep according to sinus wave, default to 0:
+            0 - No distribution.
+            1 - Distribute Tp and Ep according to sinus wave.
+        meteodata (MeteoData): MeteoData model.
+        penman_monteith (PenmanMonteith): PenmanMonteith model.
+        table_rainflux (Table): rainfall intensity RAINFLUX as function of time TIME.
+        rainfil (str): file name of file with detailed rainfall data.
+        nmetdetail (int): Number of weather data records each day.
+    """
 
     metfil: str
     lat: float = Field(ge=-90, le=90)
@@ -88,7 +74,7 @@ class Meteorology(PySWAPBaseModel):
     swrain: Optional[Literal[0, 1, 2, 3]] = 0
     # TODO: SWETSINE should be optional, but Fortran code evaluates its presence anyway
     swetsine: Literal[0, 1] = 0
-    file_meteo: Optional[MeteorologicalData] = Field(
+    meteodata: Optional[MeteoData] = Field(
         default=None, repr=False, exclude=True)
     penman_monteith: Optional[PenmanMonteith] = Field(default=None, repr=False)
     swmetdetail: Optional[Literal[0, 1]] = None
@@ -112,12 +98,3 @@ class Meteorology(PySWAPBaseModel):
             assert self.swmetdetail is not None, "SWMETDETAIL is required when SWETR is 0"
             if self.swmetdetail == 1:
                 assert self.nmetdetail is not None, "NMETDETAIL is required when SWMETDETAIL is 1"
-
-    def save_met(self, path: str):
-        save_file(
-            string=self.file_meteo.model_dump(mode='json')['file_meteo'],
-            fname=self.metfil,
-            path=path,
-            mode='w'
-        )
-        return 'Meteorological data saved successfully.'
