@@ -1,4 +1,8 @@
-"""Solute transport."""
+"""Solute transport settings for the SWAP simulation.
+
+Classes:
+    SoluteTransport: Solute transport settings.
+"""
 
 from pyswap.core.utils.basemodel import PySWAPBaseModel
 from pyswap.core.utils.fields import Table
@@ -6,7 +10,34 @@ from typing import Literal, Optional
 
 
 class SoluteTransport(PySWAPBaseModel):
+    """
+    Solute transport settings.
 
+    Attributes:
+        swsolu (Literal[0, 1]): 
+        cpre (Optional[float]):
+        cdrain (Optional[float]):
+        swbotbc (Optional[Literal[0, 1]]):
+        cseep (Optional[float]):
+        ddif (Optional[float]):
+        tscf (Optional[float]):
+        swsp (Optional[Literal[0, 1]]):
+        frexp (Optional[float]):
+        cref (Optional[float]):
+        swdc (Optional[Literal[0, 1]]):
+        gampar (Optional[float]):
+        rtheta (Optional[float]):
+        bexp (Optional[float]):
+        swbr (Optional[Literal[0, 1]]):
+        daquif (Optional[float]):
+        poros (Optional[float]):
+        kfsat (Optional[float]):
+        decsat (Optional[float]):
+        cdraini (Optional[float]):
+        table_cseeparrtb (Optional[Table]):
+        table_inissoil (Optional[Table]):
+        table_miscellaneous (Optional[Table]):
+    """
     swsolu: Literal[0, 1]
     cpre: Optional[float] = None
     cdrain: Optional[float] = None

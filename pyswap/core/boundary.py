@@ -1,5 +1,8 @@
 """
-boundary.py contains the bottom boundary condition settings for the SWAP model.
+Bottom boundary condition settings for the SWAP model.
+
+Classes:
+    BottomBoundary: Holds the settings of the bottom boundary conditions of the .swp file.
 """
 
 from typing import Optional, Literal
@@ -9,39 +12,48 @@ from .utils.fields import Table
 
 
 class BottomBoundary(PySWAPBaseModel):
-    """Bottom boundary settings for SWAP model.
+    """
+    Bottom boundary settings for SWAP model.
 
-    Attrs:
-        swbbcfile (Literal[0, 1]): Switch for file with bottom boundary data. 
-            0 - data are specified in current file; 
-            1 - data are specified in separate file
+    Attributes:
+        swbbcfile (Literal[0, 1]): Switch for file with bottom boundary data:
+
+            * 0 - data are specified in current file
+            * 1 - data are specified in separate file
         swbotb (Literal[1, 2, 3, 4, 5, 6, 7, 8]): Switch for type of bottom boundary.
-            1 - prescribe groundwater level;
-            2 - prescribe bottom flux;
-            3 - calculate bottom flux from hydraulic head of deep aquifer;
-            4 - calculate bottom flux as function of groundwater level;
-            5 - prescribe soil water pressure head of bottom compartment;
-            6 - bottom flux equals zero;
-            7 - free drainage of soil profile;
-            8 - free outflow at soil-air interface.
+
+            * 1 - prescribe groundwater level;
+            * 2 - prescribe bottom flux;
+            * 3 - calculate bottom flux from hydraulic head of deep aquifer;
+            * 4 - calculate bottom flux as function of groundwater level;
+            * 5 - prescribe soil water pressure head of bottom compartment;
+            * 6 - bottom flux equals zero;
+            * 7 - free drainage of soil profile;
+            * 8 - free outflow at soil-air interface.
         sw2 (Optional[Literal[1, 2]]): Specify whether a sinus function or a table are used for the bottom flux.
-            1 - sinus function;
-            2 - table.
+
+            * 1 - sinus function;
+            * 2 - table.
         sw3 (Optional[Literal[1, 2]]): Specify whether a sinus function or a table are used for the hydraulic head in the deep aquifer.
-            1 - sinus function;
-            2 - table.
+
+            * 1 - sinus function;
+            * 2 - table.
         sw4 (Optional[Literal[0, 1]]): An extra groundwater flux can be specified which is added to above specified flux.
-            0 - no extra flux;
-            1 - extra flux.
+
+            * 0 - no extra flux;
+            * 1 - extra flux.
         swbotb3resvert (Optional[Literal[0, 1]]): Switch for vertical hydraulic resistance between bottom boundary and groundwater level.
-            0 - Include vertical hydraulic resistance
-            1 - Suppress vertical hydraulic resistance
+
+            * 0 - Include vertical hydraulic resistance
+            * 1 - Suppress vertical hydraulic resistance
         swbotb3impl (Optional[Literal[0, 1]]): Switch for numerical solution of bottom flux.
-            0 - Explicit solution (choose always when SHAPE < 1.0);
-            1 - Implicit solution.
+
+            * 0 - Explicit solution (choose always when SHAPE < 1.0);
+            * 1 - Implicit solution.
         swqhbot (Optional[Literal[1, 2]]): Specify whether an exponential relation or a table is used.
-            1 - bottom flux is calculated with an exponential relation
-            2 - bottom flux is derived from a table
+
+            * 1 - bottom flux is calculated with an exponential relation
+            * 2 - bottom flux is derived from a table
         bbcfile (Optional[str]): Name of file with bottom boundary data (without .BBC extension).
         sinave (Optional[float]): Average value of bottom flux.
         sinamp (Optional[float]): Amplitude of bottom flux sine function.
@@ -49,10 +61,10 @@ class BottomBoundary(PySWAPBaseModel):
         shape (Optional[float]): Shape factor to derive average groundwater level.
         hdrain (Optional[float]): Mean drain base to correct for average groundwater level.
         rimlay (Optional[float]): Vertical resistance of aquitard.
-        aquave (Optional[float]): Average hydraulic head in underlaying aquifer.
-        aquamp (Optional[float]): Amplitude hydraulic head sinus wave.
+        aqave (Optional[float]): Average hydraulic head in underlaying aquifer.
+        aqamp (Optional[float]): Amplitude hydraulic head sinus wave.
         aqtmax (Optional[float]): First time of the year with maximum hydraulic head.
-        aqtper (Optional[float]): Period of hydraulic head sinus wave.
+        aqper (Optional[float]): Period of hydraulic head sinus wave.
         cofqha (Optional[float]): Coefficient A for exponential relation for bottom flux.
         cofqhb (Optional[float]): Coefficient B for exponential relation for bottom flux.
         cofqhc (Optional[float]): Coefficient C for exponential relation for bottom flux.
@@ -79,10 +91,10 @@ class BottomBoundary(PySWAPBaseModel):
     shape: Optional[float] = None
     hdrain: Optional[float] = None
     rimlay: Optional[float] = None
-    aquave: Optional[float] = None
-    aquamp: Optional[float] = None
+    aqave: Optional[float] = None
+    aqamp: Optional[float] = None
     aqtmax: Optional[float] = None
-    aqtper: Optional[float] = None
+    aqper: Optional[float] = None
     cofqha: Optional[float] = None
     cofqhb: Optional[float] = None
     cofqhc: Optional[float] = None
@@ -108,10 +120,10 @@ class BottomBoundary(PySWAPBaseModel):
         elif self.swbotb == 3:
             assert self.sw3, 'sw3 must be provided if swbotb is 3'
             if self.sw3 == 1:
-                assert self.aquave, 'aquave must be provided if sw3 is 1'
-                assert self.aquamp, 'aquamp must be provided if sw3 is 1'
+                assert self.aqave, 'aqave must be provided if sw3 is 1'
+                assert self.aqamp, 'auamp must be provided if sw3 is 1'
                 assert self.aqtmax, 'aqtmax must be provided if sw3 is 1'
-                assert self.aqtper, 'aqtper must be provided if sw3 is 1'
+                assert self.aqper, 'aqper must be provided if sw3 is 1'
             elif self.sw3 == 2:
                 assert self.table_haquif, 'haquif must be provided if sw3 is 2'
         elif self.swbotb == 4:

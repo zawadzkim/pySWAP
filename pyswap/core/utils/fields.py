@@ -1,6 +1,6 @@
 """Custom field types used for serilization in the model_dump(mode='json').
 
-Objects:
+Other parameters:
     Table (DataFrame): A DataFrame object serialized as a string with just the headers and the data.
     Arrays (DataFrame): A DataFrame object serialized as a string with just the columns of data (no headers),
         but with the variable name in front (e.g., FLUXTB = 0.0 0.0/n 1.0 1.0 )

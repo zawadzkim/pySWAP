@@ -1,12 +1,11 @@
 """
-This script holds SQLalchemy models for the database that are compatible with the Django models.
+SQLAlchemy models for the pySWAP database.
 
-Assumptions:
-
-1. There is always an initial SWAP model which is saved in the SWAPModel table.
-2. Each SWAPModel belongs to only one project.
-3. Each SWAPModel has one or mode runs which are saved in the ModelRun table.
-4. One ModelRun has exactly one ModelOutput
+Important assumptions:
+    1. There is always an initial SWAP model which is saved in the SWAPModel table.
+    2. Each SWAPModel belongs to only one project.
+    3. Each SWAPModel has one or mode runs which are saved in the ModelRun table.
+    4. One ModelRun has exactly one ModelOutput
 """
 
 from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary, UniqueConstraint, Table, PrimaryKeyConstraint

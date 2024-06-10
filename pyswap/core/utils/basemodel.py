@@ -7,14 +7,13 @@ from .files import save_file
 class PySWAPBaseModel(BaseModel):
     """Base class for PySWAP models.
 
-    Attrs:
+    Attributes:
         model_config (ConfigDict): Overriding Pydantic model configuration.
 
-    Props:
-        exclude (set | None): Exclude attributes from model dump.
-        include (set | None): Include attributes from model dump.
-
     Methods:
+        save_element: Saves model element to a file.
+        model_string: Returns a custom model string representation that matches the requirements of .swp file.
+        _concat_sections: Concatenate a string from individual sections.
         model_string: Returns a custom model string representation that matches the requirements of .swp file.
     """
 
@@ -44,12 +43,13 @@ class PySWAPBaseModel(BaseModel):
         )
         return f'{filename}.{extension} saved successfully.'
 
-    def model_string(self):
+    def model_string(self) -> str:
         """Returns a custom model string representation that matches the requirements of .swp file.
 
-        If values are simple types, they are formatted as 'ATTR = VALUE\n'. If the valies are
-        tables (in pySWAP pd.DataFrame are used), they are formatted simply as 'TABLE_VALUE'. Additionally,
-        a custom serializer (pyswap.core.utils.serializers.quote_string) is used to quote strings.
+        Note:
+            If values are simple types, they are formatted as 'ATTR = VALUE'. If the valies are
+            tables (in pySWAP pd.DataFrame are used), they are formatted simply as 'TABLE_VALUE'. Additionally,
+            a custom serializer (pyswap.core.utils.serializers.quote_string) is used to quote strings.
 
         Returns:
             str: Custom model string representation.

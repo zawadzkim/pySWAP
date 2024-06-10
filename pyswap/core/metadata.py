@@ -1,5 +1,8 @@
 """
-metadata.py contains the Metadata class collecting basic information about the model.
+Metadata class collecting basic information about the model.
+
+Classes:
+    Metadata: Metadata of a SWAP model.
 """
 
 from .utils.basemodel import PySWAPBaseModel
@@ -8,7 +11,16 @@ from pydantic import Field
 
 
 class Metadata(PySWAPBaseModel):
-    """Metadata of a SWAP model."""
+    """Metadata of a SWAP model.
+
+    Attributes:
+        author (str): Author of the model.
+        institution (str): Institution of the author.
+        email (str): Email of the author.
+        project (str): Name of the project.
+        swap_ver (str): Version of SWAP used.
+        comment (Optional[str]): Comment about the model.
+    """
 
     author: str = Field(exclude=True)
     institution: str = Field(exclude=True)

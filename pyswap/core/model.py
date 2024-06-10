@@ -1,3 +1,9 @@
+"""The main model class.
+
+Classes:
+    Model: Main class that runs the SWAP model.
+"""
+
 from .utils.basemodel import PySWAPBaseModel
 from .utils.files import open_file
 from typing import Optional, Any
@@ -12,12 +18,49 @@ from numpy import nan
 from ..soilwater import SnowAndFrost
 from .richards import RichardsSettings
 from ..extras import HeatFlow, SoluteTransport
-from .utils.system import get_base_path, is_windows
 from .result import Result
 import warnings
+import platform
+
+IS_WINDOWS = platform.system() == 'Windows'
 
 
 class Model(PySWAPBaseModel):
+    """Main class that runs the SWAP model.
+
+    The attributes must be valid pySWAP classes. For avoiding validation errors,
+    for now the attributes are defined as Any.
+
+    Attributes:
+        metadata (Any): Metadata of the model.
+        simsettings (Any): Simulation settings.
+        meteorology (Any): Meteorological data.
+        crop (Any): Crop data.
+        irrigation (Any): Irrigation data.
+        soilmoisture (Any): Soil moisture data.
+        surfaceflow (Any): Surface flow data.
+        evaporation (Any): Evaporation data.
+        soilprofile (Any): Soil profile data.
+        snowandfrost (Optional[Any]): Snow and frost data.
+        richards (Optional[Any]): Richards data.
+        lateraldrainage (Any): Lateral drainage data.
+        bottomboundary (Any): Bottom boundary data.
+        heatflow (Optional[Any]): Heat flow data.
+        solutetransport (Optional[Any]): Solute transport data.
+
+    Methods:
+        write_swp: Write the .swp input file.
+        _copy_executable: Copy the appropriate SWAP executable to the temporary directory.
+        _run_swap: Run the SWAP executable.
+        _read_output: Read the output file.
+        _read_output_tz: Read the output file with time zone.
+        _read_vap: Read the .vap output file.
+        _write_inputs: Write the input files.
+        _identify_warnings: Identify warnings in the log file.
+        _raise_swap_warning: Raise a warning.
+        _save_old_output: Save the old output files.
+        run: Run the model.
+    """
 
     metadata: Any
     simsettings: Any
@@ -36,28 +79,29 @@ class Model(PySWAPBaseModel):
     solutetransport: Optional[Any] = SoluteTransport(swsolu=0)
 
     def write_swp(self, path: str) -> None:
+        """Write the .swp input file."""
+
         string = self._concat_sections()
         self.save_element(string=string, path=path,
                           filename='swap', extension='swp')
         print('swap.swp saved.')
 
     @staticmethod
-    def _copy_swap_exe(tempdir: Path):
-        # Use a context manager to ensure the temporary file is cleaned up
-        with resources.path("pyswap.libs.swap420-exe", "swap.exe") as exec_path:
-            shutil.copy(str(exec_path), str(tempdir))
-        print('Copying the windows version of SWAP into temporary directory...')
+    def _copy_executable(tempdir: Path):
+        """Copy the appropriate SWAP executable to the temporary directory."""
+        if IS_WINDOWS:
+            with resources.path("pyswap.libs.swap420-exe", "swap.exe") as exec_path:
+                shutil.copy(str(exec_path), str(tempdir))
+            print('Copying the windows version of SWAP into temporary directory...')
+        else:
+            with resources.path("pyswap.libs.swap420-linux", "swap420") as exec_path:
+                shutil.copy(str(exec_path), str(tempdir))
+            print('Copying linux executable into temporary directory...')
 
     @staticmethod
-    def _copy_swap(tempdir: Path) -> None:
-        # Use a context manager to ensure the temporary file is cleaned up
-        with resources.path("pyswap.libs.swap420-linux", "swap420") as exec_path:
-            shutil.copy(str(exec_path), str(tempdir))
-        print('Copying linux executable into temporary directory...')
-
-    @staticmethod
-    def _run_exe(tempdir: Path) -> str:
-        swap_path = Path(tempdir, 'swap.exe') if is_windows() else './swap420'
+    def _run_swap(tempdir: Path) -> str:
+        """Run the SWAP executable."""
+        swap_path = Path(tempdir, 'swap.exe') if IS_WINDOWS else './swap420'
 
         p = subprocess.Popen(swap_path,
                              stdout=subprocess.PIPE,
@@ -68,16 +112,15 @@ class Model(PySWAPBaseModel):
         return p.communicate(input=b'\n')[0].decode()
 
     @staticmethod
-    def _read_log(tempdir: Path):
-        log_file = os.path.join(tempdir, 'swap_swap.log')
-
-        with open(log_file, 'r') as f:
-            log_data = f.read()
-            return log_data
-
-    @staticmethod
     def _read_output(path: Path):
         df = read_csv(path, comment='*', index_col='DATETIME')
+        df.index = to_datetime(df.index)
+
+        return df
+
+    @staticmethod
+    def _read_output_tz(path: Path):
+        df = read_csv(path, comment='*', index_col='DATE')
         df.index = to_datetime(df.index)
 
         return df
@@ -92,7 +135,7 @@ class Model(PySWAPBaseModel):
     def _write_inputs(self, path: str) -> None:
         print('Preparing files...')
         self.write_swp(path)
-        if self.lateraldrainage.drainagefile:
+        if self.lateraldrainage.drafile:
             self.lateraldrainage.write_dra(path)
         if self.crop.cropfiles:
             self.crop.write_crop(path)
@@ -113,46 +156,52 @@ class Model(PySWAPBaseModel):
     def _raise_swap_warning(self, message):
         warnings.warn(message, Warning, stacklevel=3)
 
-    def run(self, path: str | Path):
-        """Main function that runs the model.
+    def _save_old_output(self, tempdir: Path):
+        list_dir = os.listdir(tempdir)
+        list_dir = [f for f in list_dir if not f.find(
+            'result') and not f.endswith('.csv')]
 
-        TODO: implement asynchronous function that would run the swap exe and then check once in a few seconds if the swap.log is there.
-        If it is there, read it and check status. If status is error, exit the with/while clause.
-        TODO: implement catching and printing errors and terminating the with statement if there
-        is an error in the model run.
+        if list_dir:
+            dict_files = {f.split('.')[1]: open_file(Path(tempdir, f))
+                          for f in list_dir}
+
+        return dict_files
+
+    def run(self, path: str | Path, silence_warnings: bool = False, old_output: bool = False):
+        """Main function that runs the model.
         """
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
 
-            if is_windows():
-                self._copy_swap_exe(tempdir)
-            else:
-                self._copy_swap(tempdir)
-
+            self._copy_executable(tempdir)
             self._write_inputs(tempdir)
 
-            result = self._run_exe(tempdir)
+            result = self._run_swap(tempdir)
 
             if 'normal completion' not in result:
                 raise Exception(
                     f'Model run failed. \n {result}')
-            else:
-                print(result)
 
-                log = self._read_log(tempdir)
-                warnings = self._identify_warnings(log)
+            print(result)
 
-                if warnings:
-                    print('Warnings:')
-                    for warning in warnings:
-                        self._raise_swap_warning(message=warning)
+            log = open_file(Path(tempdir, 'swap_swap.log'))
+            warnings = self._identify_warnings(log)
 
-                result = Result(
-                    summary=open_file(Path(tempdir, 'result.blc')),
-                    output=self._read_output(
-                        Path(tempdir, 'result_output.csv')),
-                    vap=self._read_vap(Path(tempdir, 'result.vap')),
-                    log=log,
-                    warning=warnings
-                )
+            if warnings and not silence_warnings:
+                print('Warnings:')
+                for warning in warnings:
+                    self._raise_swap_warning(message=warning)
 
-                return result
+            if old_output:
+                dict_files = self._save_old_output(tempdir)
+
+            result = Result(
+                output=self._read_output(
+                    Path(tempdir, 'result_output.csv')),
+                output_tz=self._read_output_tz(
+                    Path(tempdir, 'result_output_tz.csv')) if self.simsettings.inlist_csv_tz else None,
+                log=log,
+                output_old=dict_files if old_output else None,
+                warning=warnings
+            )
+
+            return result
