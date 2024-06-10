@@ -16,7 +16,7 @@ export default defineConfig({
 
     sidebar: {
       "/guide/": { base: "/guide/", items: sidebarGuide() },
-      "/reference/": { base: "/reference/", items: sidebarReference() },
+      "/docs/": { base: "/docs/", items: sidebarReference() },
     },
 
     socialLinks: [
@@ -38,8 +38,8 @@ function nav(): DefaultTheme.NavItem[] {
     },
     {
       text: "Reference",
-      link: "/reference/api-reference.md",
-      activeMatch: "/reference/",
+      link: "/docs/index.md",
+      activeMatch: "/docs/",
     },
     {
       text: pkg.version,

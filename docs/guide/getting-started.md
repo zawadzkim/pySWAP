@@ -29,9 +29,9 @@ pip install -e .
 To see if everything is working fine, open the Python shell and type:
 
 ```Python shell
->>> import pyswap as pswp
+>>> from pyswap import testcase
 
->>> hupsel = pswp.testcase('hupsel')
+>>> hupsel = testcase.get('hupsel')  # retrieves the hupsel model settings
 >>> result = hupsel.run()
 >>> print(result.summary)
 ```

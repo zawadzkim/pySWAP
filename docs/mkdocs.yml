@@ -1,0 +1,26 @@
+site_name: "My Library"
+
+watch:
+  - ../pyswap
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+plugins:
+  - search
+  - autorefs
+  # - gen-files:
+  #     scripts:
+  #       - docs/gen_ref_pages.py
+  - mkdocstrings:
+
+      handlers:
+        python:
+          options:
+            show_submodules: true            
+markdown_extensions:
+  - toc:
+      permalink: "#"
+      separator: "_"
