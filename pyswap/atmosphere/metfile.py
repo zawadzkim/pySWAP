@@ -1,6 +1,12 @@
 """
-meteodata.py contains a model and functions for getting and formatting the meteorological data that
-goes into the .met file required by the SWAP model.
+Getting and formatting meteorological data for SWAP similation.
+
+Classes:
+    MeteoData: meteorological data for the .met file
+
+Functions:
+    load_from_csv: loading meteorological data from a CSV file
+    load_from_knmi: retrieving meteorological data from KNMI API
 """
 
 from typing import Optional, Literal
@@ -18,7 +24,7 @@ class MeteoData(PySWAPBaseModel):
     from various sources. The data is stored as a pandas.DataFrame, but is formatted 
     with a custom field serializer of the pyswap.core.utils.fields.CSVTable field type.
 
-    Attrs:
+    Attributes:
         content (pyswap.core.utils.fields.CSVTable): meteorological data file
     """
 
@@ -28,7 +34,7 @@ class MeteoData(PySWAPBaseModel):
 def load_from_csv(csv_path: str, **kwargs) -> MeteoData:
     """Method for loading meteorological data from a CSV file.
 
-    Args:
+    Parameters:
         csv_path (str): path to the CSV file
         **kwargs: keyword arguments for pandas.read_csv
 
@@ -36,7 +42,7 @@ def load_from_csv(csv_path: str, **kwargs) -> MeteoData:
         pyswap.core.utils.meteodata.MeteoData object.
     """
 
-    return MeteoData(content=read_csv(csv_path, index_col=0, **kwargs))
+    return MeteoData(content=read_csv(csv_path, **kwargs))
 
 
 def load_from_knmi(stations: str | list,
@@ -48,7 +54,7 @@ def load_from_knmi(stations: str | list,
                    inseason: bool = False) -> MeteoData:
     """Retrieves the meteorological data from KNMI API using knmi-py.
 
-    Args:
+    Parameters:
         stations (str | list): station number(s) to retrieve data from
         variables (str | list): variables to retrieve
         start (str | dt): start date of the data

@@ -1,52 +1,34 @@
 """
-meteorology.py contains models for handling the settings included in the 
-meteorological section of the .swp file. It also handles the creation of
-the .met file.
+Meteorological settings for SWAP simulations.
 
-The module contains the following classes:
-    - PenmanMonteith: Holds the Penman-Monteith settings of the simulation.
-    - Meteorology: Holds the settings of the meteo section of the .swp file.
+This object is used to store the meteorological settings of the simulation. it
+also requires the MeteoData object to be passed as an attribute. Upon creation of
+the final model, the .met file is automatically created.
+
+Classes:
+    PenmanMonteith: Holds the Penman-Monteith settings of the simulation.
+    Meteorology: Holds the settings of the meteo section of the .swp file.
 """
 
 from ..core.utils.basemodel import PySWAPBaseModel
 from ..core.utils.fields import Table
 from ..core.utils.files import save_file
 from ..core.utils.valueranges import UNITRANGE
-from .meteodata import MeteoData
+from .metfile import MeteoData
 from pydantic import Field, model_validator
 from typing import Optional, Literal
-
-
-class PenmanMonteith(PySWAPBaseModel):
-    """Penman-Monteith settings of the simulation.
-
-    PenmanMonteith is a nested model (an optional attribute) of 
-    Meteorology. It is used when the Penman-Monteith method is used to
-    calculate the evapotranspiration.
-
-    Attrs:
-        alt (float): altitude of meteo station [m].
-        altw (float): height of wind speed measurement above soil surface, defaults to 10.0 [m].
-        angstroma (float): Fraction of extraterrestrial radiation reaching the earth on overcast days, defaults to 0.25 [-]
-        angstromb (float): Fraction of extraterrestrial radiation reaching the earth on clear days, defaults to 0.5 [-]
-    """
-
-    alt: float = Field(ge=-400.0, le=3000.0)
-    altw: float = Field(default=10.0, ge=0.0, le=99.0)
-    angstroma: float = Field(default=0.25, **UNITRANGE)
-    angstromb: float = Field(default=0.5, **UNITRANGE)
 
 
 class Meteorology(PySWAPBaseModel):
     """Meteorological settings of the simulation.
 
-    Attrs:
-        metfil (str): name of the .met file.
+    Attributes:
+        metfil (str): name of the .met file. Default 'meteo.met'.
         lat (float): latitude of the meteo station [degrees].
         swetr (int): Switch type of weather data for potential evapotranspiration:
             0 - Use basic weather data and apply Penman-Monteith equation.
             1 - Use reference evapotranspiration data in combination with crop factors.
-        swdivide (int): Switch for distribution of E and T, defaults to 0:
+        swdivide (int): Switch for distribution of E and T. Defaults to 0:
             0 - Based on crop and soil factors.
             1 - Based on direct application of Penman-Monteith.
         swmetdetail (int): Switch for time interval of evapotranspiration and rainfall weather data:
@@ -80,7 +62,10 @@ class Meteorology(PySWAPBaseModel):
     swetsine: Literal[0, 1] = 0
     meteodata: Optional[MeteoData] = Field(
         default=None, repr=False, exclude=True)
-    penman_monteith: Optional[PenmanMonteith] = Field(default=None, repr=False)
+    alt: float = Field(ge=-400.0, le=3000.0)
+    altw: float = Field(default=None, ge=0.0, le=99.0)
+    angstroma: float = Field(default=None, **UNITRANGE)
+    angstromb: float = Field(default=None, **UNITRANGE)
     swmetdetail: Optional[Literal[0, 1]] = None
     table_rainflux: Optional[Table] = None
     rainfil: Optional[str] = None
@@ -98,7 +83,10 @@ class Meteorology(PySWAPBaseModel):
                 assert self.rainfil, "RAINFIL is required when SWRAIN is 3"
 
         else:
-            assert self.penman_monteith is not None, "PENMAN-MONTEITH settings are required when SWETR is 0"
+            assert self.alt is not None, "alt settings are required when SWETR is 0"
+            assert self.altw is not None, "altw settings are required when SWETR is 0"
+            assert self.angstroma is not None, "angstroma settings are required when SWETR is 0"
+            assert self.angstromb is not None, "angstromb settings are required when SWETR is 0"
             assert self.swmetdetail is not None, "SWMETDETAIL is required when SWETR is 0"
             if self.swmetdetail == 1:
                 assert self.nmetdetail is not None, "NMETDETAIL is required when SWMETDETAIL is 1"

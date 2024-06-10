@@ -1,23 +1,27 @@
+""""
+Irrigation settings for the SWAP simuluation.
 
+Classes:
+    FixedIrrigation: Holds the settings for fixed irrigation.
+    ScheduledIrrigation: Holds the settings for scheduled irrigation.
+    Irrigation: Holds the irrigation settings of the simulation.
+"""
 from ..core.utils.basemodel import PySWAPBaseModel
 from ..core.utils.fields import Table
-from pandas import DataFrame, read_csv
 from typing import Optional, Literal, Any
-from pydantic import model_validator, computed_field, Field
-
-
-class IrrigationFile(PySWAPBaseModel):
-
-    name: str
-    path: str
-
-    @computed_field(return_type=DataFrame)
-    def content(self):
-        return read_csv(self.path)
+from pydantic import model_validator, Field
+from .irgfile import IrrigationFile
 
 
 class FixedIrrigation(PySWAPBaseModel):
-    """ Holds the settings for fixed irrigation."""
+    """ Holds the settings for fixed irrigation.
+
+    Attributes:
+        swirgfil (Literal[0, 1]): 
+        table_irrigevents (Optional[Table]):
+        irgfil (Optional[str]):
+        irrigationdata (Optional[IrrigationFile]):
+    """
 
     swirgfil: Literal[0, 1]
     table_irrigevents: Optional[Table] = None
@@ -30,12 +34,34 @@ class FixedIrrigation(PySWAPBaseModel):
         if self.swirgfil:
             assert self.irgfil is not None, "irgfil is required when swirgfil is True"
             assert self.irrigationdata is not None, "irrigationdata is required when swirgfil is True"
-
         else:
             assert self.table_irrigevents is not None, "irrigevents is required when swirgfil is False"
 
 
 class ScheduledIrrigation(PySWAPBaseModel):
+    """ Holds the settings for scheduled irrigation.
+
+    Attributes:
+        startirr (str):
+        endirr (str):
+        cirrs (float):
+        isuas (int):
+        phFieldCapacity (float):
+        tcs (int):
+        phormc (Optional[int]):
+        swcirrthres (Optional[bool]):
+        cirrthres (Optional[float]):
+        perirrsurp (Optional[float]):
+        irgthreshold (Optional[float]):
+        tcsfix (Optional[int]):
+        dcrit (Optional[float]):
+        irgdayfix (Optional[int]):
+        dvs_tc1 (Optional[Table]):
+        dvs_tc2 (Optional[Table]):
+        dvs_tc3 (Optional[Table]):
+        dvs_tc4 (Optional[Table]):
+        dvs_tc5 (Optional[Table]):
+    """
 
     startirr: str
     endirr: str
@@ -81,7 +107,15 @@ class ScheduledIrrigation(PySWAPBaseModel):
 
 
 class Irrigation(PySWAPBaseModel):
-    """ Holds the irrigation settings of the simulation."""
+    """ Holds the irrigation settings of the simulation.
+
+    Attributes:
+        swirfix (Literal[0, 1]):
+        schedule (Literal[0, 1]):
+        fixedirrig (Optional[Any]):
+        scheduledirrig (Optional[Any]):
+    """
+
     swirfix: Literal[0, 1]
     schedule: Literal[0, 1]
     fixedirrig: Optional[Any] = None
