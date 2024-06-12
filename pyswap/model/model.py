@@ -4,8 +4,8 @@ Classes:
     Model: Main class that runs the SWAP model.
 """
 
-from .utils.basemodel import PySWAPBaseModel
-from .utils.files import open_file
+from ..core import PySWAPBaseModel
+from ..core import open_file
 from typing import Optional, Any
 from pathlib import Path
 import shutil
@@ -13,10 +13,10 @@ import tempfile
 import subprocess
 import os
 from importlib import resources
-from pandas import DataFrame, read_csv, to_datetime
+from pandas import read_csv, to_datetime
 from numpy import nan
 from ..soilwater import SnowAndFrost
-from .richards import RichardsSettings
+from ..simsettings import RichardsSettings
 from ..extras import HeatFlow, SoluteTransport
 from .result import Result
 import warnings
@@ -33,10 +33,10 @@ class Model(PySWAPBaseModel):
 
     Attributes:
         metadata (Any): Metadata of the model.
-        simsettings (Any): Simulation settings.
+        general_settings (Any): Simulation settings.
         meteorology (Any): Meteorological data.
         crop (Any): Crop data.
-        irrigation (Any): Irrigation data.
+        fixedirrigation (Any): Fixed irrigation settings.
         soilmoisture (Any): Soil moisture data.
         surfaceflow (Any): Surface flow data.
         evaporation (Any): Evaporation data.
@@ -63,10 +63,10 @@ class Model(PySWAPBaseModel):
     """
 
     metadata: Any
-    simsettings: Any
+    general_settings: Any
     meteorology: Any
     crop: Any
-    irrigation: Any
+    fixedirrigation: Any
     soilmoisture: Any
     surfaceflow: Any
     evaporation: Any
@@ -139,11 +139,10 @@ class Model(PySWAPBaseModel):
             self.lateraldrainage.write_dra(path)
         if self.crop.cropfiles:
             self.crop.write_crop(path)
-        if self.meteorology.meteodata:
+        if self.meteorology.metfile:
             self.meteorology.write_met(path)
-        if self.irrigation.fixedirrig:
-            if self.irrigation.fixedirrig.irrigationdata:
-                self.irrigation.fixedirrig.write_irg(path)
+        if self.fixedirrigation.irgfile:
+            self.irrigation.fixedirrig.write_irg(path)
 
     @staticmethod
     def _identify_warnings(log: str) -> list[Warning]:
@@ -198,7 +197,7 @@ class Model(PySWAPBaseModel):
                 output=self._read_output(
                     Path(tempdir, 'result_output.csv')),
                 output_tz=self._read_output_tz(
-                    Path(tempdir, 'result_output_tz.csv')) if self.simsettings.inlist_csv_tz else None,
+                    Path(tempdir, 'result_output_tz.csv')) if self.general_settings.inlist_csv_tz else None,
                 log=log,
                 output_old=dict_files if old_output else None,
                 warning=warnings

@@ -5,7 +5,7 @@ Classes:
     Metadata: Metadata of a SWAP model.
 """
 
-from .utils.basemodel import PySWAPBaseModel
+from ..core import PySWAPBaseModel
 from typing import Optional
 from pydantic import Field
 

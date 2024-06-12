@@ -1,11 +1,11 @@
 """
-Subpackage for database related modules.
+All modules related to the database connection and models.
 
 
-Warning:
+!!! warning
     This module is in review and may be significantly changed or removed in the future.
 
-Tip:
+!!! tip
     pySWAP is meant to enable saving model runs to a SQLite database. That way, the users will be 
     able to easily exchange models they built and run them on their own machines.
 """
