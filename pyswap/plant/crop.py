@@ -1,7 +1,7 @@
 from typing import Optional, List, Literal
-from ..core.utils.basemodel import PySWAPBaseModel
-from ..core.utils.fields import Table
-from ..core.utils.files import save_file
+from ..core import PySWAPBaseModel
+from ..core import Table
+from ..core import save_file
 from .crpfile import *
 from pydantic import Field
 

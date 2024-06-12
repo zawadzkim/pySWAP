@@ -1,5 +1,5 @@
-from ..core.utils.basemodel import PySWAPBaseModel
-from ..core.utils.fields import Table
+from ..core import PySWAPBaseModel
+from ..core import Table
 from pydantic import model_validator
 from typing import Literal, Optional
 

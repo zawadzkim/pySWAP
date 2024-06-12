@@ -9,10 +9,10 @@ Classes:
     DrainageInfiltrationResitance: Class for the drainage infiltration resistance.
     Flux: Class for the flux.
 """
-from pyswap.core.utils.basemodel import PySWAPBaseModel
-from pyswap.core.utils.fields import FloatList, Table, ObjectList
-from pyswap.core.utils.valueranges import UNITRANGE
-from pyswap.core.utils.files import open_file
+from ..core import PySWAPBaseModel
+from ..core import FloatList, Table, ObjectList
+from ..core import UNITRANGE
+from ..core import open_file
 from pydantic import Field, model_validator, computed_field
 from typing import Literal, Optional, Any
 
@@ -172,7 +172,7 @@ class Flux(PySWAPBaseModel):
             * 1 - drain tube.
             * 2 - open channel.
         table_datowltb (Table): date DATOWL [date] and channel water level LEVEL. Add suffix to the 
-        dataframe headers according to the level number.
+            dataframe headers according to the level number.
     """
     level_number: int = Field(exclude=True, ge=1, le=5)
     drares: float = Field(ge=10.0, le=1.0e5)

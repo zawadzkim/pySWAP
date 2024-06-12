@@ -4,8 +4,8 @@ Classes:
     SoluteTransport: Solute transport settings.
 """
 
-from pyswap.core.utils.basemodel import PySWAPBaseModel
-from pyswap.core.utils.fields import Table
+from ..core import PySWAPBaseModel
+from ..core import Table
 from typing import Literal, Optional
 
 

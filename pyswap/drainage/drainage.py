@@ -4,8 +4,7 @@ Lateral drainage settings.
 Classes:
     Drainage: The lateral drainage settings.
 """
-from ..core.utils.basemodel import PySWAPBaseModel
-from ..core.utils.files import save_file
+from ..core import PySWAPBaseModel, save_file
 from pydantic import model_validator, Field
 from typing import Literal, Optional, Any
 
@@ -33,7 +32,7 @@ class Drainage(PySWAPBaseModel):
         save_file(
             string=self.drafile.content,
             extension='dra',
-            fname=self.drfil,
+            fname=self.drafile.drfil,
             path=path
         )
 

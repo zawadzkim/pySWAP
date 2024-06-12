@@ -1,4 +1,4 @@
-from ..core.utils.basemodel import PySWAPBaseModel
+from ..core import PySWAPBaseModel
 from typing import Literal, Optional
 from pydantic import model_validator
 
