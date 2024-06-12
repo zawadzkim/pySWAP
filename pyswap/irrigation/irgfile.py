@@ -4,22 +4,40 @@ Classes:
     IrrigationFile: The irrigation file.
 """
 
-from pydantic import computed_field
-from pandas import DataFrame, read_csv
-from pyswap.core.utils.basemodel import PySWAPBaseModel
+from pydantic import Field, validator
+from pandas import read_csv
+from ..core import PySWAPBaseModel, irrigation_schema
+from pandas import DataFrame
 
 
-class IrrigationFile(PySWAPBaseModel):
+class IrgFile(PySWAPBaseModel):
     """The irrigation file.
 
     Attributes:
-        name (str): The name of the file.
-        path (str): The path to the file.
+        irgfil (str): the name of the irgfile without .irg extension.
+        content (Table): The content of the irrigation file.
     """
 
-    name: str
-    path: str
+    irgfil: str
+    content: DataFrame = Field(exclude=True)
 
-    @computed_field(return_type=DataFrame)
-    def content(self):
-        return read_csv(self.path)
+    @validator('content')
+    def _validate_content(cls, v):
+        try:
+            validated = irrigation_schema.validate(v)
+            return validated
+        except Exception as e:
+            raise ValueError(f"Invalid irrigation schema: {e}")
+
+
+def irg_from_csv(irgfil: str, path: str) -> IrgFile:
+    """Load the irrigation file from a CSV file.
+
+    Parameters:
+        irgfil (str): the name of the irgfile without .irg extension.
+        path (str): The path to the CSV file.
+
+    Returns:
+        IrgFile: The irrigation file.
+    """
+    return IrgFile(content=read_csv(path), irgfil=irgfil)

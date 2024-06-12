@@ -6,40 +6,54 @@ Classes:
     ScheduledIrrigation: Holds the settings for scheduled irrigation.
     Irrigation: Holds the irrigation settings of the simulation.
 """
-from ..core.utils.basemodel import PySWAPBaseModel
-from ..core.utils.fields import Table
+from ..core import PySWAPBaseModel
+from ..core import Table, irrigation_schema
 from typing import Optional, Literal, Any
-from pydantic import model_validator, Field
-from .irgfile import IrrigationFile
+from pydantic import model_validator, Field, validator
 
 
 class FixedIrrigation(PySWAPBaseModel):
-    """ Holds the settings for fixed irrigation.
+    """Fixed irrigation settings.
+
+    !!! note
+        This class is only used in the .swp file.
 
     Attributes:
-        swirgfil (Literal[0, 1]): 
+        swirfix (Literal[0, 1]): Switch for fixed irrigation applications
+        swirgfil (Literal[0, 1]): Switch for separate file with fixed irrigation applications
         table_irrigevents (Optional[Table]):
         irgfil (Optional[str]):
         irrigationdata (Optional[IrrigationFile]):
     """
 
-    swirgfil: Literal[0, 1]
+    swirfix: Literal[0, 1]
+    swirgfil: Optional[Literal[0, 1]] = None
     table_irrigevents: Optional[Table] = None
-    irgfil: Optional[str] = None
-    irrigationdata: Optional[IrrigationFile] = Field(
-        default=None, repr=None, exclude=True)
+    irgfile: Optional[Any] = Field(
+        default=None, repr=False)
+
+    @validator('table_irrigevents')
+    def _validate_table_irrigevents(cls, v):
+        try:
+            validated = irrigation_schema.validate(v)
+            return validated
+        except Exception as e:
+            raise ValueError(f"Invalid irrigation schema: {e}")
 
     @model_validator(mode='after')
     def _validate_fixed_irrigation(self) -> None:
-        if self.swirgfil:
-            assert self.irgfil is not None, "irgfil is required when swirgfil is True"
-            assert self.irrigationdata is not None, "irrigationdata is required when swirgfil is True"
-        else:
-            assert self.table_irrigevents is not None, "irrigevents is required when swirgfil is False"
+        if self.swirfix == 1:
+            if self.swirgfil:
+                assert self.irgfile is not None, "irgfile is required when swirgfil is True"
+            else:
+                assert self.table_irrigevents is not None, "irrigevents is required when swirgfil is False"
 
 
 class ScheduledIrrigation(PySWAPBaseModel):
-    """ Holds the settings for scheduled irrigation.
+    """Irrigation scheduling settings.
+
+    !!! note
+        This class is only used in the .crp file.
 
     Attributes:
         startirr (str):
@@ -116,7 +130,6 @@ class Irrigation(PySWAPBaseModel):
         scheduledirrig (Optional[Any]):
     """
 
-    swirfix: Literal[0, 1]
     schedule: Literal[0, 1]
     fixedirrig: Optional[Any] = None
     scheduledirrig: Optional[Any] = None
