@@ -1,9 +1,22 @@
 from typing import Optional, Literal
-from ..core.utils.basemodel import PySWAPBaseModel
+from ..core.basemodel import PySWAPBaseModel
 from pydantic import model_validator
 
 
 class SnowAndFrost(PySWAPBaseModel):
+    """Snow and frost settings for the model.
+
+    Attributes:
+        swsnow (Literal[0, 1]): Switch for calculation of snow accumulation and melt.
+        swfrost (Literal[0, 1]): Switch,  in case of frost reduce soil water flow
+        snowinco (Optional[float]): Initial snow water equivalent
+        teprrain (Optional[float]): Temperature above which all precipitation is rain
+        teprsnow (Optional[float]): Temperature below which all precipitation is snow
+        snowcoef (Optional[float]): Snowmelt calibration factor
+        tfroststa (Optional[float]): Soil temperature (oC) where reduction of water fluxes starts
+        tfrostend (Optional[float]): Soil temperature (oC) where reduction of water fluxes ends
+
+    """
 
     swsnow: Literal[0, 1]
     swfrost: Literal[0, 1]

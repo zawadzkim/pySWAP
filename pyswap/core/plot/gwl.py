@@ -1,12 +1,11 @@
-"""Module for plotting groundwater levels (observed vs simulated)"""
 import matplotlib.pyplot as plt
 from pandas import DataFrame
 
 
-def plot_gwl(simulated: DataFrame, observed: DataFrame, title: str = 'Groundwater levels'):
+def gwl(simulated: DataFrame, observed: DataFrame, title: str = 'Groundwater levels'):
     """Plot groundwater levels (observed vs simulated) and compute the RMSE.
 
-    Args:
+    Arguments:
         simulated (DataFrame): Simulated groundwater levels
         observed (DataFrame): Observed groundwater levels
         title (str, optional): Title of the plot. Defaults to 'Groundwater levels'.
@@ -22,6 +21,7 @@ def plot_gwl(simulated: DataFrame, observed: DataFrame, title: str = 'Groundwate
     ax.set_xlabel('Date')
     ax.set_ylabel('Groundwater level')
     ax.tick_params(axis='x', rotation=45)
+
     # add RMSE to the plot in the right lower corner
     ax.text(0.95, 0.05, f'RMSE: {rmse:.2f}', verticalalignment='bottom',
             horizontalalignment='right', transform=ax.transAxes)

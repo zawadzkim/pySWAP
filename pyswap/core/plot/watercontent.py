@@ -1,14 +1,12 @@
-"""module for plotting water content as heatmap with time on the x-axis and depth on the y-axis"""
-
 from matplotlib import pyplot as plt
 import seaborn as sns
 import pandas as pd
 
 
-def plot_wcontent(df_vap: pd.DataFrame, title: str = 'Water content'):
+def water_content(df_vap: pd.DataFrame, title: str = 'Water content'):
     """Plot water content as heatmap with time on the x-axis and depth on the y-axis.
 
-    Args:
+    Arguments:
         df_vap (pd.DataFrame): DataFrame containing the water content data
         title (str, optional): Title of the plot. Defaults to 'Water content'.
     """

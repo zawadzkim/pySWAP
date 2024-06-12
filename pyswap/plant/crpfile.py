@@ -24,13 +24,13 @@ Warning:
     smoother integration with WOFOST configuration files (yaml) and code readability.
 """
 from pydantic import Field
-from ..core.utils.fields import Table, DayMonth
-from ..core.utils.basemodel import PySWAPBaseModel
-from ..core.utils.fields import Table, Arrays
-from ..core.utils.valueranges import UNITRANGE, YEARRANGE
+from ..core import Table, DayMonth
+from ..core import PySWAPBaseModel
+from ..core import Table, Arrays
+from ..core import UNITRANGE, YEARRANGE
 from typing import Literal, Optional, Any
 from pydantic import Field, model_validator, computed_field
-from ..core.utils.files import open_file
+from ..core import open_file
 
 
 class CropDevelopmentSettings(PySWAPBaseModel):
@@ -190,35 +190,35 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
     rdrrtb: Arrays
     rdrstb: Arrays
 
-    @model_validator(mode='after')
-    def _validate_crop_wofost(self):
-        # validation of the base class
-        if self.swcf == 1:
-            assert self.table_dvs_cf is not None, "table_dvs_cf is required when swcf is 1."
-        elif self.swcf == 2:
-            assert self.table_dvs_ch is not None, "table_dvs_ch is required when swcf is 2."
-            assert self.albedo is not None, "albedo is required when swcf is 2."
-            assert self.rsc is not None, "rsc is required when swcf is 2."
-            assert self.rsw is not None, "rsw is required when swcf is 2."
-        if self.swrd == 1:
-            assert self.rdtb is not None, "rdtb is required when swrd is 1."
-        elif self.swrd == 2:
-            assert self.rdi is not None, "rdi is required when swrd is 2."
-            assert self.rri is not None, "rri is required when swrd is 2."
-            assert self.rdc is not None, "rdc is required when swrd is 2."
-            assert self.swdmi2rd is not None, "swdmi2rd is required when swrd is 2."
-        elif self.swrd == 3:
-            assert self.rlwtb is not None, "rlwtb is required when swrd is 3."
-            assert self.wrtmax is not None, "wrtmax is required when swrd is 3."
-        # validation specific to the WOFOST crop development settings
-        if self.idsl in [0, 1]:
-            assert self.dlc is not None, "dlc is required when idsl is either 1 or 2."
-            assert self.dlo is not None, "dlo is required when idsl is either 1 or 2."
-        elif self.idsl == 2:
-            assert self.vernsat is not None, "vernsat is required when idsl is 2."
-            assert self.vernbase is not None, "vernbase is required when idsl is 2."
-            assert self.verndvs is not None, "verndvs is required when idsl is 2."
-            assert self.verntb is not None, "verntb is required when idsl is 2."
+    # @model_validator(mode='after')
+    # def _validate_crop_wofost(self):
+    #     # validation of the base class
+    #     if self.swcf == 1:
+    #         assert self.table_dvs_cf is not None, "table_dvs_cf is required when swcf is 1."
+    #     elif self.swcf == 2:
+    #         assert self.table_dvs_ch is not None, "table_dvs_ch is required when swcf is 2."
+    #         assert self.albedo is not None, "albedo is required when swcf is 2."
+    #         assert self.rsc is not None, "rsc is required when swcf is 2."
+    #         assert self.rsw is not None, "rsw is required when swcf is 2."
+    #     if self.swrd == 1:
+    #         assert self.rdtb is not None, "rdtb is required when swrd is 1."
+    #     elif self.swrd == 2:
+    #         assert self.rdi is not None, "rdi is required when swrd is 2."
+    #         assert self.rri is not None, "rri is required when swrd is 2."
+    #         assert self.rdc is not None, "rdc is required when swrd is 2."
+    #         assert self.swdmi2rd is not None, "swdmi2rd is required when swrd is 2."
+    #     elif self.swrd == 3:
+    #         assert self.rlwtb is not None, "rlwtb is required when swrd is 3."
+    #         assert self.wrtmax is not None, "wrtmax is required when swrd is 3."
+    #     # validation specific to the WOFOST crop development settings
+    #     if self.idsl in [0, 1]:
+    #         assert self.dlc is not None, "dlc is required when idsl is either 1 or 2."
+    #         assert self.dlo is not None, "dlo is required when idsl is either 1 or 2."
+    #     elif self.idsl == 2:
+    #         assert self.vernsat is not None, "vernsat is required when idsl is 2."
+    #         assert self.vernbase is not None, "vernbase is required when idsl is 2."
+    #         assert self.verndvs is not None, "verndvs is required when idsl is 2."
+    #         assert self.verntb is not None, "verntb is required when idsl is 2."
 
 
 class CropDevelopmentSettingsFixed(CropDevelopmentSettings):
@@ -294,7 +294,7 @@ class OxygenStress(PySWAPBaseModel):
             * 1 - Oxygen stress according to Feddes et al. (1978)
             * 2 - Oxygen stress according to Bartholomeus et al. (2008)
 
-        swoxygentype (Literal[1, 2]): switch for physical processes or repro. functions to calculate oxygen stress
+        swoxygentype (Optional[Literal[1, 2]]): switch for physical processes or repro. functions to calculate oxygen stress
 
             * 1 - physical processes
             * 2 - reproduction functions
@@ -328,8 +328,8 @@ class OxygenStress(PySWAPBaseModel):
     """
 
     swoxygen: Literal[0, 1, 2]
-    swoxygentype: Literal[1, 2]
     swwrtnonox: Literal[0, 1]
+    swoxygentype: Optional[Literal[1, 2]] = None
     aeratecrit: Optional[float] = Field(default=None, ge=0.0001, le=1.0)
     hlim1: Optional[float] = Field(default=None, ge=-100.0, le=100.0)
     hlim2u: Optional[float] = Field(default=None, ge=-1000.0, le=100.0)
@@ -562,14 +562,9 @@ class CO2Correction(PySWAPBaseModel):
             assert self.co2efftb is not None, 'co2efftb is required when swco2 is 1'
             assert self.co2tratb is not None, 'co2tratb is required when swco2 is 1'
 
-# TO BE REMOVED
-
 
 class ScheduledIrrigation(PySWAPBaseModel):
-    """
-    Warning:
-        THIS CLASS SHOULD BE REEMOVED. THESE ARE ALL THE SAME VARIABLES
-        AS IN THE IRRIGATION MODULE."""
+    """Scheduled irrigation settings for .crp file."""
 
     schedule: Literal[0, 1]
     startirr: Optional[DayMonth] = None

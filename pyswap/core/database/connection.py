@@ -1,3 +1,10 @@
+"""
+This module is responsible for creating a connection to the database.
+
+Classes:
+    DatabaseConnection: Creates a connection to the database.
+"""
+
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker
 import os
@@ -10,13 +17,29 @@ TODO: Implement a way to dump a database like postgresql, mysql, etc. to sqlite.
 
 
 class DatabaseConnection:
-    def __init__(self, db_path):
+    """Creates a connection to the database.
+
+    Upon calling the connect method, a check is made to see if the database file
+    exists. If it does not, the file is created. The tables are then checked
+    and created if they do not exist.
+
+    Attributes:
+        engine: The database engine.
+        session: The database session.
+        db_path: The path to the database file.
+
+    Methods:
+        connect: Connect to the database.
+    """
+
+    def __init__(self, db_path: str = 'pyswap.db'):
         self.engine = None
         self.session = None
         self.db_path = db_path
         self.connect()
 
     def connect(self):
+        """Connect to the dabase or create a new one."""
         if os.path.exists(self.db_path):
             if os.path.isfile(self.db_path):
                 print("Database exists. Connecting...")
