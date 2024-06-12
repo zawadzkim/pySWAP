@@ -1,26 +1,28 @@
-# Getting started
+# Quickstart
+
+If you know a lot already about SWAP and pySWAP, feel free to jump straight to the installation, running the test case and setting up your own model.
 
 ## Installation
 
-Currently the package is only distributed as a repository on GitHub. Follow the recommended workflow to get it up and running on your machine:
+Currently the package is only distributed through GitHub (`pip install pyswap` will come soon). To get pyswap up and running type:
 
-```Shell
+```sh
 git clone --recurse-submodules https://github.com/zawadzkim/pySWAP.git
 ```
 
-::: info :information_source:
-Please note that it is necessary to use `--recurse-submodule` flag to make sure that additional submodules in the library are also cloned along with pySWAP.
-:::
+!!! note
+
+    Please note that it is necessary to use `--recurse-submodule` flag to make sure that additional submodules in the library are also cloned along with pySWAP.
 
 Once you are in the freshly cloned repo, type:
 
-```Shell
+```sh
 pip install .
 ```
 
 You can also install it in development mode in case you would like to make changes (and hopefully submit PRs):
 
-```Shell
+```sh
 pip install -e .
 ```
 
@@ -28,7 +30,7 @@ pip install -e .
 
 To see if everything is working fine, open the Python shell and type:
 
-```Python shell
+```py
 >>> from pyswap import testcase
 
 >>> hupsel = testcase.get('hupsel')  # retrieves the hupsel model settings
@@ -75,4 +77,14 @@ Sum                84.53    0.00   82.28  152.05 | Sum               84.53    0.
 Storage Change              0.00    0.00    4.43
 Balance Deviation   0.00    0.00    0.00   -0.00
 ===================================================================================================
+```
+
+## Dependencies
+
+```txt
+pandas>=2.2
+numpy>=1.26
+pydantic>=2.5
+knmi-py>=0.1.0
+jupyter
 ```
