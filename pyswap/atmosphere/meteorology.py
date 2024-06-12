@@ -1,20 +1,19 @@
 """
 Meteorological settings for SWAP simulations.
 
-This object is used to store the meteorological settings of the simulation. it
-also requires the MeteoData object to be passed as an attribute. Upon creation of
-the final model, the .met file is automatically created.
+!!! note
+    `Meteorology` object requires the `MetFile` object to be passed upon initialization. When the model is run,
+    the `MetFile` object is saved to a .met file.
 
 Classes:
-    PenmanMonteith: Holds the Penman-Monteith settings of the simulation.
     Meteorology: Holds the settings of the meteo section of the .swp file.
 """
 
-from ..core.utils.basemodel import PySWAPBaseModel
-from ..core.utils.fields import Table
-from ..core.utils.files import save_file
-from ..core.utils.valueranges import UNITRANGE
-from .metfile import MeteoData
+from ..core.basemodel import PySWAPBaseModel
+from ..core.fields import Table
+from ..core.files import save_file
+from ..core.valueranges import UNITRANGE
+from .metfile import MetFile
 from pydantic import Field, model_validator
 from typing import Optional, Literal
 
@@ -23,36 +22,48 @@ class Meteorology(PySWAPBaseModel):
     """Meteorological settings of the simulation.
 
     Attributes:
-        metfil (str): name of the .met file. Default 'meteo.met'.
         lat (float): latitude of the meteo station [degrees].
         swetr (int): Switch type of weather data for potential evapotranspiration:
-            0 - Use basic weather data and apply Penman-Monteith equation.
-            1 - Use reference evapotranspiration data in combination with crop factors.
+
+            * 0 - Use basic weather data and apply Penman-Monteith equation.
+            * 1 - Use reference evapotranspiration data in combination with crop factors.
+
         swdivide (int): Switch for distribution of E and T. Defaults to 0:
-            0 - Based on crop and soil factors.
-            1 - Based on direct application of Penman-Monteith.
+
+            * 0 - Based on crop and soil factors.
+            * 1 - Based on direct application of Penman-Monteith.
+
         swmetdetail (int): Switch for time interval of evapotranspiration and rainfall weather data:
-            0 - Daily data.
-            1 - Subdaily data.
+
+            * 0 - Daily data.
+            * 1 - Subdaily data.
+
         swrain (int): Switch for use of actual rainfall intensity, defaults to 0:
-            0 - Use daily rainfall amounts.
-            1 - Use daily rainfall amounts + mean intensity.
-            2 - Use daily rainfall amounts + duration.
-            3 - Use detailed rainfall records (dt < 1 day), as supplied in separate file.
+
+            * 0 - Use daily rainfall amounts.
+            * 1 - Use daily rainfall amounts + mean intensity.
+            * 2 - Use daily rainfall amounts + duration.
+            * 3 - Use detailed rainfall records (dt < 1 day), as supplied in separate file.
+
         swetsine (int): Switch, distribute daily Tp and Ep according to sinus wave, default to 0:
-            0 - No distribution.
-            1 - Distribute Tp and Ep according to sinus wave.
-        meteodata (MeteoData): MeteoData model.
-        penman_monteith (PenmanMonteith): PenmanMonteith model.
+
+            * 0 - No distribution.
+            * 1 - Distribute Tp and Ep according to sinus wave.
+
+        metfile (MetFile): MetFile model containing meteorological data to be saved to .met file.
+        alt (float): Altitude of the meteo station [m].
+        altw (float): Altitude of the wind [m].
+        angstroma (float): Fraction of extraterrestrial radiation reaching the earth on overcast days.
+        angstromb (float): Additional fraction of extraterrestrial radiation reaching the earth on clear days.
         table_rainflux (Table): rainfall intensity RAINFLUX as function of time TIME.
         rainfil (str): file name of file with detailed rainfall data.
         nmetdetail (int): Number of weather data records each day.
 
     Methods:
-        write_met: Writes the .met file.
+        write_met: Write the .met file.
     """
 
-    metfil: str
+    # metfil: str
     lat: float = Field(ge=-90, le=90)
     swetr: Literal[0, 1]
     swdivide: Literal[0, 1]
@@ -60,8 +71,8 @@ class Meteorology(PySWAPBaseModel):
     swrain: Optional[Literal[0, 1, 2, 3]] = 0
     # TODO: SWETSINE should be optional, but Fortran code evaluates its presence anyway
     swetsine: Literal[0, 1] = 0
-    meteodata: Optional[MeteoData] = Field(
-        default=None, repr=False, exclude=True)
+    metfile: Optional[MetFile] = Field(
+        default=None, repr=False)
     alt: float = Field(ge=-400.0, le=3000.0)
     altw: float = Field(default=None, ge=0.0, le=99.0)
     angstroma: float = Field(default=None, **UNITRANGE)
@@ -92,19 +103,21 @@ class Meteorology(PySWAPBaseModel):
                 assert self.nmetdetail is not None, "NMETDETAIL is required when SWMETDETAIL is 1"
 
     def write_met(self, path: str):
-        """Writes the .met file.
+        """Write the .met file.
 
-        Note: in this function the extension is not passed because
-        swp file requires the metfile parameter to be passed already with 
-        the extension.
+        !!! note
 
-        Args:
+            in this function the extension is not passed because
+            swp file requires the metfile parameter to be passed already with 
+            the extension.
+
+        Parameters:
             path (str): Path to the file.
         """
         save_file(
-            string=self.meteodata.model_dump(mode='json')['content'],
-            fname=self.metfil,
+            string=self.metfile.content.to_csv(index=False),
+            fname=self.metfile.metfil,
             path=path
         )
 
-        print(f'{self.metfil} saved.')
+        print(f'{self.metfile.metfil} saved.')
