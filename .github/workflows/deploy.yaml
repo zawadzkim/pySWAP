@@ -3,9 +3,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'example-mkdocs/**'
-  workflow_dispatch:
+      - master
+
 permissions:
   contents: write
   pages: write
@@ -28,7 +27,7 @@ jobs:
             mkdocs-include-markdown-plugin \
             mkdocs-autorefs \
             mkdocstrings-python
-      - run: mkdocs gh-deploy --config-file example-mkdocs/mkdocs.yml --force
+      - run: mkdocs gh-deploy --config-file mkdocs.yml --force
  
   deploy_mkdocs:
     needs: build_mkdocs
