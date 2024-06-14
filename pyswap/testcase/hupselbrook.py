@@ -1,7 +1,6 @@
 from datetime import date as dt
 from pandas import DataFrame
-from pyswap.core.metadata import Metadata
-from pyswap.core.simsettings import SimSettings
+from pyswap.simsettings import Metadata, GeneralSettings
 from pyswap.atmosphere import Meteorology, load_from_csv
 from pyswap.plant import (Preparation, OxygenStress, DroughtStress,
                           Interception, CropDevelopmentSettingsFixed, CropDevelopmentSettingsWOFOST)
@@ -12,7 +11,7 @@ from pyswap.soilwater import (
 from pyswap.drainage import Drainage
 from pyswap.drainage import DraFile
 from pyswap.boundary.boundary import BottomBoundary
-from pyswap.core.model import Model
+from pyswap.model import Model
 from pathlib import Path
 from pyswap.drainage.drafile import DraSettings, DrainageFormula
 
@@ -26,7 +25,7 @@ def _make_hupselbrook():
                     project="pySWAP test - hupsel brook",
                     swap_ver="4.2")
 
-    simset = SimSettings(
+    simset = GeneralSettings(
         tstart='2002-01-01',
         tend='2004-12-31',
         nprintday=1,
