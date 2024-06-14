@@ -6,6 +6,7 @@ __pycache__/
 *.pyw
 *.pyz
 *.pyzw
+cache/
 
 # Virtual Environments
 venv/
@@ -33,14 +34,13 @@ env2/
 .DS_Store
 Thumbs.db
 
-/legacy
 *.egg-info
 /docs/build
 /docs/source
 *.bat
 Makefile
-node_modules
-docs/.vitepress/dist
-docs/.vitepress/cache
 CD_Erika/
 RD_Erika/
+2. opeil/
+.data
+.examples
