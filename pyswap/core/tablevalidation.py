@@ -13,6 +13,8 @@ Attributes:
 """
 
 import pandera as pa
+import pandas as pd
+from pandera.typing import DataFrame
 
 irrigation_schema = pa.DataFrameSchema({
     'IRDATE': pa.Column(pa.DateTime),
@@ -23,3 +25,18 @@ irrigation_schema = pa.DataFrameSchema({
     coerce=True
 )
 """Validate irrigation data."""
+
+
+class BaseModel(pa.DataFrameModel):
+    """Base model with create method for preprocessing and validation."""
+
+    class Config:
+        coerce = True
+
+    @classmethod
+    def create(cls, data: dict) -> DataFrame:
+        df = pd.DataFrame(data)
+        df.columns = df.columns.str.upper()
+        validated_df = cls.validate(df)
+        return validated_df
+
