@@ -1,8 +1,10 @@
 # Introduction
 
+Welcome to the documentation of pySWAP. Vast majority of the content here related to the model variables comes from the template files of the original input files made by SWAP developers ([can be previewed here](wiki/input-files/1-input-files.md)), user manual (Kroes et al, 2017) and other documents shipped witht he software through SWAP website ([link to the model website](https://www.swap.alterra.nl/)).
+
 ## What is pySWAP?
 
-pySWAP is a Python wrapper (not Python implementation) for the SWAP hydrological model developed at Wageningen University and Research ([link to the model website](https://www.swap.alterra.nl/)). It simplifies the creation of input files, execution of the SWAP model, and analysis and visualization of results. Users can set up and document their models in Jupyter notebooks, enhancing transparency, collaboration, and facilitating community-supported debugging.
+pySWAP is a Python wrapper (not Python implementation) for the SWAP hydrological model developed at Wageningen University and Research. It simplifies the creation of input files, execution of the SWAP model, and analysis and visualization of results. Users can set up and document their models in Jupyter notebooks, enhancing transparency, collaboration, and facilitating community-supported debugging.
 
 !!! warning
 
@@ -18,14 +20,40 @@ There are several packages to run SWAP model written in R, namely the rSWAP, SWA
 
 ## What does pySWAP offer you?
 
-- **Intuitive (hopefully) API**
+<div class="grid cards" markdown>
 
-  pySWAP is heavily using object-orinted programming principles, so you mostly work with class objects. We attempted to make them correspond as well as possible to the traditional input files structure, so each class represents a section.
+- :material-language-python:{ .lg .middle } **Python interface**
 
-- **Input validation**
+      ***
 
-  When you create the classes, validation is performed for each model instance, making sure that you provided the right type of variables and they are within the required range. This is particularily beneficial if you submit your models as jobs to HPC. You'd rather know if the SWAP will cruch because you missed a switch immediatelly.
+      Interact with the SWAP model using intuitive object-oriented Python API
 
-- **Integration of public APIs**
+      [:octicons-arrow-right-24: Reference](reference/api-reference.md)
 
-  Python is extremely useful in interfacing public APIs. Data sources like weather services or geological repositories can be used to automatically build models.
+- :octicons-checklist-16:{ .lg .middle } **Input validation**
+
+      ***
+
+      pySWAP uses Pydantic and Pandera validation frameworks to make sure
+      SWAP simulations run smoothly
+
+      <!-- [:octicons-arrow-right-24: Customization](#) -->
+
+- :fontawesome-brands-markdown:{ .lg .middle } **Markdown documentation**
+
+      ***
+
+      This documentation is written in markdown allowing anyone to contribute
+
+      [:octicons-arrow-right-24: See how](user-guide/CONTRIBUTING.md)
+
+- :material-scale-balance:{ .lg .middle } **Open Software - Open Science**
+
+      ***
+
+      pySWAP is open-source with MIT license and aims at improving
+      transparency and sharability of modelling work
+
+      [:octicons-arrow-right-24: License](#)
+
+</div>
