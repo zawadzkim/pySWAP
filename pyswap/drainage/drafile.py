@@ -9,10 +9,8 @@ Classes:
     DrainageInfiltrationResitance: Class for the drainage infiltration resistance.
     Flux: Class for the flux.
 """
-from ..core import PySWAPBaseModel
-from ..core import FloatList, Table, ObjectList
-from ..core import UNITRANGE
-from ..core import open_file
+from ..core import (PySWAPBaseModel, FloatList, Table,
+                    ObjectList, UNITRANGE, open_file, open_file)
 from pydantic import Field, model_validator, computed_field
 from typing import Literal, Optional, Any
 
@@ -21,28 +19,22 @@ class DraFile(PySWAPBaseModel):
     """Main class representing the drainage file (.dra) for SWAP.
 
     Attributes:
-        name (str): Name of the file.
-        path (Optional[str]): Path to the file.
+        drfil (str): Name of the file.
         general (Any): General settings.
         fluxtable (Optional[Any]): Flux table.
         drainageformula (Optional[Any]): Drainage formula.
         drainageinfiltrationres (Optional[Any]): Drainage infiltration resistance.
     """
 
-    name: str = Field(exclude=True)
-    path: Optional[str] = None
-    general: Any
-    fluxtable: Optional[Any] = None
-    drainageformula: Optional[Any] = None
-    drainageinfiltrationres: Optional[Any] = None
+    drfil: str
+    general: Any = Field(exclude=True)
+    fluxtable: Optional[Any] = Field(default=None, exclude=True)
+    drainageformula: Optional[Any] = Field(default=None, exclude=True)
+    drainageinfiltrationres: Optional[Any] = Field(default=None, exclude=True)
 
-    @computed_field(return_type=str)
+    @property
     def content(self):
-        """Return the content of the .dra file."""
-        if self.path:
-            return open_file(self.path)
-        else:
-            return self._concat_sections()
+        return self._concat_sections()
 
 
 class DraSettings(PySWAPBaseModel):
@@ -58,15 +50,16 @@ class DraSettings(PySWAPBaseModel):
         swdivd (Literal[1, 2]): Calculate vertical distribution of drainage flux in groundwater.
         cofani (Optional[FloatList]): specify anisotropy factor COFANI (horizontal/vertical saturated hydraulic conductivity) for each soil layer (maximum MAHO)
         swdislay (Literal[0, 1, 2, 3, '-']): Switch to adjust upper boundary of model discharge layer.
+
+            * 0 - No adjustment
+            * 1 - Adjusment based on depth of top of model discharge
+            * 2 - Adjusment based on factor of top of model discharge
+
     """
     dramet: Literal[1, 2, 3]
     swdivd: Literal[1, 2]
     cofani: Optional[FloatList]
     swdislay: Literal[0, 1, 2, 3, '-']
-
-    # @model_validator(mode='after')
-    # def _validate_drasettings(self):
-    #     if
 
 
 class DrainageFluxTable(PySWAPBaseModel):
@@ -171,6 +164,7 @@ class Flux(PySWAPBaseModel):
 
             * 1 - drain tube.
             * 2 - open channel.
+
         table_datowltb (Table): date DATOWL [date] and channel water level LEVEL. Add suffix to the 
             dataframe headers according to the level number.
     """
@@ -189,7 +183,7 @@ class Flux(PySWAPBaseModel):
             assert self.l is not None, 'l has to be provided if swallo is 1.'
 
     def model_dump(self, **kwargs):
-        # Call the super method to get the dictionary representation.
+
         d = super().model_dump(**kwargs)
 
         # If level_number is set, modify the key names.
