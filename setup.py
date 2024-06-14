@@ -8,4 +8,9 @@ setup(
     author_email='mateusz.zawadzki@vub.be',
     url='',
     packages=find_packages(),
+    package_data={
+        'pyswap.libs.swap420-exe': ['swap.exe'],
+        'pyswap.libs.swap420-linux': ['swap420'],
+        'pyswap.testcase.data': ['*'],
+    }
 )
