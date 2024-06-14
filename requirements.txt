@@ -3,3 +3,7 @@ numpy>=1.26
 pydantic>=2.5
 knmi-py>=0.1.0
 jupyter
+mkdocs-material
+mkdocs-include-markdown-plugin
+mkdocs-autorefs
+mkdocstrings-python
