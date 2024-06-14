@@ -44,6 +44,6 @@ jobs:
           pip install mkdocs-autorefs
           pip install mkdocstrings-python
       - name: Deploy MkDocs
-        run: mkdocs gh-deploy --force --config-file docs/mkdocs.yml
+        run: mkdocs gh-deploy --force
         env:
           PYTHONPATH: $PYTHONPATH:$GITHUB_WORKSPACE  # Ensure PYTHONPATH is set for this step
