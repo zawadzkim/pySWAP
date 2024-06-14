@@ -1,5 +1,5 @@
 import pytest
-from pyswap.core.boundary import LateralDrainage
+from pyswap.boundary.boundary import LateralDrainage
 from pydantic import ValidationError
 
 
