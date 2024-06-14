@@ -30,4 +30,4 @@ jobs:
           pip install mkdocs-include-markdown-plugin
           pip install mkdocs-autorefs
           pip install mkdocstrings-python
-      - run: mkdocs gh-deploy --force --config-file docs/mkdocs.yml
+      - run: mkdocs gh-deploy --force
