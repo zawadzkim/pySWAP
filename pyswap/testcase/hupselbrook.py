@@ -2,21 +2,22 @@ from datetime import date as dt
 from pandas import DataFrame
 from pyswap.core.metadata import Metadata
 from pyswap.core.simsettings import SimSettings
-from pyswap.atmosphere import Meteorology, weather_knmi, PenmanMonteith
-from pyswap.plant.createcrop import (Preparation, OxygenStress, DroughtStress,
-                                     Interception, CropDevelopmentSettingsFixed, CropDevelopmentSettingsWOFOST)
+from pyswap.atmosphere import Meteorology, load_from_csv
+from pyswap.plant import (Preparation, OxygenStress, DroughtStress,
+                          Interception, CropDevelopmentSettingsFixed, CropDevelopmentSettingsWOFOST)
 from pyswap.plant import CropFile, Crop
 from pyswap.irrigation import Irrigation, FixedIrrigation
 from pyswap.soilwater import (
     SoilMoisture, SurfaceFlow, Evaporation, SoilProfile)
-from pyswap.drainage import LateralDrainage, DraFile
-from pyswap.core.boundary import BottomBoundary
+from pyswap.drainage import Drainage
+from pyswap.drainage import DraFile
+from pyswap.boundary.boundary import BottomBoundary
 from pyswap.core.model import Model
 from pathlib import Path
-from pyswap.drainage.createdra.drafile import DraSettings, DrainageFormula
+from pyswap.drainage.drafile import DraSettings, DrainageFormula
 
 
-def _run_hupsel():
+def _make_hupselbrook():
     # %% Basic settings of the model
 
     meta = Metadata(author="John Doe",
@@ -42,24 +43,23 @@ def _run_hupsel():
 
     # %% Meteorology section
 
-    pen_mon = PenmanMonteith(
-        alt=10.0,
-        altw=10.0,
-        angstroma=0.25,
-        angstromb=0.5,
-    )
-
     # Obtain the meteorological data from KNMI
-    meteo_data = weather_knmi(stations='283')
+    # meteo_data = load_from_knmi(stations='283')
+    # load the meteorological data from a cscv file
+    metfil_path = Path(__file__).parent.joinpath('./data/hupsel_meteo.met')
+    meteo_data = load_from_csv(metfil_path, comment='*')
 
     meteo = Meteorology(
         metfil='283.met',
         lat=52.0,
         swetr=0,
-        file_meteo=meteo_data,
-        penman_monteith=pen_mon,
+        meteodata=meteo_data,
         swdivide=1,
-        swmetdetail=0
+        swmetdetail=0,
+        alt=10.0,
+        altw=10.0,
+        angstroma=0.25,
+        angstromb=0.5,
     )
 
     # %% Creating the .crp file for maize (fixed crop)
@@ -435,10 +435,10 @@ def _run_hupsel():
     # dranage_file = DrainageFile(
     #     name='swap', path=str(dra))
 
-    lateral_drainage = LateralDrainage(
+    lateral_drainage = Drainage(
         swdra=1,
         drfil='swap',
-        drainagefile=dra_file
+        drafile=dra_file
     )
 
     # %% bottom boundary
@@ -462,4 +462,4 @@ def _run_hupsel():
         bottomboundary=bottom_boundary
     )
 
-    return model.run()
+    return model
