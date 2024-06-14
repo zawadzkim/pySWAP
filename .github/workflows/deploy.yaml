@@ -27,7 +27,6 @@ jobs:
             mkdocs-material-
       - run: 
           pip install mkdocs-material
-          pip install mkdocs-git-authors-plugin
           pip install mkdocs-include-markdown-plugin
           pip install mkdocs-autorefs
           pip install mkdocstrings-python

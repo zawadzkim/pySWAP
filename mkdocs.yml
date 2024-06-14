@@ -4,7 +4,7 @@ repo_url: https://github.com/zawadzkim/pySWAP
 repo_name: zawadzkim/pySWAP
 
 watch:
-  - ../pyswap
+  - ./pyswap
 
 extra_css:
   - stylesheets/extra.css
@@ -46,7 +46,6 @@ plugins:
   - autorefs
   - blog
   - include-markdown
-  - git-authors
   - mkdocstrings:
       handlers:
         python:
