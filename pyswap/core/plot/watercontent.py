@@ -6,7 +6,7 @@ import pandas as pd
 def water_content(df_vap: pd.DataFrame, title: str = 'Water content'):
     """Plot water content as heatmap with time on the x-axis and depth on the y-axis.
 
-    Arguments:
+    Parameters:
         df_vap (pd.DataFrame): DataFrame containing the water content data
         title (str, optional): Title of the plot. Defaults to 'Water content'.
     """

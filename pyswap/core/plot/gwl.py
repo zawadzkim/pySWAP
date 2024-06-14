@@ -1,3 +1,7 @@
+"""
+Plot groundwater levels (observed vs simulated) and compute the RMSE.
+"""
+
 import matplotlib.pyplot as plt
 from pandas import DataFrame
 
@@ -5,7 +9,7 @@ from pandas import DataFrame
 def gwl(simulated: DataFrame, observed: DataFrame, title: str = 'Groundwater levels'):
     """Plot groundwater levels (observed vs simulated) and compute the RMSE.
 
-    Arguments:
+    Parameters:
         simulated (DataFrame): Simulated groundwater levels
         observed (DataFrame): Observed groundwater levels
         title (str, optional): Title of the plot. Defaults to 'Groundwater levels'.

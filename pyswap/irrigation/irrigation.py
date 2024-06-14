@@ -56,20 +56,38 @@ class ScheduledIrrigation(PySWAPBaseModel):
         This class is only used in the .crp file.
 
     Attributes:
-        startirr (str):
-        endirr (str):
-        cirrs (float):
-        isuas (int):
-        phFieldCapacity (float):
-        tcs (int):
-        phormc (Optional[int]):
-        swcirrthres (Optional[bool]):
-        cirrthres (Optional[float]):
-        perirrsurp (Optional[float]):
-        irgthreshold (Optional[float]):
-        tcsfix (Optional[int]):
-        dcrit (Optional[float]):
-        irgdayfix (Optional[int]):
+        schedule (Literal[0, 1]): Switch for application irrigation scheduling
+        startirr (str): Specify day and month at which irrigation scheduling starts
+        endirr (str): Specify day and month at which irrigation scheduling stops
+        cirrs (float): Solute concentration of irrigation water
+        isuas (int): Switch for type of irrigation method
+
+            * 0 - Sprinkler irrigation
+            * 1 - Surface irrigation
+
+        tcs (int): Choose one of the following timing criteria options
+
+            * 1 - Ratio actual/potential transpiration
+            * 2 - Depletion of Readily Available Water
+            * 3 - Depletion of Totally Available Water
+            * 4 - Depletion of absolute Water Amount
+            * 6 - Fixed weekly irrigation
+            * 7 - Pressure head
+            * 8 - Moisture content
+
+        phFieldCapacity (float): Soil water pressure head at field capacity
+        irgthreshold (Optional[float]): Threshold value for weekly irrigation
+        dcrit (Optional[float]): Depth of the sensor
+        swcirrthres (Optional[bool]): Switch for over-irrigation
+        cirrthres (Optional[float]): Threshold salinity concentration above which over-irrigation occur
+        perirrsurp (Optional[float]): Over-irrigation of the usually scheduled irrigation depth
+        tcsfix (Optional[int]): Switch for minimum time interval between irrigation applications
+        irgdayfix (Optional[int]): Minimum number of days between irrigation applications
+        phormc (Optional[int]): Switch for the use of pressure head or water content
+
+            * 0 - Pressure head
+            * 1 - Water content
+            
         dvs_tc1 (Optional[Table]):
         dvs_tc2 (Optional[Table]):
         dvs_tc3 (Optional[Table]):

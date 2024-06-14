@@ -1,4 +1,7 @@
-"""The main subpackage for the SWAP model. 
+"""
+# SWAP model package
+
+The main subpackage for the SWAP model. 
 
 Modules:
     model: SWAP model class

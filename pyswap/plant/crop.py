@@ -7,7 +7,21 @@ from pydantic import Field
 
 
 class Crop(PySWAPBaseModel):
-    """Holds the crop settings of the simulation."""
+    """Holds the crop settings of the simulation.
+
+    Attributes:
+        swcrop (int): Switch for crop:
+
+            * 0 - Bare soil.
+            * 1 - Simulate crop.
+
+        rds (Optional[float]): Rooting depth of the crop [cm].
+        table_croprotation (Optional[Table]): Table with crop rotation data.
+        cropfiles (Optional[List[CropFile]]): List of crop files.
+
+    Methods:
+        write_crop: Write the crop files.
+    """
 
     swcrop: Literal[0, 1]
     rds: Optional[float] = Field(default=None, ge=1, le=5000)

@@ -1,13 +1,14 @@
+"""Plot evapotranspiration (potential vs actual) and compute the RMSE."""
+
 import seaborn as sns
 import matplotlib.pyplot as plt
 from pandas import DataFrame
 
 
 def evapotranspiration(potential: DataFrame, actual: DataFrame, title: str = 'Evapotranspiration'):
-    """
-    Plot evapotranspiration (potential vs actual) and compute the RMSE.
+    """Plot evapotranspiration (potential vs actual) and compute the RMSE.
 
-    Arguments:
+    Paremeters:
         potential (DataFrame): DataFrame containing dates and values for potential evapotranspiration.
         actual (DataFrame): DataFrame containing dates and values for actual evapotranspiration.
         title (str, optional): Title of the plot. Defaults to 'Evapotranspiration'.
