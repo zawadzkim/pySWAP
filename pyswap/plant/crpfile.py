@@ -24,13 +24,10 @@ Warning:
     smoother integration with WOFOST configuration files (yaml) and code readability.
 """
 from pydantic import Field
-from ..core import Table, DayMonth
-from ..core import PySWAPBaseModel
-from ..core import Table, Arrays
-from ..core import UNITRANGE, YEARRANGE
+from ..core import (Table, Arrays, DayMonth, UNITRANGE,
+                    YEARRANGE, PySWAPBaseModel, open_file)
 from typing import Literal, Optional, Any
 from pydantic import Field, model_validator, computed_field
-from ..core import open_file
 
 
 class CropDevelopmentSettings(PySWAPBaseModel):
@@ -571,7 +568,7 @@ class ScheduledIrrigation(PySWAPBaseModel):
     endirr: Optional[DayMonth] = None
     cirrs: Optional[float] = Field(default=None, ge=0.0, le=100.0)
     isuas: Optional[Literal[0, 1]] = None
-    tcs: Optional[Literal[1, 2, 3, 4, 5, 6, 7, 8]] = None
+    tcs: Optional[Literal[1, 2, 3, 4, 6, 7, 8]] = None
     phfieldcapacity: Optional[float] = Field(default=None, ge=-1000.0, le=0.0)
     irgthreshold: Optional[float] = Field(default=None, ge=0.0, le=20.0)
     dcrit: Optional[float] = Field(default=None, ge=-100.0, le=0.0)
@@ -678,6 +675,18 @@ class CropFile(PySWAPBaseModel):
 
     This class collects all the settings for the crop file. Currently the types of the 
     attributes are set to Any because the validation is not yet implemented.
+
+    Attributes:
+        name (str): Name of the crop
+        path (Optional[str]): Path to the .crp file
+        prep (Optional[Any]): Preparation settings
+        cropdev_settings (Optional[Any]): Crop development settings
+        oxygenstress (Optional[Any]): Oxygen stress settings
+        droughtstress (Optional[Any]): Drought stress settings
+        saltstress (Optional[Any]): Salt stress settings
+        compensaterwu (Optional[Any]): Compensate root water uptake stress settings
+        interception (Optional[Any]): Interception settings
+        scheduledirrigation (Optional[Any]): Scheduled irrigation settings
     """
 
     name: str = Field(exclude=True)
