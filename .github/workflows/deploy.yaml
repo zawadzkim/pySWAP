@@ -1,8 +1,8 @@
-name: deploy mkdocs to gh pages
+name: deploy to gh pages 
 on:
   push:
     branches:
-      - master
+      - master 
       - main
 permissions:
   contents: write
@@ -11,39 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        name: Configure Git Credentials
         with:
-          fetch-depth: 0  # Ensure full history is fetched for correct git revision dates
-      - name: Configure Git Credentials
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-      - name: Create Cache Directory
-        run: mkdir -p .cache  # Ensure the cache directory exists
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
       - uses: actions/cache@v4
         with:
           key: mkdocs-material-${{ env.cache_id }}
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - name: Clean gh-pages Branch
-        run: |
-          git fetch origin
-          git checkout gh-pages
-          git rm -rf .
-          git clean -fdx
-          git commit --allow-empty -m "Clean gh-pages branch"
-          git push origin gh-pages
-      - name: Install Dependencies
-        run: |
-          pip install mkdocs-material
-          pip install mkdocs-include-markdown-plugin
-          pip install mkdocs-autorefs
-          pip install mkdocstrings-python
-      - name: Deploy MkDocs
-        run: mkdocs gh-deploy --force
-        env:
-          PYTHONPATH: $PYTHONPATH:$GITHUB_WORKSPACE  # Ensure PYTHONPATH is set for this step
+      - run: pip install mkdocs-material 
+      - run: mkdocs gh-deploy --force
