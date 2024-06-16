@@ -7,6 +7,10 @@ on:
     paths-ignore:
       - 'docs/**'
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   release_and_publish:
     runs-on: ubuntu-latest
