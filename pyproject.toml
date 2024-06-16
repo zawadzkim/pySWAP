@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "pyswap"
+version = "0.1.0"
+description = "Python wrapper for SWAP hydrological model."
+authors = ["Mateusz <zawadzkimat@outlook.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2.2"
+numpy = "^1.26.4"
+pydantic = "^2.7.4"
+knmi-py = "^0.1.10"
+jupyter = "^1.0.0"
+
+
+[tool.poetry.group.dev.dependencies]
+mkdocs-material = "^9.5.27"
+mkdocs-include-markdown-plugin = "^6.2.0"
+mkdocs-autorefs = "^1.0.1"
+mkdocstrings-python = "^1.10.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
