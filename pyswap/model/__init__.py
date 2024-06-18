@@ -8,5 +8,5 @@ Modules:
     result: SWAP result class
 """
 
-from .model import *
-from .result import *
+from .model import Model
+from .result import Result
