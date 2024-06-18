@@ -90,12 +90,14 @@ class Model(PySWAPBaseModel):
     def _copy_executable(tempdir: Path):
         """Copy the appropriate SWAP executable to the temporary directory."""
         if IS_WINDOWS:
-            with resources.path("pyswap.libs.swap420-exe", "swap.exe") as exec_path:
-                shutil.copy(str(exec_path), str(tempdir))
+            exec_path = resources.files(
+                "pyswap.libs.swap420-exe").joinpath("swap.exe")
+            shutil.copy(str(exec_path), str(tempdir))
             print('Copying the windows version of SWAP into temporary directory...')
         else:
-            with resources.path("pyswap.libs.swap420-linux", "swap420") as exec_path:
-                shutil.copy(str(exec_path), str(tempdir))
+            exec_path = resources.files(
+                "pyswap.libs.swap420-linux").joinpath("swap420")
+            shutil.copy(str(exec_path), str(tempdir))
             print('Copying linux executable into temporary directory...')
 
     @staticmethod
