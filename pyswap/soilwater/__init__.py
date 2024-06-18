@@ -12,8 +12,8 @@ Modules:
 """
 
 from .snow import SnowAndFrost
-from .evaporation import *
-from .soilmoisture import *
-from .soilprofile import *
-from .surfaceflow import *
+from .evaporation import Evaporation
+from .soilmoisture import SoilMoisture
+from .soilprofile import SoilProfile
+from .surfaceflow import SurfaceFlow
 from .tables import INIPRESSUREHEAD, MXPONDTB, SOILPROFILE, SOILHYDRFUNC
