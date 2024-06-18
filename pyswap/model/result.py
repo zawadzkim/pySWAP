@@ -54,8 +54,6 @@ class Result(BaseModel):
         """Return the .blc file if it exists."""
         return self.output_old.get('blc') if self.output_old else None
 
-    @computed_field(return_type=str)
-    def water_balance(self):
-        watbal_cols = ['RAIN', 'IRRIG', 'INTERC', 'RUNOFF', 'DRAINAGE',
-                       'DSTOR', 'EPOT', 'EACT', 'TPOT', 'TACT', 'QBOTTOM', 'GWL']
-        return self.result[watbal_cols].groupby['year'].mean()
+    def yearly_summary(self):
+        """Return yearly sums of all output variables."""
+        return self.output.resample('YE').sum()

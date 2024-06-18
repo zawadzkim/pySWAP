@@ -1,31 +1,18 @@
 from datetime import date as dt
-from pandas import DataFrame
-from pyswap.simsettings import Metadata, GeneralSettings
-from pyswap.atmosphere import Meteorology, load_from_csv
-from pyswap.plant import (Preparation, OxygenStress, DroughtStress,
-                          Interception, CropDevelopmentSettingsFixed, CropDevelopmentSettingsWOFOST)
-from pyswap.plant import CropFile, Crop
-from pyswap.irrigation import Irrigation, FixedIrrigation
-from pyswap.soilwater import (
-    SoilMoisture, SurfaceFlow, Evaporation, SoilProfile)
-from pyswap.drainage import Drainage
-from pyswap.drainage import DraFile
-from pyswap.boundary.boundary import BottomBoundary
-from pyswap.model import Model
+import pyswap as ps
 from pathlib import Path
-from pyswap.drainage.drafile import DraSettings, DrainageFormula
 
 
 def _make_hupselbrook():
     # %% Basic settings of the model
 
-    meta = Metadata(author="John Doe",
-                    institution="University of Somewhere",
-                    email="john.doe@somewhere.com",
-                    project="pySWAP test - hupsel brook",
-                    swap_ver="4.2")
+    meta = ps.Metadata(author="John Doe",
+                       institution="University of Somewhere",
+                       email="john.doe@somewhere.com",
+                       project="pySWAP test - hupsel brook",
+                       swap_ver="4.2")
 
-    simset = GeneralSettings(
+    simset = ps.GeneralSettings(
         tstart='2002-01-01',
         tend='2004-12-31',
         nprintday=1,
@@ -37,22 +24,22 @@ def _make_hupselbrook():
         swsba=1,
         swinc=1,
         swcsv=1,
-        inlist_csv=['pond', 'watbal']
+        inlist_csv=['rain', 'irrig', 'interc', 'runoff', 'drainage',
+                    'dstor', 'epot', 'eact', 'tpot', 'tact', 'qbottom', 'gwl']
     )
 
     # %% Meteorology section
 
-    # Obtain the meteorological data from KNMI
-    # meteo_data = load_from_knmi(stations='283')
-    # load the meteorological data from a cscv file
-    metfil_path = Path(__file__).parent.joinpath('./data/hupsel_meteo.met')
-    meteo_data = load_from_csv(metfil_path, comment='*')
+    metfil_path = Path(__file__).parent.joinpath(
+        './data/1-hupselbrook/283.csv')
 
-    meteo = Meteorology(
-        metfil='283.met',
+    meteo_data = ps.atmosphere.load_from_csv(
+        metfil='283.met', csv_path=metfil_path)
+
+    meteo = ps.Meteorology(
         lat=52.0,
         swetr=0,
-        meteodata=meteo_data,
+        metfile=meteo_data,
         swdivide=1,
         swmetdetail=0,
         alt=10.0,
@@ -63,51 +50,58 @@ def _make_hupselbrook():
 
     # %% Creating the .crp file for maize (fixed crop)
 
-    prep = Preparation(
+    maize_prep = ps.plant.Preparation(
         swprep=0,
         swsow=0,
         swgerm=0,
         dvsend=3.0,
         swharv=0
     )
-    df_dvs_lai = DataFrame({
-        'dvs': [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0],
-        'lai': [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20]
+
+    scheduled_irrigation = ps.ScheduledIrrigation(
+        schedule=0
+    )
+
+    DVS = [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
+
+    maize_gctb = ps.plant.GCTB.create({
+        'DVS': DVS,
+        'LAI': [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20]
     })
 
-    df_dvs_ch = DataFrame({
-        'dvs': [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0],
-        'ch': [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0]
+    maize_chtb = ps.plant.CHTB.create({
+        'DVS': DVS,
+        'CH': [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0]
     })
 
-    df_dvs_rd = DataFrame({
-        'dvs': [0.0, 0.3, 0.5, 0.7, 1.0, 2.0],
-        'rd': [5.0, 20.0, 50.0, 80.0, 90.0, 100.0]
+    maize_rdtb = ps.plant.RDTB.create({
+        'DVS': [0.0, 0.3, 0.5, 0.7, 1.0, 2.0],
+        'RD': [5.0, 20.0, 50.0, 80.0, 90.0, 100.0]
     })
 
-    df_rrd_rdens = DataFrame({
-        'rrd': [0.0, 1.0],
-        'rdens': [1.0, 0.0]
+    maize_rdctb = ps.plant.RDCTB.create({
+        'RRD': [0.0, 1.0],
+        'RDENS': [1.0, 0.0]
     })
 
-    cropdev_settings = CropDevelopmentSettingsFixed(
+    maize_cropdev_settings = ps.plant.CropDevelopmentSettingsFixed(
         idev=1,
         lcc=168,
         kdif=0.6,
         kdir=0.75,
         swgc=1,
-        gctb=df_dvs_lai,
+        gctb=maize_gctb,
         swcf=2,
-        table_dvs_ch=df_dvs_ch,
+        table_dvs_ch=maize_chtb,
         albedo=0.23,
         rsc=61.0,
         rsw=0.0,
         swrd=1,
-        rdtb=df_dvs_rd,
-        rdctb=df_rrd_rdens
+        rdtb=maize_rdtb,
+        rdctb=maize_rdctb
     )
 
-    ox_stress = OxygenStress(
+    maize_ox_stress = ps.plant.OxygenStress(
         swoxygen=1,
         swwrtnonox=0,
         aeratecrit=0.5,
@@ -116,7 +110,7 @@ def _make_hupselbrook():
         hlim2l=-30.0,
     )
 
-    dr_stress = DroughtStress(
+    maize_dr_stress = ps.plant.DroughtStress(
         swdrought=1,
         hlim3h=-325.0,
         hlim3l=-600.0,
@@ -126,23 +120,24 @@ def _make_hupselbrook():
     )
 
     # serves both, Fixed crop and WOFOST
-    interception = Interception(
+    maize_interception = ps.plant.Interception(
         swinter=1,
         cofab=0.25
     )
 
-    crpmaize = CropFile(
+    crpmaize = ps.plant.CropFile(
         name='maizes',
-        prep=prep,
-        cropdev_settings=cropdev_settings,
-        oxygenstress=ox_stress,
-        droughtstress=dr_stress,
-        interception=interception
+        prep=maize_prep,
+        scheduledirrigation=scheduled_irrigation,
+        cropdev_settings=maize_cropdev_settings,
+        oxygenstress=maize_ox_stress,
+        droughtstress=maize_dr_stress,
+        interception=maize_interception
     )
 
     # %% Creating .crp file for potato (WOFOST)
 
-    potato_prep = Preparation(
+    potato_prep = ps.Preparation(
         swprep=0,
         swsow=0,
         swgerm=2,
@@ -157,86 +152,86 @@ def _make_hupselbrook():
         swharv=0
     )
 
-    df_dvs_ch = DataFrame({
-        'dvs': [0.0, 1.0, 2.0],
-        'ch': [1.0, 40.0, 50.0,]
+    potato_chtb = ps.plant.CHTB.create({
+        'DVS': [0.0, 1.0, 2.0],
+        'CH': [1.0, 40.0, 50.0,]
     })
 
-    dtsmtb = DataFrame({
-        'tav': [0.0, 2.0, 13.0, 30.0],
-        'dtsm': [0.0, 0.0, 11.0, 28.0]
+    potato_dtsmtb = ps.plant.DTSMTB.create({
+        'TAV': [0.0, 2.0, 13.0, 30.0],
+        'DTSM': [0.0, 0.0, 11.0, 28.0]
     })
 
-    slatb = DataFrame({
-        'dvs': [0.0, 1.1, 2.0],
-        '7sla': [0.0030, 0.0030, 0.0015]
+    potato_slatb = ps.plant.SLATB.create({
+        'DVS': [0.0, 1.1, 2.0],
+        'SLA': [0.0030, 0.0030, 0.0015]
     })
 
-    amaxtb = DataFrame({
-        'dvs': [0.0, 1.57, 2.0],
-        'amax': [30.0, 30.0, 0.0]
+    potato_amaxtb = ps.plant.AMAXTB.create({
+        'DVS': [0.0, 1.57, 2.0],
+        'AMAX': [30.0, 30.0, 0.0]
     })
 
-    tmpftb = DataFrame({
+    potato_tmpftb = ps.plant.TMPFTB.create({
         'tavd': [0.0, 3.0, 10.0, 15.0, 20.0, 26.0, 33.0],
         'tmpf': [0.01, 0.01, 0.75, 1.00, 1.00, 0.75, 0.01]
     })
 
-    tmnftb = DataFrame({
-        'tmnr': [0.0, 3.0],
-        'tmnf': [0.0, 1.0]
+    potato_tmnftb = ps.plant.TMNFTB.create({
+        'TMNR': [0.0, 3.0],
+        'TMNF': [0.0, 1.0]
     })
 
-    rfsetb = DataFrame({
-        'dvs': [0.0, 2.0],
-        'rfse': [1.0, 1.0]
+    potato_rfsetb = ps.plant.RFSETB.create({
+        'DVS': [0.0, 2.0],
+        'RFSE': [1.0, 1.0]
     })
 
-    frtb = DataFrame({
-        'dvs': [0.00, 1.00, 1.36, 2.00],
-        'fr': [0.2, 0.2, 0.0, 0.0]
+    potato_frtb = ps.plant.FRTB.create({
+        'DVS': [0.00, 1.00, 1.36, 2.00],
+        'FR': [0.2, 0.2, 0.0, 0.0]
     })
 
-    fltb = DataFrame({
-        'dvs': [0.00, 1.00, 1.27, 1.36, 2.00],
-        'fl': [0.8, 0.8, 0.0, 0.0, 0.0]
+    potato_fltb = ps.plant.FLTB.create({
+        'DVS': [0.00, 1.00, 1.27, 1.36, 2.00],
+        'FL': [0.8, 0.8, 0.0, 0.0, 0.0]
     })
 
-    fstb = DataFrame({
-        'dvs': [0.00, 1.00, 1.27, 1.36, 2.00],
-        'fs': [0.20, 0.20, 0.25, 0.00, 0.00]
+    potato_fstb = ps.plant.FSTB.create({
+        'DVS': [0.00, 1.00, 1.27, 1.36, 2.00],
+        'FS': [0.20, 0.20, 0.25, 0.00, 0.00]
     })
 
-    fotb = DataFrame({
-        'dvs': [0.00, 1.00, 1.27, 1.36, 2.00],
-        'fo': [0.00, 0.00, 0.75, 1.00, 1.00]
+    potato_fotb = ps.plant.FOTB.create({
+        'DVS': [0.00, 1.00, 1.27, 1.36, 2.00],
+        'FO': [0.00, 0.00, 0.75, 1.00, 1.00]
     })
 
-    rdrrtb = DataFrame({
-        'dvs': [0.0000, 1.5000, 1.5001, 2.0000],
-        'rdrr': [0.00, 0.00, 0.02, 0.02]
+    potato_rdrrtb = ps.plant.RDRRTB.create({
+        'DVS': [0.0000, 1.5000, 1.5001, 2.0000],
+        'RDRR': [0.00, 0.00, 0.02, 0.02]
     })
 
-    rdrstb = DataFrame({
-        'dvs': [0.0000, 1.5000, 1.5001, 2.0000],
-        'rdrs': [0.00, 0.00, 0.02, 0.02]
+    potato_rdrstb = ps.plant.RDRSTB.create({
+        'DVS': [0.0000, 1.5000, 1.5001, 2.0000],
+        'RDRS': [0.00, 0.00, 0.02, 0.02]
     })
 
-    rdctb = DataFrame({
-        'rrd': [0.0, 1.0],
-        'rdens': [1.0, 0.0]
+    potato_rdctb = ps.plant.RDCTB.create({
+        'RRD': [0.0, 1.0],
+        'RDENS': [1.0, 0.0]
     })
 
-    potato_cropdev_settings = CropDevelopmentSettingsWOFOST(
+    potato_cropdev_settings = ps.CropDevelopmentSettingsWOFOST(
         swcf=2,
-        table_dvs_ch=df_dvs_ch,
+        table_dvs_ch=potato_chtb,
         albedo=0.19,
         rsc=207.0,
         rsw=0.0,
         idsl=0,
         tsumea=150.0,
         tsumam=1550.0,
-        dtsmtb=dtsmtb,
+        dtsmtb=potato_dtsmtb,
         tdwi=75.0,
         laiem=0.0589,
         rgrlai=0.012,
@@ -244,13 +239,13 @@ def _make_hupselbrook():
         ssa=0.0,
         span=37.0,
         tbase=2.0,
-        slatb=slatb,
+        slatb=potato_slatb,
         kdif=1.0,
         kdir=0.75,
         eff=0.45,
-        amaxtb=amaxtb,
-        tmpftb=tmpftb,
-        tmnftb=tmnftb,
+        amaxtb=potato_amaxtb,
+        tmpftb=potato_tmpftb,
+        tmnftb=potato_tmnftb,
         cvl=0.72,
         cvo=0.85,
         cvr=0.72,
@@ -260,23 +255,23 @@ def _make_hupselbrook():
         rmo=0.0045,
         rmr=0.01,
         rms=0.015,
-        rfsetb=rfsetb,
-        frtb=frtb,
-        fltb=fltb,
-        fstb=fstb,
-        fotb=fotb,
+        rfsetb=potato_rfsetb,
+        frtb=potato_frtb,
+        fltb=potato_fltb,
+        fstb=potato_fstb,
+        fotb=potato_fotb,
         perdl=0.03,
         swrd=2,
         rdi=10.0,
         rri=1.2,
         rdc=50.0,
         swdmi2rd=1,
-        rdctb=rdctb,
-        rdrstb=rdrstb,
-        rdrrtb=rdrrtb
+        rdctb=potato_rdctb,
+        rdrstb=potato_rdrstb,
+        rdrrtb=potato_rdrrtb
     )
 
-    potato_ox_stress = OxygenStress(
+    potato_ox_stress = ps.OxygenStress(
         swoxygen=1,
         swwrtnonox=1,
         aeratecrit=0.5,
@@ -287,7 +282,7 @@ def _make_hupselbrook():
         root_radiuso2=0.00015
     )
 
-    potato_dr_stress = DroughtStress(
+    potato_dr_stress = ps.DroughtStress(
         swdrought=1,
         hlim3h=-300.0,
         hlim3l=-500.0,
@@ -296,28 +291,30 @@ def _make_hupselbrook():
         adcrl=0.1,
     )
 
-    crppotato = CropFile(
+    crppotato = ps.CropFile(
         name='potatod',
         prep=potato_prep,
         cropdev_settings=potato_cropdev_settings,
         oxygenstress=potato_ox_stress,
         droughtstress=potato_dr_stress,
         # shared with the fixed crop settings
-        interception=interception
+        interception=maize_interception,
+        scheduledirrigation=scheduled_irrigation
     )
 
     # %% Creating the main Crop object
 
-    croprotation = DataFrame({'cropstart': [dt(2002, 5, 1), dt(2003, 5, 10), dt(2004, 1, 1)],
-                              'cropend': [dt(2002, 10, 15), dt(2003, 9, 29), dt(2004, 12, 31)],
-                              'cropfil': ["'maizes'", "'potatod'", "'grassd'"],
-                              'croptype': [1, 2, 3]})
+    croprotation = ps.plant.CROPROTATION.create({'CROPSTART': [dt(2002, 5, 1), dt(2003, 5, 10), dt(2004, 1, 1)],
+                                                 'CROPEND': [dt(2002, 10, 15), dt(2003, 9, 29), dt(2004, 12, 31)],
+                                                 'CROPFIL': ["'maizes'", "'potatod'", "'grassd'"],
+                                                 'CROPTYPE': [1, 2, 3]})
 
-    crp_grass = Path(__file__).parent.joinpath('./data/hupsel_grassd.crp')
+    crp_grass = Path(__file__).parent.joinpath(
+        './data/1-hupselbrook/grassd.crp')
 
-    crop_grassd = CropFile(name='grassd', path=str(crp_grass))
+    crop_grassd = ps.plant.CropFile(name='grassd', path=str(crp_grass))
 
-    crop = Crop(
+    crop = ps.plant.Crop(
         swcrop=1,
         rds=200.0,
         table_croprotation=croprotation,
@@ -326,34 +323,29 @@ def _make_hupselbrook():
 
     # %% irrigation setup
 
-    irrig_events = DataFrame({
-        'irdate': ['2002-01-05'],
-        'irdepth': [5.0],
-        'irconc': [1000.0],
-        'irtype': [1]}
+    irrig_events = ps.irrigation.IRRIGATION.create({
+        'IRDATE': ['2002-01-05'],
+        'IRDEPTH': [5.0],
+        'IRCONC': [1000.0],
+        'IRTYPE': [1]}
     )
 
-    fixed_irrigation = FixedIrrigation(
+    fixed_irrigation = ps.FixedIrrigation(
+        swirfix=1,
         swirgfil=0,
         table_irrigevents=irrig_events
     )
 
-    irrigation = Irrigation(
-        swirfix=1,
-        fixedirrig=fixed_irrigation,
-        schedule=0
-    )
-
     # %% Soil moisture setup
 
-    soilmoisture = SoilMoisture(
+    soilmoisture = ps.SoilMoisture(
         swinco=2,
         gwli=-75.0
     )
 
     # %% surface flow settings
 
-    surfaceflow = SurfaceFlow(
+    surfaceflow = ps.SurfaceFlow(
         swpondmx=0,
         pondmx=0.2,
         rsro=0.5,
@@ -363,7 +355,7 @@ def _make_hupselbrook():
 
     # %% evaporation settings
 
-    evaporation = Evaporation(
+    evaporation = ps.Evaporation(
         cfevappond=1.25,
         swcfbs=0,
         rsoil=30.0,
@@ -374,7 +366,7 @@ def _make_hupselbrook():
 
     # %% setting soil profile
 
-    soil_profile = DataFrame(
+    soil_profile = ps.soilwater.SOILPROFILE.create(
         {'ISUBLAY': [1, 2, 3, 4],
          'ISOILLAY': [1, 1, 2, 2],
          'HSUBLAY': [10.0, 20.0, 30.0, 140.0],
@@ -382,7 +374,7 @@ def _make_hupselbrook():
          'NCOMP': [10, 4, 6, 14]}
     )
 
-    soil_hydraulic_functions = DataFrame({
+    soil_hydraulic_functions = ps.soilwater.SOILHYDRFUNC.create({
         'ORES': [0.01, 0.02],
         'OSAT': [0.42, 0.38],
         'ALFA': [0.0276, 0.0213],
@@ -395,7 +387,7 @@ def _make_hupselbrook():
         'BDENS': [1315.0, 1315.0]
     })
 
-    soilprofile = SoilProfile(
+    soilprofile = ps.SoilProfile(
         swsophy=0,
         table_soilprofile=soil_profile,
         swhyst=0,
@@ -406,14 +398,14 @@ def _make_hupselbrook():
 
     # %% drainage settings
 
-    dra_settings = DraSettings(
+    dra_settings = ps.DraSettings(
         dramet=2,
         swdivd=1,
         cofani=[1.0, 1.0],
         swdislay=0
     )
 
-    dra_formula = DrainageFormula(
+    dra_formula = ps.DrainageFormula(
         lm2=11.0,
         shape=0.8,
         wetper=30.0,
@@ -424,35 +416,30 @@ def _make_hupselbrook():
         khtop=25.0
     )
 
-    dra_file = DraFile(
-        name='swap',
+    dra_file = ps.DraFile(
+        drfil='swap',
         general=dra_settings,
         drainageformula=dra_formula
     )
-    # # this is the working solution that just copies the predefined file
-    # dra = Path(__file__).parent.joinpath('./data/hupsel_swap.dra')
-    # dranage_file = DrainageFile(
-    #     name='swap', path=str(dra))
 
-    lateral_drainage = Drainage(
+    lateral_drainage = ps.Drainage(
         swdra=1,
-        drfil='swap',
         drafile=dra_file
     )
 
     # %% bottom boundary
 
-    bottom_boundary = BottomBoundary(
+    bottom_boundary = ps.BottomBoundary(
         swbbcfile=0,
         swbotb=6
     )
 
-    model = Model(
+    model = ps.Model(
         metadata=meta,
-        simsettings=simset,
+        general_settings=simset,
         meteorology=meteo,
         crop=crop,
-        irrigation=irrigation,
+        fixedirrigation=fixed_irrigation,
         soilmoisture=soilmoisture,
         surfaceflow=surfaceflow,
         evaporation=evaporation,

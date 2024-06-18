@@ -6,10 +6,9 @@ Classes:
     ScheduledIrrigation: Holds the settings for scheduled irrigation.
     Irrigation: Holds the irrigation settings of the simulation.
 """
-from ..core import PySWAPBaseModel
-from ..core import Table, irrigation_schema
+from ..core import PySWAPBaseModel, Table, YEARRANGE, DayMonth
 from typing import Optional, Literal, Any
-from pydantic import model_validator, Field, validator
+from pydantic import model_validator, Field
 
 
 class FixedIrrigation(PySWAPBaseModel):
@@ -32,14 +31,6 @@ class FixedIrrigation(PySWAPBaseModel):
     irgfile: Optional[Any] = Field(
         default=None, repr=False)
 
-    @validator('table_irrigevents')
-    def _validate_table_irrigevents(cls, v):
-        try:
-            validated = irrigation_schema.validate(v)
-            return validated
-        except Exception as e:
-            raise ValueError(f"Invalid irrigation schema: {e}")
-
     @model_validator(mode='after')
     def _validate_fixed_irrigation(self) -> None:
         if self.swirfix == 1:
@@ -51,6 +42,9 @@ class FixedIrrigation(PySWAPBaseModel):
 
 class ScheduledIrrigation(PySWAPBaseModel):
     """Irrigation scheduling settings.
+
+    !!! warning
+        The docstring needs to be updated.
 
     !!! note
         This class is only used in the .crp file.
@@ -87,33 +81,37 @@ class ScheduledIrrigation(PySWAPBaseModel):
 
             * 0 - Pressure head
             * 1 - Water content
-            
+
         dvs_tc1 (Optional[Table]):
         dvs_tc2 (Optional[Table]):
         dvs_tc3 (Optional[Table]):
         dvs_tc4 (Optional[Table]):
         dvs_tc5 (Optional[Table]):
     """
-
-    startirr: str
-    endirr: str
-    cirrs: float
-    isuas: int
-    phFieldCapacity: float
-    tcs: int
-    phormc: Optional[int] = None
-    swcirrthres: Optional[bool] = None
-    cirrthres: Optional[float] = None
-    perirrsurp: Optional[float] = None
-    irgthreshold: Optional[float] = None
-    tcsfix: Optional[int] = None
-    dcrit: Optional[float] = None
-    irgdayfix: Optional[int] = None
-    dvs_tc1: Optional[Table] = None
-    dvs_tc2: Optional[Table] = None
-    dvs_tc3: Optional[Table] = None
-    dvs_tc4: Optional[Table] = None
-    dvs_tc5: Optional[Table] = None
+    schedule: Literal[0, 1]
+    startirr: Optional[DayMonth] = None
+    endirr: Optional[DayMonth] = None
+    cirrs: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+    isuas: Optional[Literal[0, 1]] = None
+    tcs: Optional[Literal[1, 2, 3, 4, 6, 7, 8]] = None
+    phfieldcapacity: Optional[float] = Field(default=None, ge=-1000.0, le=0.0)
+    irgthreshold: Optional[float] = Field(default=None, ge=0.0, le=20.0)
+    dcrit: Optional[float] = Field(default=None, ge=-100.0, le=0.0)
+    swcirrthres: Optional[Literal[0, 1]] = None
+    cirrthres: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+    perirrsurp: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+    tcsfix: Optional[Literal[0, 1]] = None
+    irgdayfix: Optional[int] = Field(default=None, **YEARRANGE)
+    dcs: Optional[Literal[0, 1]] = None
+    dcslim: Optional[Literal[0, 1]] = None
+    irgdepmin: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+    irgdepmax: Optional[float] = Field(default=None, ge=0.0, le=1.0e7)
+    table_tc1tb: Optional[Table] = None
+    table_tc2tb: Optional[Table] = None
+    table_tc3tb: Optional[Table] = None
+    table_tc4tb: Optional[Table] = None
+    table_tc7tb: Optional[Table] = None
+    table_tc8tb: Optional[Table] = None
 
     def __post_init__(self) -> None:
         if self.tcs == 1:

@@ -8,6 +8,6 @@ Modules:
     irgfile: The irrigation file.
 """
 
-from .irrigation import *
-from .irgfile import *
+from .irrigation import ScheduledIrrigation, FixedIrrigation
+from .irgfile import IrgFile
 from .tables import IRRIGATION
