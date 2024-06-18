@@ -4,9 +4,9 @@ Classes:
     IrrigationFile: The irrigation file.
 """
 
-from pydantic import Field, validator
+from pydantic import Field
 from pandas import read_csv
-from ..core import PySWAPBaseModel, irrigation_schema
+from ..core import PySWAPBaseModel
 from pandas import DataFrame
 
 
@@ -25,14 +25,6 @@ class IrgFile(PySWAPBaseModel):
 
     irgfil: str
     content: DataFrame = Field(exclude=True)
-
-    @validator('content')
-    def _validate_content(cls, v):
-        try:
-            validated = irrigation_schema.validate(v)
-            return validated
-        except Exception as e:
-            raise ValueError(f"Invalid irrigation schema: {e}")
 
 
 def irg_from_csv(irgfil: str, path: str) -> IrgFile:

@@ -8,23 +8,13 @@ help to enforce the appropriate data types required by the SWAP model.
     irrigation subpackage. If no bugs are found, it will be implemented in
     the other subpackages.
 
-Attributes:
-    irrigation_schema (DataFrameSchema): Validate irrigation data.
+Classes:
+    BaseModel: Base class for all pySWAP schemas.
 """
 
 import pandera as pa
 import pandas as pd
 from pandera.typing import DataFrame
-
-irrigation_schema = pa.DataFrameSchema({
-    'IRDATE': pa.Column(pa.DateTime),
-    'IRDEPTH': pa.Column(float),
-    'IRCONC': pa.Column(float, required=False),
-    'IRTYPE': pa.Column(int, required=False),
-},
-    coerce=True
-)
-"""Validate irrigation data."""
 
 
 class BaseModel(pa.DataFrameModel):
@@ -39,4 +29,3 @@ class BaseModel(pa.DataFrameModel):
         df.columns = df.columns.str.upper()
         validated_df = cls.validate(df)
         return validated_df
-
