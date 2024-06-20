@@ -115,7 +115,8 @@ class Meteorology(PySWAPBaseModel):
             path (str): Path to the file.
         """
         save_file(
-            string=self.metfile.content.to_csv(index=False),
+            string=self.metfile.content.to_csv(
+                index=False, lineterminator='\n'),
             fname=self.metfile.metfil,
             path=path
         )
