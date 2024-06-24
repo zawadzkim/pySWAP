@@ -16,6 +16,7 @@ def _make_hupselbrook():
         tstart='2002-01-01',
         tend='2004-12-31',
         nprintday=1,
+        swerror=1,
         swmonth=1,
         swyrvar=0,
         datefix='2004-12-31',
