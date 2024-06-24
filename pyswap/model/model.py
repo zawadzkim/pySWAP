@@ -100,40 +100,6 @@ class Model(PySWAPBaseModel):
             shutil.copy(str(exec_path), str(tempdir))
             print('Copying linux executable into temporary directory...')
 
-    @staticmethod
-    def _run_swap(tempdir: Path) -> str:
-        """Run the SWAP executable."""
-        swap_path = Path(tempdir, 'swap.exe') if IS_WINDOWS else './swap420'
-
-        p = subprocess.Popen(swap_path,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             stderr=subprocess.STDOUT,
-                             cwd=tempdir)
-
-        return p.communicate(input=b'\n')[0].decode()
-
-    @staticmethod
-    def _read_output(path: Path):
-        df = read_csv(path, comment='*', index_col='DATETIME')
-        df.index = to_datetime(df.index)
-
-        return df
-
-    @staticmethod
-    def _read_output_tz(path: Path):
-        df = read_csv(path, comment='*', index_col='DATE')
-        df.index = to_datetime(df.index)
-
-        return df
-
-    @staticmethod
-    def _read_vap(path: Path):
-        df = read_csv(path, skiprows=11, encoding_errors='replace')
-        df.columns = df.columns.str.strip()
-        df.replace(r'^\s*$', nan, regex=True, inplace=True)
-        return df
-
     def _write_inputs(self, path: str) -> None:
         print('Preparing files...')
         self.write_swp(path)
@@ -147,7 +113,73 @@ class Model(PySWAPBaseModel):
             self.irrigation.fixedirrig.write_irg(path)
 
     @staticmethod
+    def _run_swap(tempdir: Path) -> str:
+        """Run the SWAP executable.
+
+        I do not decode the sterror because the SWAP executable
+        writes errors to stdout. It will be easy to implement reading
+        stderr later if needed.
+
+        Returns:
+            str: stdout.
+        """
+
+        swap_path = Path(tempdir, 'swap.exe') if IS_WINDOWS else './swap420'
+
+        p = subprocess.Popen(swap_path,
+                             stdout=subprocess.PIPE,
+                             stdin=subprocess.PIPE,
+                             stderr=subprocess.STDOUT,
+                             cwd=tempdir)
+
+        stdout = p.communicate(input=b'\n')[0]
+
+        return stdout.decode()
+
+    @staticmethod
+    def _read_output(path: Path):
+        """Read the output csv file."""
+        df = read_csv(path, comment='*', index_col='DATETIME')
+        df.index = to_datetime(df.index)
+
+        return df
+
+    @staticmethod
+    def _read_output_tz(path: Path):
+        """Read the output csv file with the depth information."""
+        df = read_csv(path, comment='*', index_col='DATE')
+        df.index = to_datetime(df.index)
+
+        return df
+
+    @staticmethod
+    def _read_vap(path: Path):
+        df = read_csv(path, skiprows=11, encoding_errors='replace')
+        df.columns = df.columns.str.strip()
+        df.replace(r'^\s*$', nan, regex=True, inplace=True)
+        return df
+
+    def _read_log_file(self, directory: Path) -> str:
+        """Read the log file."""
+        log_files = [f for f in Path(directory).glob(
+            '*.log') if f.name != 'reruns.log']
+
+        if len(log_files) == 0:
+            raise FileNotFoundError("No .log file found in the directory.")
+        elif len(log_files) > 1:
+            raise FileExistsError(
+                "Multiple .log files found in the directory.")
+
+        log_file = log_files[0]
+
+        with open(log_file, 'r') as file:
+            log_content = file.read()
+
+        return log_content
+
+    @staticmethod
     def _identify_warnings(log: str) -> list[Warning]:
+        """Read through the log file and catch warnings emitted by the SWAP executable."""
         lines = log.split('\n')
         warnings = [line for line in lines
                     if line.strip().lower().startswith('warning')]
@@ -158,9 +190,10 @@ class Model(PySWAPBaseModel):
         warnings.warn(message, Warning, stacklevel=3)
 
     def _save_old_output(self, tempdir: Path):
+        """Read all output files that are not in csv format as strings."""
         list_dir = os.listdir(tempdir)
         list_dir = [f for f in list_dir if not f.find(
-            'result') and not f.endswith('.csv')]
+            self.general_settings.outfil) and not f.endswith('.csv')]
 
         if list_dir:
             dict_files = {f.split('.')[1]: open_file(Path(tempdir, f))
@@ -170,6 +203,22 @@ class Model(PySWAPBaseModel):
 
     def run(self, path: str | Path, silence_warnings: bool = False, old_output: bool = False):
         """Main function that runs the model.
+
+        Parameters:
+            path (str): Path to the working directory.
+            silence_warnings (bool): If True, warnings will not be printed.
+            old_output (bool): If True, the old output files (like .vap) will be saved to a dictionary.
+
+        !!! todo
+
+            It would be nice to have a nice output string that will concatenate all output
+            including warnings and/or errors.
+
+
+        !!! warning
+
+            Reruns are for now not supported. Multiple runs of the model can be achieved by running
+            model.run() multiple times.
         """
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
 
@@ -184,7 +233,7 @@ class Model(PySWAPBaseModel):
 
             print(result)
 
-            log = open_file(Path(tempdir, 'swap_swap.log'))
+            log = self._read_log_file(tempdir)
             warnings = self._identify_warnings(log)
 
             if warnings and not silence_warnings:
