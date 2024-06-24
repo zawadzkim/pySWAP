@@ -246,7 +246,7 @@ class Model(PySWAPBaseModel):
 
             result = Result(
                 output=self._read_output(
-                    Path(tempdir, 'result_output.csv')),
+                    Path(tempdir, 'result_output.csv')) if self.general_settings.inlist_csv_tz else None,
                 output_tz=self._read_output_tz(
                     Path(tempdir, 'result_output_tz.csv')) if self.general_settings.inlist_csv_tz else None,
                 log=log,
