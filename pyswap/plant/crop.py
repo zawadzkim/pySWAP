@@ -1,4 +1,5 @@
 from typing import Optional, List, Literal
+from typing_extensions import Self
 from ..core import PySWAPBaseModel
 from ..core import Table
 from ..core import save_file
@@ -28,10 +29,12 @@ class Crop(PySWAPBaseModel):
     table_croprotation: Optional[Table] = None
     cropfiles: Optional[List[CropFile]] = Field(default=None, exclude=True)
 
-    def _validate_crop_section(self):
+    def _validate_crop_section(self) -> Self:
         if self.swcrop == 1:
             assert self.rds is not None, "rds must be specified if swcrop is True"
             assert self.table_croprotation is not None, "croprotation must be specified if swcrop is True"
+
+        return self
 
     def write_crop(self, path: str):
         count = 0

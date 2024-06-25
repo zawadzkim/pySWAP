@@ -10,31 +10,10 @@ Classes:
     Flux: Class for the flux.
 """
 from ..core import (PySWAPBaseModel, FloatList, Table,
-                    ObjectList, UNITRANGE, open_file, open_file)
-from pydantic import Field, model_validator, computed_field
-from typing import Literal, Optional, Any
-
-
-class DraFile(PySWAPBaseModel):
-    """Main class representing the drainage file (.dra) for SWAP.
-
-    Attributes:
-        drfil (str): Name of the file.
-        general (Any): General settings.
-        fluxtable (Optional[Any]): Flux table.
-        drainageformula (Optional[Any]): Drainage formula.
-        drainageinfiltrationres (Optional[Any]): Drainage infiltration resistance.
-    """
-
-    drfil: str
-    general: Any = Field(exclude=True)
-    fluxtable: Optional[Any] = Field(default=None, exclude=True)
-    drainageformula: Optional[Any] = Field(default=None, exclude=True)
-    drainageinfiltrationres: Optional[Any] = Field(default=None, exclude=True)
-
-    @property
-    def content(self):
-        return self._concat_sections()
+                    ObjectList, UNITRANGE)
+from pydantic import Field, model_validator
+from typing import Literal, Optional
+from typing_extensions import Self
 
 
 class DraSettings(PySWAPBaseModel):
@@ -113,7 +92,7 @@ class DrainageFormula(PySWAPBaseModel):
     geofac: Optional[float] = Field(default=None, ge=0.0, le=100.0)
 
     @model_validator(mode='after')
-    def _validate_settings(self):
+    def _validate_draformula(self) -> Self:
         if self.ipos in [3, 4, 5]:
             assert self.khbot is not None, 'khbot has to be provided if IPOS is 3.'
             assert self.zintf is not None, 'zintf has to be provided if IPOS is 3.'
@@ -122,6 +101,8 @@ class DrainageFormula(PySWAPBaseModel):
             assert self.kvbot is not None, 'kvbot has to be provided if IPOS is 3.'
         if self.ipos == 5:
             assert self.geofac is not None, 'geofac has to be provided if IPOS is 3.'
+
+        return self
 
 
 class DrainageInfiltrationResitance(PySWAPBaseModel):
@@ -143,10 +124,12 @@ class DrainageInfiltrationResitance(PySWAPBaseModel):
     list_levelfluxes: Optional[ObjectList] = None
 
     @model_validator(mode='after')
-    def _validate_settings(self):
+    def _validate_drainfiltrationres(self) -> Self:
         if self.swintfl == 1:
             assert self.cofintflb is not None, 'cofintflb has to be provided if swintfl is 1.'
             assert self.expintflb is not None, 'expintflb has to be provided if swintfl is 1.'
+
+        return self
 
 
 class Flux(PySWAPBaseModel):
@@ -178,9 +161,11 @@ class Flux(PySWAPBaseModel):
     table_datowltb: Table
 
     @model_validator(mode='after')
-    def _validate_settings(self):
+    def _validate_flux(self) -> Self:
         if self.swallo == 1:
             assert self.l is not None, 'l has to be provided if swallo is 1.'
+
+        return self
 
     def model_dump(self, **kwargs):
 
@@ -194,3 +179,27 @@ class Flux(PySWAPBaseModel):
                 new_d[key + suffix] = value
             return new_d
         return d
+
+
+class DraFile(PySWAPBaseModel):
+    """Main class representing the drainage file (.dra) for SWAP.
+
+    Attributes:
+        drfil (str): Name of the file.
+        general (Any): General settings.
+        fluxtable (Optional[Any]): Flux table.
+        drainageformula (Optional[Any]): Drainage formula.
+        drainageinfiltrationres (Optional[Any]): Drainage infiltration resistance.
+    """
+
+    drfil: str
+    general: DraSettings = Field(exclude=True)
+    fluxtable: Optional[DrainageFluxTable] = Field(default=None, exclude=True)
+    drainageformula: Optional[DrainageFormula] = Field(
+        default=None, exclude=True)
+    drainageinfiltrationres: Optional[DrainageInfiltrationResitance] = Field(
+        default=None, exclude=True)
+
+    @property
+    def content(self):
+        return self._concat_sections()
