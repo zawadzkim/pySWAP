@@ -7,11 +7,16 @@ Classes:
 from ..core import PySWAPBaseModel
 from ..core import Table
 from typing import Literal, Optional
+from typing_extensions import Self
 
 
 class SoluteTransport(PySWAPBaseModel):
     """
     Solute transport settings.
+
+    !!! warning
+
+        Validation not yet included in the current release.
 
     Attributes:
         swsolu (Literal[0, 1]): 

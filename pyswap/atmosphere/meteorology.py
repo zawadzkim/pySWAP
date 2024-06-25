@@ -16,6 +16,7 @@ from ..core.valueranges import UNITRANGE
 from .metfile import MetFile
 from pydantic import Field, model_validator
 from typing import Optional, Literal
+from typing_extensions import Self
 
 
 class Meteorology(PySWAPBaseModel):
@@ -83,7 +84,7 @@ class Meteorology(PySWAPBaseModel):
     nmetdetail: Optional[int] = Field(default=None, ge=1, le=96)
 
     @model_validator(mode='after')
-    def _validate_meteo_section(self):
+    def _validate_meteo_section(self) -> Self:
 
         if self.swetr == 1:  # if PM method is NOT used
             assert self.swetsine is not None, "SWETSINE is required when SWETR is 1"
@@ -101,6 +102,8 @@ class Meteorology(PySWAPBaseModel):
             assert self.swmetdetail is not None, "SWMETDETAIL is required when SWETR is 0"
             if self.swmetdetail == 1:
                 assert self.nmetdetail is not None, "NMETDETAIL is required when SWMETDETAIL is 1"
+
+        return self
 
     def write_met(self, path: str):
         """Write the .met file.

@@ -2,6 +2,7 @@ from ..core import PySWAPBaseModel
 from ..core import Table
 from pydantic import model_validator
 from typing import Literal, Optional
+from typing_extensions import Self
 
 
 class SoilMoisture(PySWAPBaseModel):
@@ -29,7 +30,7 @@ class SoilMoisture(PySWAPBaseModel):
     inifil: Optional[str] = None
 
     @model_validator(mode='after')
-    def _validate_soil_moisture(self) -> None:
+    def _validate_soil_moisture(self) -> Self:
 
         if self.swinco == 1:
             assert self.table_head_soildepth is not None, "head_soildepth is required when swinco is 1"
@@ -39,3 +40,5 @@ class SoilMoisture(PySWAPBaseModel):
 
         else:
             assert self.inifil is not None, "inifil is required when swinco is 3"
+
+        return self
