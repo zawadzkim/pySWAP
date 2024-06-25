@@ -1,6 +1,7 @@
 from typing import Optional, Literal
 from ..core.basemodel import PySWAPBaseModel
 from pydantic import model_validator
+from typing_extensions import Self
 
 
 class SnowAndFrost(PySWAPBaseModel):
@@ -28,7 +29,7 @@ class SnowAndFrost(PySWAPBaseModel):
     tfrostend: Optional[float] = None
 
     @model_validator(mode='after')
-    def _validate_snow_and_frost(self) -> None:
+    def _validate_snow_and_frost(self, v) -> Self:
 
         if self.swsnow == 1:
             assert self.snowinco is not None, "snowinco is required when swsnow is True"
@@ -39,3 +40,5 @@ class SnowAndFrost(PySWAPBaseModel):
         if self.swfrost == 1:
             assert self.tfrostst is not None, "tfrostst is required when swfrost is True"
             assert self.tfrostend is not None, "tfrostend is required when swfrost is True"
+
+        return self

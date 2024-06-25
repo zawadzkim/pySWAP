@@ -8,7 +8,9 @@ Classes:
 """
 from ..core import PySWAPBaseModel, Table, YEARRANGE, DayMonth
 from typing import Optional, Literal, Any
+from typing_extensions import Self
 from pydantic import model_validator, Field
+from .irgfile import IrgFile
 
 
 class FixedIrrigation(PySWAPBaseModel):
@@ -28,16 +30,18 @@ class FixedIrrigation(PySWAPBaseModel):
     swirfix: Literal[0, 1]
     swirgfil: Optional[Literal[0, 1]] = None
     table_irrigevents: Optional[Table] = None
-    irgfile: Optional[Any] = Field(
+    irgfile: Optional[IrgFile] = Field(
         default=None, repr=False)
 
     @model_validator(mode='after')
-    def _validate_fixed_irrigation(self) -> None:
+    def _validate_fixed_irrigation(self) -> Self:
         if self.swirfix == 1:
             if self.swirgfil:
                 assert self.irgfile is not None, "irgfile is required when swirgfil is True"
             else:
                 assert self.table_irrigevents is not None, "irrigevents is required when swirgfil is False"
+
+        return self
 
 
 class ScheduledIrrigation(PySWAPBaseModel):
@@ -113,7 +117,9 @@ class ScheduledIrrigation(PySWAPBaseModel):
     table_tc7tb: Optional[Table] = None
     table_tc8tb: Optional[Table] = None
 
-    def __post_init__(self) -> None:
+    @model_validator(mode='after')
+    def _validate_scheduled_irrigation(self) -> Self:
+
         if self.tcs == 1:
             self.dvs_tc1 = {'dvs_tc1': [0.0, 2.0],
                             'Trel': [0.95, 0.95]}
@@ -135,24 +141,4 @@ class ScheduledIrrigation(PySWAPBaseModel):
             if self.tcsfix:
                 assert self.irgdayfix is not None, "irgdayfix is required when tcsfix is True"
 
-
-class Irrigation(PySWAPBaseModel):
-    """ Holds the irrigation settings of the simulation.
-
-    Attributes:
-        swirfix (Literal[0, 1]):
-        schedule (Literal[0, 1]):
-        fixedirrig (Optional[Any]):
-        scheduledirrig (Optional[Any]):
-    """
-
-    schedule: Literal[0, 1]
-    fixedirrig: Optional[Any] = None
-    scheduledirrig: Optional[Any] = None
-
-    @model_validator(mode='after')
-    def _validate_irrigation(self) -> None:
-        if self.swirfix == 1:
-            assert self.fixedirrig is not None, "fixedirrig is required when swirfix is True"
-        if self.schedule == 1:
-            assert self.scheduledirrig is not None, "scheduledirrig is required when schedule is True"
+        return self

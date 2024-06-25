@@ -6,6 +6,7 @@ Classes:
 """
 
 from typing import Optional, Literal
+from typing_extensions import Self
 from pydantic import model_validator, Field
 from ..core import PySWAPBaseModel
 from ..core import Table
@@ -114,7 +115,7 @@ class BottomBoundary(PySWAPBaseModel):
     table_hbot5: Optional[Table] = None
 
     @model_validator(mode='after')
-    def _check_swbotb(self):
+    def _check_swbotb(self) -> Self:
         if self.swbotb == 1:
             assert self.gwlevel, 'gwlevel must be provided if swbotb is 1'
         elif self.swbotb == 2:
@@ -144,3 +145,5 @@ class BottomBoundary(PySWAPBaseModel):
                 assert self.table_qtab, 'qtab must be provided if swqhbot is 2'
         elif self.swbotb == 5:
             assert self.table_hbot5, 'hbot5 must be provided if swbotb is 5'
+
+        return self

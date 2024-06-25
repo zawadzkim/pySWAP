@@ -2,6 +2,7 @@ from ..core import PySWAPBaseModel
 from ..core import Table
 from pydantic import model_validator
 from typing import Literal, Optional
+from typing_extensions import Self
 
 
 class SoilProfile(PySWAPBaseModel):
@@ -36,7 +37,7 @@ class SoilProfile(PySWAPBaseModel):
     table_soilhydrfunc: Optional[Table] = None
 
     @model_validator(mode='after')
-    def _validate_soil_profile(self) -> None:
+    def _validate_soil_profile(self) -> Self:
 
         if self.swsophy == 0:
             assert self.table_soilhydrfunc is not None, "table_soilhydrfunc is required when swsophy is True"
@@ -44,3 +45,5 @@ class SoilProfile(PySWAPBaseModel):
             assert self.filenamesophy is not None, "filenamesophy is required when swsophy is True"
         if self.swhyst in range(1, 3):
             assert self.tau is not None, "tau is required when swhyst is 1 or 2"
+
+        return self

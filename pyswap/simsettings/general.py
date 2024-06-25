@@ -3,6 +3,7 @@ from ..core import PySWAPBaseModel
 from ..core import (DayMonth, DateList, StringList, FloatList)
 from ..core import YEARRANGE, UNITRANGE
 from typing import Literal, Optional
+from typing_extensions import Self
 from datetime import date as d
 from pydantic import Field, model_validator
 import platform
@@ -117,7 +118,7 @@ class GeneralSettings(PySWAPBaseModel):
     dznew: Optional[FloatList] = None
 
     @model_validator(mode='after')
-    def _validate_model(self):
+    def _validate_model(self) -> Self:
 
         if not self.swmonth:
             assert self.period is not None, "period is required when swmonth is 0"
@@ -137,3 +138,5 @@ class GeneralSettings(PySWAPBaseModel):
         if self.swdiscrvert:
             assert self.numnodnew is not None, "NUMNODNEW is required when SWDISCRVERT = 1"
             assert self.dznew is not None, "DZNEW is required when SWDISCRVERT = 1"
+
+        return self

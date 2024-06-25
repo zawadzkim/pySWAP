@@ -15,12 +15,18 @@ import os
 from importlib import resources
 from pandas import read_csv, to_datetime
 from numpy import nan
-from ..soilwater import SnowAndFrost
-from ..simsettings import RichardsSettings
 from ..extras import HeatFlow, SoluteTransport
+from ..atmosphere import Meteorology
+from ..irrigation import FixedIrrigation
+from ..soilwater import SoilMoisture, SnowAndFrost, Evaporation, SoilProfile, SurfaceFlow
+from ..simsettings import Metadata, GeneralSettings, RichardsSettings
+from ..boundary import BottomBoundary
+from ..drainage import Drainage
+from ..plant import Crop
 from .result import Result
 import warnings
 import platform
+from pydantic import Field
 
 IS_WINDOWS = platform.system() == 'Windows'
 
@@ -41,7 +47,7 @@ class Model(PySWAPBaseModel):
         surfaceflow (Any): Surface flow data.
         evaporation (Any): Evaporation data.
         soilprofile (Any): Soil profile data.
-        snowandfrost (Optional[Any]): Snow and frost data.
+        snowandfrost (Optional[Any]): Snow and frost data. Default is `SnowAndFrost(swsnow=0, swfrost=0)`.
         richards (Optional[Any]): Richards data.
         lateraldrainage (Any): Lateral drainage data.
         bottomboundary (Any): Bottom boundary data.
@@ -58,25 +64,27 @@ class Model(PySWAPBaseModel):
         _write_inputs: Write the input files.
         _identify_warnings: Identify warnings in the log file.
         _raise_swap_warning: Raise a warning.
-        _save_old_output: Save the old output files.
+        _read_output_old: Save the old output files.
         run: Run the model.
     """
 
-    metadata: Any
-    general_settings: Any
-    meteorology: Any
-    crop: Any
-    fixedirrigation: Any
-    soilmoisture: Any
-    surfaceflow: Any
-    evaporation: Any
-    soilprofile: Any
-    snowandfrost: Optional[Any] = SnowAndFrost(swsnow=0, swfrost=0)
-    richards: Optional[Any] = RichardsSettings(swkmean=1, swkimpl=0)
-    lateraldrainage: Any
-    bottomboundary: Any
-    heatflow: Optional[Any] = HeatFlow(swhea=0)
-    solutetransport: Optional[Any] = SoluteTransport(swsolu=0)
+    metadata: Metadata
+    version: str = Field(exclude=True, default='base')
+    general_settings: GeneralSettings
+    meteorology: Meteorology
+    crop: Crop
+    fixedirrigation: FixedIrrigation
+    soilmoisture: SoilMoisture
+    surfaceflow: SurfaceFlow
+    evaporation: Evaporation
+    soilprofile: SoilProfile
+    snowandfrost: Optional[SnowAndFrost] = SnowAndFrost(swsnow=0, swfrost=0)
+    richards: Optional[RichardsSettings] = RichardsSettings(
+        swkmean=1, swkimpl=0)
+    lateraldrainage: Drainage
+    bottomboundary: BottomBoundary
+    heatflow: Optional[HeatFlow] = HeatFlow(swhea=0)
+    solutetransport: Optional[SoluteTransport] = SoluteTransport(swsolu=0)
 
     def write_swp(self, path: str) -> None:
         """Write the .swp input file."""
@@ -189,7 +197,7 @@ class Model(PySWAPBaseModel):
     def _raise_swap_warning(self, message):
         warnings.warn(message, Warning, stacklevel=3)
 
-    def _save_old_output(self, tempdir: Path):
+    def _read_output_old(self, tempdir: Path):
         """Read all output files that are not in csv format as strings."""
         list_dir = os.listdir(tempdir)
         list_dir = [f for f in list_dir if not f.find(
@@ -242,13 +250,13 @@ class Model(PySWAPBaseModel):
                     self._raise_swap_warning(message=warning)
 
             if old_output:
-                dict_files = self._save_old_output(tempdir)
+                dict_files = self._read_output_old(tempdir)
 
             result = Result(
                 output=self._read_output(
-                    Path(tempdir, 'result_output.csv')) if self.general_settings.inlist_csv_tz else None,
+                    Path(tempdir, f'{self.general_settings.outfil}_output.csv')) if self.general_settings.inlist_csv else None,
                 output_tz=self._read_output_tz(
-                    Path(tempdir, 'result_output_tz.csv')) if self.general_settings.inlist_csv_tz else None,
+                    Path(tempdir, f'{self.general_settings.outfil}_output_tz.csv')) if self.general_settings.inlist_csv_tz else None,
                 log=log,
                 output_old=dict_files if old_output else None,
                 warning=warnings

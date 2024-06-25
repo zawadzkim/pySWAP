@@ -6,7 +6,9 @@ Classes:
 """
 from ..core import PySWAPBaseModel, save_file
 from pydantic import model_validator, Field
-from typing import Literal, Optional, Any
+from typing import Literal, Optional
+from typing_extensions import Self
+from .drafile import DraFile
 
 
 class Drainage(PySWAPBaseModel):
@@ -23,12 +25,14 @@ class Drainage(PySWAPBaseModel):
     """
 
     swdra: Literal[0, 1, 2]
-    drafile: Optional[Any] = Field(default=None)
+    drafile: Optional[DraFile] = Field(default=None)
 
     @model_validator(mode='after')
-    def _validate_drainage(self):
+    def _validate_drainage(self) -> Self:
         if self.swdra > 0:
             assert self.drafile is not None, "drafile is required when swdra is 1 or 2"
+
+        return self
 
     def write_dra(self, path: str):
         save_file(

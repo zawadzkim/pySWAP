@@ -6,6 +6,7 @@ Classes:
 from ..core import PySWAPBaseModel
 from ..core import Table
 from typing import Literal, Optional
+from typing_extensions import Self
 from pydantic import model_validator
 
 
@@ -57,7 +58,7 @@ class HeatFlow(PySWAPBaseModel):
     table_bbctsoil: Optional[Table] = None
 
     @model_validator(mode='after')
-    def _check_heatflow(self):
+    def _check_heatflow(self) -> Self:
         if self.swhea == 1:
             assert self.swcalt is not None, "swcalt must be specified if swhea is 1"
             if self.swcalt == 1:
@@ -71,3 +72,4 @@ class HeatFlow(PySWAPBaseModel):
                     assert self.tsoilfile is not None, "tsoilfile must be specified if swtopbhea is 2"
                 if self.swbotbhea == 2:
                     assert self.table_bbctsoil is not None, "table_bbctsoil must be specified if swbotbhea is 2"
+        return self
