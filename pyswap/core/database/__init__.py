@@ -9,3 +9,4 @@ All modules related to the database connection and models.
     pySWAP is meant to enable saving model runs to a SQLite database. That way, the users will be 
     able to easily exchange models they built and run them on their own machines.
 """
+from .hdf5 import HDF5
