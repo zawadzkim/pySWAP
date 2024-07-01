@@ -4,7 +4,7 @@ Classes:
     RDTB: Root depth table
 """
 from ..core.tablevalidation import BaseModel
-from ..core import UNITRANGE, DVSRANGE
+from ..core import UNITRANGE, DVSRANGE, YEARRANGE
 from pandera.typing import Series
 import pandera as pa
 
@@ -253,4 +253,197 @@ class RDRSTB(BaseModel):
     """
 
     DVS: Series[float] = pa.Field(**DVSRANGE)
+    RDRS: Series[float] = pa.Field(ge=0.0)
+
+
+class DMGRZTB(BaseModel):
+    """threshold of above ground dry matter [0..1d6 kg DM/ha, R] to trigger grazing as function of daynumber [1..366 d, R]
+
+    Attributes:
+        DNR (Series[float]): Day number.
+        DMGRZ (Series[float]): Dry matter growth rate of roots.
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    DMGRZ: Series[float] = pa.Field(ge=0.0, le=1.0e6)
+
+
+class LSDATB(BaseModel):
+    """Actual livestock density of each grazing period
+
+    !!! note
+
+        total number of periods should be equal to number of periods in SEQGRAZMOW
+
+    Attributes:
+        SEQNR (Series[int]): number of the sequence period with mowing/grazing [0..366 d, I]
+        LSDA (Series[float]): Actual Live Stock Density of the grazing period [0.0..1000.0 LS/ha, R]
+    """
+
+    SEQNR: Series[int] = pa.Field(**YEARRANGE)
+    LSDA: Series[float] = pa.Field(ge=0.0, le=1000.0)
+
+
+class LSDBTB(BaseModel):
+    """Relation between livestock density, number of grazing days and dry matter uptake
+
+    Attributes:
+        LSDB (Series[float]): Basic Live Stock Density [0.0..1000.0 LS/ha, R]
+        DAYSGRAZING (Series[float]): Maximum days of grazing [0.0..366.0 d, R]
+        UPTGRAZING (Series[float]): Dry matter uptake by grazing [0.0..1000.0 kg/ha, R] (kg/ha DM)
+        LOSSGRAZING (Series[float]): Dry matter loss during grazing due to droppings and treading [0.0..1000.0 kg/ha, R] (kg/ha DM)
+    """
+
+    LSDB: Series[float] = pa.Field(ge=0.0, le=1000.0)
+    DAYSGRAZING: Series[float] = pa.Field(**YEARRANGE)
+    UPTGRAZING: Series[float] = pa.Field(ge=0.0, le=1000.0)
+    LOSSGRAZING: Series[float] = pa.Field(ge=0.0, le=1000.0)
+
+
+class RLWTB(BaseModel):
+    """rooting depth RL [0..5000 cm, R] as function of root weight RW [0..5000 kg DM/ha, R]
+
+    Attributes:
+        RW (Series[float]): rooting depth
+        RL (Series[float]): root weight
+    """
+
+    RW: Series[float] = pa.Field(ge=0.0, le=5000.0)
+    RL: Series[float] = pa.Field(ge=0.0, le=5000.0)
+
+
+class DMMOWTB(BaseModel):
+    """List threshold of above ground dry matter [0..1d6 kg DM/ha, R] to trigger mowing as function of daynumber [1..366 d, R]
+
+    !!! note
+
+        maximum 20 records
+
+
+    Attributes:
+        DNR (Series[float]): Day number.
+        DMMOW (Series[float]): threshold of above ground dry matter [0..1d6 kg DM/ha, R]
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    DMMOW: Series[float] = pa.Field(ge=0.0, le=1.0e6)
+
+
+class DMMOWDELAY(BaseModel):
+    """Relation between dry matter harvest [0..1d6 kg/ha, R] and days of delay in regrowth [0..366 d, I] after mowing
+
+    Attributes:
+        DMMOWDELAY (Series[float]): Dry matter harvest [0..1d6 kg/ha, R]
+        DAYDELAY (Series[int]): days of delay in regrowth [0..366 d, I]
+    """
+
+    DMMOWDELAY: Series[float] = pa.Field(ge=0.0, le=1.0e6)
+    DAYDELAY: Series[int] = pa.Field(**YEARRANGE)
+
+
+class CHTB_GRASS(BaseModel):
+    """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
+
+    Attributes:
+        DNR (Series[float]): day number.
+        CH (Series[float]): Crop height of the crop.
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    CH: Series[float] = pa.Field(ge=0.0, le=1.0e4)
+
+
+class SLATB_GRASS(BaseModel):
+    """leaf area [0..1 ha/kg, R] as function of crop development stage [0..2 -, R]
+
+    Attributes:
+        DNR (Series[float]): Day number.
+        SLA (Series[float]): Leaf area.
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    SLA: Series[float] = pa.Field(ge=0.0, le=1.0)
+
+
+class AMAXTB_GRASS(BaseModel):
+    """maximum CO2 assimilation rate [0..100 kg/ha/hr, R] as function of development stage [0..2 -, R]
+
+    Attributes:
+        DNR (Series[float]): Day number.
+        AMAX (Series[float]): Maximum CO2 assimilation rate.
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    AMAX: Series[float] = pa.Field(ge=0.0, le=100.0)
+
+
+class RFSETB_GRASS(BaseModel):
+    """reduction factor of senescence [-, R] as function of development stage [0..2 -, R]
+
+    Attributes:
+        DNR (Series[float]): Day number.
+        RFSE (Series[float]): Reduction factor of senescence.
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    RFSE: Series[float] = pa.Field(**UNITRANGE)
+
+
+class FRTB_GRASS(BaseModel):
+    """fraction of total dry matter increase partitioned to the roots [kg/kg, R]
+
+    Attributes:
+        DNR (Series[float]): Day number.
+        FR (Series[float]): Fraction of total dry matter increase partitioned to the roots.
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    FR: Series[float] = pa.Field(**UNITRANGE)
+
+
+class FLTB_GRASS(BaseModel):
+    """fraction of total above ground dry matter increase partitioned to the leaves [kg/kg, R]
+
+    Attributes:
+        DNR (Series[float]): Day number.
+        FL (Series[float]): Fraction of total above ground dry matter increase partitioned to the leaves.
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    FL: Series[float] = pa.Field(**UNITRANGE)
+
+
+class FSTB_GRASS(BaseModel):
+    """fraction of total above ground dry matter increase partitioned to the stems [kg/kg, R]
+
+    Attributes:
+        DNR (Series[float]): Day number.
+        FS (Series[float]): Fraction of total above ground dry matter increase partitioned to the stems.
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    FS: Series[float] = pa.Field(**UNITRANGE)
+
+
+class RDRRTB_GRASS(BaseModel):
+    """relative death rates of roots [kg/kg/d] as function of development stage [0..2 -, R]
+
+    Attributes:
+        DNR (Series[float]): Day number.
+        RDRR (Series[float]): Relative death rates of roots.
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    RDRR: Series[float] = pa.Field(ge=0.0)
+
+
+class RDRSTB_GRASS(BaseModel):
+    """relative death rates of stems [kg/kg/d] as function of development stage [0..2 -, R]
+
+    Attributes:
+        DNR (Series[float]): Day number.
+        RDRS (Series[float]): Relative death rates of stems.
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
     RDRS: Series[float] = pa.Field(ge=0.0)

@@ -15,7 +15,7 @@ ___________________________________________________________________________
 """
 
 from .basemodel import PySWAPBaseModel
-from .fields import (Table, Arrays, CSVTable, DayMonth,
+from .fields import (Table, Arrays, CSVTable, DayMonth, IntList,
                      StringList, FloatList, DateList, Switch, ObjectList)
 from .files import open_file, save_file
 from .serializers import (serialize_table, serialize_arrays, serialize_csv_table,
