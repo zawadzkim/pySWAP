@@ -24,7 +24,7 @@ Warning:
     smoother integration with WOFOST configuration files (yaml) and code readability.
 """
 from pydantic import Field
-from ..core import (Table, Arrays, UNITRANGE,
+from ..core import (Table, Arrays, UNITRANGE, DateList, IntList,
                     YEARRANGE, PySWAPBaseModel, open_file)
 from ..irrigation import ScheduledIrrigation
 from typing import Literal, Optional
@@ -152,8 +152,8 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
         rdrrtb (Arrays):
         rdrstb (Arrays):
     """
-    idsl: Literal[0, 1, 2]
-    dtsmtb: Arrays
+    idsl: Optional[Literal[0, 1, 2]] = None  # for grass at least
+    dtsmtb: Optional[Arrays] = None   # for grass at least
     dlo: Optional[float] = Field(default=None, ge=0.0, le=24.0)
     dlc: Optional[float] = Field(default=None, ge=0.0, le=24.0)
     vernsat: Optional[float] = Field(default=None, ge=0.0, le=100.0)
@@ -163,7 +163,7 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
     tdwi: float = Field(ge=0.0, le=10_000)
     laiem: float = Field(ge=0.0, le=10)
     rgrlai: float = Field(**UNITRANGE)
-    spa: float = Field(**UNITRANGE)
+    spa: Optional[float] = Field(**UNITRANGE, default=None)
     ssa: float = Field(**UNITRANGE)
     span: float = Field(**YEARRANGE)
     slatb: Arrays
@@ -171,20 +171,22 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
     amaxtb: Arrays
     tmpftb: Arrays
     tmnftb: Arrays
-    cvo: float = Field(**UNITRANGE)
+    cvo: Optional[float] = Field(
+        **UNITRANGE, default=None)  # for grass at least
     cvl: float = Field(**UNITRANGE)
     cvr: float = Field(**UNITRANGE)
     cvs: float = Field(**UNITRANGE)
     q10: float = Field(ge=0.0, le=5.0)
     rml: float = Field(**UNITRANGE)
-    rmo: float = Field(**UNITRANGE)
+    rmo: Optional[float] = Field(
+        **UNITRANGE, default=None)  # for grass at least
     rmr: float = Field(**UNITRANGE)
     rms: float = Field(**UNITRANGE)
     rfsetb: Arrays
     frtb: Arrays
     fltb: Arrays
     fstb: Arrays
-    fotb: Arrays
+    fotb: Optional[Arrays] = None  # for grass at least
     perdl: float = Field(ge=0.0, le=3.0)
     rdrrtb: Arrays
     rdrstb: Arrays
@@ -287,6 +289,26 @@ class CropDevelopmentSettingsFixed(CropDevelopmentSettings):
         return self
 
 
+class CropDevelopmentSettingsGrass(CropDevelopmentSettingsWOFOST):
+    """Crop development settings specific to grass growth.
+
+    Attributes:
+        swtsum (Literal[0, 1, 2]): Select either sum air temperatures or soil temperature at particular depth
+
+            * 0 - no delay of start grass growth
+            * 1 - start of grass growth based on sum air temperatures > 200 degree C
+            * 2 - start of grass growth based on soil temperature at particular depth
+
+        tsumtemp (Optional[float]): Specific stem area [0..1 ha/kg, R]
+        tsumdepth (Optional[float]): Life span under leaves under optimum conditions [0..366 d, R]
+        tsumtime (Optional[float]): Lower threshold temperature for ageing of leaves [-10..30 degree C, R]
+    """
+    swtsum: Literal[0, 1, 2]
+    tsumtemp: Optional[float] = None
+    tsumdepth: Optional[float] = None
+    tsumtime: Optional[float] = None
+
+
 class OxygenStress(PySWAPBaseModel):
     """Oxygen stress settings for .crp file.
 
@@ -386,6 +408,8 @@ class DroughtStress(PySWAPBaseModel):
             * 1 - Drought stress according to Feddes et al. (1978)
             * 2 - rought stress according to De Jong van Lier et al. (2008)
 
+        swjarvis (Optional[Literal[0, 1, 2, 3, 4]]): _DEPRECATED_ Switch for Jarvis model for water uptake reduction
+        alphcrit: Optional[float] = _DEPRECATED_ Critical stress index (Jarvis, 1989) for compensation of root water uptake [0.2..1 -, R]
         hlim3h (Optional[float]): Pressure head below which water uptake reduction starts at high Tpot
         hlim3l (Optional[float]): Pressure head below which water uptake reduction starts at low Tpot
         hlim4 (Optional[float]): No water extraction at lower soil water pressure heads
@@ -404,6 +428,8 @@ class DroughtStress(PySWAPBaseModel):
         taccur (Optional[float]): Maximum absolute difference between simulated and calculated potential transpiration rate
     """
     swdrought: Literal[1, 2]
+    swjarvis: Optional[Literal[0, 1, 2, 3, 4]] = None
+    alphcrit: Optional[float] = Field(default=None, ge=0.2, le=1.0)
     hlim3h: Optional[float] = Field(default=None, ge=-1.0e4, le=100.0)
     hlim3l: Optional[float] = Field(default=None, ge=-1.0e4, le=100.0)
     hlim4: Optional[float] = Field(default=None, ge=-1.6e4, le=100.0)
@@ -562,10 +588,10 @@ class CO2Correction(PySWAPBaseModel):
     """
 
     swco2: Literal[0, 1]
-    atmofil: Optional[str]
-    co2amaxtb: Optional[Arrays]
-    co2efftb: Optional[Arrays]
-    co2tratb: Optional[Arrays]
+    atmofil: Optional[str] = None
+    co2amaxtb: Optional[Arrays] = None
+    co2efftb: Optional[Arrays] = None
+    co2tratb: Optional[Arrays] = None
 
     @model_validator(mode='after')
     def _validate_co2correction(self) -> Self:
@@ -661,6 +687,106 @@ class Preparation(PySWAPBaseModel):
         return self
 
 
+class GrasslandManagement(PySWAPBaseModel):
+    """Settings specific to the dynamic grass growth module.
+
+    !!! warning
+
+        Validation still required.
+
+    Attributes:
+        seqgrazmow (IntList): sequence of periods with different practices within calender year. Available options:
+
+            * 1 - Grazing
+            * 2 - Mowing
+            * 3 - Grazing with dewooling
+
+        swharvest (Literal[1, 2]): Switch for timing harvest, either for mowing or grazing
+
+            * 1 - Use dry matter threshold
+            * 2 - Use fixed dates
+
+        dateharvest Optional[(DateList)]: harvest dates (maximum 999)
+        swdmgrz Optional[(Literal[1, 2])]: Switch for dry matter threshold to trigger harvest by grazing
+
+            * 1 - Use fixed threshold
+            * 2 - Use flexible threshold
+
+        dmgrazing Optional[(Arrays)]: Minimum dry matter amount for cattle to enter the field [0..1d6 kg DM/ha, R]
+        dmgrztb Optional[(int)]: List threshold of above ground dry matter [0..1d6 kg DM/ha, R] to trigger grazing as function of daynumber [1..366 d, R]
+        maxdaygrz Optional[(int)]: Maximum growing period after harvest [1..366 -, I]
+        swlossgrz Optional[(Literal[0, 1])]: Switch for losses due to insufficient pressure head during grazing
+
+            * 0 - No loss
+            * 1 - Losses due to treading
+
+        tagprest Optional[(float)]: Minimum amount of above ground DM after grazing [0..1d6 kg DM/ha, R]
+        dewrest Optional[(float)]: Remaining yield above ground after dewooling event [0..1d6 kg DM/ha, R]
+        table_lsda (Optional[Table]): Actual livestock density of each grazing period
+        table_lsdb (Optional[Table]): Relation between livestock density, number of grazing days and dry matter uptake
+        swdmmow Optional[(int)]: Switch for dry matter threshold to trigger harvest by mowing
+
+            * 1 - Use fixed threshold
+            * 2 - Use flexible threshold
+
+        dmharvest Optional[(float)]: Threshold of above ground dry matter to trigger mowing [0..1d6 kg DM/ha, R]
+        daylastharvest Optional[(int)]: Last calendar day on which mowing may occur [1..366 -, I]
+        dmlastharvest Optional[(float)]: Minimum above ground dry matter for mowing on last date [0..1d6 kg DM/ha, R]
+        dmmowtb Optional[(int)]: Dry matter mowing threshold
+        maxdaymow Optional[(int)]:Maximum growing period after harvest [1..366 -, I]
+        swlossmow Optional[(int)]: Switch for losses due to insufficient pressure head during mowing
+
+            * 0 - No loss
+            * 1 - Losses due to treading
+
+        mowrest Optional[(float)]: Remaining yield above ground after mowing event [0..1d6 kg DM/ha, R]
+        table_dmmowdelay Optional[(Optional[Table])]: Relation between dry matter harvest [0..1d6 kg/ha, R] and days of delay in regrowth [0..366 d, I] after mowing
+        swpotrelmf (int): Switch for calculation of potential yield
+
+            * 1 - theoretical potential yield
+            * 2 - attainable yield
+
+        relmf (float): Relative management factor to reduce theoretical potential yield to attainable yield [0..1 -, R]
+    """
+
+    seqgrazmow: IntList
+    swharvest: Literal[1, 2]
+    dateharvest: Optional[DateList] = None
+    swdmgrz: Optional[Literal[1, 2]] = None
+    dmgrazing: Optional[Arrays] = None
+    dmgrztb: Optional[Arrays] = None
+    maxdaygrz: Optional[int] = None
+    swlossgrz: Optional[Literal[0, 1]] = None
+    tagprest: Optional[float] = None
+    dewrest: Optional[float] = None
+    table_lsda: Optional[Table] = None
+    table_lsdb: Optional[Table] = None
+    swdmmow: Optional[int] = None
+    dmharvest: Optional[float] = None
+    daylastharvest: Optional[int] = None
+    dmlastharvest: Optional[float] = None
+    dmmowtb: Optional[Arrays] = None
+    maxdaymow: Optional[int] = None
+    swlossmow: Optional[int] = None
+    mowrest: Optional[float] = None
+    table_dmmowdelay: Optional[Table] = None
+    swpotrelmf: int
+    relmf: float
+
+    # @model_validator(mode='after')
+    # def _validate_grassland_management(self) -> Self:
+    #     if self.swharvest == 2:
+    #         assert self.dateharvest is not None, "dateharvest is required when swharvest is 2."
+    #     if self.swdmgrz == 1:
+    #         assert self.dmgrazing is not None, "dmgrazing is required when swdmgrz is 1."
+    #         assert self.dmgrztb is not None, "dmgrztb is required when swdmgrz is 1."
+    #         assert self.maxdaygrz is not None, "maxdaygrz is required when swdmgrz is 1."
+    #     if self.swdmgrz == 2:
+    #         assert self.tagprest is not None, "tagprest is required when swdmgrz is 2."
+    #         assert self.dewrest is not None, "dewrest is required when swdmgrz is 2."
+    #         assert self.table_lsda is not None, "table_lsda
+
+
 class CropFile(PySWAPBaseModel):
     """Main class for the .crp file.
 
@@ -680,6 +806,7 @@ class CropFile(PySWAPBaseModel):
         compensaterwu (Optional[CompensateRWUStress]): Compensate root water uptake stress settings
         interception (Optional[Interception]): Interception settings
         scheduledirrigation (Optional[ScheduledIrrigation]): Scheduled irrigation settings
+        grassland_management (Optional[GrasslandManagement]): Grassland management settings
     """
 
     name: str = Field(exclude=True)
@@ -687,7 +814,8 @@ class CropFile(PySWAPBaseModel):
     prep: Optional[Preparation] = None
     cropdev_settings: Optional[CropDevelopmentSettings |
                                CropDevelopmentSettingsFixed |
-                               CropDevelopmentSettingsWOFOST] = None
+                               CropDevelopmentSettingsWOFOST |
+                               CropDevelopmentSettingsGrass] = None
     oxygenstress: Optional[OxygenStress] = None
     droughtstress: Optional[DroughtStress] = None
     saltstress: Optional[SaltStress] = SaltStress(swsalinity=0)
@@ -696,6 +824,8 @@ class CropFile(PySWAPBaseModel):
     interception: Optional[Interception] = None
     scheduledirrigation: Optional[ScheduledIrrigation] = ScheduledIrrigation(
         schedule=0)
+    grasslandmanagement: Optional[GrasslandManagement] = None
+    co2correction: Optional[CO2Correction] = None
 
     @computed_field(return_type=str)
     def content(self):
