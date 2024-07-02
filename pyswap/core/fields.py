@@ -45,6 +45,9 @@ StringList = Annotated[List[str], PlainSerializer(
 FloatList = Annotated[List[float], PlainSerializer(
     lambda x: ' '.join([str(f) for f in x]), return_type=str, when_used='json')]
 
+IntList = Annotated[List[int], PlainSerializer(
+    lambda x: ' '.join([str(f) for f in x]), return_type=str, when_used='json')]
+
 DateList = Annotated[List[d], PlainSerializer(
     lambda x: '\n' + '\n'.join([d.strftime('%Y-%m-%d') for d in x]), return_type=str, when_used='json')]
 

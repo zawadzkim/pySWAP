@@ -15,12 +15,18 @@ import os
 from importlib import resources
 from pandas import read_csv, to_datetime
 from numpy import nan
-from ..soilwater import SnowAndFrost
-from ..simsettings import RichardsSettings
 from ..extras import HeatFlow, SoluteTransport
+from ..atmosphere import Meteorology
+from ..irrigation import FixedIrrigation
+from ..soilwater import SoilMoisture, SnowAndFrost, Evaporation, SoilProfile, SurfaceFlow
+from ..simsettings import Metadata, GeneralSettings, RichardsSettings
+from ..boundary import BottomBoundary
+from ..drainage import Drainage
+from ..plant import Crop
 from .result import Result
 import warnings
 import platform
+from pydantic import Field
 
 IS_WINDOWS = platform.system() == 'Windows'
 
@@ -41,7 +47,7 @@ class Model(PySWAPBaseModel):
         surfaceflow (Any): Surface flow data.
         evaporation (Any): Evaporation data.
         soilprofile (Any): Soil profile data.
-        snowandfrost (Optional[Any]): Snow and frost data.
+        snowandfrost (Optional[Any]): Snow and frost data. Default is `SnowAndFrost(swsnow=0, swfrost=0)`.
         richards (Optional[Any]): Richards data.
         lateraldrainage (Any): Lateral drainage data.
         bottomboundary (Any): Bottom boundary data.
@@ -58,25 +64,27 @@ class Model(PySWAPBaseModel):
         _write_inputs: Write the input files.
         _identify_warnings: Identify warnings in the log file.
         _raise_swap_warning: Raise a warning.
-        _save_old_output: Save the old output files.
+        _read_output_old: Save the old output files.
         run: Run the model.
     """
 
-    metadata: Any
-    general_settings: Any
-    meteorology: Any
-    crop: Any
-    fixedirrigation: Any
-    soilmoisture: Any
-    surfaceflow: Any
-    evaporation: Any
-    soilprofile: Any
-    snowandfrost: Optional[Any] = SnowAndFrost(swsnow=0, swfrost=0)
-    richards: Optional[Any] = RichardsSettings(swkmean=1, swkimpl=0)
-    lateraldrainage: Any
-    bottomboundary: Any
-    heatflow: Optional[Any] = HeatFlow(swhea=0)
-    solutetransport: Optional[Any] = SoluteTransport(swsolu=0)
+    metadata: Metadata
+    version: str = Field(exclude=True, default='base')
+    general_settings: GeneralSettings
+    meteorology: Meteorology
+    crop: Crop
+    fixedirrigation: FixedIrrigation
+    soilmoisture: SoilMoisture
+    surfaceflow: SurfaceFlow
+    evaporation: Evaporation
+    soilprofile: SoilProfile
+    snowandfrost: Optional[SnowAndFrost] = SnowAndFrost(swsnow=0, swfrost=0)
+    richards: Optional[RichardsSettings] = RichardsSettings(
+        swkmean=1, swkimpl=0)
+    lateraldrainage: Drainage
+    bottomboundary: BottomBoundary
+    heatflow: Optional[HeatFlow] = HeatFlow(swhea=0)
+    solutetransport: Optional[SoluteTransport] = SoluteTransport(swsolu=0)
 
     def write_swp(self, path: str) -> None:
         """Write the .swp input file."""
@@ -100,40 +108,6 @@ class Model(PySWAPBaseModel):
             shutil.copy(str(exec_path), str(tempdir))
             print('Copying linux executable into temporary directory...')
 
-    @staticmethod
-    def _run_swap(tempdir: Path) -> str:
-        """Run the SWAP executable."""
-        swap_path = Path(tempdir, 'swap.exe') if IS_WINDOWS else './swap420'
-
-        p = subprocess.Popen(swap_path,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             stderr=subprocess.STDOUT,
-                             cwd=tempdir)
-
-        return p.communicate(input=b'\n')[0].decode()
-
-    @staticmethod
-    def _read_output(path: Path):
-        df = read_csv(path, comment='*', index_col='DATETIME')
-        df.index = to_datetime(df.index)
-
-        return df
-
-    @staticmethod
-    def _read_output_tz(path: Path):
-        df = read_csv(path, comment='*', index_col='DATE')
-        df.index = to_datetime(df.index)
-
-        return df
-
-    @staticmethod
-    def _read_vap(path: Path):
-        df = read_csv(path, skiprows=11, encoding_errors='replace')
-        df.columns = df.columns.str.strip()
-        df.replace(r'^\s*$', nan, regex=True, inplace=True)
-        return df
-
     def _write_inputs(self, path: str) -> None:
         print('Preparing files...')
         self.write_swp(path)
@@ -147,7 +121,73 @@ class Model(PySWAPBaseModel):
             self.irrigation.fixedirrig.write_irg(path)
 
     @staticmethod
+    def _run_swap(tempdir: Path) -> str:
+        """Run the SWAP executable.
+
+        I do not decode the sterror because the SWAP executable
+        writes errors to stdout. It will be easy to implement reading
+        stderr later if needed.
+
+        Returns:
+            str: stdout.
+        """
+
+        swap_path = Path(tempdir, 'swap.exe') if IS_WINDOWS else './swap420'
+
+        p = subprocess.Popen(swap_path,
+                             stdout=subprocess.PIPE,
+                             stdin=subprocess.PIPE,
+                             stderr=subprocess.STDOUT,
+                             cwd=tempdir)
+
+        stdout = p.communicate(input=b'\n')[0]
+
+        return stdout.decode()
+
+    @staticmethod
+    def _read_output(path: Path):
+        """Read the output csv file."""
+        df = read_csv(path, comment='*', index_col='DATETIME')
+        df.index = to_datetime(df.index)
+
+        return df
+
+    @staticmethod
+    def _read_output_tz(path: Path):
+        """Read the output csv file with the depth information."""
+        df = read_csv(path, comment='*', index_col='DATE')
+        df.index = to_datetime(df.index)
+
+        return df
+
+    @staticmethod
+    def _read_vap(path: Path):
+        df = read_csv(path, skiprows=11, encoding_errors='replace')
+        df.columns = df.columns.str.strip()
+        df.replace(r'^\s*$', nan, regex=True, inplace=True)
+        return df
+
+    def _read_log_file(self, directory: Path) -> str:
+        """Read the log file."""
+        log_files = [f for f in Path(directory).glob(
+            '*.log') if f.name != 'reruns.log']
+
+        if len(log_files) == 0:
+            raise FileNotFoundError("No .log file found in the directory.")
+        elif len(log_files) > 1:
+            raise FileExistsError(
+                "Multiple .log files found in the directory.")
+
+        log_file = log_files[0]
+
+        with open(log_file, 'r') as file:
+            log_content = file.read()
+
+        return log_content
+
+    @staticmethod
     def _identify_warnings(log: str) -> list[Warning]:
+        """Read through the log file and catch warnings emitted by the SWAP executable."""
         lines = log.split('\n')
         warnings = [line for line in lines
                     if line.strip().lower().startswith('warning')]
@@ -157,10 +197,11 @@ class Model(PySWAPBaseModel):
     def _raise_swap_warning(self, message):
         warnings.warn(message, Warning, stacklevel=3)
 
-    def _save_old_output(self, tempdir: Path):
+    def _read_output_old(self, tempdir: Path):
+        """Read all output files that are not in csv format as strings."""
         list_dir = os.listdir(tempdir)
         list_dir = [f for f in list_dir if not f.find(
-            'result') and not f.endswith('.csv')]
+            self.general_settings.outfil) and not f.endswith('.csv')]
 
         if list_dir:
             dict_files = {f.split('.')[1]: open_file(Path(tempdir, f))
@@ -170,6 +211,22 @@ class Model(PySWAPBaseModel):
 
     def run(self, path: str | Path, silence_warnings: bool = False, old_output: bool = False):
         """Main function that runs the model.
+
+        Parameters:
+            path (str): Path to the working directory.
+            silence_warnings (bool): If True, warnings will not be printed.
+            old_output (bool): If True, the old output files (like .vap) will be saved to a dictionary.
+
+        !!! todo
+
+            It would be nice to have a nice output string that will concatenate all output
+            including warnings and/or errors.
+
+
+        !!! warning
+
+            Reruns are for now not supported. Multiple runs of the model can be achieved by running
+            model.run() multiple times.
         """
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
 
@@ -184,7 +241,7 @@ class Model(PySWAPBaseModel):
 
             print(result)
 
-            log = open_file(Path(tempdir, 'swap_swap.log'))
+            log = self._read_log_file(tempdir)
             warnings = self._identify_warnings(log)
 
             if warnings and not silence_warnings:
@@ -193,13 +250,13 @@ class Model(PySWAPBaseModel):
                     self._raise_swap_warning(message=warning)
 
             if old_output:
-                dict_files = self._save_old_output(tempdir)
+                dict_files = self._read_output_old(tempdir)
 
             result = Result(
                 output=self._read_output(
-                    Path(tempdir, 'result_output.csv')),
+                    Path(tempdir, f'{self.general_settings.outfil}_output.csv')) if self.general_settings.inlist_csv else None,
                 output_tz=self._read_output_tz(
-                    Path(tempdir, 'result_output_tz.csv')) if self.general_settings.inlist_csv_tz else None,
+                    Path(tempdir, f'{self.general_settings.outfil}_output_tz.csv')) if self.general_settings.inlist_csv_tz else None,
                 log=log,
                 output_old=dict_files if old_output else None,
                 warning=warnings

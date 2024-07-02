@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyswap"
-version = "0.1.2"
+version = "0.1.3"
 description = "Python wrapper for SWAP hydrological model."
 authors = ["Mateusz <zawadzkimat@outlook.com>"]
 license = "MIT"
@@ -16,6 +16,7 @@ jupyter = "^1.0.0"
 chardet = "^5.2.0"
 pandera = "^0.19.3"
 bottleneck = "~1.3.6"
+h5py = "^3.11.0"
 
 
 [tool.poetry.group.dev.dependencies]

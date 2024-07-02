@@ -2,6 +2,7 @@ from ..core import Table
 from ..core import PySWAPBaseModel
 from pydantic import model_validator
 from typing import Optional, Literal
+from typing_extensions import Self
 
 
 class SurfaceFlow(PySWAPBaseModel):
@@ -33,7 +34,7 @@ class SurfaceFlow(PySWAPBaseModel):
     table_pondmxtb: Optional[Table] = None
 
     @model_validator(mode='after')
-    def _validate_surface_flow(self) -> None:
+    def _validate_surface_flow(self) -> Self:
 
         if self.swpondmx == 0:
             assert self.pondmx is not None, "pondmx is required when swpondmx is 0"
@@ -42,3 +43,5 @@ class SurfaceFlow(PySWAPBaseModel):
 
         if self.swrunon == 1:
             assert self.rufil is not None, "runfil is required when swrunon is 1"
+
+        return self

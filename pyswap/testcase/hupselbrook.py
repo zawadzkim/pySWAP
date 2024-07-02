@@ -16,6 +16,7 @@ def _make_hupselbrook():
         tstart='2002-01-01',
         tend='2004-12-31',
         nprintday=1,
+        swerror=1,
         swmonth=1,
         swyrvar=0,
         datefix='2004-12-31',
@@ -302,6 +303,186 @@ def _make_hupselbrook():
         scheduledirrigation=scheduled_irrigation
     )
 
+    # %% Grass crp file
+    grass_chtb = ps.plant.CHTB_GRASS.create({
+        'DNR': [0.0, 180.0, 366.0],
+        'CH': [12.0, 12.0, 12.0]
+    })
+
+    grass_slatb = ps.plant.SLATB_GRASS.create({
+        'DNR': [1.00, 80.00, 300.00, 366.00],
+        'SLA': [0.0015, 0.0015, 0.0020, 0.0020]
+    })
+
+    amaxtb_grass = ps.plant.AMAXTB_GRASS.create({
+        'DNR': [1.00, 95.00, 200.00, 275.00, 366.00],
+        'AMAX': [40.00, 40.00, 35.00, 25.00, 25.00]
+    })
+
+    grass_tmpftb = ps.plant.TMPFTB.create({
+        'TAVD': [0.00, 5.00, 15.00, 25.00, 40.00],
+        'TMPF': [0.00, 0.70, 1.00, 1.00, 0.00]
+    })
+    grass_tmnftb = ps.plant.TMNFTB.create({
+        'TMNR': [0.0, 4.0],
+        'TMNF': [0.0, 1.0]
+    })
+
+    grass_rfsetb = ps.plant.RFSETB_GRASS.create({
+        'DNR': [1.00, 366.00],
+        'RFSE': [1.0000, 1.0000]
+    })
+
+    grass_frtb = ps.plant.FRTB_GRASS.create({
+        'DNR': [1.00, 366.00],
+        'FR': [0.3000, 0.3000]
+    })
+
+    grass_fltb = ps.plant.FLTB_GRASS.create({
+        'DNR': [1.00, 366.00],
+        'FL': [0.6000, 0.6000]
+    })
+
+    grass_fstb = ps.plant.FSTB_GRASS.create({
+        'DNR': [1.00, 366.00],
+        'FS': [0.4000, 0.4000]
+    })
+
+    grass_rdrrtb = ps.plant.RDRRTB_GRASS.create({
+        'DNR': [1.0, 180.0, 366.0],
+        'RDRR': [0.0, 0.02, 0.02]
+    })
+
+    grass_rdrstb = ps.plant.RDRSTB_GRASS.create({
+        'DNR': [1.0, 180.0, 366.0],
+        'RDRS': [0.0, 0.02, 0.02]
+    })
+
+    grass_rlwtb = ps.plant.RLWTB.create({
+        'RW': [300.00, 2500.00],
+        'RL': [20.0, 40.0]
+    })
+
+    grass_rdctb = ps.plant.RDCTB.create({
+        'RRD': [0.0, 1.0],
+        'RDENS': [1.0, 0.0]
+    })
+
+    grass_settings = ps.plant.CropDevelopmentSettingsGrass(
+        swcf=2,
+        table_dvs_ch=grass_chtb,
+        albedo=0.23,
+        rsc=100.0,
+        rsw=0.0,
+
+        tdwi=1000.00,
+        laiem=0.63000,
+        rgrlai=0.00700,
+
+        swtsum=1,
+        ssa=0.0004,
+        span=30.00,
+        tbase=0.00,
+
+        slatb=grass_slatb,
+        kdif=0.60,
+        kdir=0.75,
+        eff=0.50,
+        amaxtb=amaxtb_grass,
+        tmpftb=grass_tmpftb,
+        tmnftb=grass_tmnftb,
+        cvl=0.6850,
+        cvr=0.6940,
+        cvs=0.6620,
+        q10=2.0000,
+        rml=0.0300,
+        rmr=0.0150,
+        rms=0.0150,
+        rfsetb=grass_rfsetb,
+        frtb=grass_frtb,
+        fltb=grass_fltb,
+        fstb=grass_fstb,
+        perdl=0.050,
+        rdrrtb=grass_rdrrtb,
+        rdrstb=grass_rdrstb,
+        swrd=3,
+        swdmi2rd=1,
+        rlwtb=grass_rlwtb,
+        wrtmax=3000.0,
+        swrdc=0,
+        rdctb=grass_rdctb
+    )
+
+    grass_ox_stress = ps.OxygenStress(
+        swoxygen=1,
+        hlim1=0.0,
+        hlim2u=1.0,
+        hlim2l=-1.0,
+        swwrtnonox=0
+    )
+
+    grass_drought_stress = ps.DroughtStress(
+        swdrought=1,
+        swjarvis=4,
+        alphcrit=0.7,
+        hlim3h=-200.0,
+        hlim3l=-800.0,
+        hlim4=-8000.0,
+        adcrh=0.5,
+        adcrl=0.1
+    )
+
+    grass_salt_stress = ps.SaltStress(
+        swsalinity=0
+    )
+
+    grass_interception = ps.Interception(
+        swinter=1,
+        cofab=0.25
+    )
+
+    grass_co2 = ps.CO2Correction(
+        swco2=0
+    )
+
+    grass_dmmowtb = ps.plant.DMMOWTB.create({
+        'DNR': [120.0, 152.0, 182.0, 213.0, 366.0],
+        'DMMOW': [4700.0, 3700.0, 3200.0, 2700.0, 2700.0]
+    })
+
+    grass_dmmowdelay = ps.plant.DMMOWDELAY.create({
+        'DMMOWDELAY': [0.0, 2000.0, 4000.0],
+        'DAYDELAY': [2, 3, 4]
+    })
+
+    grass_management = ps.GrasslandManagement(
+        seqgrazmow=[2, 2, 2, 2, 2, 2, 2, 2, 2,
+                    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+        swharvest=1,
+        swdmmow=2,
+        dmmowtb=grass_dmmowtb,
+        maxdaymow=42,
+        swlossmow=0,
+        mowrest=700.0,
+        table_dmmowdelay=grass_dmmowdelay,
+        swpotrelmf=1,
+        relmf=0.90
+    )
+
+    grass_irrigation = ps.ScheduledIrrigation(schedule=0)
+
+    crpgrass = ps.plant.CropFile(
+        name='grassd',
+        cropdev_settings=grass_settings,
+        oxygenstress=grass_ox_stress,
+        droughtstress=grass_drought_stress,
+        saltstress=grass_salt_stress,
+        interception=grass_interception,
+        co2correction=grass_co2,
+        grasslandmanagement=grass_management,
+        scheduledirrigation=grass_irrigation
+    )
+
     # %% Creating the main Crop object
 
     croprotation = ps.plant.CROPROTATION.create({'CROPSTART': [dt(2002, 5, 1), dt(2003, 5, 10), dt(2004, 1, 1)],
@@ -318,7 +499,7 @@ def _make_hupselbrook():
         swcrop=1,
         rds=200.0,
         table_croprotation=croprotation,
-        cropfiles=[crpmaize, crppotato, crop_grassd]
+        cropfiles=[crpmaize, crppotato, crpgrass]
     )
 
     # %% irrigation setup
