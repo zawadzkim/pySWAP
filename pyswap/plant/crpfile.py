@@ -109,7 +109,7 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
     """Additional settings for the 
 
     Warning:
-        The validation for this class is not complete.
+        The validation for this class is not complete. Also check the Optional attributes!
 
     Note:
         Use serialization_alias to change the parameter names who are different between WOFOST and SWAP.
