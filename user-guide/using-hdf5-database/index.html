@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../../reference/api-reference/">
+        <link rel="prev" href="../data-structures/">
       
       
-        <link rel="next" href="../2-quick-start/">
+        <link rel="next" href="../../wiki/standard-array-lengths/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Main concepts - pySWAP documentation</title>
+        <title>HDF5 database - pySWAP documentation</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#main_concepts" class="md-skip">
+        <a href="#hdf5_database" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Main concepts
+              HDF5 database
             
           </span>
         </div>
@@ -271,7 +271,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../1-main-concepts/" class="md-tabs__link">
           
   
   User guide
@@ -699,30 +699,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Main concepts
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../1-main-concepts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -731,44 +711,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#swap_model_settings" class="md-nav__link">
-    <span class="md-ellipsis">
-      SWAP model settings
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pyswap_generic_classes" class="md-nav__link">
-    <span class="md-ellipsis">
-      pySWAP Generic classes
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -862,10 +804,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../using-hdf5-database/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    HDF5 database
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -874,6 +836,35 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#modepython" class="md-nav__link">
+    <span class="md-ellipsis">
+      mode='python'
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1146,63 +1137,40 @@
   
 
 
-<h1 id="main_concepts">Main concepts<a class="headerlink" href="#main_concepts" title="Permanent link">&para;</a></h1>
-<h2 id="swap_model_settings">SWAP model settings<a class="headerlink" href="#swap_model_settings" title="Permanent link">&para;</a></h2>
-<p>A SWAP model requires a number of input variables in several different files. Traditionally, those variables are groupped into distinct sections and section parts in the input file templates. Below is an example of the :</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>**********************************************************************************
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>* Part 8: Snow and frost
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>* Switch, calculate snow accumulation and melt:
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  SWSNOW = {{SWSNOW}}        ! 0 = no simulation of snow
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                             ! 1 = simulation of snow accumulation and melt
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>{{#SWITCH_SWSNOW_OPTION_1}}
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>* If SWSNOW = 1, specify:
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  SNOWINCO = {{SNOWINCO}}    ! Initial snow water equivalent [0..1000 cm, R]
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  TEPRRAIN = {{TEPRRAIN}}    ! Temperature above which all precipitation is rain[ 0..10 oC, R]
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  TEPRSNOW = {{TEPRSNOW}}    ! Temperature below which all precipitation is snow[-10..0 oC, R]
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  SNOWCOEF = {{SNOWCOEF}}    ! Snowmelt calibration factor [0...10 -, R]
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>{{/SWITCH_SWSNOW_OPTION_1}}
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>* Switch, in case of frost reduce soil water flow:
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  SWFROST = {{SWFROST}}      ! 0 = no simulation of frost
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>                             ! 1 = simulation of frost reduce soil water flow
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>{{#SWITCH_SWFROST_OPTION_1}}
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>* If SWFROST = 1, then specify soil temperature to start end end flux-reduction
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>  TFROSTSTA = {{TFROSTSTA}}  ! Soil temperature (oC) where reduction of water fluxes starts [-10.0,5.0, oC, R]
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>  TFROSTEND = {{TFROSTEND}}  ! Soil temperature (oC) where reduction of water fluxes ends [-10.0,5.0, oC, R]
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>{{/SWITCH_SWFROST_OPTION_1}}
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>**********************************************************************************
+<h1 id="hdf5_database">HDF5 database<a class="headerlink" href="#hdf5_database" title="Permanent link">&para;</a></h1>
+<p>This package would not be worth much if it did not contain any way of preserving generated models. For this purpose several technologies were considered. Primary concerns were:</p>
+<ul>
+<li>Wide-spread use</li>
+<li>Simple structure</li>
+<li>cross-platform</li>
+<li>programming-lanuage-agnostic</li>
+</ul>
+<p>Initiall, SQLite database was considered as a good option. That would indeed be true if there was a need for simple tabilar and related data. With SWAP, however, the inputs and outpus comming in various formats would pose a challage for SQLite and would require bending the best practices of RDBSM to make it fit. Why push a cilinder through a square hole?</p>
+<p>Another good option widely used in science is hdf5 file format. It accepts almost any format, is compatible with multiple languages (R, Python, Fortran) and has a fairly simple, folder-like structure. Hence in pySWAP we chose to build on top of the <code>h5py</code> library.</p>
+<p>The ultimate objective is that the hdf5 database is easily and directly sharable with modellers using different programming languages. However, for now, pySWAP is only capable of saving and retrieving Python-specific format: pickle.</p>
+<h2 id="modepython"><code>mode='python'</code><a class="headerlink" href="#modepython" title="Permanent link">&para;</a></h2>
+<p>In the python mode, the data is stored in the hdf5 database as binary pickle objects. This is a very straightforward approach and allowes for storage of the entire models and its results as a single object. To demonstrate how this works, let's pickle and store the testcase from hupselbrook:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">pyswap</span> <span class="kn">import</span> <span class="n">testcase</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># get the Model object and run it</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">model</span> <span class="o">=</span> <span class="n">testcase</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hupselbrook&#39;</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># now, let&#39;s create an inteface object and save the model and the result</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">f</span> <span class="o">=</span> <span class="n">HDF5</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;data.h5&#39;</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">f</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
 </span></code></pre></div>
-<h2 id="pyswap_generic_classes">pySWAP Generic classes<a class="headerlink" href="#pyswap_generic_classes" title="Permanent link">&para;</a></h2>
-<p>In pySWAP, the specific settings are groupped into <strong>generic classes</strong>. Each class, just like the section/section part, collects related settings together. An example of a class for snow and frost snow settings is presented below:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">class</span> <span class="nc">SnowAndFrost</span><span class="p">(</span><span class="n">PySWAPBaseModel</span><span class="p">):</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Snow and frost settings for the model.</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="sd">    Attributes:</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="sd">        swsnow (Literal[0, 1]): Switch for calculation of snow accumulation and melt.</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="sd">        swfrost (Literal[0, 1]): Switch,  in case of frost reduce soil water flow</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="sd">        snowinco (Optional[float]): Initial snow water equivalent</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="sd">        teprrain (Optional[float]): Temperature above which all precipitation is rain</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="sd">        teprsnow (Optional[float]): Temperature below which all precipitation is snow</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="sd">        snowcoef (Optional[float]): Snowmelt calibration factor</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="sd">        tfroststa (Optional[float]): Soil temperature (oC) where reduction of water fluxes starts</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="sd">        tfrostend (Optional[float]): Soil temperature (oC) where reduction of water fluxes ends</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="n">swsnow</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="n">swfrost</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="n">snowinco</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="n">teprrain</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    <span class="n">teprsnow</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>    <span class="n">snowcoef</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="n">tfrostst</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>    <span class="n">tfrostend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<p>after running the above commands, you should see an .h5 file appearing in your working directory. You can inpect the database with VSCode plugins or check its content with:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">model_list</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1">#&gt; [&#39;base&#39;]</span>
 </span></code></pre></div>
-<p>Some classes have additional methods, but some just serve as "containers" for the variables. The purpose of that simple structure is mostly giving the model creation script a structure and validation.</p>
+<p>by default, the first model ever run gets the <code>Model.version</code> attribute set to 'base'. For the subsequent models, you should change the version attribute.</p>
+<p>You can also load objects back from the database:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">f</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;pySWAP test - hupsel brook&#39;</span><span class="p">,</span> <span class="n">load_results</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The above line will load <em>all</em> models from a given project to the <code>f.models</code> attribute. If you only want one specific version, specify it through <code>model</code> parameter.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">f</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;pySWAP test - hupsel brook&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="n">load_results</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></code></pre></div>
 
 
 
@@ -1240,7 +1208,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../reference/api-reference/" class="md-footer__link md-footer__link--prev" aria-label="Previous: API reference">
+          <a href="../data-structures/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Data structures">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -1250,20 +1218,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                API reference
+                Data structures
               </div>
             </div>
           </a>
         
         
           
-          <a href="../2-quick-start/" class="md-footer__link md-footer__link--next" aria-label="Next: Quickstart">
+          <a href="../../wiki/standard-array-lengths/" class="md-footer__link md-footer__link--next" aria-label="Next: Standard array lengths">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Quickstart
+                Standard array lengths
               </div>
             </div>
             <div class="md-footer__button md-icon">
