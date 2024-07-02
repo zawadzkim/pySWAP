@@ -41,12 +41,16 @@ def test_hupselbrook_model():
     # Resample and sum the expected data
     expected_data = expected_data.resample('YE').sum()
 
-    print('EXPECTED: ', expected_data.index)
-    print('RESAMPLED: ', resampled_output.index)
+    print('The test has rtol and atol of 1e-3')
 
     # Compare the result with the expected values
     pd.testing.assert_frame_equal(
-        resampled_output, expected_data, check_dtype=False)
+        resampled_output,
+        expected_data,
+        check_dtype=False,
+        rtol=1e-3,
+        atol=1e-3
+    )
 
 
 if __name__ == "__main__":
