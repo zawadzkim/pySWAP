@@ -4,4 +4,4 @@ set -ex
 
 echo "Installing poetry environment"
 
-poetry install
+poetry install --no-dev
