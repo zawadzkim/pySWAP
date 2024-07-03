@@ -1,0 +1,5 @@
+#!/bin/bash
+
+./binder/scripts/data-extract &
+
+exec "$@"
