@@ -4,4 +4,6 @@ set -ex
 
 echo "Installing poetry environment"
 
-poetry install --no-dev
+poetry install --only main
+
+pip install jupyter
