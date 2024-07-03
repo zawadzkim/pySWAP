@@ -5,5 +5,3 @@ set -ex
 echo "Installing poetry environment"
 
 poetry install --only main
-
-jupyter notebook
