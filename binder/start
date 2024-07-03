@@ -1,4 +1,3 @@
 #!/bin/bash
-poetry install --only main
 cd docs/notebooks
 exec "$@"
