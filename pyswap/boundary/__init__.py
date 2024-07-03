@@ -7,3 +7,4 @@ Modules:
     bottomboundary: Bottom boundary condition settings for the SWAP model.
 """
 from .boundary import BottomBoundary
+from .bbcfile import BBCFile
