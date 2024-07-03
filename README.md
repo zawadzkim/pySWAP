@@ -7,6 +7,7 @@
 [![downloads](https://static.pepy.tech/badge/pySWAP/month)](https://pepy.tech/project/pySWAP)
 [![versions](https://img.shields.io/pypi/pyversions/pySWAP.svg)](https://pypi.python.org/pypi/pySWAP)
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/zawadzkim/pySWAP/enhancement/improved-tests-and-notebooks)
 pySWAP is a Python wrapper (not Python implementation) for the SWAP hydrological model ([link to the model website](https://www.swap.alterra.nl/)). It simplifies the creation of input files, execution of the SWAP model, and analysis and visualization of results. Users can set up and document their models in Jupyter notebooks, enhancing transparency, collaboration, and facilitating community-supported debugging.
 
 ## Contributing
