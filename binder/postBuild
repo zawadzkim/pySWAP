@@ -6,4 +6,4 @@ echo "Installing poetry environment"
 
 poetry install --only main
 
-pip install jupyter
+jupyter notebook
