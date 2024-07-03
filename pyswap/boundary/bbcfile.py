@@ -8,21 +8,15 @@ Classes:
 from typing import Optional, Literal
 from typing_extensions import Self
 from pydantic import model_validator, Field
-from ..core import PySWAPBaseModel, Table
-from ..core.files import save_file
-from .bbcfile import BBCFile
+from ..core import PySWAPBaseModel
+from ..core import Table
 
 
-class BottomBoundary(PySWAPBaseModel):
+class BBCFile(PySWAPBaseModel):
     """
     Bottom boundary settings for SWAP model.
 
     Attributes:
-        swbbcfile (Literal[0, 1]): Switch for file with bottom boundary data:
-
-            * 0 - data are specified in current file
-            * 1 - data are specified in separate file
-
         swbotb (Literal[1, 2, 3, 4, 5, 6, 7, 8]): Switch for type of bottom boundary.
 
             * 1 - prescribe groundwater level;
@@ -86,41 +80,40 @@ class BottomBoundary(PySWAPBaseModel):
         table_hbot (Optional[Table]): Table with the bottom compartment pressure head.
     """
 
-    swbbcfile: Literal[0, 1]
-    bbcfil: Optional[str] = None
-    swbotb: Optional[Literal[1, 2, 3, 4, 5, 6, 7, 8]] = None
-    sw2: Optional[Literal[1, 2]] = None
-    sw3: Optional[Literal[1, 2]] = None
-    sw4: Optional[Literal[0, 1]] = None
-    swbotb3resvert: Optional[Literal[0, 1]] = None
-    swbotb3impl: Optional[Literal[0, 1]] = None
-    swqhbot: Optional[Literal[1, 2]] = None
-    bbcfil: Optional[str] = None
-    bbcfile: Optional[BBCFile] = None
-    sinave: Optional[float] = Field(ge=-10.0, le=10.0, default=None)
-    sinamp: Optional[float] = Field(ge=-10.0, le=10.0, default=None)
-    sinmax: Optional[float] = Field(ge=0.0, le=366.0, default=None)
-    shape: Optional[float] = None
-    hdrain: Optional[float] = None
-    rimlay: Optional[float] = None
-    aqave: Optional[float] = None
-    aqamp: Optional[float] = None
-    aqtmax: Optional[float] = None
-    aqper: Optional[float] = None
-    cofqha: Optional[float] = None
-    cofqhb: Optional[float] = None
-    cofqhc: Optional[float] = None
-    table_gwlevel: Optional[Table] = None
-    table_qbot: Optional[Table] = None
-    table_haquif: Optional[Table] = None
-    table_qbot4: Optional[Table] = None
-    table_qtab: Optional[Table] = None
-    table_hbot5: Optional[Table] = None
+    swbotb: Literal[1, 2, 3, 4, 5, 6, 7, 8]
+    sw2: Optional[Literal[1, 2]] = Field(default=None)
+    sw3: Optional[Literal[1, 2]] = Field(default=None)
+    sw4: Optional[Literal[0, 1]] = Field(default=None)
+    swbotb3resvert: Optional[Literal[0, 1]] = Field(default=None)
+    swbotb3impl: Optional[Literal[0, 1]] = Field(default=None)
+    swqhbot: Optional[Literal[1, 2]] = Field(default=None)
+    sinave: Optional[float] = Field(
+        ge=-10.0, le=10.0, default=None)
+    sinamp: Optional[float] = Field(
+        ge=-10.0, le=10.0, default=None)
+    sinmax: Optional[float] = Field(
+        ge=0.0, le=366.0, default=None)
+    shape: Optional[float] = Field(default=None)
+    hdrain: Optional[float] = Field(default=None)
+    rimlay: Optional[float] = Field(default=None)
+    aqave: Optional[float] = Field(default=None)
+    aqamp: Optional[float] = Field(default=None)
+    aqtmax: Optional[float] = Field(default=None)
+    aqper: Optional[float] = Field(default=None)
+    cofqha: Optional[float] = Field(default=None)
+    cofqhb: Optional[float] = Field(default=None)
+    cofqhc: Optional[float] = Field(default=None)
+    table_gwlevel: Optional[Table] = Field(default=None)
+    table_qbot: Optional[Table] = Field(default=None)
+    table_haquif: Optional[Table] = Field(default=None)
+    table_qbot4: Optional[Table] = Field(default=None)
+    table_qtab: Optional[Table] = Field(default=None)
+    table_hbot5: Optional[Table] = Field(default=None)
 
     @model_validator(mode='after')
     def _check_swbotb(self) -> Self:
         if self.swbotb == 1:
-            assert self.table_gwlevel, 'table_gwlevel must be provided if swbotb is 1'
+            assert not self.table_gwlevel.empty, 'table_gwlevel must be provided if swbotb is 1'
         elif self.swbotb == 2:
             assert self.sw2, 'sw2 must be provided if swbotb is 2'
             if self.sw2 == 1:
@@ -151,10 +144,6 @@ class BottomBoundary(PySWAPBaseModel):
 
         return self
 
-    def write_bbc(self, path: str):
-        save_file(
-            string=self.bbcfile.model_string(),
-            extension='bbc',
-            fname=self.bbcfil,
-            path=path
-        )
+    @property
+    def content(self):
+        return self._concat_sections()
