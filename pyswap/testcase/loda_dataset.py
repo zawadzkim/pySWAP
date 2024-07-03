@@ -20,8 +20,11 @@ def view_resources(testcase: str) -> dict:
     return RESOURCES[testcase]
 
 
-def load_met(testcase: str) -> pd.DataFrame:
-
+def load_met(testcase: str, **kwargs) -> pd.DataFrame:
     path = RESOURCES[testcase].get('met')
+    return pd.read_csv(path, **kwargs)
 
-    return pd.read_csv(path)
+
+def load_observations(testcase: str, **kwargs) -> pd.DataFrame:
+    path = RESOURCES[testcase].get('observations')
+    return pd.read_csv(path, **kwargs)
