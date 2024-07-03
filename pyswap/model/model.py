@@ -73,7 +73,7 @@ class Model(PySWAPBaseModel):
     general_settings: GeneralSettings
     meteorology: Meteorology
     crop: Crop
-    fixedirrigation: FixedIrrigation
+    fixedirrigation: FixedIrrigation = FixedIrrigation(swirfix=0)
     soilmoisture: SoilMoisture
     surfaceflow: SurfaceFlow
     evaporation: Evaporation
@@ -119,6 +119,8 @@ class Model(PySWAPBaseModel):
             self.meteorology.write_met(path)
         if self.fixedirrigation.irgfile:
             self.irrigation.fixedirrig.write_irg(path)
+        if self.bottomboundary.swbbcfile:
+            self.bottomboundary.write_bbc(path)
 
     @staticmethod
     def _run_swap(tempdir: Path) -> str:
