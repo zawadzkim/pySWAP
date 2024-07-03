@@ -1,6 +1,6 @@
 from datetime import date as dt
 import pyswap as ps
-from pathlib import Path
+from pyswap import testcase
 
 
 def _make_hupselbrook():
@@ -9,7 +9,7 @@ def _make_hupselbrook():
     meta = ps.Metadata(author="John Doe",
                        institution="University of Somewhere",
                        email="john.doe@somewhere.com",
-                       project="pySWAP test - hupsel brook",
+                       project="pySWAP test - hupselbrook",
                        swap_ver="4.2")
 
     simset = ps.GeneralSettings(
@@ -31,11 +31,8 @@ def _make_hupselbrook():
 
     # %% Meteorology section
 
-    metfil_path = Path(__file__).parent.joinpath(
-        './data/1-hupselbrook/283.csv')
-
-    meteo_data = ps.atmosphere.load_from_csv(
-        metfil='283.met', csv_path=metfil_path)
+    meteo_data = ps.MetFile(metfil='283.met',
+                            content=testcase.load_met('hupselbrook'))
 
     meteo = ps.Meteorology(
         lat=52.0,
@@ -489,11 +486,6 @@ def _make_hupselbrook():
                                                  'CROPEND': [dt(2002, 10, 15), dt(2003, 9, 29), dt(2004, 12, 31)],
                                                  'CROPFIL': ["'maizes'", "'potatod'", "'grassd'"],
                                                  'CROPTYPE': [1, 2, 3]})
-
-    crp_grass = Path(__file__).parent.joinpath(
-        './data/1-hupselbrook/grassd.crp')
-
-    crop_grassd = ps.plant.CropFile(name='grassd', path=str(crp_grass))
 
     crop = ps.plant.Crop(
         swcrop=1,
