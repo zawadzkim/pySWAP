@@ -17,6 +17,9 @@ pandera = "^0.19.3"
 bottleneck = "~1.3.6"
 h5py = "^3.11.0"
 
+[tool.poetry.scripts]
+pyswap= "pyswap.core.cli.cli:app"
+
 
 [tool.poetry.group.dev.dependencies]
 mkdocs-material = "^9.5.27"
