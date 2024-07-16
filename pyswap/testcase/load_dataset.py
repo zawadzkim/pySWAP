@@ -1,6 +1,9 @@
 """Loading datasets for testcases."""
 import pandas as pd
 from pathlib import Path
+import platform
+
+IS_WINDOWS = platform.system() == 'Windows'
 
 BASE_PATH: Path = Path(__file__).parent.joinpath('./data')
 

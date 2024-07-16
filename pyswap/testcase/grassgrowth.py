@@ -1,7 +1,7 @@
 import pyswap as ps
 from pathlib import Path
 from pandas import DataFrame, read_csv
-
+from .loda_dataset import IS_WINDOWS
 
 def _make_grassgrowth():
 
@@ -344,7 +344,10 @@ def _make_grassgrowth():
     gwleveltable_path = Path(__file__).parent.joinpath(
         './data/2-grassgrowth/gwlevel.csv')
 
-    table_gwlevel = read_csv(gwleveltable_path, lineterminator='\n')
+    if IS_WINDOWS:
+        table_gwlevel = read_csv(gwleveltable_path)
+    else:
+        table_gwlevel = read_csv(gwleveltable_path, lineterminator='\n')
 
     bbc_file = ps.BBCFile(
         swbotb=1,
