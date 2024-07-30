@@ -9,5 +9,6 @@ Modules:
 ___________________________________________________________________________
 """
 
-from .meteorology import *
-from .metfile import *
+from .meteorology import Meteorology
+from .metfile import MetFile, load_from_csv, load_from_knmi
+from .tables import RAINFLUX
