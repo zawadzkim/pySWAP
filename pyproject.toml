@@ -28,6 +28,8 @@ mkdocs-autorefs = "^1.0.1"
 mkdocstrings-python = "^1.10.3"
 pytest = "^8.2.2"
 pytest-cov = "^5.0.0"
+flake8 = "^7.1.0"
+mypy = "^1.11.0"
 
 [build-system]
 requires = ["poetry-core"]
