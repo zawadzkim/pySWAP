@@ -10,4 +10,4 @@ Modules:
 
 from .drainage import Drainage
 from .drafile import (DraFile, DrainageFluxTable, DrainageFormula,
-                      DrainageInfiltrationResitance, DraSettings, Flux)
+                      DrainageInfRes, DraSettings, Flux)
