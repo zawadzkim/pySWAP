@@ -1,29 +1,24 @@
 """Create the irrigation file for the SWAP model.
 
 Classes:
-    IrrigationFile: The irrigation file.
+    IrrgFile: The irrigation file.
 """
 
 from pydantic import Field
 from pandas import read_csv
-from ..core import PySWAPBaseModel
+from ..core import PySWAPBaseModel, String, FileMixin
 from pandas import DataFrame
 
 
-class IrgFile(PySWAPBaseModel):
+class IrgFile(PySWAPBaseModel, FileMixin):
     """The irrigation file.
-
-    !!! warning
-        The irrigation file is the first to have pandera validation. However, 
-        it is not yet complete. Some columns are set to non-required, but they
-        might be required if solute transport is used.
 
     Attributes:
         irgfil (str): the name of the irgfile without .irg extension.
         content (DataFrame): The content of the irrigation file.
     """
 
-    irgfil: str
+    irgfil: String
     content: DataFrame = Field(exclude=True)
 
 

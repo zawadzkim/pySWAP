@@ -1,7 +1,5 @@
 from __future__ import annotations
 from pydantic import BaseModel, ConfigDict
-from .serializers import quote_string
-from .files import save_file
 
 
 class PySWAPBaseModel(BaseModel):
@@ -12,9 +10,11 @@ class PySWAPBaseModel(BaseModel):
 
     Methods:
         save_element: Saves model element to a file.
-        model_string: Returns a custom model string representation that matches the requirements of .swp file.
+        model_string: Returns a custom model string representation that
+            matches the requirements of .swp file.
         _concat_sections: Concatenate a string from individual sections.
-        model_string: Returns a custom model string representation that matches the requirements of .swp file.
+        model_string: Returns a custom model string representation that
+            matches the requirements of .swp file.
     """
 
     model_config = ConfigDict(
@@ -23,34 +23,16 @@ class PySWAPBaseModel(BaseModel):
         extra='forbid'
     )
 
-    @staticmethod
-    def save_element(string: str, path: str, filename: str, extension: str | None = None) -> str:
-        """Saves model element to a file.
-
-        Args:
-            string (str): String to be saved.
-            path (str): Path to the file.
-            filename (str): File name.
-
-        Returns:
-            str: Success message.
-        """
-        save_file(
-            string=string,
-            fname=filename,
-            extension=extension,
-            path=path
-        )
-        return f'{filename}.{extension} saved successfully.'
-
     def model_string(self) -> str:
-        """Returns a custom model string representation that matches the requirements of .swp file.
+        """Returns a custom model string representation that matches the
+        requirements of .swp file.
 
         Note:
-            If values are simple types, they are formatted as 'ATTR = VALUE'. If the valies are
-            tables (in pySWAP pd.DataFrame are used), they are formatted simply as 'TABLE_VALUE'. Additionally,
-            a custom serializer (pyswap.core.utils.serializers.quote_string) is used to quote strings.
-
+            If values are simple types, they are formatted as 'ATTR = VALUE'.
+            If the valies are tables (in pySWAP pd.DataFrame are used), they
+            are formatted simply as 'TABLE_VALUE'. Additionally, a custom
+            serializer (pyswap.core.utils.serializers.quote_string)
+            is used to quote strings
         Returns:
             str: Custom model string representation.
         """
@@ -60,7 +42,7 @@ class PySWAPBaseModel(BaseModel):
             if attr.startswith('table_') or attr.startswith('list_'):
                 return string + value
             else:
-                return string + f'{attr.upper()} = {quote_string(value)}\n'
+                return string + f'{attr.upper()} = {value}\n'
 
         for attr, value in self.model_dump(
                 mode='json', exclude_none=True).items():

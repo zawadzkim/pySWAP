@@ -2,18 +2,17 @@
 Irrigation settings for the SWAP simuluation.
 
 Classes:
-    FixedIrrigation: Holds the settings for fixed irrigation.
-    ScheduledIrrigation: Holds the settings for scheduled irrigation.
-    Irrigation: Holds the irrigation settings of the simulation.
+    FixedIrrigation: Fixed irrigation settings.
+    ScheduledIrrigation: Irrigation scheduling settings.
 """
-from ..core import PySWAPBaseModel, Table, YEARRANGE, DayMonth
-from typing import Optional, Literal, Any
+from ..core import PySWAPBaseModel, Table, YEARRANGE, DayMonth, SerializableMixin
+from typing import Optional, Literal
 from typing_extensions import Self
 from pydantic import model_validator, Field
 from .irgfile import IrgFile
 
 
-class FixedIrrigation(PySWAPBaseModel):
+class FixedIrrigation(PySWAPBaseModel, SerializableMixin):
     """Fixed irrigation settings.
 
     !!! note
@@ -43,8 +42,16 @@ class FixedIrrigation(PySWAPBaseModel):
 
         return self
 
+    def write_irg(self, path) -> str:
+        self.irgfile.save_file(
+            string=self.irgfile.content,
+            fname=self.irgfile.irgfil,
+            path=path,
+            extension='irg'
+        )
 
-class ScheduledIrrigation(PySWAPBaseModel):
+
+class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin):
     """Irrigation scheduling settings.
 
     !!! warning

@@ -20,19 +20,21 @@ Classes:
 
 
 Warning:
-    This script will undergo major changes in the future. Some things to improve include
-    smoother integration with WOFOST configuration files (yaml) and code readability.
+    This script will undergo major changes in the future. Some things to
+    improve include smoother integration with WOFOST configuration files
+    (yaml) and code readability.
 """
 from pydantic import Field
 from ..core import (Table, Arrays, UNITRANGE, DateList, IntList,
-                    YEARRANGE, PySWAPBaseModel, open_file)
+                    YEARRANGE, PySWAPBaseModel, open_file,
+                    SerializableMixin, FileMixin)
 from ..irrigation import ScheduledIrrigation
 from typing import Literal, Optional
 from typing_extensions import Self
-from pydantic import Field, model_validator, computed_field
+from pydantic import model_validator, computed_field
 
 
-class CropDevelopmentSettings(PySWAPBaseModel):
+class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin):
     """Crop development settings (parts 1-xx form the template)
 
     Note:
@@ -309,7 +311,7 @@ class CropDevelopmentSettingsGrass(CropDevelopmentSettingsWOFOST):
     tsumtime: Optional[float] = None
 
 
-class OxygenStress(PySWAPBaseModel):
+class OxygenStress(PySWAPBaseModel, SerializableMixin):
     """Oxygen stress settings for .crp file.
 
     Attributes:
@@ -399,7 +401,7 @@ class OxygenStress(PySWAPBaseModel):
         return self
 
 
-class DroughtStress(PySWAPBaseModel):
+class DroughtStress(PySWAPBaseModel, SerializableMixin):
     """Drought stress settings for .crp file.
 
     Attributes:
@@ -471,7 +473,7 @@ class DroughtStress(PySWAPBaseModel):
         return self
 
 
-class SaltStress(PySWAPBaseModel):
+class SaltStress(PySWAPBaseModel, SerializableMixin):
     """Salt stress settings for .crp file.
 
     Attributes:
@@ -501,7 +503,7 @@ class SaltStress(PySWAPBaseModel):
         return self
 
 
-class CompensateRWUStress(PySWAPBaseModel):
+class CompensateRWUStress(PySWAPBaseModel, SerializableMixin):
     """Compensate root water uptake stress settings for .crp file.
 
     Attributes:
@@ -539,7 +541,7 @@ class CompensateRWUStress(PySWAPBaseModel):
         return self
 
 
-class Interception(PySWAPBaseModel):
+class Interception(PySWAPBaseModel, SerializableMixin):
     """Interception settings for .crp file.
 
     Attributes:
@@ -572,7 +574,7 @@ class Interception(PySWAPBaseModel):
         return self
 
 
-class CO2Correction(PySWAPBaseModel):
+class CO2Correction(PySWAPBaseModel, SerializableMixin):
     """CO2 correction settings for WOFOST-type .crp file.
 
     Attributes:
@@ -604,7 +606,7 @@ class CO2Correction(PySWAPBaseModel):
         return self
 
 
-class Preparation(PySWAPBaseModel):
+class Preparation(PySWAPBaseModel, SerializableMixin):
     """Preparation, sowing and germination settings for .crp file.
 
     Attributes:
@@ -687,7 +689,7 @@ class Preparation(PySWAPBaseModel):
         return self
 
 
-class GrasslandManagement(PySWAPBaseModel):
+class GrasslandManagement(PySWAPBaseModel, SerializableMixin):
     """Settings specific to the dynamic grass growth module.
 
     !!! warning
@@ -787,7 +789,7 @@ class GrasslandManagement(PySWAPBaseModel):
     #         assert self.table_lsda is not None, "table_lsda
 
 
-class CropFile(PySWAPBaseModel):
+class CropFile(PySWAPBaseModel, FileMixin):
     """Main class for the .crp file.
 
     This class collects all the settings for the crop file. Currently the types of the 

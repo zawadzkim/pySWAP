@@ -11,26 +11,27 @@ Functions:
 
 from typing import Optional, Literal
 from pandas import read_csv
+from pydantic import Field
 from datetime import datetime as dt
 from knmi import get_day_data_dataframe, get_hour_data_dataframe
-from ..core import PySWAPBaseModel
-from ..core import CSVTable
-from pydantic import Field
+
+from ..core.mixins import FileMixin
+from ..core import PySWAPBaseModel, String, CSVTable
 
 
-class MetFile(PySWAPBaseModel):
+class MetFile(PySWAPBaseModel, FileMixin):
     """Meteorological data for the .met file.
 
     This object is created by functions fetching or loading meteorological data
-    from various sources. The data is stored as a pandas.DataFrame, but is formatted 
-    with a custom field serializer of the CSVTable field type.
+    from various sources. The data is stored as a pandas.DataFrame, but
+    is formatted with a custom field serializer of the CSVTable field type.
 
     Attributes:
         metfil (str): name of the .met file
         content (CSVTable): meteorological data file
     """
 
-    metfil: str
+    metfil: String
     content: Optional[CSVTable] = Field(default=None, exclude=True)
 
 
@@ -57,7 +58,8 @@ def load_from_knmi(metfil: str,
                    end: str | dt = '20200101',
                    frequency: Literal['day', 'hour'] = 'day',
                    inseason: bool = False) -> MetFile:
-    """Retrieves the meteorological data from KNMI API using knmi-py.
+    """Retrieves the meteorological data from KNMI API using knmi-py and
+    enforces SWAP required format.
 
     Parameters:
         metfil (str): name of the .met file
@@ -77,7 +79,8 @@ def load_from_knmi(metfil: str,
     if isinstance(variables, str):
         variables = [variables]
 
-    get_func = get_day_data_dataframe if frequency == 'day' else get_hour_data_dataframe
+    get_func = get_day_data_dataframe if frequency == 'day' \
+        else get_hour_data_dataframe
 
     df = get_func(stations=stations,
                   start=start,
@@ -98,10 +101,11 @@ def load_from_knmi(metfil: str,
 
     df = df.rename(columns=required_column_names)
 
-    # recalculation of the parameters
-    df[['Tmin', 'Tmax', 'ETref', 'RAIN', 'WIND']] = df[['Tmin', 'Tmax', 'ETref', 'RAIN',
-                                                                        'WIND']] * 0.1  # the original unit is 0.1 Unit
-    df['WET'] = df['WET'] * \
-        0.1 * 24  # the required unit is days
+    # recalculation of the parameters, the original unit is 0.1 Unit
+    df[['Tmin', 'Tmax', 'ETref', 'RAIN', 'WIND']] = df[[
+        'Tmin', 'Tmax', 'ETref', 'RAIN', 'WIND']].multiply(0.1)
+
+    # The required unit is days
+    df['WET'] = df['WET'].multiply(0.1).multiply(24)
 
     return MetFile(metfil=metfil, content=df)
