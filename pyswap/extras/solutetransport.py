@@ -4,13 +4,13 @@ Classes:
     SoluteTransport: Solute transport settings.
 """
 
-from ..core import PySWAPBaseModel
+from ..core import PySWAPBaseModel, SerializableMixin
 from ..core import Table
 from typing import Literal, Optional
 from typing_extensions import Self
 
 
-class SoluteTransport(PySWAPBaseModel):
+class SoluteTransport(PySWAPBaseModel, SerializableMixin):
     """
     Solute transport settings.
 

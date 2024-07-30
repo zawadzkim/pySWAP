@@ -5,11 +5,11 @@ Classes:
     RichardsSettings: Holds the settings for the Richards' equation.
 """
 
-from ..core import PySWAPBaseModel
+from ..core import PySWAPBaseModel, SerializableMixin
 from typing import Literal
 
 
-class RichardsSettings(PySWAPBaseModel):
+class RichardsSettings(PySWAPBaseModel, SerializableMixin):
     """Settings for the Richards' equation.
 
     Attributes:
