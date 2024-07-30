@@ -3,6 +3,7 @@ from pathlib import Path
 from pandas import DataFrame, read_csv
 from .loda_dataset import IS_WINDOWS
 
+
 def _make_grassgrowth():
 
     meta = ps.Metadata(author="John Doe",
@@ -322,7 +323,7 @@ def _make_grassgrowth():
         table_datowltb=flux_table
     )
 
-    drainageinfiltrationres = ps.DrainageInfiltrationResitance(
+    drainageinfiltrationres = ps.DrainageInfRes(
         nrlevs=1,
         swintfl=0,
         list_levelfluxes=[flux1]
@@ -331,7 +332,7 @@ def _make_grassgrowth():
     dra_file = ps.DraFile(
         drfil='swap',
         general=dra_settings,
-        drainageinfiltrationres=drainageinfiltrationres
+        drainageinfres=drainageinfiltrationres
     )
 
     lateral_drainage = ps.Drainage(

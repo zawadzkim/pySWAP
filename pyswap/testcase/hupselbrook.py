@@ -482,10 +482,13 @@ def _make_hupselbrook():
 
     # %% Creating the main Crop object
 
-    croprotation = ps.plant.CROPROTATION.create({'CROPSTART': [dt(2002, 5, 1), dt(2003, 5, 10), dt(2004, 1, 1)],
-                                                 'CROPEND': [dt(2002, 10, 15), dt(2003, 9, 29), dt(2004, 12, 31)],
-                                                 'CROPFIL': ["'maizes'", "'potatod'", "'grassd'"],
-                                                 'CROPTYPE': [1, 2, 3]})
+    croprotation = ps.plant.CROPROTATION. \
+        create({'CROPSTART': [dt(2002, 5, 1), dt(2003, 5, 10),
+                              dt(2004, 1, 1)],
+                'CROPEND': [dt(2002, 10, 15), dt(2003, 9, 29),
+                            dt(2004, 12, 31)],
+                'CROPFIL': ["'maizes'", "'potatod'", "'grassd'"],
+                'CROPTYPE': [1, 2, 3]})
 
     crop = ps.plant.Crop(
         swcrop=1,
