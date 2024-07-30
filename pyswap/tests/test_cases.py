@@ -3,11 +3,16 @@ Testing module.
 
 !!! note
 
-    Testing in pyswap is currently done through running the test case models created with pyswap and comparing the results to those
-    obtained from runnign the model the traditional way (using the testcase library provided by the developers of SWAP). Currently there is still
-    some issues with floating point numbers being properly represented. While this is normally not posing significant issue, it should be solved, because
-    with more iterations the error resulting from floating point misrepresentation will increase. To avoid throwing errors at testing related to this,
-    *a tolerance is implemented when comparing the dataframes to max 10e-2 on absolute and relative error*.
+    Testing in pyswap is currently done through running the test case models
+    created with pyswap and comparing the results to those
+    obtained from runnign the model the traditional way (using the testcase
+    library provided by the developers of SWAP). Currently there is still
+    some issues with floating point numbers being properly represented. While
+    this is normally not posing significant issue, it should be solved, because
+    with more iterations the error resulting from floating point
+    misrepresentation will increase. *To avoid throwing errors at testing
+    related to this, a tolerance is implemented when comparing the dataframes
+    to max 10e-2 on absolute and relative error*.
 
 """
 
@@ -19,7 +24,7 @@ from pyswap import testcase
 def test_hupselbrook_model():
 
     model = testcase.get('hupselbrook')
-    result = model.run('./', silence_warnings=True)
+    result = model.run('./', silence_warnings=True, old_output=True)
 
     resampled_output = result.output.resample('YE').sum()
 
