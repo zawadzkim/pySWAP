@@ -1,7 +1,8 @@
 """Pandera schemas for validating tables in pySWAP.
 
-The schemas are used to validate pandas DataFrames used in the pySWAP models. They also
-help to enforce the appropriate data types required by the SWAP model.
+The schemas are used to validate pandas DataFrames used in the pySWAP models.
+They also help to enforce the appropriate data types required
+by the SWAP model.
 
 Classes:
     BaseModel: Base class for all pySWAP schemas.

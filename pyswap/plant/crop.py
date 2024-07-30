@@ -1,13 +1,13 @@
 from typing import Optional, List, Literal
 from typing_extensions import Self
-from ..core import PySWAPBaseModel
+from ..core import PySWAPBaseModel, SerializableMixin
 from ..core import Table
 from ..core import save_file
-from .crpfile import *
+from .crpfile import CropFile
 from pydantic import Field
 
 
-class Crop(PySWAPBaseModel):
+class Crop(PySWAPBaseModel, SerializableMixin):
     """Holds the crop settings of the simulation.
 
     Attributes:

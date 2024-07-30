@@ -6,17 +6,17 @@ Classes:
     DraSettings: Class for the settings of the drainage module.
     DrainageFluxTable: Class for the drainage flux table.
     DrainageFormula: Class for the drainage formula.
-    DrainageInfiltrationResitance: Class for the drainage infiltration resistance.
+    DrainageInfRes: Class for the drainage infiltration resistance.
     Flux: Class for the flux.
 """
-from ..core import (PySWAPBaseModel, FloatList, Table,
-                    ObjectList, UNITRANGE)
+from ..core import (PySWAPBaseModel, FloatList, Table, String,
+                    ObjectList, UNITRANGE, FileMixin, SerializableMixin)
 from pydantic import Field, model_validator
 from typing import Literal, Optional
 from typing_extensions import Self
 
 
-class DraSettings(PySWAPBaseModel):
+class DraSettings(PySWAPBaseModel, SerializableMixin):
     """General settings for the drainage file
 
     Attributes:
@@ -26,9 +26,13 @@ class DraSettings(PySWAPBaseModel):
             * 2 - Use drainage formula of Hooghoudt or Ernst.
             * 3 - Use drainage/infiltration resistance, multi-level if needed.
 
-        swdivd (Literal[1, 2]): Calculate vertical distribution of drainage flux in groundwater.
-        cofani (Optional[FloatList]): specify anisotropy factor COFANI (horizontal/vertical saturated hydraulic conductivity) for each soil layer (maximum MAHO)
-        swdislay (Literal[0, 1, 2, 3, '-']): Switch to adjust upper boundary of model discharge layer.
+        swdivd (Literal[1, 2]): Calculate vertical distribution of
+            drainage flux in groundwater.
+        cofani (Optional[FloatList]): specify anisotropy factor COFANI
+            (horizontal/vertical saturated hydraulic conductivity) for
+            each soil layer (maximum MAHO)
+        swdislay (Literal[0, 1, 2, 3, '-']): Switch to adjust
+            upper boundary of model discharge layer.
 
             * 0 - No adjustment
             * 1 - Adjusment based on depth of top of model discharge
@@ -41,7 +45,7 @@ class DraSettings(PySWAPBaseModel):
     swdislay: Literal[0, 1, 2, 3, '-']
 
 
-class DrainageFluxTable(PySWAPBaseModel):
+class DrainageFluxTable(PySWAPBaseModel, SerializableMixin):
     """Settings for the case when dramet is 1.
 
     Attributes:
@@ -52,12 +56,13 @@ class DrainageFluxTable(PySWAPBaseModel):
     table_qdrntb: Table
 
 
-class DrainageFormula(PySWAPBaseModel):
+class DrainageFormula(PySWAPBaseModel, SerializableMixin):
     """Settings for the case when dramet is 2.
 
     Attributes:
         lm2 (float): Drain spacing.
-        shape (float): Shape factor to account for actual location between drain and water divide.
+        shape (float): Shape factor to account for actual location between
+            drain and water divide.
         wetper (float): Wet perimeter of the drain.
         zbotdr (float): Level of drain bottom.
         entres (float): Drain entry resistance.
@@ -65,15 +70,21 @@ class DrainageFormula(PySWAPBaseModel):
 
             * 1 - On top of an impervious layer in a homogeneous profile
             * 2 - Above an impervious layer in a homogeneous profile
-            * 3 - At the interface of a fine upper and a coarse lower soil layer
+            * 3 - At the interface of a fine upper and a coarse lower
+                soil layer
             * 4 - In the lower, more coarse soil layer
             * 5 - In the upper, more fine soil layer
+
         basegw (float): Level of impervious layer.
         khtop (float): Horizontal hydraulic conductivity of the top layer.
-        khbot (Optional[float]): Horizontal hydraulic conductivity of the bottom layer.
-        zintf (Optional[float]): Interface level of the coarse and fine soil layer.
-        kvtop (Optional[float]): Vertical hydraulic conductivity of the top layer.
-        kvbot (Optional[float]): Vertical hydraulic conductivity of the bottom layer.
+        khbot (Optional[float]): Horizontal hydraulic conductivity of
+            the bottom layer.
+        zintf (Optional[float]): Interface level of the coarse and
+            fine soil layer.
+        kvtop (Optional[float]): Vertical hydraulic conductivity of
+            the top layer.
+        kvbot (Optional[float]): Vertical hydraulic conductivity of
+            the bottom layer.
         geofac (Optional[float]): Geometric factor of Ernst.
     """
 
@@ -94,26 +105,33 @@ class DrainageFormula(PySWAPBaseModel):
     @model_validator(mode='after')
     def _validate_draformula(self) -> Self:
         if self.ipos in [3, 4, 5]:
-            assert self.khbot is not None, 'khbot has to be provided if IPOS is 3.'
-            assert self.zintf is not None, 'zintf has to be provided if IPOS is 3.'
+            assert self.khbot is not None, \
+                'khbot has to be provided if IPOS is 3.'
+            assert self.zintf is not None, \
+                'zintf has to be provided if IPOS is 3.'
         if self.ipos in [4, 5]:
-            assert self.kvtop is not None, 'kvtop has to be provided if IPOS is 3.'
-            assert self.kvbot is not None, 'kvbot has to be provided if IPOS is 3.'
+            assert self.kvtop is not None, \
+                'kvtop has to be provided if IPOS is 3.'
+            assert self.kvbot is not None, \
+                'kvbot has to be provided if IPOS is 3.'
         if self.ipos == 5:
-            assert self.geofac is not None, 'geofac has to be provided if IPOS is 3.'
+            assert self.geofac is not None, \
+                'geofac has to be provided if IPOS is 3.'
 
         return self
 
 
-class DrainageInfiltrationResitance(PySWAPBaseModel):
+class DrainageInfRes(PySWAPBaseModel, SerializableMixin):
     """Settings for the case when dramet is 3.
 
     Attributes:
         nrlevs (int): Number of drainage levels.
-        swintfl (Literal[0, 1]): Option for interflow in highest drainage level (shallow system with short residence time).
+        swintfl (Literal[0, 1]): Option for interflow in highest
+            drainage level (shallow system with short residence time).
         cofintflb (float): Coefficient for interflow relation.
         expintflb (float): Exponent for interflow relation.
-        swtopnrsrf (Literal[0, 1]): Switch to enable adjustment of model discharge layer.
+        swtopnrsrf (Literal[0, 1]): Switch to enable adjustment of
+            model discharge layer.
         list_levelfluxes (ObjectList): List of level fluxes.
     """
     nrlevs: int = Field(ge=1, le=5)
@@ -126,15 +144,17 @@ class DrainageInfiltrationResitance(PySWAPBaseModel):
     @model_validator(mode='after')
     def _validate_drainfiltrationres(self) -> Self:
         if self.swintfl == 1:
-            assert self.cofintflb is not None, 'cofintflb has to be provided if swintfl is 1.'
-            assert self.expintflb is not None, 'expintflb has to be provided if swintfl is 1.'
+            assert self.cofintflb is not None, \
+                'cofintflb has to be provided if swintfl is 1.'
+            assert self.expintflb is not None, \
+                'expintflb has to be provided if swintfl is 1.'
 
         return self
 
 
-class Flux(PySWAPBaseModel):
-    """These objects are needed for the DrainageInfiltrationResitance class. Flux object should be 
-    created for each level of drainage.
+class Flux(PySWAPBaseModel, SerializableMixin):
+    """These objects are needed for the DrainageInfiltrationResitance class.
+    Flux object should be created for each level of drainage.
 
     Attributes:
         level_number (int): Number of the level.
@@ -148,9 +168,11 @@ class Flux(PySWAPBaseModel):
             * 1 - drain tube.
             * 2 - open channel.
 
-        table_datowltb (Table): date DATOWL [date] and channel water level LEVEL. Add suffix to the 
-            dataframe headers according to the level number.
+        table_datowltb (Table): date DATOWL [date] and channel water
+            level LEVEL. Add suffix to the dataframe headers
+            according to the level number.
     """
+
     level_number: int = Field(exclude=True, ge=1, le=5)
     drares: float = Field(ge=10.0, le=1.0e5)
     infres: float = Field(ge=10.0, le=1.0e5)
@@ -181,7 +203,7 @@ class Flux(PySWAPBaseModel):
         return d
 
 
-class DraFile(PySWAPBaseModel):
+class DraFile(PySWAPBaseModel, FileMixin):
     """Main class representing the drainage file (.dra) for SWAP.
 
     Attributes:
@@ -189,17 +211,13 @@ class DraFile(PySWAPBaseModel):
         general (Any): General settings.
         fluxtable (Optional[Any]): Flux table.
         drainageformula (Optional[Any]): Drainage formula.
-        drainageinfiltrationres (Optional[Any]): Drainage infiltration resistance.
+        drainageinfres (Optional[Any]): Drainage infiltration resistance.
     """
 
-    drfil: str
+    drfil: String
     general: DraSettings = Field(exclude=True)
     fluxtable: Optional[DrainageFluxTable] = Field(default=None, exclude=True)
     drainageformula: Optional[DrainageFormula] = Field(
         default=None, exclude=True)
-    drainageinfiltrationres: Optional[DrainageInfiltrationResitance] = Field(
+    drainageinfres: Optional[DrainageInfRes] = Field(
         default=None, exclude=True)
-
-    @property
-    def content(self):
-        return self._concat_sections()
