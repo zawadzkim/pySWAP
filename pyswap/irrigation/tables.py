@@ -3,12 +3,12 @@
 Classes:
 
 """
-from ..core.tablevalidation import BaseModel
+from ..core.tablevalidation import BaseTableModel
 from pandera.typing import Series
 import pandera as pa
 
 
-class IRRIGATION(BaseModel):
+class IRRIGATION(BaseTableModel):
     """information for each fixed irrigation event.
 
     Attributes:
