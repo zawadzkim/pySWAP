@@ -3,11 +3,6 @@
 The schemas are used to validate pandas DataFrames used in the pySWAP models. They also
 help to enforce the appropriate data types required by the SWAP model.
 
-!!! warning
-    This is an experimental feature and is currently only implemented in the 
-    irrigation subpackage. If no bugs are found, it will be implemented in
-    the other subpackages.
-
 Classes:
     BaseModel: Base class for all pySWAP schemas.
 """
@@ -17,7 +12,7 @@ import pandas as pd
 from pandera.typing import DataFrame
 
 
-class BaseModel(pa.DataFrameModel):
+class BaseTableModel(pa.DataFrameModel):
     """Base model with create method for preprocessing and validation."""
 
     class Config:
