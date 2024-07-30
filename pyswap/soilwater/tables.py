@@ -1,11 +1,11 @@
 """tables for the soil-water module"""
 
-from ..core.tablevalidation import BaseModel
+from ..core.tablevalidation import BaseTableModel
 from pandera.typing import Series
 import pandera as pa
 from typing import Optional
 
-class INIPRESSUREHEAD(BaseModel):
+class INIPRESSUREHEAD(BaseTableModel):
     """Initial pressure head [cm, R] as a function of soil layer [1..N, I].
 
     Attributes:
@@ -17,7 +17,7 @@ class INIPRESSUREHEAD(BaseModel):
     H: Series[float] = pa.Field(ge=-1.0e10, le=1.0e4)
 
 
-class MXPONDTB(BaseModel):
+class MXPONDTB(BaseTableModel):
     """minimum thickness for runoff PONDMXTB [0..1000 cm, R] as function of time
     
     Attributes:
@@ -28,7 +28,7 @@ class MXPONDTB(BaseModel):
     PONDMXTB: Series[float]
 
 
-class SOILPROFILE(BaseModel):
+class SOILPROFILE(BaseTableModel):
     """Vertical discretization of soil profile
     
     Attributes:
@@ -45,7 +45,7 @@ class SOILPROFILE(BaseModel):
     HCOMP: Series[float] = pa.Field(ge=0.0, le=1.0e3)
     NCOMP: Series[int] = pa.Field(ge=1)
 
-class SOILHYDRFUNC(BaseModel):
+class SOILHYDRFUNC(BaseTableModel):
     """Soil hydraulic functions table.
     
     !!! warning

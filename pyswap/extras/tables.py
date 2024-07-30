@@ -1,10 +1,10 @@
 """These are tables for the extras module"""
 
-from ..core.tablevalidation import BaseModel
+from ..core.tablevalidation import BaseTableModel
 import pandera as pa
 
 
-class SOILTEXTURES(BaseModel):
+class SOILTEXTURES(BaseTableModel):
     """Table for soil textures.
 
     Attributes:
@@ -19,7 +19,7 @@ class SOILTEXTURES(BaseModel):
     ORGMAT: float
 
 
-class INITSOILTEMP(BaseModel):
+class INITSOILTEMP(BaseTableModel):
     """Table for initial soil temperature.
 
     Attributes:

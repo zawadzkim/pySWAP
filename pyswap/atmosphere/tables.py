@@ -1,8 +1,18 @@
-from ..core.tablevalidation import BaseModel
+from ..core.tablevalidation import BaseTableModel
+from ..core import YEARRANGE
 from pandera.typing import Series
 import pandera as pa
 
-class DAILYMETEODATA(BaseModel):
+
+class DAILYMETEODATA(BaseTableModel):
+    """Format detailed daily meteo data.
+
+    validate that the station is in single quotes.
+    check if the dd, mm, yyyy columns are already in the
+        dataframe. If not, require datetime index and
+        parse the datetime index to separate columns.
+    format decimals in the variables.
+    """
     Station: Series[str]
     DD: Series[str]
     MM: Series[str]
@@ -16,7 +26,8 @@ class DAILYMETEODATA(BaseModel):
     ETref: Series[float]
     WET: Series[float]
 
-class SHORTINTERVALMETEODATA(BaseModel):
+
+class SHORTINTERVALMETEODATA(BaseTableModel):
     Date: Series[pa.DateTime]
     Record: Series[int] = pa.Field(ge=1, le=10)
     Rad: Series[float]
@@ -25,10 +36,16 @@ class SHORTINTERVALMETEODATA(BaseModel):
     Wind: Series[float]
     Rain: Series[float]
 
-class DETAILEDRAINFALL(BaseModel):
+
+class DETAILEDRAINFALL(BaseTableModel):
     Station: Series[str]
     Day: Series[int]
     Month: Series[int]
     Year: Series[int]
     Time: Series[float]
     Amount: Series[float]
+
+
+class RAINFLUX(BaseTableModel):
+    TIME: Series[int] = pa.Field(**YEARRANGE)
+    RAINFLUX: Series[float] = pa.Field(ge=0, le=1000.0)

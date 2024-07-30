@@ -3,13 +3,13 @@
 Classes:
     RDTB: Root depth table
 """
-from ..core.tablevalidation import BaseModel
+from ..core.tablevalidation import BaseTableModel
 from ..core import UNITRANGE, DVSRANGE, YEARRANGE
 from pandera.typing import Series
 import pandera as pa
 
 
-class RDTB(BaseModel):
+class RDTB(BaseTableModel):
     """Rooting Depth [0..1000 cm, R], as a function of development stage [0..2 -, R].
 
     Attributes:
@@ -21,7 +21,7 @@ class RDTB(BaseModel):
     RD: Series[float] = pa.Field(ge=0.0, le=100.0)
 
 
-class RDCTB(BaseModel):
+class RDCTB(BaseTableModel):
     """List root density [0..100 cm/cm3, R] as function of relative rooting depth [0..1 -, R]
 
     Attributes:
@@ -33,7 +33,7 @@ class RDCTB(BaseModel):
     RDENS: Series[float] = pa.Field(**UNITRANGE)
 
 
-class GCTB(BaseModel):
+class GCTB(BaseTableModel):
     """Leaf Area Index [0..12 (m2 leaf)/(m2 soil), R], as function of dev. stage [0..2 -, R]
 
     Attributes:
@@ -45,7 +45,7 @@ class GCTB(BaseModel):
     LAI: Series[float] = pa.Field(ge=0.0, le=12.0)
 
 
-class CHTB(BaseModel):
+class CHTB(BaseTableModel):
     """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
 
     Attributes:
@@ -57,7 +57,7 @@ class CHTB(BaseModel):
     CH: Series[float] = pa.Field(ge=0.0, le=1.0e4)
 
 
-class KYTB(BaseModel):
+class KYTB(BaseTableModel):
     """Yield response factor [0..5 -, R], as function of dev. stage [0..2 -, R]
 
     Attributes:
@@ -68,7 +68,7 @@ class KYTB(BaseModel):
     KY: Series[float] = pa.Field(ge=0.0, le=5.0)
 
 
-class MRFTB(BaseModel):
+class MRFTB(BaseTableModel):
     """Ratio root total respiration / maintenance respiration [1..5.0 -, R]
 
     Attributes:
@@ -80,7 +80,7 @@ class MRFTB(BaseModel):
     MAX_RESP_FACTOR: Series[float] = pa.Field(ge=1.0, le=5.0)
 
 
-class WRTB(BaseModel):
+class WRTB(BaseTableModel):
     """dry weight of roots at soil surface [0..10 kg/m3, R], as a function of development stage [0..2 -,R]
 
     Attributes:
@@ -92,7 +92,7 @@ class WRTB(BaseModel):
     W_ROOT_SS: Series[float] = pa.Field(ge=0.0, le=10.0)
 
 
-class CROPROTATION(BaseModel):
+class CROPROTATION(BaseTableModel):
     """Crop rotation settings
 
     Attributes:
@@ -112,7 +112,7 @@ class CROPROTATION(BaseModel):
 
 
 # WOFOST-specific tables
-class DTSMTB(BaseModel):
+class DTSMTB(BaseTableModel):
     """increase in temperature sum [0..60 oC, R] as function of daily average temperature [0..100 oC, R]
 
     Attributes:
@@ -124,7 +124,7 @@ class DTSMTB(BaseModel):
     DTSM: Series[float] = pa.Field(ge=0.0, le=60.0)
 
 
-class SLATB(BaseModel):
+class SLATB(BaseTableModel):
     """leaf area [0..1 ha/kg, R] as function of crop development stage [0..2 -, R]
 
     Attributes:
@@ -136,7 +136,7 @@ class SLATB(BaseModel):
     SLA: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
-class AMAXTB(BaseModel):
+class AMAXTB(BaseTableModel):
     """maximum CO2 assimilation rate [0..100 kg/ha/hr, R] as function of development stage [0..2 -, R]
 
     Attributes:
@@ -148,7 +148,7 @@ class AMAXTB(BaseModel):
     AMAX: Series[float] = pa.Field(ge=0.0, le=100.0)
 
 
-class TMPFTB(BaseModel):
+class TMPFTB(BaseTableModel):
     """reduction factor of AMAX [-, R] as function of average day temperature [-10..50 oC, R]
 
     Attributes:
@@ -160,7 +160,7 @@ class TMPFTB(BaseModel):
     TMPF: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
-class TMNFTB(BaseModel):
+class TMNFTB(BaseTableModel):
     """reduction factor of AMAX [-, R] as function of minimum day temperature [-10..50 oC, R]
 
     Attributes:
@@ -172,7 +172,7 @@ class TMNFTB(BaseModel):
     TMNF: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
-class RFSETB(BaseModel):
+class RFSETB(BaseTableModel):
     """reduction factor of senescence [-, R] as function of development stage [0..2 -, R]
 
     Attributes:
@@ -184,7 +184,7 @@ class RFSETB(BaseModel):
     RFSE: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
-class FRTB(BaseModel):
+class FRTB(BaseTableModel):
     """fraction of total dry matter increase partitioned to the roots [kg/kg, R]
 
     Attributes:
@@ -196,7 +196,7 @@ class FRTB(BaseModel):
     FR: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
-class FLTB(BaseModel):
+class FLTB(BaseTableModel):
     """fraction of total above ground dry matter increase partitioned to the leaves [kg/kg, R]
 
     Attributes:
@@ -208,7 +208,7 @@ class FLTB(BaseModel):
     FL: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
-class FSTB(BaseModel):
+class FSTB(BaseTableModel):
     """fraction of total above ground dry matter increase partitioned to the stems [kg/kg, R]
 
     Attributes:
@@ -220,7 +220,7 @@ class FSTB(BaseModel):
     FS: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
-class FOTB(BaseModel):
+class FOTB(BaseTableModel):
     """fraction of total above ground dry matter increase partitioned to the storage organs [kg/kg, R]
 
     Attributes:
@@ -232,7 +232,7 @@ class FOTB(BaseModel):
     FO: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
-class RDRRTB(BaseModel):
+class RDRRTB(BaseTableModel):
     """relative death rates of roots [kg/kg/d] as function of development stage [0..2 -, R]
 
     Attributes:
@@ -244,7 +244,7 @@ class RDRRTB(BaseModel):
     RDRR: Series[float] = pa.Field(ge=0.0)
 
 
-class RDRSTB(BaseModel):
+class RDRSTB(BaseTableModel):
     """relative death rates of stems [kg/kg/d] as function of development stage [0..2 -, R]
 
     Attributes:
@@ -256,7 +256,7 @@ class RDRSTB(BaseModel):
     RDRS: Series[float] = pa.Field(ge=0.0)
 
 
-class DMGRZTB(BaseModel):
+class DMGRZTB(BaseTableModel):
     """threshold of above ground dry matter [0..1d6 kg DM/ha, R] to trigger grazing as function of daynumber [1..366 d, R]
 
     Attributes:
@@ -268,7 +268,7 @@ class DMGRZTB(BaseModel):
     DMGRZ: Series[float] = pa.Field(ge=0.0, le=1.0e6)
 
 
-class LSDATB(BaseModel):
+class LSDATB(BaseTableModel):
     """Actual livestock density of each grazing period
 
     !!! note
@@ -284,7 +284,7 @@ class LSDATB(BaseModel):
     LSDA: Series[float] = pa.Field(ge=0.0, le=1000.0)
 
 
-class LSDBTB(BaseModel):
+class LSDBTB(BaseTableModel):
     """Relation between livestock density, number of grazing days and dry matter uptake
 
     Attributes:
@@ -300,7 +300,7 @@ class LSDBTB(BaseModel):
     LOSSGRAZING: Series[float] = pa.Field(ge=0.0, le=1000.0)
 
 
-class RLWTB(BaseModel):
+class RLWTB(BaseTableModel):
     """rooting depth RL [0..5000 cm, R] as function of root weight RW [0..5000 kg DM/ha, R]
 
     Attributes:
@@ -312,7 +312,7 @@ class RLWTB(BaseModel):
     RL: Series[float] = pa.Field(ge=0.0, le=5000.0)
 
 
-class DMMOWTB(BaseModel):
+class DMMOWTB(BaseTableModel):
     """List threshold of above ground dry matter [0..1d6 kg DM/ha, R] to trigger mowing as function of daynumber [1..366 d, R]
 
     !!! note
@@ -329,7 +329,7 @@ class DMMOWTB(BaseModel):
     DMMOW: Series[float] = pa.Field(ge=0.0, le=1.0e6)
 
 
-class DMMOWDELAY(BaseModel):
+class DMMOWDELAY(BaseTableModel):
     """Relation between dry matter harvest [0..1d6 kg/ha, R] and days of delay in regrowth [0..366 d, I] after mowing
 
     Attributes:
@@ -341,7 +341,7 @@ class DMMOWDELAY(BaseModel):
     DAYDELAY: Series[int] = pa.Field(**YEARRANGE)
 
 
-class CHTB_GRASS(BaseModel):
+class CHTB_GRASS(BaseTableModel):
     """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
 
     Attributes:
@@ -353,7 +353,7 @@ class CHTB_GRASS(BaseModel):
     CH: Series[float] = pa.Field(ge=0.0, le=1.0e4)
 
 
-class SLATB_GRASS(BaseModel):
+class SLATB_GRASS(BaseTableModel):
     """leaf area [0..1 ha/kg, R] as function of crop development stage [0..2 -, R]
 
     Attributes:
@@ -365,7 +365,7 @@ class SLATB_GRASS(BaseModel):
     SLA: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
-class AMAXTB_GRASS(BaseModel):
+class AMAXTB_GRASS(BaseTableModel):
     """maximum CO2 assimilation rate [0..100 kg/ha/hr, R] as function of development stage [0..2 -, R]
 
     Attributes:
@@ -377,7 +377,7 @@ class AMAXTB_GRASS(BaseModel):
     AMAX: Series[float] = pa.Field(ge=0.0, le=100.0)
 
 
-class RFSETB_GRASS(BaseModel):
+class RFSETB_GRASS(BaseTableModel):
     """reduction factor of senescence [-, R] as function of development stage [0..2 -, R]
 
     Attributes:
@@ -389,7 +389,7 @@ class RFSETB_GRASS(BaseModel):
     RFSE: Series[float] = pa.Field(**UNITRANGE)
 
 
-class FRTB_GRASS(BaseModel):
+class FRTB_GRASS(BaseTableModel):
     """fraction of total dry matter increase partitioned to the roots [kg/kg, R]
 
     Attributes:
@@ -401,7 +401,7 @@ class FRTB_GRASS(BaseModel):
     FR: Series[float] = pa.Field(**UNITRANGE)
 
 
-class FLTB_GRASS(BaseModel):
+class FLTB_GRASS(BaseTableModel):
     """fraction of total above ground dry matter increase partitioned to the leaves [kg/kg, R]
 
     Attributes:
@@ -413,7 +413,7 @@ class FLTB_GRASS(BaseModel):
     FL: Series[float] = pa.Field(**UNITRANGE)
 
 
-class FSTB_GRASS(BaseModel):
+class FSTB_GRASS(BaseTableModel):
     """fraction of total above ground dry matter increase partitioned to the stems [kg/kg, R]
 
     Attributes:
@@ -425,7 +425,7 @@ class FSTB_GRASS(BaseModel):
     FS: Series[float] = pa.Field(**UNITRANGE)
 
 
-class RDRRTB_GRASS(BaseModel):
+class RDRRTB_GRASS(BaseTableModel):
     """relative death rates of roots [kg/kg/d] as function of development stage [0..2 -, R]
 
     Attributes:
@@ -437,7 +437,7 @@ class RDRRTB_GRASS(BaseModel):
     RDRR: Series[float] = pa.Field(ge=0.0)
 
 
-class RDRSTB_GRASS(BaseModel):
+class RDRSTB_GRASS(BaseTableModel):
     """relative death rates of stems [kg/kg/d] as function of development stage [0..2 -, R]
 
     Attributes:
