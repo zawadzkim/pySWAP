@@ -6,6 +6,7 @@ import json
 import typer
 import shutil
 from pathlib import Path
+import subprocess
 
 app = typer.Typer()
 
@@ -64,6 +65,31 @@ def create_inits(project_root, models_dir, scripts_dir):
     (scripts_dir / '__init__.py').touch()
 
 
+def init_git_repo(project_root):
+    try:
+        subprocess.run(["git", "init", str(project_root)], check=True)
+        print("Initialized empty Git repository.")
+
+        # Create a .gitignore file
+        gitignore_path = project_root / '.gitignore'
+        with open(gitignore_path, 'w') as f:
+            f.write("# Python\n")
+            f.write("__pycache__/\n")
+            f.write("*.pyc\n")
+            f.write("*.pyo\n")
+            f.write("*.pyd\n")
+            f.write(".env\n")
+            f.write("venv/\n")
+            f.write("env/\n")
+            f.write("*.env\n")
+            f.write("*.ipynb_checkpoints/\n")
+            f.write("data/\n")
+
+        print(f"Created .gitignore file at {gitignore_path}")
+    except Exception as e:
+        print(f"Error initializing Git repository or creating .gitignore: {e}")
+
+
 @app.command()
 def init(script: bool = False, notebook: bool = True):
     """Prompt the user to enter their information and create a User class."""
@@ -106,6 +132,8 @@ def init(script: bool = False, notebook: bool = True):
     if notebook:
         make_notebook(folders_to_create_paths[0],
                       basic_code_to_write, templates_path, attrs)
+
+    init_git_repo(project_root)
 
 
 @app.command()
