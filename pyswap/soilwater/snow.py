@@ -1,7 +1,8 @@
 from typing import Optional, Literal
 from ..core import PySWAPBaseModel, SerializableMixin
-from pydantic import model_validator
+from pydantic import model_validator, field_validator
 from typing_extensions import Self
+from decimal import Decimal
 
 
 class SnowAndFrost(PySWAPBaseModel, SerializableMixin):
@@ -12,27 +13,27 @@ class SnowAndFrost(PySWAPBaseModel, SerializableMixin):
             snow accumulation and melt.
         swfrost (Literal[0, 1]): Switch, in case of frost reduce
             soil water flow
-        snowinco (Optional[float]): Initial snow water equivalent
-        teprrain (Optional[float]): Temperature above which all
+        snowinco (Optional[Decimal]): Initial snow water equivalent
+        teprrain (Optional[Decimal]): Temperature above which all
             precipitation is rain
-        teprsnow (Optional[float]): Temperature below which all
+        teprsnow (Optional[Decimal]): Temperature below which all
             precipitation is snow
-        snowcoef (Optional[float]): Snowmelt calibration factor
-        tfroststa (Optional[float]): Soil temperature (oC) where reduction
+        snowcoef (Optional[Decimal]): Snowmelt calibration factor
+        tfroststa (Optional[Decimal]): Soil temperature (oC) where reduction
             of water fluxes starts
-        tfrostend (Optional[float]): Soil temperature (oC) where reduction
+        tfrostend (Optional[Decimal]): Soil temperature (oC) where reduction
             of water fluxes ends
 
     """
 
     swsnow: Literal[0, 1]
     swfrost: Literal[0, 1]
-    snowinco: Optional[float] = None
-    teprrain: Optional[float] = None
-    teprsnow: Optional[float] = None
-    snowcoef: Optional[float] = None
-    tfrostst: Optional[float] = None
-    tfrostend: Optional[float] = None
+    snowinco: Optional[Decimal] = None
+    teprrain: Optional[Decimal] = None
+    teprsnow: Optional[Decimal] = None
+    snowcoef: Optional[Decimal] = None
+    tfrostst: Optional[Decimal] = None
+    tfrostend: Optional[Decimal] = None
 
     @model_validator(mode='after')
     def _validate_snow_and_frost(self, v) -> Self:
@@ -54,3 +55,8 @@ class SnowAndFrost(PySWAPBaseModel, SerializableMixin):
                 "tfrostend is required when swfrost is True"
 
         return self
+
+    @field_validator('snowinco', 'teprrain', 'teprsnow', 'snowcoef',
+                     'tfrostst', 'tfrostend')
+    def set_decimals(cls, v):
+        return v.quantize(Decimal('0.00'))

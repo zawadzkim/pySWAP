@@ -8,7 +8,8 @@ Classes:
 from ..core import PySWAPBaseModel, SerializableMixin
 from typing import Literal, Optional
 from typing_extensions import Self
-from pydantic import model_validator
+from pydantic import model_validator, field_validator
+from decimal import Decimal
 
 
 class Evaporation(PySWAPBaseModel, SerializableMixin):
@@ -24,23 +25,23 @@ class Evaporation(PySWAPBaseModel, SerializableMixin):
             * 2 - reduction to maximum Darcy flux and to maximum
                 Boesten/Stroosnijder (1986).
 
-        cfevappond (Optional[float]): hen ETref is used, evaporation
+        cfevappond (Optional[Decimal]): hen ETref is used, evaporation
             coefficient in case of ponding.
-        cfbs (Optional[float]): Coefficient for potential soil evaporation.
-        rsoil (Optional[float]): Soil resistance of wet soil.
-        cofredbl (Optional[float]): Soil evaporation coefficient of Black.
-        rsigni (Optional[float]): Minimum rainfall to reset method of Black.
-        cofredbo (Optional[float]): Soil evaporation coefficient of
+        cfbs (Optional[Decimal]): Coefficient for potential soil evaporation.
+        rsoil (Optional[Decimal]): Soil resistance of wet soil.
+        cofredbl (Optional[Decimal]): Soil evaporation coefficient of Black.
+        rsigni (Optional[Decimal]): Minimum rainfall to reset method of Black.
+        cofredbo (Optional[Decimal]): Soil evaporation coefficient of
             Boesten/Stroosnijder.
     """
     swcfbs: Literal[0, 1]
     swredu: Literal[0, 1, 2]
-    cfevappond: Optional[float] = None  # this is used if ETref is used
-    cfbs: Optional[float] = None
-    rsoil: Optional[float] = None
-    cofredbl: Optional[float] = None
-    rsigni: Optional[float] = None
-    cofredbo: Optional[float] = None
+    cfevappond: Optional[Decimal] = None  # this is used if ETref is used
+    cfbs: Optional[Decimal] = None
+    rsoil: Optional[Decimal] = None
+    cofredbl: Optional[Decimal] = None
+    rsigni: Optional[Decimal] = None
+    cofredbo: Optional[Decimal] = None
 
     @model_validator(mode='after')
     def _validate_evaporation(self) -> Self:
@@ -60,3 +61,8 @@ class Evaporation(PySWAPBaseModel, SerializableMixin):
                 "cofredbo is required when swredu is 2"
 
         return self
+
+    @field_validator('cfevappond', 'cfbs', 'rsoil',
+                     'cofredbl', 'rsigni', 'cofredbo')
+    def set_decimals(cls, v):
+        return v.quantize(Decimal('0.00'))

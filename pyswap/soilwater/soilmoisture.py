@@ -1,8 +1,9 @@
 from ..core import PySWAPBaseModel, SerializableMixin
 from ..core import Table, String
-from pydantic import model_validator
+from pydantic import model_validator, field_validator
 from typing import Literal, Optional
 from typing_extensions import Self
+from decimal import Decimal
 
 
 class SoilMoisture(PySWAPBaseModel, SerializableMixin):
@@ -23,14 +24,14 @@ class SoilMoisture(PySWAPBaseModel, SerializableMixin):
 
         table_head_soildepth (Optional[Table]): Table with head and
             soil depth data.
-        gwli (Optional[float]): Initial groundwater level [cm].
+        gwli (Optional[Decimal]): Initial groundwater level [cm].
         inifil (Optional[str]): name of output file *.END which contains
             initial values.
     """
 
     swinco: Literal[1, 2, 3]
     table_head_soildepth: Optional[Table] = None
-    gwli: Optional[float] = None
+    gwli: Optional[Decimal] = None
     inifil: Optional[String] = None
 
     @model_validator(mode='after')
@@ -48,3 +49,7 @@ class SoilMoisture(PySWAPBaseModel, SerializableMixin):
                 "inifil is required when swinco is 3"
 
         return self
+
+    @field_validator('gwli')
+    def set_decimals(cls, v):
+        return v.quantize(Decimal('0.00'))

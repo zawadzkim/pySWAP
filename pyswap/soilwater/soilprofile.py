@@ -1,8 +1,9 @@
-from ..core import PySWAPBaseModel, SerializableMixin
-from ..core import Table, String
-from pydantic import model_validator
+from ..core import (PySWAPBaseModel, SerializableMixin,
+                    Table, String, UNITRANGE)
+from pydantic import model_validator, field_validator, Field
 from typing import Literal, Optional
 from typing_extensions import Self
+from decimal import Decimal
 
 
 class SoilProfile(PySWAPBaseModel, SerializableMixin):
@@ -27,7 +28,7 @@ class SoilProfile(PySWAPBaseModel, SerializableMixin):
 
         filenamesophy (Optional[str]): Names of input files with
             soil hydraulic tables for each soil layer
-        tau (Optional[float]): Minimum pressure head difference to change
+        tau (Optional[Decimal]): Minimum pressure head difference to change
             wetting-drying
         swmacro (Literal[0, 1]): Switch for preferential flow due to macropores
         table_soilprofile (Table): Table with soil profile data
@@ -38,7 +39,7 @@ class SoilProfile(PySWAPBaseModel, SerializableMixin):
     swhyst: Literal[0, 1, 2]
     swmacro: Literal[0, 1]
     filenamesophy: Optional[String] = None
-    tau: Optional[float] = None
+    tau: Optional[Decimal] = Field(default=None, **UNITRANGE)
     table_soilprofile: Table
     table_soilhydrfunc: Optional[Table] = None
 
@@ -56,3 +57,7 @@ class SoilProfile(PySWAPBaseModel, SerializableMixin):
                 "tau is required when swhyst is 1 or 2"
 
         return self
+
+    @field_validator('tau')
+    def set_decimals(cls, v):
+        return v.quantize(Decimal('0.00'))

@@ -1,8 +1,9 @@
 from ..core import Table, String
 from ..core import PySWAPBaseModel, SerializableMixin
-from pydantic import model_validator
+from pydantic import model_validator, field_validator
 from typing import Optional, Literal
 from typing_extensions import Self
+from decimal import Decimal
 
 
 class SurfaceFlow(PySWAPBaseModel, SerializableMixin):
@@ -20,9 +21,9 @@ class SurfaceFlow(PySWAPBaseModel, SerializableMixin):
             * 0 - No runon
             * 1 - Use runon data
 
-        rsro (float): Drainage resistance for surface runoff
-        rsroexp (float): Exponent for drainage equation of surface runoff
-        pondmx (Optional[float]): In case of ponding, minimum
+        rsro (Decimal): Drainage resistance for surface runoff
+        rsroexp (Decimal): Exponent for drainage equation of surface runoff
+        pondmx (Optional[Decimal]): In case of ponding, minimum
             thickness for runoff
         rufil (Optional[str]): Name of the runon file
         table_pondmxtb (Optional[Table]): Minimum thickness for runoff as
@@ -30,9 +31,9 @@ class SurfaceFlow(PySWAPBaseModel, SerializableMixin):
     """
     swpondmx: Literal[0, 1]
     swrunon: Literal[0, 1]
-    rsro: float = 0.5
-    rsroexp: float = 1.0
-    pondmx: Optional[float] = None
+    rsro: Decimal = 0.5
+    rsroexp: Decimal = 1.0
+    pondmx: Optional[Decimal] = None
     rufil: Optional[String] = None
     table_pondmxtb: Optional[Table] = None
 
@@ -51,3 +52,7 @@ class SurfaceFlow(PySWAPBaseModel, SerializableMixin):
                 "runfil is required when swrunon is 1"
 
         return self
+
+    @field_validator('rsro', 'rsroexp', 'pondmx')
+    def set_decimals(cls, v):
+        return v.quantize(Decimal('0.00'))

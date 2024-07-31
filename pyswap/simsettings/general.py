@@ -5,8 +5,9 @@ from ..core import (DayMonth, DateList, StringList,
 from ..core import YEARRANGE, UNITRANGE
 from typing import Literal, Optional
 from typing_extensions import Self
-from pydantic import Field, model_validator
+from pydantic import Field, model_validator, field_validator
 import platform
+from decimal import Decimal
 
 IS_WINDOWS = platform.system() == 'Windows'
 BASE_PATH = '.\\' if IS_WINDOWS else './'
@@ -21,10 +22,10 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
         based on the list of extensions.
 
     Attributes:
-        pathwork (str): Path to the working directory
-        pathatm (str): Path to folder with weather files
-        pathcrop (str): Path to folder with crop files
-        pathdrain (str): Path to folder with drainage files
+        pathwork (String): Path to the working directory
+        pathatm (String): Path to folder with weather files
+        pathcrop (String): Path to folder with crop files
+        pathdrain (String): Path to folder with drainage files
         swscre (Literal[0, 1, 3]): Switch, display progression of simulation
             run to screen
         swerror (Literal[0, 1]): Switch for printing errors to screen
@@ -79,7 +80,7 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
             formatted hydrological data
         swaun (Literal[0, 1, 2]): Switch, output file with
             unformatted hydrological data
-        critdevmasbal (Optional[float]): Critical Deviation in
+        critdevmasbal (Optional[Decimal]): Critical Deviation in
             water balance during PERIOD
         swdiscrvert (Literal[0, 1]): Switch to convert vertical discretization
         numnodnew (Optional[int]): New number of nodes
@@ -131,7 +132,7 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
     inlist_csv_tz: Optional[StringList] = None
     swafo: Literal[0, 1, 2] = 0
     swaun: Literal[0, 1, 2] = 0
-    critdevmasbal: Optional[float] = Field(default=None, **UNITRANGE)
+    critdevmasbal: Optional[Decimal] = Field(default=None, **UNITRANGE)
     swdiscrvert: Literal[0, 1] = 0
     numnodnew: Optional[int] = None
     dznew: Optional[FloatList] = None
@@ -170,3 +171,7 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
                 "DZNEW is required when SWDISCRVERT = 1"
 
         return self
+
+    @field_validator('critdevmasbal')
+    def set_decimals(cls, v):
+        return v.quantize(Decimal('0.00000'))
