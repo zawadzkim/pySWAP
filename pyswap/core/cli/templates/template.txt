@@ -1,0 +1,6 @@
+import pyswap as ps
+
+metadata = ps.Metadata(
+{formatted_string}
+)
+
