@@ -20,7 +20,7 @@ COMMENT="No comments"
   echo "$EMAIL"
   echo "$FOLDER_NAME"
   echo "$COMMENT"
-) | pyswap init
+) | pyswap init --script
 
 # Check the result
 if [ -f "$FOLDER_NAME/models/main.py" ]; then
