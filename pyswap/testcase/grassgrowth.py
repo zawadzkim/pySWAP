@@ -1,7 +1,7 @@
 import pyswap as ps
 from pathlib import Path
 from pandas import DataFrame, read_csv
-from .loda_dataset import IS_WINDOWS
+from .load_dataset import IS_WINDOWS
 
 
 def _make_grassgrowth():
