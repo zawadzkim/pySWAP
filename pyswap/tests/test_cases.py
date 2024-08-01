@@ -102,6 +102,39 @@ def test_oxygenstress():
     model = testcase.get('oxygenstress')
     result = model.run('./', silence_warnings=True)
 
+    expected_data = pd.DataFrame({
+        'DATETIME': [
+            '1993-12-31', '1994-12-31', '1995-12-31', '1996-12-31', '1997-12-31',
+            '1998-12-31', '1999-12-31', '2000-12-31', '2001-12-31', '2002-12-31'
+        ],
+        'TREDDRY': [0.040662, 0.831159, 1.978161, 0.165836, 0.015424, 0.000401,
+                    0.262941, 0.003983, 0.172510, 0.000100],
+        'TREDWET': [3.123518, 3.309106, 2.825404, 1.129453, 4.058383, 6.482196,
+                    3.496681, 4.595297, 4.055684, 5.088708],
+        'PGRASSDM': [499139.93989, 523874.36892, 542551.76714, 475362.13611, 543804.67480,
+                     550710.37902, 516242.14852, 539351.63865, 507308.25217, 557704.58165],
+        'GRASSDM': [445274.45146, 434187.54499, 473667.71094, 448289.14579, 488578.89027,
+                    527166.43218, 479696.51958, 470448.32978, 439772.69012, 512386.09001],
+        'PMOWDM': [3.223246e+06, 3.251872e+06, 3.466546e+06, 2.834911e+06, 3.334358e+06,
+                   3.522807e+06, 3.575564e+06, 3.531072e+06, 3.299698e+06, 3.498296e+06],
+        'MOWDM': [2.238242e+06, 1.934303e+06, 2.293035e+06, 2.351441e+06, 2.206069e+06,
+                  1.860694e+06, 2.507064e+06, 2.172247e+06, 2.092503e+06, 2.179830e+06]
+    })
+
+    expected_data['DATETIME'] = pd.to_datetime(expected_data['DATETIME'])
+    expected_data.set_index('DATETIME', inplace=True)
+
+    expected_data_resampled = expected_data.resample('YE').sum()
+
+    resampled_output = result.output.resample('YE').sum()
+
+    pd.testing.assert_frame_equal(
+        resampled_output,
+        expected_data_resampled,
+        check_dtype=False,
+        rtol=1e-2,
+    )
+
 
 if __name__ == "__main__":
     pytest.main()
