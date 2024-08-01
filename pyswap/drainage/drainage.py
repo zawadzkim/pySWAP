@@ -45,3 +45,5 @@ class Drainage(PySWAPBaseModel, ComplexSerializableMixin):
         self.drafile.save_file(
             string=self.dra, extension="dra", fname=self.drafile.drfil, path=path
         )
+
+        print('dra file saved.')

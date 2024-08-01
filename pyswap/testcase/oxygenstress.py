@@ -18,6 +18,7 @@ def _make_oxygenstress():
     general = ps.GeneralSettings(
         tstart='1993-01-01',
         tend='2002-12-31',
+        swerror=1,
         nprintday=1,
         swmonth=0,
         period=1,
@@ -45,7 +46,8 @@ def _make_oxygenstress():
         swdivide=1,
         swmetdetail=0,
         swetsine=0,
-        swrain=2
+        swrain=2,
+        metfile=metfile
     )
 
     # %% Crop section
@@ -333,8 +335,8 @@ def _make_oxygenstress():
         table_datowltb=table_datowltb1)
 
     table_datowltb2 = DataFrame({
-        'DATOWL1': ['1993-01-01', '2002-12-31'],
-        'LEVEL1': [-20.0, -20.0]
+        'DATOWL2': ['1993-01-01', '2002-12-31'],
+        'LEVEL2': [-20.0, -20.0]
     })
 
     flux2 = ps.Flux(
@@ -348,7 +350,7 @@ def _make_oxygenstress():
         table_datowltb=table_datowltb2
     )
 
-    inf_res = ps.DrainageInfiltrationResitance(
+    inf_res = ps.DrainageInfRes(
         nrlevs=2,
         swintfl=0,
         list_levelfluxes=[flux1, flux2]
@@ -357,7 +359,7 @@ def _make_oxygenstress():
     drafile = ps.DraFile(
         general=dra_settings,
         drfil='swap',
-        drainageinfiltrationres=inf_res
+        drainageinfres=inf_res
     )
 
     lateral_drainage = ps.Drainage(swdra=1, drafile=drafile)

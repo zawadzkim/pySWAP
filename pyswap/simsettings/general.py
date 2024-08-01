@@ -122,7 +122,7 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
     swend: Literal[0, 1] = 0
     swvap: Literal[0, 1] = 0
     swbal: Literal[0, 1] = 0
-    swblc: Literal[0, 1] = 1
+    swblc: Literal[0, 1] = 0
     swsba: Literal[0, 1] = 0
     swate: Literal[0, 1] = 0
     swbma: Literal[0, 1] = 0
