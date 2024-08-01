@@ -98,5 +98,10 @@ def test_grassgrowth():
     )
 
 
+def test_oxygenstress():
+    model = testcase.get('oxygenstress')
+    result = model.run('./', silence_warnings=True)
+
+
 if __name__ == "__main__":
     pytest.main()

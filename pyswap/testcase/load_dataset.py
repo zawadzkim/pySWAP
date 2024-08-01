@@ -15,7 +15,13 @@ RESOURCES: dict[str, Path] = {
         'met': Path(BASE_PATH, '2-grassgrowth/260.csv'),
         'gwlevels': Path(BASE_PATH, '2-grassgrowth/gwlevels.csv'),
         'observations': Path(BASE_PATH, '2-grassgrowth/yield.csv')
-    }
+    },
+    'macroporeflow': {
+        'met': Path(BASE_PATH, '3-macropore-flow/andelst_meteo.met')
+    },
+    'oxygenstress': {
+        'met': Path(BASE_PATH, '4-oxygenstress/260.csv')
+    },
 }
 
 
