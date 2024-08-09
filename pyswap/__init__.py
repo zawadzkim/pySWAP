@@ -1,4 +1,4 @@
-from .simsettings import Metadata, GeneralSettings, RichardsSettings
+from .simsettings import Metadata, GeneralSettings, RichardsSettings, MeteoLocation, ModelLocation
 from .atmosphere import Meteorology, MetFile
 from .boundary import BottomBoundary, BBCFile
 from .plant import (CropFile, Crop, CropDevelopmentSettingsWOFOST,

@@ -36,10 +36,14 @@ def _make_oxygenstress():
         content=ps.testcase.load_met('oxygenstress')
     )
 
-    meteo = ps.Meteorology(
+    meteo_location = ps.MeteoLocation(
         lat=52.1,
-        swetr=0,
         alt=1.9,
+    )
+
+    meteo = ps.Meteorology(
+        meteo_location=meteo_location,
+        swetr=0,
         altw=10.0,
         angstroma=0.25,
         angstromb=0.5,

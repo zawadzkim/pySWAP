@@ -101,7 +101,7 @@ class SerializableMixin:
 
 
 class ComplexSerializableMixin(SerializableMixin):
-
+    """Serialize a class composed of nested models."""
     @staticmethod
     def concat_nested_models(file):
         string_list = []
