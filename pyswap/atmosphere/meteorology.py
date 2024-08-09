@@ -11,11 +11,9 @@ Classes:
 """
 
 from decimal import Decimal
-from typing import Literal, Self
-
-from pydantic import Field, field_validator, model_validator
-
-from ..core import UNITRANGE, PySWAPBaseModel, SerializableMixin, String, Table
+from pydantic import Field, model_validator, field_validator
+from ..core import PySWAPBaseModel, SerializableMixin, Table, String, UNITRANGE
+from ..simsettings import MeteoLocation
 from .metfile import MetFile
 
 
@@ -83,13 +81,15 @@ class Meteorology(PySWAPBaseModel, SerializableMixin):
         write_met: Writes the .met file.
     """
 
-    lat: Decimal = Field(ge=-90, le=90)
+    # lat: Decimal = Field(ge=-90, le=90)
+    meteo_location: MeteoLocation
     swetr: Literal[0, 1]
     swdivide: Literal[0, 1]
     swrain: Literal[0, 1, 2, 3] | None = 0
     swetsine: Literal[0, 1] = 0
-    metfile: MetFile | None = Field(default=None, repr=False)
-    alt: Decimal = Field(ge=-400.0, le=3000.0)
+    metfile: Optional[MetFile] = Field(
+        default=None, repr=False)
+    # alt: Decimal = Field(ge=-400.0, le=3000.0)
     altw: Decimal = Field(default=None, ge=0.0, le=99.0)
     angstroma: Decimal = Field(default=None, **UNITRANGE)
     angstromb: Decimal = Field(default=None, **UNITRANGE)
@@ -102,7 +102,8 @@ class Meteorology(PySWAPBaseModel, SerializableMixin):
     def met(self):
         return self.metfile.content.to_csv(index=False, lineterminator="\n")
 
-    @field_validator("lat", "alt", "altw", "angstroma", "angstromb")
+    # @field_validator('lat', 'alt', 'altw', 'angstroma', 'angstromb')
+    @field_validator('altw', 'angstroma', 'angstromb')
     def set_decimals(cls, v):
         return v.quantize(Decimal("0.00"))
 
@@ -119,9 +120,11 @@ class Meteorology(PySWAPBaseModel, SerializableMixin):
                 assert self.rainfil, "RAINFIL is required when SWRAIN is 3"
 
         else:
-            assert self.alt is not None, "alt settings are required when SWETR is 0"
-            assert self.altw is not None, "altw settings are required when SWETR is 0"
-            assert self.angstroma is not None, (
+            # assert self.alt is not None, \
+            #     "alt settings are required when SWETR is 0"
+            assert self.altw is not None, \
+                "altw settings are required when SWETR is 0"
+            assert self.angstroma is not None, \
                 "angstroma settings are required when SWETR is 0"
             )
             assert self.angstromb is not None, (

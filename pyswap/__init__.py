@@ -1,3 +1,4 @@
+from .simsettings import Metadata, GeneralSettings, RichardsSettings, MeteoLocation, ModelLocation
 from .atmosphere import Meteorology, MetFile
 from .boundary import BBCFile, BottomBoundary
 from .core.database import HDF5

@@ -20,7 +20,7 @@ def _make_hupselbrook():
         tend="2004-12-31",
         nprintday=1,
         swerror=1,
-        swscre=2,
+        swscre=0,
         swmonth=1,
         swyrvar=0,
         datefix="2004-12-31",
@@ -47,20 +47,24 @@ def _make_hupselbrook():
 
     # %% Meteorology section
 
-    meteo_data = ps.MetFile(metfil="283.met", content=testcase.load_met("hupselbrook"))
+    meteo_location = ps.MeteoLocation(
+        lat=52.0,
+        alt=10.0
+    )
+
+    meteo_data = ps.MetFile(metfil='283.met',
+                            content=testcase.load_met('hupselbrook'))
 
     meteo = ps.Meteorology(
-        lat=52.0,
+        meteo_location=meteo_location,
         swetr=0,
         metfile=meteo_data,
         swdivide=1,
         swmetdetail=0,
-        alt=10.0,
         altw=10.0,
         angstroma=0.25,
         angstromb=0.5,
     )
-
     # %% Creating the .crp file for maize (fixed crop)
 
     maize_prep = ps.plant.Preparation(swprep=0, swsow=0, swgerm=0, dvsend=3.0, swharv=0)
