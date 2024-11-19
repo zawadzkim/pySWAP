@@ -1,5 +1,5 @@
 **********************************************************************************
-* Filename: swap.dra                  
+* Filename: swap.dra
 * Contents: SWAP 4 - Input data for basic and extended drainage
 **********************************************************************************
 * Comment area:
@@ -46,7 +46,7 @@
 {{#TABLE_QDRNTB}}
   {{QDRAIN}} {{GWL}}
 {{/TABLE_QDRNTB}}
-* End of table                                             
+* End of table
 {{/SWITCH_DRAMET_OPTION_1}}
 {{#SWITCH_DRAMET_OPTION_2}}
 **********************************************************************************
@@ -61,12 +61,12 @@
 
 * Soil profile characteristics:
 
-* Position of drain:  
-  IPOS   = {{IPOS}}          ! 1 = On top of an impervious layer in a homogeneous profile          
-                             ! 2 = Above an impervious layer in a homogeneous profile              
+* Position of drain:
+  IPOS   = {{IPOS}}          ! 1 = On top of an impervious layer in a homogeneous profile
+                             ! 2 = Above an impervious layer in a homogeneous profile
                              ! 3 = At the interface of a fine upper and a coarse lower soil layer
                              ! 4 = In the lower, more coarse soil layer
-                             ! 5 = In the upper, more fine soil layer                                             
+                             ! 5 = In the upper, more fine soil layer
 
 * For all positions specify:
   BASEGW = {{BASEGW}}        ! Level of impervious layer, [-1d4..0 cm, R]
@@ -109,8 +109,8 @@
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * Switch to adjust the bottom of the model discharge layer in case of lateral interflow (SWDIVD=1).
-* In case of SWTOPNRSRF=1) then the bottom of the highest order drainage system (ZBORDR(NUMDRAIN)) represents the max depth of the interflow.  
- SWTOPNRSRF = {{SWTOPNRSRF}} ! Switch to enable adjustment of model discharge layer [0,1, I] 
+* In case of SWTOPNRSRF=1) then the bottom of the highest order drainage system (ZBORDR(NUMDRAIN)) represents the max depth of the interflow.
+ SWTOPNRSRF = {{SWTOPNRSRF}} ! Switch to enable adjustment of model discharge layer [0,1, I]
 
 {{/SWITCH_SWDIVD_OPTION_1}}
 {{/SWITCH_SWINTFL_OPTION_1}}
@@ -126,7 +126,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO1 = {{SWALLO1}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -154,7 +154,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO1 = {{SWALLO1}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -184,7 +184,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO2 = {{SWALLO2}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -212,7 +212,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO1 = {{SWALLO1}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -242,7 +242,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO2 = {{SWALLO2}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -272,7 +272,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO3 = {{SWALLO3}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -300,7 +300,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO1 = {{SWALLO1}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -330,7 +330,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO2 = {{SWALLO2}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -360,7 +360,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO3 = {{SWALLO3}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -390,7 +390,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO4 = {{SWALLO4}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -418,7 +418,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO1 = {{SWALLO1}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -448,7 +448,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO2 = {{SWALLO2}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -478,7 +478,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO3 = {{SWALLO3}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -508,7 +508,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO4 = {{SWALLO4}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
@@ -538,7 +538,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO5 = {{SWALLO5}}      ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 {{#SWITCH_SWDIVD_OPTION_1}}
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:

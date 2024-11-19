@@ -11,7 +11,7 @@ def serialize_table(table: DataFrame) -> str:
     Arguments:
         table: The DataFrame to be serialized.
     """
-    return f'{table.to_string(index=False)}\n'
+    return f"{table.to_string(index=False)}\n"
 
 
 def serialize_arrays(table: DataFrame) -> str:
@@ -20,7 +20,7 @@ def serialize_arrays(table: DataFrame) -> str:
     Args:
         table: The DataFrame to be serialized.
     """
-    return f'\n{table.to_string(index=False, header=False)}\n'
+    return f"\n{table.to_string(index=False, header=False)}\n"
 
 
 def serialize_csv_table(table: DataFrame) -> str:
@@ -33,22 +33,34 @@ def serialize_csv_table(table: DataFrame) -> str:
         table: The DataFrame to be serialized.
     """
     if isinstance(table.index, DatetimeIndex):
-        table['DD'] = table.index.day
-        table['MM'] = table.index.month
-        table['YYYY'] = table.index.year
-        required_order = ['Station', 'DD', 'MM', 'YYYY', 'RAD',
-                          'Tmin', 'Tmax', 'HUM', 'WIND', 'RAIN',
-                          'ETref', 'WET']
+        table["DD"] = table.index.day
+        table["MM"] = table.index.month
+        table["YYYY"] = table.index.year
+        required_order = [
+            "Station",
+            "DD",
+            "MM",
+            "YYYY",
+            "RAD",
+            "Tmin",
+            "Tmax",
+            "HUM",
+            "WIND",
+            "RAIN",
+            "ETref",
+            "WET",
+        ]
         table = table[required_order]
 
-    table.loc[:, 'Station'] = table.Station.apply(
-        lambda x: f"'{x}'" if not str(x).startswith("'") else x)
-    return table.to_csv(index=False, lineterminator='\n')
+    table.loc[:, "Station"] = table.Station.apply(
+        lambda x: f"'{x}'" if not str(x).startswith("'") else x
+    )
+    return table.to_csv(index=False, lineterminator="\n")
 
 
 def serialize_object_list(list) -> str:
     """Serialize a list of objects to a string."""
-    string = ''
+    string = ""
     for item in list:
         string += item.model_string()
 

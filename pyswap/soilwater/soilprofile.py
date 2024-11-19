@@ -1,8 +1,8 @@
-from ..core import PySWAPBaseModel, SerializableMixin
-from ..core import Table, String
+from typing import Literal, Self
+
 from pydantic import model_validator
-from typing import Literal, Optional
-from typing_extensions import Self
+
+from ..core import PySWAPBaseModel, SerializableMixin, String, Table
 
 
 class SoilProfile(PySWAPBaseModel, SerializableMixin):
@@ -34,25 +34,26 @@ class SoilProfile(PySWAPBaseModel, SerializableMixin):
         table_soilhydrfunc (Optional[Table]): Table with
             soil hydraulic functions
     """
+
     swsophy: Literal[0, 1]
     swhyst: Literal[0, 1, 2]
     swmacro: Literal[0, 1]
-    filenamesophy: Optional[String] = None
-    tau: Optional[float] = None
+    filenamesophy: String | None = None
+    tau: float | None = None
     table_soilprofile: Table
-    table_soilhydrfunc: Optional[Table] = None
+    table_soilhydrfunc: Table | None = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_soil_profile(self) -> Self:
-
         if self.swsophy == 0:
-            assert self.table_soilhydrfunc is not None, \
+            assert self.table_soilhydrfunc is not None, (
                 "table_soilhydrfunc is required when swsophy is True"
+            )
         else:
-            assert self.filenamesophy is not None, \
+            assert self.filenamesophy is not None, (
                 "filenamesophy is required when swsophy is True"
+            )
         if self.swhyst in range(1, 3):
-            assert self.tau is not None, \
-                "tau is required when swhyst is 1 or 2"
+            assert self.tau is not None, "tau is required when swhyst is 1 or 2"
 
         return self

@@ -11,9 +11,9 @@ Modules:
     snow: Snow and frost settings.
 """
 
-from .snow import SnowAndFrost
 from .evaporation import Evaporation
+from .snow import SnowAndFrost
 from .soilmoisture import SoilMoisture
 from .soilprofile import SoilProfile
 from .surfaceflow import SurfaceFlow
-from .tables import INIPRESSUREHEAD, MXPONDTB, SOILPROFILE, SOILHYDRFUNC
+from .tables import INIPRESSUREHEAD, MXPONDTB, SOILHYDRFUNC, SOILPROFILE

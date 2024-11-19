@@ -3,9 +3,11 @@
 Classes:
 
 """
-from ..core.tablevalidation import BaseTableModel
-from pandera.typing import Series
+
 import pandera as pa
+from pandera.typing import Series
+
+from ..core.tablevalidation import BaseTableModel
 
 
 class IRRIGATION(BaseTableModel):
@@ -15,9 +17,9 @@ class IRRIGATION(BaseTableModel):
         IRDATE (Series[datetime]):date of irrigation.
         IRDEPTH (Series[float]): amount of water [0..1000 mm, R].
         IRCONC (Series[float]): concentration of irrigation water [0..1000 mg/cm3, R].
-        IRTYPE (Series[int]): type of irrigation 
+        IRTYPE (Series[int]): type of irrigation
 
-            * 0 - sprinkling 
+            * 0 - sprinkling
             * 1 - surface
 
     """

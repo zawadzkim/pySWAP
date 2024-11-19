@@ -2,7 +2,7 @@
 project structure.
 
 Example:
-    
+
     ```cmd
     pyswap init --notebook  # creates the project structure with a template .ipynb file.
     pyswap init --script  # creates the project structure with a .py file.

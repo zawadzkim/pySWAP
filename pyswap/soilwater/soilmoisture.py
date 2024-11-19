@@ -1,8 +1,8 @@
-from ..core import PySWAPBaseModel, SerializableMixin
-from ..core import Table, String
+from typing import Literal, Self
+
 from pydantic import model_validator
-from typing import Literal, Optional
-from typing_extensions import Self
+
+from ..core import PySWAPBaseModel, SerializableMixin, String, Table
 
 
 class SoilMoisture(PySWAPBaseModel, SerializableMixin):
@@ -29,22 +29,21 @@ class SoilMoisture(PySWAPBaseModel, SerializableMixin):
     """
 
     swinco: Literal[1, 2, 3]
-    table_head_soildepth: Optional[Table] = None
-    gwli: Optional[float] = None
-    inifil: Optional[String] = None
+    table_head_soildepth: Table | None = None
+    gwli: float | None = None
+    inifil: String | None = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_soil_moisture(self) -> Self:
-
         if self.swinco == 1:
-            assert self.table_head_soildepth is not None, \
+            assert self.table_head_soildepth is not None, (
                 "head_soildepth is required when swinco is 1"
+            )
 
         elif self.swinco == 2:
             assert self.gwli is not None, "gwli is required when swinco is 2"
 
         else:
-            assert self.inifil is not None, \
-                "inifil is required when swinco is 3"
+            assert self.inifil is not None, "inifil is required when swinco is 3"
 
         return self

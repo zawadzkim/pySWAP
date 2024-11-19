@@ -22,23 +22,32 @@ Other parameters:
         an integer (0 or 1).
     ObjectList (list): A list of objects serialized as a string with
         the elements separated by newlines.
-    """
+"""
 
-from typing_extensions import Annotated
-from typing import List
-from .serializers import (serialize_table, serialize_csv_table,
-                          serialize_arrays, serialize_object_list)
-from pandas import DataFrame
 from datetime import date as d
-from pydantic.functional_serializers import PlainSerializer
 from decimal import Decimal
+from typing import Annotated
 
-Table = Annotated[DataFrame, PlainSerializer(
-    lambda x: serialize_table(x), return_type=str, when_used='json')]
+from pandas import DataFrame
+from pydantic.functional_serializers import PlainSerializer
+
+from .serializers import (
+    serialize_arrays,
+    serialize_csv_table,
+    serialize_object_list,
+    serialize_table,
+)
+
+Table = Annotated[
+    DataFrame,
+    PlainSerializer(lambda x: serialize_table(x), return_type=str, when_used="json"),
+]
 
 
-Arrays = Annotated[DataFrame, PlainSerializer(
-    lambda x: serialize_arrays(x), return_type=str, when_used='json')]
+Arrays = Annotated[
+    DataFrame,
+    PlainSerializer(lambda x: serialize_arrays(x), return_type=str, when_used="json"),
+]
 """
 Arrays are used in the .crp file. The problem is that they are not supposed to
 contain headers and the variables (keys) are the same for all options
@@ -46,34 +55,59 @@ contain headers and the variables (keys) are the same for all options
 the appropriate table is passed to the crop file.
 """
 
-CSVTable = Annotated[DataFrame, PlainSerializer(
-    lambda x: serialize_csv_table(x), return_type=str, when_used='json')]
+CSVTable = Annotated[
+    DataFrame,
+    PlainSerializer(
+        lambda x: serialize_csv_table(x), return_type=str, when_used="json"
+    ),
+]
 
-DayMonth = Annotated[d, PlainSerializer(
-    lambda x: f"{x.strftime('%d %m')}", return_type=str, when_used='json')]
+DayMonth = Annotated[
+    d,
+    PlainSerializer(
+        lambda x: f"{x.strftime('%d %m')}", return_type=str, when_used="json"
+    ),
+]
 
-StringList = Annotated[List[str], PlainSerializer(
-    lambda x: f"'{','.join(x)}'", return_type=str, when_used='json')]
+StringList = Annotated[
+    list[str],
+    PlainSerializer(lambda x: f"'{','.join(x)}'", return_type=str, when_used="json"),
+]
 
-FloatList = Annotated[List[float], PlainSerializer(
-    lambda x: ' '.join([f"{Decimal(f):.2f}" for f in x]), return_type=str,
-    when_used='json')]
+FloatList = Annotated[
+    list[float],
+    PlainSerializer(
+        lambda x: " ".join([f"{Decimal(f):.2f}" for f in x]),
+        return_type=str,
+        when_used="json",
+    ),
+]
 
-IntList = Annotated[List[int], PlainSerializer(
-    lambda x: ' '.join([str(f) for f in x]), return_type=str,
-    when_used='json')]
+IntList = Annotated[
+    list[int],
+    PlainSerializer(
+        lambda x: " ".join([str(f) for f in x]), return_type=str, when_used="json"
+    ),
+]
 
-DateList = Annotated[List[d], PlainSerializer(
-    lambda x: '\n' + '\n'.join([d.strftime('%Y-%m-%d') for d in x]),
-    return_type=str, when_used='json')]
+DateList = Annotated[
+    list[d],
+    PlainSerializer(
+        lambda x: "\n" + "\n".join([d.strftime("%Y-%m-%d") for d in x]),
+        return_type=str,
+        when_used="json",
+    ),
+]
 
-Switch = Annotated[bool | int, PlainSerializer(
-    lambda x: int(x), return_type=int, when_used='json')]
+Switch = Annotated[
+    bool | int, PlainSerializer(lambda x: int(x), return_type=int, when_used="json")
+]
 
-ObjectList = Annotated[list, PlainSerializer(
-    lambda x: serialize_object_list(x), return_type=str, when_used='json'
-)]
+ObjectList = Annotated[
+    list,
+    PlainSerializer(
+        lambda x: serialize_object_list(x), return_type=str, when_used="json"
+    ),
+]
 
-String = Annotated[str, PlainSerializer(
-    lambda x: f"'{x}'"
-)]
+String = Annotated[str, PlainSerializer(lambda x: f"'{x}'")]

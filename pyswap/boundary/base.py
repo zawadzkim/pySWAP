@@ -3,15 +3,12 @@ the optional file output, except a couple of attributes and some functionality,
 it made sense to create a base class. Due to some circular import issues,
 it could not be in neither of the existing modules."""
 
-from pyswap.core import PySWAPBaseModel, SerializableMixin, String, Table
-
+from decimal import Decimal
+from typing import Literal, Self
 
 from pydantic import Field, field_validator, model_validator
 
-
-from decimal import Decimal
-from typing import Literal, Optional
-from typing_extensions import Self
+from pyswap.core import PySWAPBaseModel, SerializableMixin, String, Table
 
 
 class BottomBoundaryBase(PySWAPBaseModel, SerializableMixin):
@@ -99,79 +96,93 @@ class BottomBoundaryBase(PySWAPBaseModel, SerializableMixin):
         table_hbot (Optional[Table]): Table with the bottom compartment
             pressure head.
     """
-    swbotb: Optional[Literal[1, 2, 3, 4, 5, 6, 7, 8]] = None
-    sw2: Optional[Literal[1, 2]] = None
-    sw3: Optional[Literal[1, 2]] = None
-    sw4: Optional[Literal[0, 1]] = None
-    swbotb3resvert: Optional[Literal[0, 1]] = None
-    swbotb3impl: Optional[Literal[0, 1]] = None
-    swqhbot: Optional[Literal[1, 2]] = None
-    bbcfil: Optional[String] = None
-    sinave: Optional[Decimal] = Field(ge=-10.0, le=10.0, default=None)
-    sinamp: Optional[Decimal] = Field(ge=-10.0, le=10.0, default=None)
-    sinmax: Optional[Decimal] = Field(ge=0.0, le=366.0, default=None)
-    shape: Optional[Decimal] = None
-    hdrain: Optional[Decimal] = None
-    rimlay: Optional[Decimal] = None
-    aqave: Optional[Decimal] = None
-    aqamp: Optional[Decimal] = None
-    aqtmax: Optional[Decimal] = None
-    aqper: Optional[Decimal] = None
-    cofqha: Optional[Decimal] = None
-    cofqhb: Optional[Decimal] = None
-    cofqhc: Optional[Decimal] = None
-    table_gwlevel: Optional[Table] = None
-    table_qbot: Optional[Table] = None
-    table_haquif: Optional[Table] = None
-    table_qbot4: Optional[Table] = None
-    table_qtab: Optional[Table] = None
-    table_hbot5: Optional[Table] = None
 
-    @model_validator(mode='after')
+    swbotb: Literal[1, 2, 3, 4, 5, 6, 7, 8] | None = None
+    sw2: Literal[1, 2] | None = None
+    sw3: Literal[1, 2] | None = None
+    sw4: Literal[0, 1] | None = None
+    swbotb3resvert: Literal[0, 1] | None = None
+    swbotb3impl: Literal[0, 1] | None = None
+    swqhbot: Literal[1, 2] | None = None
+    bbcfil: String | None = None
+    sinave: Decimal | None = Field(ge=-10.0, le=10.0, default=None)
+    sinamp: Decimal | None = Field(ge=-10.0, le=10.0, default=None)
+    sinmax: Decimal | None = Field(ge=0.0, le=366.0, default=None)
+    shape: Decimal | None = None
+    hdrain: Decimal | None = None
+    rimlay: Decimal | None = None
+    aqave: Decimal | None = None
+    aqamp: Decimal | None = None
+    aqtmax: Decimal | None = None
+    aqper: Decimal | None = None
+    cofqha: Decimal | None = None
+    cofqhb: Decimal | None = None
+    cofqhc: Decimal | None = None
+    table_gwlevel: Table | None = None
+    table_qbot: Table | None = None
+    table_haquif: Table | None = None
+    table_qbot4: Table | None = None
+    table_qtab: Table | None = None
+    table_hbot5: Table | None = None
+
+    @model_validator(mode="after")
     def _check_swbotb(self) -> Self:
         if self.swbotb == 1:
-            assert self.table_gwlevel is not None and not \
-                self.table_gwlevel.empty, \
-                'table_gwlevel must be provided if swbotb is 1'
+            assert self.table_gwlevel is not None and not self.table_gwlevel.empty, (
+                "table_gwlevel must be provided if swbotb is 1"
+            )
         elif self.swbotb == 2:
-            assert self.sw2, 'sw2 must be provided if swbotb is 2'
+            assert self.sw2, "sw2 must be provided if swbotb is 2"
             if self.sw2 == 1:
-                assert self.sinave, 'sinave must be provided if sw2 is 1'
-                assert self.sinamp, 'sinamp must be provided if sw2 is 1'
-                assert self.sinmax, 'sinmax must be provided if sw2 is 1'
+                assert self.sinave, "sinave must be provided if sw2 is 1"
+                assert self.sinamp, "sinamp must be provided if sw2 is 1"
+                assert self.sinmax, "sinmax must be provided if sw2 is 1"
             elif self.sw2 == 2:
-                assert self.table_qbot is not None and not \
-                    self.table_qbot.empty, 'qbot must be provided if sw2 is 2'
+                assert self.table_qbot is not None and not self.table_qbot.empty, (
+                    "qbot must be provided if sw2 is 2"
+                )
         elif self.swbotb == 3:
-            assert self.sw3, 'sw3 must be provided if swbotb is 3'
+            assert self.sw3, "sw3 must be provided if swbotb is 3"
             if self.sw3 == 1:
-                assert self.aqave, 'aqave must be provided if sw3 is 1'
-                assert self.aqamp, 'auamp must be provided if sw3 is 1'
-                assert self.aqtmax, 'aqtmax must be provided if sw3 is 1'
-                assert self.aqper, 'aqper must be provided if sw3 is 1'
+                assert self.aqave, "aqave must be provided if sw3 is 1"
+                assert self.aqamp, "auamp must be provided if sw3 is 1"
+                assert self.aqtmax, "aqtmax must be provided if sw3 is 1"
+                assert self.aqper, "aqper must be provided if sw3 is 1"
             elif self.sw3 == 2:
-                assert self.table_haquif is not None and not \
-                    self.table_haquif.empty, \
-                    'haquif must be provided if sw3 is 2'
+                assert self.table_haquif is not None and not self.table_haquif.empty, (
+                    "haquif must be provided if sw3 is 2"
+                )
         elif self.swbotb == 4:
-            assert self.swqhbot, 'swqhbot must be provided if swbotb is 4'
+            assert self.swqhbot, "swqhbot must be provided if swbotb is 4"
             if self.swqhbot == 1:
-                assert self.cofqha, 'cofqha must be provided if swqhbot is 1'
-                assert self.cofqhb, 'cofqhb must be provided if swqhbot is 1'
-                assert self.cofqhc, 'cofqhc must be provided if swqhbot is 1'
+                assert self.cofqha, "cofqha must be provided if swqhbot is 1"
+                assert self.cofqhb, "cofqhb must be provided if swqhbot is 1"
+                assert self.cofqhc, "cofqhc must be provided if swqhbot is 1"
             elif self.swqhbot == 2:
-                assert self.table_qtab is not None and self.table_qtab.empty, \
-                    'qtab must be provided if swqhbot is 2'
+                assert self.table_qtab is not None and self.table_qtab.empty, (
+                    "qtab must be provided if swqhbot is 2"
+                )
         elif self.swbotb == 5:
-            assert self.table_hbot5 is not None and self.table_hbot5.empty, \
-                'hbot5 must be provided if swbotb is 5'
+            assert self.table_hbot5 is not None and self.table_hbot5.empty, (
+                "hbot5 must be provided if swbotb is 5"
+            )
 
         return self
 
-    @field_validator('sinave', 'sinamp', 'sinmax',
-                     'shape', 'hdrain', 'rimlay',
-                     'aqave', 'aqamp', 'aqtmax',
-                     'aqper', 'cofqha', 'cofqhb',
-                     'cofqhc')
+    @field_validator(
+        "sinave",
+        "sinamp",
+        "sinmax",
+        "shape",
+        "hdrain",
+        "rimlay",
+        "aqave",
+        "aqamp",
+        "aqtmax",
+        "aqper",
+        "cofqha",
+        "cofqhb",
+        "cofqhc",
+    )
     def set_decimals(cls, v):
-        return v.quantize(Decimal('0.00'))
+        return v.quantize(Decimal("0.00"))

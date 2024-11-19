@@ -1,6 +1,6 @@
-from .basemodel import PySWAPBaseModel
-from typing import List
 import chardet
+
+from .basemodel import PySWAPBaseModel
 
 
 class FileMixin:
@@ -15,13 +15,16 @@ class FileMixin:
         read_file: Reads a file from a string.
 
     """
+
     @staticmethod
-    def save_file(string: str,
-                  fname: str,
-                  path: str,
-                  mode: str = 'w',
-                  extension: str | None = None,
-                  encoding: str = 'ascii') -> str:
+    def save_file(
+        string: str,
+        fname: str,
+        path: str,
+        mode: str = "w",
+        extension: str | None = None,
+        encoding: str = "ascii",
+    ) -> str:
         """Saves a string to a file.
 
         Arguments:
@@ -39,12 +42,12 @@ class FileMixin:
         """
 
         if extension is not None:
-            fname = f'{fname}.{extension}'
+            fname = f"{fname}.{extension}"
 
-        with open(f'{path}/{fname}', f'{mode}', encoding=f'{encoding}') as f:
+        with open(f"{path}/{fname}", f"{mode}", encoding=f"{encoding}") as f:
             f.write(string)
 
-        return f'{fname}.{extension} saved successfully.'
+        return f"{fname}.{extension} saved successfully."
 
     @staticmethod
     def read_file(file_path: str) -> str:
@@ -53,9 +56,9 @@ class FileMixin:
         Arguments:
             file_path (str): Path to the file to be opened.
         """
-        with open(file_path, 'rb') as f:
+        with open(file_path, "rb") as f:
             raw_data = f.read()
-        encoding = chardet.detect(raw_data)['encoding']
+        encoding = chardet.detect(raw_data)["encoding"]
 
         return raw_data.decode(encoding)
 
@@ -72,13 +75,13 @@ class SerializableMixin:
 
     @staticmethod
     def format(attr, value) -> str:
-        if attr.startswith('table_') or attr.startswith('list_'):
-            fstring = f'{value}'
+        if attr.startswith("table_") or attr.startswith("list_"):
+            fstring = f"{value}"
         else:
-            fstring = f'{attr} = {value}\n'
+            fstring = f"{attr} = {value}\n"
         return fstring
 
-    def concat_attributes(self) -> List[str | None]:
+    def concat_attributes(self) -> list[str | None]:
         """Concatenate the attributes of a PySWAPBaseModel class into a string.
 
         The object it's used on should be an instance of a PySWAPBaseModel
@@ -86,11 +89,9 @@ class SerializableMixin:
         the issubclass() conditional."""
 
         if not issubclass(type(self), PySWAPBaseModel):
-            raise TypeError('Can only be used on a PySWAPBaseModel instance!')
+            raise TypeError("Can only be used on a PySWAPBaseModel instance!")
         string = []
-        for attr, value in self.model_dump(
-                mode='json', exclude_none=True).items():
-
+        for attr, value in self.model_dump(mode="json", exclude_none=True).items():
             if isinstance(value, dict):
                 for k, v in value.items():
                     string.append(self.format(k, v))
@@ -101,7 +102,6 @@ class SerializableMixin:
 
 
 class ComplexSerializableMixin(SerializableMixin):
-
     @staticmethod
     def concat_nested_models(file):
         string_list = []
@@ -110,4 +110,4 @@ class ComplexSerializableMixin(SerializableMixin):
             if section is None or isinstance(section, str):
                 continue
             string_list.extend(section.concat_attributes())
-        return ''.join(string_list)
+        return "".join(string_list)

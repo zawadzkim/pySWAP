@@ -1,21 +1,22 @@
 """This file contains classes and functions for handling HDF5 integration."""
-import h5py
-from typing import Literal, Optional
-from pyswap.model import Model, Result
-from typing import Tuple
-import numpy as np
+
 import pickle
-from pydantic import BaseModel, computed_field, Field
+from typing import Literal
+
+import h5py
+import numpy as np
+from pydantic import BaseModel, Field, computed_field
+
+from pyswap.model import Model, Result
 
 
 class HDF5(BaseModel):
-
     filename: str
-    models: Optional[dict] = Field(default_factory=dict)
+    models: dict | None = Field(default_factory=dict)
 
     @computed_field(return_type=dict)
     def list_projects(self):
-        with h5py.File(self.filename, 'a') as f:
+        with h5py.File(self.filename, "a") as f:
             # Use the visititems method to traverse the file structure
             projects = list(f.keys())
         return projects
@@ -27,15 +28,18 @@ class HDF5(BaseModel):
                 f.create_group(group_name)
             except ValueError:
                 raise ValueError(
-                    f'Cannot create group {group_name}. It may already exist. If you want to overwrite it, set overwrite=True.')
+                    f"Cannot create group {group_name}. It may already exist. If you want to overwrite it, set overwrite=True."
+                )
         return f[group_name]
 
-    def save_model(self,
-                   model: Model,
-                   result: Optional[Result] = None,
-                   overwrite_datasets: bool = False,
-                   overwrite_project: bool = False,
-                   mode: Literal['python', 'json', 'yaml'] = 'python'):
+    def save_model(
+        self,
+        model: Model,
+        result: Result | None = None,
+        overwrite_datasets: bool = False,
+        overwrite_project: bool = False,
+        mode: Literal["python", "json", "yaml"] = "python",
+    ):
         """Sava a model and its results to an HDF5 file.
 
         Each model in its metadata attribute stores the project name. That is used as the name for the main group. If that name already exists,
@@ -61,99 +65,106 @@ class HDF5(BaseModel):
                 group.create_dataset(name, data=np.void(pickle_data))
             except ValueError:
                 raise ValueError(
-                    f'Cannot create dataset {name}. It may already exist. If you want to overwrite it, set overwrite=True.')
+                    f"Cannot create dataset {name}. It may already exist. If you want to overwrite it, set overwrite=True."
+                )
 
-        with h5py.File(self.filename, 'a') as f:
-
+        with h5py.File(self.filename, "a") as f:
             if overwrite_project:
                 _overwrite_project(f, model.metadata.project)
             # create a project and add attributes
-            project_group = self._get_or_create_group(
-                f, model.metadata.project)
+            project_group = self._get_or_create_group(f, model.metadata.project)
             project_attrs = model.metadata.__dict__
-            project_attrs = {k: v for k,
-                             v in project_attrs.items() if v is not None}
+            project_attrs = {k: v for k, v in project_attrs.items() if v is not None}
 
             project_group.attrs.update(project_attrs)
 
             # create a model group with input and output datasets
-            model_group = self._get_or_create_group(
-                project_group, model.version)
+            model_group = self._get_or_create_group(project_group, model.version)
 
             if overwrite_datasets:
                 _overwrite_datasets(model_group)
 
-            if mode == 'python':
+            if mode == "python":
                 # For the python option there is no need for an additional group
-                _save_pickled(model_group, 'input', model)
+                _save_pickled(model_group, "input", model)
                 if result:
-                    _save_pickled(model_group, 'output', result)
+                    _save_pickled(model_group, "output", result)
 
-            if mode == 'json':
-                raise NotImplementedError('JSON mode is not yet implemented')
+            if mode == "json":
+                raise NotImplementedError("JSON mode is not yet implemented")
 
-            if mode == 'yaml':
-                raise NotImplementedError('YAML mode is not yet implemented')
+            if mode == "yaml":
+                raise NotImplementedError("YAML mode is not yet implemented")
 
-    def load(self, project: str, model: Optional[str] = None, load_results: bool = False, mode: Literal['python', 'json', 'yaml'] = 'python') -> Tuple[Model, Result]:
+    def load(
+        self,
+        project: str,
+        model: str | None = None,
+        load_results: bool = False,
+        mode: Literal["python", "json", "yaml"] = "python",
+    ) -> tuple[Model, Result]:
         """Load a single model or all models within a specific project."""
 
-        def _load_pickled(group: h5py.Group, name: str, load_results: bool) -> Tuple[Model, Result]:
-            pickle_in = group[name]['input'][()].tobytes()
-            pickle_out = group[name]['output'][()].tobytes(
-            ) if load_results else None
+        def _load_pickled(
+            group: h5py.Group, name: str, load_results: bool
+        ) -> tuple[Model, Result]:
+            pickle_in = group[name]["input"][()].tobytes()
+            pickle_out = group[name]["output"][()].tobytes() if load_results else None
 
             model = pickle.loads(pickle_in)
             result = pickle.loads(pickle_out) if load_results else None
             return model, result
 
-        with h5py.File(self.filename, 'r') as f:
+        with h5py.File(self.filename, "r") as f:
             project_grp = f[project]
 
-            if mode == 'python':
+            if mode == "python":
                 if model is None:
                     all_models = list(project_grp.keys())
                     for item in all_models:
                         self.models[item] = _load_pickled(
-                            group=project_grp, name=item, load_results=load_results)
+                            group=project_grp, name=item, load_results=load_results
+                        )
 
                 else:
                     self.models[model] = _load_pickled(
-                        group=project_grp, name=model, load_results=load_results)
+                        group=project_grp, name=model, load_results=load_results
+                    )
 
-            if mode == 'json':
-                raise NotImplementedError('JSON mode is not yet implemented')
+            if mode == "json":
+                raise NotImplementedError("JSON mode is not yet implemented")
 
-            if mode == 'yaml':
-                raise NotImplementedError('YAML mode is not yet implemented')
+            if mode == "yaml":
+                raise NotImplementedError("YAML mode is not yet implemented")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from pyswap import testcase
 
-    f = HDF5(filename='data.h5')
+    f = HDF5(filename="data.h5")
 
     # Create instances of the model and result
-    model = testcase.get('hupselbrook')
+    model = testcase.get("hupselbrook")
     model2 = model.model_copy(
-        update={'version': 'v2', 'crop': model.crop.model_copy(update={'rds': 195})})
+        update={"version": "v2", "crop": model.crop.model_copy(update={"rds": 195})}
+    )
     model3 = model.model_copy(
-        update={'version': 'v3', 'crop': model.crop.model_copy(update={'rds': 100})})
-    result = model.run('./')
-    result2 = model.run('./')
-    result3 = model.run('./')
+        update={"version": "v3", "crop": model.crop.model_copy(update={"rds": 100})}
+    )
+    result = model.run("./")
+    result2 = model.run("./")
+    result3 = model.run("./")
 
     # Save to HDF5
-    f.save_model(model=model, result=result,
-                 overwrite_datasets=True, overwrite_project=True)
-    f.save_model(model=model2, result=result2,
-                 overwrite_datasets=True)
-    f.save_model(model=model3, result=result3,
-                 overwrite_datasets=True)
+    f.save_model(
+        model=model, result=result, overwrite_datasets=True, overwrite_project=True
+    )
+    f.save_model(model=model2, result=result2, overwrite_datasets=True)
+    f.save_model(model=model3, result=result3, overwrite_datasets=True)
 
     # Load from HDF5
-    f.load('pySWAP test - hupsel brook', load_results=True)
+    f.load("pySWAP test - hupsel brook", load_results=True)
 
-    print(f.models['base'][1].output[['TACT', 'TPOT']].resample('YE').sum())
-    print(f.models['v2'][1].output[['TACT', 'TPOT']].resample('YE').sum())
-    print(f.models['v3'][1].output[['TACT', 'TPOT']].resample('YE').sum())
+    print(f.models["base"][1].output[["TACT", "TPOT"]].resample("YE").sum())
+    print(f.models["v2"][1].output[["TACT", "TPOT"]].resample("YE").sum())
+    print(f.models["v3"][1].output[["TACT", "TPOT"]].resample("YE").sum())

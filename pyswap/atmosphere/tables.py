@@ -1,7 +1,8 @@
-from ..core.tablevalidation import BaseTableModel
-from ..core import YEARRANGE
-from pandera.typing import Series
 import pandera as pa
+from pandera.typing import Series
+
+from ..core import YEARRANGE
+from ..core.tablevalidation import BaseTableModel
 
 
 class DAILYMETEODATA(BaseTableModel):
@@ -13,6 +14,7 @@ class DAILYMETEODATA(BaseTableModel):
         parse the datetime index to separate columns.
     format decimals in the variables.
     """
+
     Station: Series[str]
     DD: Series[str]
     MM: Series[str]

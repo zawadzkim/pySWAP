@@ -1,7 +1,8 @@
 """These are tables for the extras module"""
 
-from ..core.tablevalidation import BaseTableModel
 import pandera as pa
+
+from ..core.tablevalidation import BaseTableModel
 
 
 class SOILTEXTURES(BaseTableModel):
@@ -13,6 +14,7 @@ class SOILTEXTURES(BaseTableModel):
         PCLAY (float): Clay content [g/g mineral parts, R]
         ORGMAT (float): Organic matter content [g/g dry soil, R]
     """
+
     PSAND: float
     PSILT: float
     PCLAY: float
@@ -26,5 +28,6 @@ class INITSOILTEMP(BaseTableModel):
         ZH (float): Depth of soil layer [cm, R]
         TSOIL (float): Initial temperature [oC, R]
     """
+
     ZH: float = pa.Field(ge=-100000, le=0)
     TSOIL: float = pa.Field(ge=-50, le=50)

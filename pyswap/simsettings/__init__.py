@@ -8,6 +8,7 @@ Modules:
     metadata: Metadata for the SWAP model.
     richards: Richards simulation settings for the SWAP model.
 """
-from .metadata import *
+
 from .general import *
+from .metadata import *
 from .richards import *
