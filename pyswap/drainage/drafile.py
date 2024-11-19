@@ -9,11 +9,21 @@ Classes:
     DrainageInfRes: Class for the drainage infiltration resistance.
     Flux: Class for the flux.
 """
-from ..core import (PySWAPBaseModel, FloatList, Table, String,
-                    ObjectList, UNITRANGE, FileMixin, SerializableMixin)
+
+from typing import Literal, Self
+
 from pydantic import Field, model_validator
-from typing import Literal, Optional
-from typing_extensions import Self
+
+from ..core import (
+    UNITRANGE,
+    FileMixin,
+    FloatList,
+    ObjectList,
+    PySWAPBaseModel,
+    SerializableMixin,
+    String,
+    Table,
+)
 
 
 class DraSettings(PySWAPBaseModel, SerializableMixin):
@@ -39,10 +49,11 @@ class DraSettings(PySWAPBaseModel, SerializableMixin):
             * 2 - Adjusment based on factor of top of model discharge
 
     """
+
     dramet: Literal[1, 2, 3]
     swdivd: Literal[1, 2]
-    cofani: Optional[FloatList]
-    swdislay: Literal[0, 1, 2, 3, '-']
+    cofani: FloatList | None
+    swdislay: Literal[0, 1, 2, 3, "-"]
 
 
 class DrainageFluxTable(PySWAPBaseModel, SerializableMixin):
@@ -52,6 +63,7 @@ class DrainageFluxTable(PySWAPBaseModel, SerializableMixin):
         lm1 (float): Drain spacing
         table_qdrntb (Table): Table of drainage flux - groundwater level.
     """
+
     lm1: float = Field(ge=1.0, le=1000.0)
     table_qdrntb: Table
 
@@ -96,27 +108,22 @@ class DrainageFormula(PySWAPBaseModel, SerializableMixin):
     ipos: Literal[1, 2, 3, 4, 5]
     basegw: float = Field(ge=-1.0e4, le=0.0)
     khtop: float = Field(ge=0.0, le=1000.0)
-    khbot: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
-    zintf: Optional[float] = Field(default=None, ge=-1.0e4, le=0.0)
-    kvtop: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
-    kvbot: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
-    geofac: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+    khbot: float | None = Field(default=None, ge=0.0, le=1000.0)
+    zintf: float | None = Field(default=None, ge=-1.0e4, le=0.0)
+    kvtop: float | None = Field(default=None, ge=0.0, le=1000.0)
+    kvbot: float | None = Field(default=None, ge=0.0, le=1000.0)
+    geofac: float | None = Field(default=None, ge=0.0, le=100.0)
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_draformula(self) -> Self:
         if self.ipos in [3, 4, 5]:
-            assert self.khbot is not None, \
-                'khbot has to be provided if IPOS is 3.'
-            assert self.zintf is not None, \
-                'zintf has to be provided if IPOS is 3.'
+            assert self.khbot is not None, "khbot has to be provided if IPOS is 3."
+            assert self.zintf is not None, "zintf has to be provided if IPOS is 3."
         if self.ipos in [4, 5]:
-            assert self.kvtop is not None, \
-                'kvtop has to be provided if IPOS is 3.'
-            assert self.kvbot is not None, \
-                'kvbot has to be provided if IPOS is 3.'
+            assert self.kvtop is not None, "kvtop has to be provided if IPOS is 3."
+            assert self.kvbot is not None, "kvbot has to be provided if IPOS is 3."
         if self.ipos == 5:
-            assert self.geofac is not None, \
-                'geofac has to be provided if IPOS is 3.'
+            assert self.geofac is not None, "geofac has to be provided if IPOS is 3."
 
         return self
 
@@ -134,20 +141,23 @@ class DrainageInfRes(PySWAPBaseModel, SerializableMixin):
             model discharge layer.
         list_levelfluxes (ObjectList): List of level fluxes.
     """
+
     nrlevs: int = Field(ge=1, le=5)
     swintfl: Literal[0, 1]
-    cofintflb: Optional[float] = Field(default=None, ge=0.01, le=10.0)
-    expintflb: Optional[float] = Field(default=None, ge=0.1, le=1.0)
-    swtopnrsrf: Optional[Literal[0, 1]] = None
-    list_levelfluxes: Optional[ObjectList] = None
+    cofintflb: float | None = Field(default=None, ge=0.01, le=10.0)
+    expintflb: float | None = Field(default=None, ge=0.1, le=1.0)
+    swtopnrsrf: Literal[0, 1] | None = None
+    list_levelfluxes: ObjectList | None = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_drainfiltrationres(self) -> Self:
         if self.swintfl == 1:
-            assert self.cofintflb is not None, \
-                'cofintflb has to be provided if swintfl is 1.'
-            assert self.expintflb is not None, \
-                'expintflb has to be provided if swintfl is 1.'
+            assert self.cofintflb is not None, (
+                "cofintflb has to be provided if swintfl is 1."
+            )
+            assert self.expintflb is not None, (
+                "expintflb has to be provided if swintfl is 1."
+            )
 
         return self
 
@@ -177,20 +187,19 @@ class Flux(PySWAPBaseModel, SerializableMixin):
     drares: float = Field(ge=10.0, le=1.0e5)
     infres: float = Field(ge=10.0, le=1.0e5)
     swallo: Literal[1, 2, 3]
-    l: Optional[float] = Field(ge=1.0, le=1.0e5)
+    l: float | None = Field(ge=1.0, le=1.0e5)
     zbotdr: float = Field(ge=-1000.0, le=0.0)
     swdtyp: Literal[1, 2]
     table_datowltb: Table
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_flux(self) -> Self:
         if self.swallo == 1:
-            assert self.l is not None, 'l has to be provided if swallo is 1.'
+            assert self.l is not None, "l has to be provided if swallo is 1."
 
         return self
 
     def model_dump(self, **kwargs):
-
         d = super().model_dump(**kwargs)
 
         # If level_number is set, modify the key names.
@@ -216,8 +225,6 @@ class DraFile(PySWAPBaseModel, FileMixin):
 
     drfil: String
     general: DraSettings = Field(exclude=True)
-    fluxtable: Optional[DrainageFluxTable] = Field(default=None, exclude=True)
-    drainageformula: Optional[DrainageFormula] = Field(
-        default=None, exclude=True)
-    drainageinfres: Optional[DrainageInfRes] = Field(
-        default=None, exclude=True)
+    fluxtable: DrainageFluxTable | None = Field(default=None, exclude=True)
+    drainageformula: DrainageFormula | None = Field(default=None, exclude=True)
+    drainageinfres: DrainageInfRes | None = Field(default=None, exclude=True)

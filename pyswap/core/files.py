@@ -11,19 +11,21 @@ def open_file(file_path: str) -> str:
     Arguments:
         file_path (str): Path to the file to be opened.
     """
-    with open(file_path, 'rb') as f:
+    with open(file_path, "rb") as f:
         raw_data = f.read()
-    encoding = chardet.detect(raw_data)['encoding']
+    encoding = chardet.detect(raw_data)["encoding"]
 
     return raw_data.decode(encoding)
 
 
-def save_file(string: str,
-              fname: str,
-              path: str,
-              mode: str = 'w',
-              extension: str | None = None,
-              encoding: str = 'ascii') -> None:
+def save_file(
+    string: str,
+    fname: str,
+    path: str,
+    mode: str = "w",
+    extension: str | None = None,
+    encoding: str = "ascii",
+) -> None:
     """
     Saves a string to a file.
 
@@ -40,7 +42,7 @@ def save_file(string: str,
     """
 
     if extension is not None:
-        fname = f'{fname}.{extension}'
+        fname = f"{fname}.{extension}"
 
-    with open(f'{path}/{fname}', f'{mode}', encoding=f'{encoding}') as f:
+    with open(f"{path}/{fname}", f"{mode}", encoding=f"{encoding}") as f:
         f.write(string)

@@ -5,9 +5,11 @@ Classes:
     DatabaseConnection: Creates a connection to the database.
 """
 
+import os
+
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker
-import os
+
 from .models import Base
 
 """
@@ -32,7 +34,7 @@ class DatabaseConnection:
         connect: Connect to the database.
     """
 
-    def __init__(self, db_path: str = 'pyswap.db'):
+    def __init__(self, db_path: str = "pyswap.db"):
         self.engine = None
         self.session = None
         self.db_path = db_path
@@ -47,7 +49,7 @@ class DatabaseConnection:
         else:
             print("Database does not exist. Creating...")
 
-        self.engine = create_engine(f'sqlite:///{self.db_path}')
+        self.engine = create_engine(f"sqlite:///{self.db_path}")
         session = sessionmaker(bind=self.engine)
         self.session = session()
 
@@ -57,8 +59,7 @@ class DatabaseConnection:
 
         for table in Base.metadata.tables.keys():
             if table not in table_names:
-                print(
-                    f"Table {table} does not exist in the database. Creating...")
+                print(f"Table {table} does not exist in the database. Creating...")
                 Base.metadata.tables[table].create(self.engine)
             else:
                 print(f"Table {table} exists in the database.")

@@ -5,10 +5,11 @@ Classes:
     Evaporation: Evaporation settings.
 """
 
-from ..core import PySWAPBaseModel, SerializableMixin
-from typing import Literal, Optional
-from typing_extensions import Self
+from typing import Literal, Self
+
 from pydantic import model_validator
+
+from ..core import PySWAPBaseModel, SerializableMixin
 
 
 class Evaporation(PySWAPBaseModel, SerializableMixin):
@@ -33,30 +34,26 @@ class Evaporation(PySWAPBaseModel, SerializableMixin):
         cofredbo (Optional[float]): Soil evaporation coefficient of
             Boesten/Stroosnijder.
     """
+
     swcfbs: Literal[0, 1]
     swredu: Literal[0, 1, 2]
-    cfevappond: Optional[float] = None  # this is used if ETref is used
-    cfbs: Optional[float] = None
-    rsoil: Optional[float] = None
-    cofredbl: Optional[float] = None
-    rsigni: Optional[float] = None
-    cofredbo: Optional[float] = None
+    cfevappond: float | None = None  # this is used if ETref is used
+    cfbs: float | None = None
+    rsoil: float | None = None
+    cofredbl: float | None = None
+    rsigni: float | None = None
+    cofredbo: float | None = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_evaporation(self) -> Self:
-
         if self.swcfbs:
-            assert self.cfbs is not None, \
-                "cfbs is required when swcfbs is True"
+            assert self.cfbs is not None, "cfbs is required when swcfbs is True"
 
         if self.swredu == 1:
-            assert self.cofredbl is not None, \
-                "cofredbl is required when swredu is 1"
-            assert self.rsigni is not None, \
-                "rsigni is required when swredu is 1"
+            assert self.cofredbl is not None, "cofredbl is required when swredu is 1"
+            assert self.rsigni is not None, "rsigni is required when swredu is 1"
 
         elif self.swredu == 2:
-            assert self.cofredbo is not None, \
-                "cofredbo is required when swredu is 2"
+            assert self.cofredbo is not None, "cofredbo is required when swredu is 2"
 
         return self

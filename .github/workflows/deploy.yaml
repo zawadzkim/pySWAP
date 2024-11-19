@@ -5,17 +5,17 @@ on:
       - main
       - master
     paths:
-      - 'docs/**'
+      - "docs/**"
 
 permissions:
   contents: write
   pages: write
   id-token: write
- 
+
 jobs:
   build_mkdocs:
     runs-on: ubuntu-latest
- 
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
 
       - name: Build MkDocs site
         run: poetry run mkdocs gh-deploy --config-file mkdocs.yml --force
- 
+
   deploy_mkdocs:
     needs: build_mkdocs
     environment:
@@ -51,7 +51,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: "."
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

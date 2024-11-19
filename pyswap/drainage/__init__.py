@@ -8,6 +8,12 @@ Modules:
     drafile: Create the .dra file.
 """
 
+from .drafile import (
+    DraFile,
+    DrainageFluxTable,
+    DrainageFormula,
+    DrainageInfRes,
+    DraSettings,
+    Flux,
+)
 from .drainage import Drainage
-from .drafile import (DraFile, DrainageFluxTable, DrainageFormula,
-                      DrainageInfRes, DraSettings, Flux)

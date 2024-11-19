@@ -13,14 +13,27 @@ Modules:
 ___________________________________________________________________________
 """
 
-from .mixins import FileMixin, SerializableMixin, ComplexSerializableMixin
 from .basemodel import PySWAPBaseModel
-from .fields import (Table, Arrays, CSVTable, DayMonth, IntList,
-                     StringList, FloatList, DateList, Switch,
-                     ObjectList, String)
+from .fields import (
+    Arrays,
+    CSVTable,
+    DateList,
+    DayMonth,
+    FloatList,
+    IntList,
+    ObjectList,
+    String,
+    StringList,
+    Switch,
+    Table,
+)
 from .files import open_file, save_file
-from .serializers import (serialize_table, serialize_arrays,
-                          serialize_csv_table,
-                          serialize_object_list)
-from .valueranges import UNITRANGE, YEARRANGE, DVSRANGE
+from .mixins import ComplexSerializableMixin, FileMixin, SerializableMixin
+from .serializers import (
+    serialize_arrays,
+    serialize_csv_table,
+    serialize_object_list,
+    serialize_table,
+)
 from .tablevalidation import BaseTableModel
+from .valueranges import DVSRANGE, UNITRANGE, YEARRANGE

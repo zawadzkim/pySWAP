@@ -1,9 +1,10 @@
 """tables for the soil-water module"""
 
-from ..core.tablevalidation import BaseTableModel
-from pandera.typing import Series
 import pandera as pa
-from typing import Optional
+from pandera.typing import Series
+
+from ..core.tablevalidation import BaseTableModel
+
 
 class INIPRESSUREHEAD(BaseTableModel):
     """Initial pressure head [cm, R] as a function of soil layer [1..N, I].
@@ -12,25 +13,26 @@ class INIPRESSUREHEAD(BaseTableModel):
         ZI: Series[int]: soil depth [-1.d5..0 cm, R].
         H: Series[float]: Initial soil water pressure head [-1.d10..1.d4 cm, R].
     """
-    
+
     ZI: Series[int] = pa.Field(ge=-1.0e5, le=0.0)
     H: Series[float] = pa.Field(ge=-1.0e10, le=1.0e4)
 
 
 class MXPONDTB(BaseTableModel):
     """minimum thickness for runoff PONDMXTB [0..1000 cm, R] as function of time
-    
+
     Attributes:
         DATEPMX: Series[pa.DateTime]: Date of the ponding threshold for runoff.
         PONDMXTB: Series[float]: Minimum thickness for runoff.
     """
+
     DATEPMX: Series[pa.DateTime]
     PONDMXTB: Series[float]
 
 
 class SOILPROFILE(BaseTableModel):
     """Vertical discretization of soil profile
-    
+
     Attributes:
         ISUBLAY: Series[int]: number of sub layer, start with 1 at soil surface [1..MACP, I].
         ISOILLAY: Series[int]: number of soil physical layer, start with 1 at soil surface [1..MAHO, I].
@@ -45,9 +47,10 @@ class SOILPROFILE(BaseTableModel):
     HCOMP: Series[float] = pa.Field(ge=0.0, le=1.0e3)
     NCOMP: Series[int] = pa.Field(ge=1)
 
+
 class SOILHYDRFUNC(BaseTableModel):
     """Soil hydraulic functions table.
-    
+
     !!! warning
         ALFAW required only when the hysteresis option is set to 1 or 2. This column is set as optional column and (for now) is not checked.
 
@@ -73,4 +76,4 @@ class SOILHYDRFUNC(BaseTableModel):
     H_ENPR: Series[float] = pa.Field(ge=-40.0, le=0.0)
     KSATEXM: Series[float] = pa.Field(ge=1.0e-5, le=1.0e5)
     BDENS: Series[float] = pa.Field(ge=100.0, le=1.0e4)
-    ALFAW: Optional[Series[float]] = pa.Field(ge=0.0001, le=100.0)
+    ALFAW: Series[float] | None = pa.Field(ge=0.0001, le=100.0)

@@ -5,8 +5,9 @@ Classes:
     BottomBoundary: Holds the settings of the bottom boundary conditions of
     the .swp file.
 """
-from .base import BottomBoundaryBase
+
 from ..core import FileMixin
+from .base import BottomBoundaryBase
 
 
 class BBCFile(BottomBoundaryBase, FileMixin):

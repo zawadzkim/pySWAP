@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -18,9 +19,7 @@ class PySWAPBaseModel(BaseModel):
     """
 
     model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-        extra='forbid'
+        arbitrary_types_allowed=True, validate_assignment=True, extra="forbid"
     )
 
     def model_string(self) -> str:
@@ -36,16 +35,15 @@ class PySWAPBaseModel(BaseModel):
         Returns:
             str: Custom model string representation.
         """
-        string = ''
+        string = ""
 
         def formatter(attr, value, string):
-            if attr.startswith('table_') or attr.startswith('list_'):
+            if attr.startswith("table_") or attr.startswith("list_"):
                 return string + value
             else:
-                return string + f'{attr.upper()} = {value}\n'
+                return string + f"{attr.upper()} = {value}\n"
 
-        for attr, value in self.model_dump(
-                mode='json', exclude_none=True).items():
+        for attr, value in self.model_dump(mode="json", exclude_none=True).items():
             if isinstance(value, dict):
                 for k, v in value.items():
                     string = formatter(k, v, string)
@@ -61,7 +59,7 @@ class PySWAPBaseModel(BaseModel):
         models, like DraFile, or Model.
         """
 
-        string = ''
+        string = ""
         for k, v in dict(self).items():
             if v is None or isinstance(v, str):
                 continue

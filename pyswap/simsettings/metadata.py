@@ -5,9 +5,9 @@ Classes:
     Metadata: Metadata of a SWAP model.
 """
 
-from ..core import PySWAPBaseModel, String, SerializableMixin
-from typing import Optional
 from pydantic import Field
+
+from ..core import PySWAPBaseModel, SerializableMixin, String
 
 
 class Metadata(PySWAPBaseModel, SerializableMixin):
@@ -27,4 +27,4 @@ class Metadata(PySWAPBaseModel, SerializableMixin):
     email: String = Field(exclude=True)
     project: String
     swap_ver: String = Field(exclude=True)
-    comment: Optional[String] = Field(default=None, exclude=True)
+    comment: String | None = Field(default=None, exclude=True)

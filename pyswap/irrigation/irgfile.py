@@ -4,10 +4,10 @@ Classes:
     IrrgFile: The irrigation file.
 """
 
+from pandas import DataFrame, read_csv
 from pydantic import Field
-from pandas import read_csv
-from ..core import PySWAPBaseModel, String, FileMixin
-from pandas import DataFrame
+
+from ..core import FileMixin, PySWAPBaseModel, String
 
 
 class IrgFile(PySWAPBaseModel, FileMixin):

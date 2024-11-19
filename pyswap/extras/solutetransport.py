@@ -4,10 +4,9 @@ Classes:
     SoluteTransport: Solute transport settings.
 """
 
-from ..core import PySWAPBaseModel, SerializableMixin
-from ..core import Table
-from typing import Literal, Optional
-from typing_extensions import Self
+from typing import Literal
+
+from ..core import PySWAPBaseModel, SerializableMixin, Table
 
 
 class SoluteTransport(PySWAPBaseModel, SerializableMixin):
@@ -19,7 +18,7 @@ class SoluteTransport(PySWAPBaseModel, SerializableMixin):
         Validation not yet included in the current release.
 
     Attributes:
-        swsolu (Literal[0, 1]): 
+        swsolu (Literal[0, 1]):
         cpre (Optional[float]):
         cdrain (Optional[float]):
         swbotbc (Optional[Literal[0, 1]]):
@@ -43,26 +42,27 @@ class SoluteTransport(PySWAPBaseModel, SerializableMixin):
         table_inissoil (Optional[Table]):
         table_miscellaneous (Optional[Table]):
     """
+
     swsolu: Literal[0, 1]
-    cpre: Optional[float] = None
-    cdrain: Optional[float] = None
-    swbotbc: Optional[Literal[0, 1]] = None
-    cseep: Optional[float] = None
-    ddif: Optional[float] = None
-    tscf: Optional[float] = None
-    swsp: Optional[Literal[0, 1]] = None
-    frexp: Optional[float] = None
-    cref: Optional[float] = None
-    swdc: Optional[Literal[0, 1]] = None
-    gampar: Optional[float] = None
-    rtheta: Optional[float] = None
-    bexp: Optional[float] = None
-    swbr: Optional[Literal[0, 1]] = None
-    daquif: Optional[float] = None
-    poros: Optional[float] = None
-    kfsat: Optional[float] = None
-    decsat: Optional[float] = None
-    cdraini: Optional[float] = None
-    table_cseeparrtb: Optional[Table] = None
-    table_inissoil: Optional[Table] = None
-    table_miscellaneous: Optional[Table] = None
+    cpre: float | None = None
+    cdrain: float | None = None
+    swbotbc: Literal[0, 1] | None = None
+    cseep: float | None = None
+    ddif: float | None = None
+    tscf: float | None = None
+    swsp: Literal[0, 1] | None = None
+    frexp: float | None = None
+    cref: float | None = None
+    swdc: Literal[0, 1] | None = None
+    gampar: float | None = None
+    rtheta: float | None = None
+    bexp: float | None = None
+    swbr: Literal[0, 1] | None = None
+    daquif: float | None = None
+    poros: float | None = None
+    kfsat: float | None = None
+    decsat: float | None = None
+    cdraini: float | None = None
+    table_cseeparrtb: Table | None = None
+    table_inissoil: Table | None = None
+    table_miscellaneous: Table | None = None

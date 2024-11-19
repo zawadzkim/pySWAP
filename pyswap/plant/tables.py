@@ -3,10 +3,12 @@
 Classes:
     RDTB: Root depth table
 """
-from ..core.tablevalidation import BaseTableModel
-from ..core import UNITRANGE, DVSRANGE, YEARRANGE
-from pandera.typing import Series
+
 import pandera as pa
+from pandera.typing import Series
+
+from ..core import DVSRANGE, UNITRANGE, YEARRANGE
+from ..core.tablevalidation import BaseTableModel
 
 
 class RDTB(BaseTableModel):
@@ -29,6 +31,7 @@ class RDCTB(BaseTableModel):
         RDENS (Series[float]): Root density of the crop.
 
     """
+
     RRD: Series[float] = pa.Field(ge=0.0, le=100.0)
     RDENS: Series[float] = pa.Field(**UNITRANGE)
 
@@ -64,6 +67,7 @@ class KYTB(BaseTableModel):
         DVS (Series[float]): Development stage of the crop.
         KY (Series[float]): Yield response factor of the crop.
     """
+
     DVS: Series[float] = pa.Field(**DVSRANGE)
     KY: Series[float] = pa.Field(ge=0.0, le=5.0)
 
@@ -105,6 +109,7 @@ class CROPROTATION(BaseTableModel):
             * 2 - detailed, WOFOST general
             * 3 - detailed, WOFOST grass
     """
+
     CROPSTART: Series[pa.DateTime]
     CROPEND: Series[pa.DateTime]
     CROPFIL: Series[str]

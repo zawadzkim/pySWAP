@@ -4,30 +4,36 @@ Classes:
     Model: Main class that runs the SWAP model.
 """
 
-from typing import Optional
-from pathlib import Path
-import shutil
-import tempfile
-import subprocess
 import os
-from importlib import resources
-import warnings
 import platform
+import shutil
+import subprocess
+import tempfile
+import warnings
+from importlib import resources
+from pathlib import Path
+
 from pandas import read_csv, to_datetime
 from pydantic import Field
-from ..core import PySWAPBaseModel, FileMixin, ComplexSerializableMixin
-from ..extras import HeatFlow, SoluteTransport
+
 from ..atmosphere import Meteorology
-from ..irrigation import FixedIrrigation
-from ..soilwater import (SoilMoisture, SnowAndFrost, Evaporation,
-                         SoilProfile, SurfaceFlow)
-from ..simsettings import Metadata, GeneralSettings, RichardsSettings
 from ..boundary import BottomBoundary
+from ..core import ComplexSerializableMixin, FileMixin, PySWAPBaseModel
 from ..drainage import Drainage
+from ..extras import HeatFlow, SoluteTransport
+from ..irrigation import FixedIrrigation
 from ..plant import Crop
+from ..simsettings import GeneralSettings, Metadata, RichardsSettings
+from ..soilwater import (
+    Evaporation,
+    SnowAndFrost,
+    SoilMoisture,
+    SoilProfile,
+    SurfaceFlow,
+)
 from .result import Result
 
-IS_WINDOWS = platform.system() == 'Windows'
+IS_WINDOWS = platform.system() == "Windows"
 
 
 class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
@@ -67,7 +73,7 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
     """
 
     metadata: Metadata
-    version: str = Field(exclude=True, default='base')
+    version: str = Field(exclude=True, default="base")
     general_settings: GeneralSettings
     meteorology: Meteorology
     crop: Crop
@@ -76,13 +82,12 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
     surfaceflow: SurfaceFlow
     evaporation: Evaporation
     soilprofile: SoilProfile
-    snowandfrost: Optional[SnowAndFrost] = SnowAndFrost(swsnow=0, swfrost=0)
-    richards: Optional[RichardsSettings] = RichardsSettings(
-        swkmean=1, swkimpl=0)
+    snowandfrost: SnowAndFrost | None = SnowAndFrost(swsnow=0, swfrost=0)
+    richards: RichardsSettings | None = RichardsSettings(swkmean=1, swkimpl=0)
     lateraldrainage: Drainage
     bottomboundary: BottomBoundary
-    heatflow: Optional[HeatFlow] = HeatFlow(swhea=0)
-    solutetransport: Optional[SoluteTransport] = SoluteTransport(swsolu=0)
+    heatflow: HeatFlow | None = HeatFlow(swhea=0)
+    solutetransport: SoluteTransport | None = SoluteTransport(swsolu=0)
 
     @property
     def swp(self):
@@ -97,28 +102,23 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
     def _write_swp(self, path: str) -> None:
         """Write the .swp input file."""
 
-        self.save_file(string=self.swp, path=path,
-                       fname='swap', extension='swp')
+        self.save_file(string=self.swp, path=path, fname="swap", extension="swp")
 
     @staticmethod
     def _copy_executable(tempdir: Path):
         """Copy the appropriate SWAP executable to
         the temporary directory."""
         if IS_WINDOWS:
-            exec_path = resources.files(
-                "pyswap.libs.swap420-exe").joinpath("swap.exe")
+            exec_path = resources.files("pyswap.libs.swap420-exe").joinpath("swap.exe")
             shutil.copy(str(exec_path), str(tempdir))
-            print('Copying the windows version of SWAP '
-                  'into temporary directory...')
+            print("Copying the windows version of SWAP into temporary directory...")
         else:
-            exec_path = resources.files(
-                "pyswap.libs.swap420-linux").joinpath("swap420")
+            exec_path = resources.files("pyswap.libs.swap420-linux").joinpath("swap420")
             shutil.copy(str(exec_path), str(tempdir))
-            print('Copying linux executable '
-                  'into temporary directory...')
+            print("Copying linux executable into temporary directory...")
 
     def _write_inputs(self, path: str) -> None:
-        print('Preparing files...')
+        print("Preparing files...")
         self._write_swp(path)
         if self.lateraldrainage.drafile:
             self.lateraldrainage.write_dra(path)
@@ -143,22 +143,24 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
             str: stdout.
         """
 
-        swap_path = Path(tempdir, 'swap.exe') if IS_WINDOWS else './swap420'
+        swap_path = Path(tempdir, "swap.exe") if IS_WINDOWS else "./swap420"
 
-        p = subprocess.Popen(swap_path,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             stderr=subprocess.STDOUT,
-                             cwd=tempdir)
+        p = subprocess.Popen(
+            swap_path,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            cwd=tempdir,
+        )
 
-        stdout = p.communicate(input=b'\n')[0]
+        stdout = p.communicate(input=b"\n")[0]
 
         return stdout.decode()
 
     @staticmethod
     def _read_output(path: Path):
         """Read the output csv file."""
-        df = read_csv(path, comment='*', index_col='DATETIME')
+        df = read_csv(path, comment="*", index_col="DATETIME")
         df.index = to_datetime(df.index)
 
         return df
@@ -166,7 +168,7 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
     @staticmethod
     def _read_output_tz(path: Path):
         """Read the output csv file with the depth information."""
-        df = read_csv(path, comment='*', index_col='DATE')
+        df = read_csv(path, comment="*", index_col="DATE")
         df.index = to_datetime(df.index)
 
         return df
@@ -175,17 +177,15 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
         """Read the log file."""
         # log_files = [f for f in Path(directory).glob(
         #     '*.log') if f.name != 'reruns.log']
-        log_files = [f for f in Path(directory).glob(
-            '*.log') if f.name != 'reruns.log']
+        log_files = [f for f in Path(directory).glob("*.log") if f.name != "reruns.log"]
         if len(log_files) == 0:
             raise FileNotFoundError("No .log file found in the directory.")
         elif len(log_files) > 1:
-            raise FileExistsError(
-                "Multiple .log files found in the directory.")
+            raise FileExistsError("Multiple .log files found in the directory.")
 
         log_file = log_files[0]
 
-        with open(log_file, 'r') as file:
+        with open(log_file) as file:
             log_content = file.read()
 
         return log_content
@@ -194,9 +194,10 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
     def _identify_warnings(log: str) -> list[Warning]:
         """Read through the log file and catch warnings emitted by
         the SWAP executable."""
-        lines = log.split('\n')
-        warnings = [line for line in lines
-                    if line.strip().lower().startswith('warning')]
+        lines = log.split("\n")
+        warnings = [
+            line for line in lines if line.strip().lower().startswith("warning")
+        ]
 
         return warnings
 
@@ -206,18 +207,21 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
     def _read_output_old(self, tempdir: Path):
         """Read all output files that are not in csv format as strings."""
         list_dir = os.listdir(tempdir)
-        list_dir = [f for f in list_dir if not f.find(
-            self.general_settings.outfil) and not f.endswith('.csv')]
+        list_dir = [
+            f
+            for f in list_dir
+            if not f.find(self.general_settings.outfil) and not f.endswith(".csv")
+        ]
 
         if list_dir:
-            dict_files = {f.split('.')[1]: self.read_file(Path(tempdir, f))
-                          for f in list_dir}
+            dict_files = {
+                f.split(".")[1]: self.read_file(Path(tempdir, f)) for f in list_dir
+            }
         return dict_files
 
-    def run(self,
-            path: str | Path,
-            silence_warnings: bool = False,
-            old_output: bool = False):
+    def run(
+        self, path: str | Path, silence_warnings: bool = False, old_output: bool = False
+    ):
         """Main function that runs the model.
 
         Parameters:
@@ -233,15 +237,13 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
             be achieved by running model.run() multiple times.
         """
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
-
             self._copy_executable(tempdir)
             self._write_inputs(tempdir)
 
             result = self._run_swap(tempdir)
 
-            if 'normal completion' not in result:
-                raise Exception(
-                    f'Model run failed. \n {result}')
+            if "normal completion" not in result:
+                raise Exception(f"Model run failed. \n {result}")
 
             print(result)
 
@@ -249,7 +251,7 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
             warnings = self._identify_warnings(log)
 
             if warnings and not silence_warnings:
-                print('Warnings:')
+                print("Warnings:")
                 for warning in warnings:
                     self._raise_swap_warning(message=warning)
 
@@ -258,16 +260,18 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
 
             result = Result(
                 output=self._read_output(
-                    Path(tempdir,
-                         f'{self.general_settings.outfil}_output.csv'))
-                if self.general_settings.inlist_csv else None,
+                    Path(tempdir, f"{self.general_settings.outfil}_output.csv")
+                )
+                if self.general_settings.inlist_csv
+                else None,
                 output_tz=self._read_output_tz(
-                    Path(tempdir,
-                         f'{self.general_settings.outfil}_output_tz.csv'))
-                if self.general_settings.inlist_csv_tz else None,
+                    Path(tempdir, f"{self.general_settings.outfil}_output_tz.csv")
+                )
+                if self.general_settings.inlist_csv_tz
+                else None,
                 log=log,
                 output_old=dict_files if old_output else None,
-                warning=warnings
+                warning=warnings,
             )
 
             return result

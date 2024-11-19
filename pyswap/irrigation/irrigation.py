@@ -1,14 +1,16 @@
-""""
+""" "
 Irrigation settings for the SWAP simuluation.
 
 Classes:
     FixedIrrigation: Fixed irrigation settings.
     ScheduledIrrigation: Irrigation scheduling settings.
 """
-from ..core import PySWAPBaseModel, Table, YEARRANGE, DayMonth, SerializableMixin
-from typing import Optional, Literal
-from typing_extensions import Self
-from pydantic import model_validator, Field
+
+from typing import Literal, Self
+
+from pydantic import Field, model_validator
+
+from ..core import YEARRANGE, DayMonth, PySWAPBaseModel, SerializableMixin, Table
 from .irgfile import IrgFile
 
 
@@ -27,18 +29,21 @@ class FixedIrrigation(PySWAPBaseModel, SerializableMixin):
     """
 
     swirfix: Literal[0, 1]
-    swirgfil: Optional[Literal[0, 1]] = None
-    table_irrigevents: Optional[Table] = None
-    irgfile: Optional[IrgFile] = Field(
-        default=None, repr=False)
+    swirgfil: Literal[0, 1] | None = None
+    table_irrigevents: Table | None = None
+    irgfile: IrgFile | None = Field(default=None, repr=False)
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_fixed_irrigation(self) -> Self:
         if self.swirfix == 1:
             if self.swirgfil:
-                assert self.irgfile is not None, "irgfile is required when swirgfil is True"
+                assert self.irgfile is not None, (
+                    "irgfile is required when swirgfil is True"
+                )
             else:
-                assert self.table_irrigevents is not None, "irrigevents is required when swirgfil is False"
+                assert self.table_irrigevents is not None, (
+                    "irrigevents is required when swirgfil is False"
+                )
 
         return self
 
@@ -47,7 +52,7 @@ class FixedIrrigation(PySWAPBaseModel, SerializableMixin):
             string=self.irgfile.content,
             fname=self.irgfile.irgfil,
             path=path,
-            extension='irg'
+            extension="irg",
         )
 
 
@@ -99,53 +104,52 @@ class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin):
         dvs_tc4 (Optional[Table]):
         dvs_tc5 (Optional[Table]):
     """
+
     schedule: Literal[0, 1]
-    startirr: Optional[DayMonth] = None
-    endirr: Optional[DayMonth] = None
-    cirrs: Optional[float] = Field(default=None, ge=0.0, le=100.0)
-    isuas: Optional[Literal[0, 1]] = None
-    tcs: Optional[Literal[1, 2, 3, 4, 6, 7, 8]] = None
-    phfieldcapacity: Optional[float] = Field(default=None, ge=-1000.0, le=0.0)
-    irgthreshold: Optional[float] = Field(default=None, ge=0.0, le=20.0)
-    dcrit: Optional[float] = Field(default=None, ge=-100.0, le=0.0)
-    swcirrthres: Optional[Literal[0, 1]] = None
-    cirrthres: Optional[float] = Field(default=None, ge=0.0, le=100.0)
-    perirrsurp: Optional[float] = Field(default=None, ge=0.0, le=100.0)
-    tcsfix: Optional[Literal[0, 1]] = None
-    irgdayfix: Optional[int] = Field(default=None, **YEARRANGE)
-    dcs: Optional[Literal[0, 1]] = None
-    dcslim: Optional[Literal[0, 1]] = None
-    irgdepmin: Optional[float] = Field(default=None, ge=0.0, le=100.0)
-    irgdepmax: Optional[float] = Field(default=None, ge=0.0, le=1.0e7)
-    table_tc1tb: Optional[Table] = None
-    table_tc2tb: Optional[Table] = None
-    table_tc3tb: Optional[Table] = None
-    table_tc4tb: Optional[Table] = None
-    table_tc7tb: Optional[Table] = None
-    table_tc8tb: Optional[Table] = None
+    startirr: DayMonth | None = None
+    endirr: DayMonth | None = None
+    cirrs: float | None = Field(default=None, ge=0.0, le=100.0)
+    isuas: Literal[0, 1] | None = None
+    tcs: Literal[1, 2, 3, 4, 6, 7, 8] | None = None
+    phfieldcapacity: float | None = Field(default=None, ge=-1000.0, le=0.0)
+    irgthreshold: float | None = Field(default=None, ge=0.0, le=20.0)
+    dcrit: float | None = Field(default=None, ge=-100.0, le=0.0)
+    swcirrthres: Literal[0, 1] | None = None
+    cirrthres: float | None = Field(default=None, ge=0.0, le=100.0)
+    perirrsurp: float | None = Field(default=None, ge=0.0, le=100.0)
+    tcsfix: Literal[0, 1] | None = None
+    irgdayfix: int | None = Field(default=None, **YEARRANGE)
+    dcs: Literal[0, 1] | None = None
+    dcslim: Literal[0, 1] | None = None
+    irgdepmin: float | None = Field(default=None, ge=0.0, le=100.0)
+    irgdepmax: float | None = Field(default=None, ge=0.0, le=1.0e7)
+    table_tc1tb: Table | None = None
+    table_tc2tb: Table | None = None
+    table_tc3tb: Table | None = None
+    table_tc4tb: Table | None = None
+    table_tc7tb: Table | None = None
+    table_tc8tb: Table | None = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_scheduled_irrigation(self) -> Self:
-
         if self.tcs == 1:
-            self.dvs_tc1 = {'dvs_tc1': [0.0, 2.0],
-                            'Trel': [0.95, 0.95]}
+            self.dvs_tc1 = {"dvs_tc1": [0.0, 2.0], "Trel": [0.95, 0.95]}
         elif self.tcs == 2:
-            self.dvs_tc2 = {'dvs_tc2': [0.0, 2.0],
-                            'RAW': [0.95, 0.95]}
+            self.dvs_tc2 = {"dvs_tc2": [0.0, 2.0], "RAW": [0.95, 0.95]}
         elif self.tcs == 3:
-            self.dvs_tc3 = {'dvs_tc3': [0.0, 2.0],
-                            'TAW': [0.50, 0.50]}
+            self.dvs_tc3 = {"dvs_tc3": [0.0, 2.0], "TAW": [0.50, 0.50]}
         elif self.tcs == 4:
-            self.dvs_tc4 = {'dvs_tc4': [0.0, 2.0],
-                            'DWA': [0.40, 0.40]}
+            self.dvs_tc4 = {"dvs_tc4": [0.0, 2.0], "DWA": [0.40, 0.40]}
         elif self.tcs == 5:
-            self.dvs_tc5 = {'dvs_tc5': [0.0, 2.0],
-                            'Value_tc5': [-1000.0, -1000.0]}
+            self.dvs_tc5 = {"dvs_tc5": [0.0, 2.0], "Value_tc5": [-1000.0, -1000.0]}
         elif self.tcs == 6:
-            assert self.irgthreshold is not None, "irgthreshold is required when tcs is 6"
+            assert self.irgthreshold is not None, (
+                "irgthreshold is required when tcs is 6"
+            )
             assert self.tcsfix is not None, "tcsfix is required when tcs is 6"
             if self.tcsfix:
-                assert self.irgdayfix is not None, "irgdayfix is required when tcsfix is True"
+                assert self.irgdayfix is not None, (
+                    "irgdayfix is required when tcsfix is True"
+                )
 
         return self

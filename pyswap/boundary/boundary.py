@@ -1,5 +1,6 @@
 from .base import BottomBoundaryBase
 from .bbcfile import BBCFile
+
 """
 Bottom boundary condition settings for the SWAP model.
 
@@ -7,7 +8,7 @@ Classes:
     BottomBoundary: Holds the settings of the bottom boundary conditions of
         the .swp file.
 """
-from typing import Optional, Literal
+from typing import Literal
 
 
 class BottomBoundary(BottomBoundaryBase):
@@ -24,17 +25,13 @@ class BottomBoundary(BottomBoundaryBase):
     """
 
     swbbcfile: Literal[0, 1]
-    bbcfile: Optional[BBCFile] = None
+    bbcfile: BBCFile | None = None
 
     @property
     def bbc(self):
-        return ''.join(self.bbcfile.concat_attributes())
+        return "".join(self.bbcfile.concat_attributes())
 
     def write_bbc(self, path: str):
-
         self.bbcfile.save_file(
-            string=self.bbc,
-            extension='bbc',
-            fname=self.bbcfil,
-            path=path
+            string=self.bbc, extension="bbc", fname=self.bbcfil, path=path
         )

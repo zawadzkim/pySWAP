@@ -3,11 +3,12 @@
 Classes:
     HeatFlow: Heat flow settings for SWAP simulation.
 """
-from ..core import PySWAPBaseModel, SerializableMixin
-from ..core import Table, String
-from typing import Literal, Optional
-from typing_extensions import Self
+
+from typing import Literal, Self
+
 from pydantic import model_validator
+
+from ..core import PySWAPBaseModel, SerializableMixin, String, Table
 
 
 class HeatFlow(PySWAPBaseModel, SerializableMixin):
@@ -54,39 +55,41 @@ class HeatFlow(PySWAPBaseModel, SerializableMixin):
     """
 
     swhea: Literal[0, 1]
-    swcalt: Optional[Literal[1, 2]] = None
-    tampli: Optional[float] = None
-    tmean: Optional[float] = None
-    timref: Optional[float] = None
-    ddamp: Optional[float] = None
-    swtopbhea: Optional[Literal[1, 2]] = None
-    tsoilfile: Optional[String] = None
-    swbotbhea: Optional[Literal[1, 2]] = None
-    table_soiltextures: Optional[Table] = None
-    table_initsoil: Optional[Table] = None
-    table_bbctsoil: Optional[Table] = None
+    swcalt: Literal[1, 2] | None = None
+    tampli: float | None = None
+    tmean: float | None = None
+    timref: float | None = None
+    ddamp: float | None = None
+    swtopbhea: Literal[1, 2] | None = None
+    tsoilfile: String | None = None
+    swbotbhea: Literal[1, 2] | None = None
+    table_soiltextures: Table | None = None
+    table_initsoil: Table | None = None
+    table_bbctsoil: Table | None = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _check_heatflow(self) -> Self:
         if self.swhea == 1:
-            assert self.swcalt is not None, \
-                "swcalt must be specified if swhea is 1"
+            assert self.swcalt is not None, "swcalt must be specified if swhea is 1"
             if self.swcalt == 1:
-                assert self.tampli is not None, \
+                assert self.tampli is not None, (
                     "tampli must be specified if swcalt is 1"
-                assert self.tmean is not None, \
-                    "tmean must be specified if swcalt is 1"
-                assert self.timref is not None, \
+                )
+                assert self.tmean is not None, "tmean must be specified if swcalt is 1"
+                assert self.timref is not None, (
                     "timref must be specified if swcalt is 1"
-                assert self.ddamp is not None, \
-                    "ddamp must be specified if swcalt is 1"
+                )
+                assert self.ddamp is not None, "ddamp must be specified if swcalt is 1"
             elif self.swcalt == 2:
-                assert self.table_soiltextures is not None, \
+                assert self.table_soiltextures is not None, (
                     "table_soiltextures must be specified if swcalt is 2"
+                )
                 if self.swtopbhea == 2:
-                    assert self.tsoilfile is not None, \
+                    assert self.tsoilfile is not None, (
                         "tsoilfile must be specified if swtopbhea is 2"
+                    )
                 if self.swbotbhea == 2:
-                    assert self.table_bbctsoil is not None, \
+                    assert self.table_bbctsoil is not None, (
                         "table_bbctsoil must be specified if swbotbhea is 2"
+                    )
         return self

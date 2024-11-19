@@ -9,14 +9,15 @@ Functions:
     load_from_knmi: retrieving meteorological data from KNMI API
 """
 
-from typing import Optional, Literal
+from datetime import datetime as dt
+from typing import Literal
+
+from knmi import get_day_data_dataframe, get_hour_data_dataframe
 from pandas import read_csv
 from pydantic import Field
-from datetime import datetime as dt
-from knmi import get_day_data_dataframe, get_hour_data_dataframe
 
+from ..core import CSVTable, PySWAPBaseModel, String
 from ..core.mixins import FileMixin
-from ..core import PySWAPBaseModel, String, CSVTable
 
 
 class MetFile(PySWAPBaseModel, FileMixin):
@@ -32,7 +33,7 @@ class MetFile(PySWAPBaseModel, FileMixin):
     """
 
     metfil: String
-    content: Optional[CSVTable] = Field(default=None, exclude=True)
+    content: CSVTable | None = Field(default=None, exclude=True)
 
 
 def load_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
@@ -50,14 +51,15 @@ def load_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
     return MetFile(metfil=metfil, content=read_csv(csv_path, **kwargs))
 
 
-def load_from_knmi(metfil: str,
-                   stations: str | list,
-                   variables: str | list = [
-                       'TEMP', 'PRCP', 'Q', 'UG',  'FG', 'UX', 'UN'],
-                   start: str | dt = '20000101',
-                   end: str | dt = '20200101',
-                   frequency: Literal['day', 'hour'] = 'day',
-                   inseason: bool = False) -> MetFile:
+def load_from_knmi(
+    metfil: str,
+    stations: str | list,
+    variables: str | list = ["TEMP", "PRCP", "Q", "UG", "FG", "UX", "UN"],
+    start: str | dt = "20000101",
+    end: str | dt = "20200101",
+    frequency: Literal["day", "hour"] = "day",
+    inseason: bool = False,
+) -> MetFile:
     """Retrieves the meteorological data from KNMI API using knmi-py and
     enforces SWAP required format.
 
@@ -79,33 +81,33 @@ def load_from_knmi(metfil: str,
     if isinstance(variables, str):
         variables = [variables]
 
-    get_func = get_day_data_dataframe if frequency == 'day' \
-        else get_hour_data_dataframe
+    get_func = get_day_data_dataframe if frequency == "day" else get_hour_data_dataframe
 
-    df = get_func(stations=stations,
-                  start=start,
-                  end=end,
-                  variables=variables,
-                  inseason=inseason)
+    df = get_func(
+        stations=stations, start=start, end=end, variables=variables, inseason=inseason
+    )
 
     # rename some columns
-    required_column_names = {'STN': 'Station',
-                             'TN': 'Tmin',
-                             'TX': 'Tmax',
-                             'UG': 'HUM',
-                             'DR': 'WET',
-                             'FG': 'WIND',
-                             'RH': 'RAIN',
-                             'EV24': 'ETref',
-                             'Q': 'RAD'}
+    required_column_names = {
+        "STN": "Station",
+        "TN": "Tmin",
+        "TX": "Tmax",
+        "UG": "HUM",
+        "DR": "WET",
+        "FG": "WIND",
+        "RH": "RAIN",
+        "EV24": "ETref",
+        "Q": "RAD",
+    }
 
     df = df.rename(columns=required_column_names)
 
     # recalculation of the parameters, the original unit is 0.1 Unit
-    df[['Tmin', 'Tmax', 'ETref', 'RAIN', 'WIND']] = df[[
-        'Tmin', 'Tmax', 'ETref', 'RAIN', 'WIND']].multiply(0.1)
+    df[["Tmin", "Tmax", "ETref", "RAIN", "WIND"]] = df[
+        ["Tmin", "Tmax", "ETref", "RAIN", "WIND"]
+    ].multiply(0.1)
 
     # The required unit is days
-    df['WET'] = df['WET'].multiply(0.1).multiply(24)
+    df["WET"] = df["WET"].multiply(0.1).multiply(24)
 
     return MetFile(metfil=metfil, content=df)

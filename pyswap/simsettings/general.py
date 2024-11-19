@@ -1,15 +1,23 @@
-from datetime import date as d
-from ..core import PySWAPBaseModel
-from ..core import (DayMonth, DateList, StringList,
-                    FloatList, String, SerializableMixin)
-from ..core import YEARRANGE, UNITRANGE
-from typing import Literal, Optional
-from typing_extensions import Self
-from pydantic import Field, model_validator
 import platform
+from datetime import date as d
+from typing import Literal, Self
 
-IS_WINDOWS = platform.system() == 'Windows'
-BASE_PATH = '.\\' if IS_WINDOWS else './'
+from pydantic import Field, model_validator
+
+from ..core import (
+    UNITRANGE,
+    YEARRANGE,
+    DateList,
+    DayMonth,
+    FloatList,
+    PySWAPBaseModel,
+    SerializableMixin,
+    String,
+    StringList,
+)
+
+IS_WINDOWS = platform.system() == "Windows"
+BASE_PATH = ".\\" if IS_WINDOWS else "./"
 
 
 class GeneralSettings(PySWAPBaseModel, SerializableMixin):
@@ -100,13 +108,13 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
     swmonth: Literal[0, 1] = 1
     swyrvar: Literal[0, 1] = 0
     # if swmonth is 0
-    period: Optional[int] = Field(default=None, **YEARRANGE)
-    swres: Optional[Literal[0, 1]] = None
-    swodat: Optional[Literal[0, 1]] = None
+    period: int | None = Field(default=None, **YEARRANGE)
+    swres: Literal[0, 1] | None = None
+    swodat: Literal[0, 1] | None = None
     # if swyrvar is 1
-    outdatin: Optional[DateList] = None
-    datefix: Optional[DayMonth] = None
-    outdat: Optional[DateList] = None
+    outdatin: DateList | None = None
+    datefix: DayMonth | None = None
+    outdat: DateList | None = None
 
     outfil: String = "result"
     swheader: Literal[0, 1] = 0
@@ -126,47 +134,44 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
     swstr: Literal[0, 1] = 0
     swirg: Literal[0, 1] = 0
     swcsv: Literal[0, 1] = 1
-    inlist_csv: Optional[StringList] = None
+    inlist_csv: StringList | None = None
     swcsv_tz: Literal[0, 1] = 0
-    inlist_csv_tz: Optional[StringList] = None
+    inlist_csv_tz: StringList | None = None
     swafo: Literal[0, 1, 2] = 0
     swaun: Literal[0, 1, 2] = 0
-    critdevmasbal: Optional[float] = Field(default=None, **UNITRANGE)
+    critdevmasbal: float | None = Field(default=None, **UNITRANGE)
     swdiscrvert: Literal[0, 1] = 0
-    numnodnew: Optional[int] = None
-    dznew: Optional[FloatList] = None
+    numnodnew: int | None = None
+    dznew: FloatList | None = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_model(self) -> Self:
-
         if not self.swmonth:
-            assert self.period is not None, \
-                "period is required when swmonth is 0"
-            assert self.swres is not None, \
-                "swres is required when swmonth is 0"
-            assert self.swodat is not None, \
-                "swodat is required when swmonth is 0"
+            assert self.period is not None, "period is required when swmonth is 0"
+            assert self.swres is not None, "swres is required when swmonth is 0"
+            assert self.swodat is not None, "swodat is required when swmonth is 0"
             if self.swodat:
-                assert self.outdatin is not None, \
+                assert self.outdatin is not None, (
                     "outdatin is required when swodat is 1"
+                )
 
         if self.swyrvar:
-            assert self.outdat is not None, \
-                "outdat is required when svyrvar is 1"
+            assert self.outdat is not None, "outdat is required when svyrvar is 1"
         else:
-            assert self.datefix is not None, \
-                "datefix is required when swyrvar is 0"
+            assert self.datefix is not None, "datefix is required when swyrvar is 0"
 
         if self.swafo in [1, 2] or self.swaun in [1, 2]:
-            assert self.critdevmasbal is not None, \
+            assert self.critdevmasbal is not None, (
                 "critdevmasbal is required when SWAFO = 1 "
+            )
             "or 2 or SWAUN = 1 or 2"
-            assert self.swdiscrvert, \
+            assert self.swdiscrvert, (
                 "SWDISCRVERT is required when SWAFO = 1 or 2 or SWAUN = 1 or 2"
+            )
         if self.swdiscrvert:
-            assert self.numnodnew is not None, \
+            assert self.numnodnew is not None, (
                 "NUMNODNEW is required when SWDISCRVERT = 1"
-            assert self.dznew is not None, \
-                "DZNEW is required when SWDISCRVERT = 1"
+            )
+            assert self.dznew is not None, "DZNEW is required when SWDISCRVERT = 1"
 
         return self

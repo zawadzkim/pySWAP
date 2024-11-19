@@ -1,6 +1,6 @@
 """Create .crp file for SWAP model.
 
-Similar to the .dra or .swp files, the .crp file is a configuration file for the SWAP model. 
+Similar to the .dra or .swp files, the .crp file is a configuration file for the SWAP model.
 The classes in this module represent distincs sections of the .crp file. The main class is the
 `CropFile` class which holds the settings for the crop simulation.
 
@@ -24,14 +24,24 @@ Warning:
     improve include smoother integration with WOFOST configuration files
     (yaml) and code readability.
 """
-from pydantic import Field
-from ..core import (Table, Arrays, UNITRANGE, DateList, IntList,
-                    YEARRANGE, PySWAPBaseModel, open_file,
-                    SerializableMixin, FileMixin)
+
+from typing import Literal, Self
+
+from pydantic import Field, computed_field, model_validator
+
+from ..core import (
+    UNITRANGE,
+    YEARRANGE,
+    Arrays,
+    DateList,
+    FileMixin,
+    IntList,
+    PySWAPBaseModel,
+    SerializableMixin,
+    Table,
+    open_file,
+)
 from ..irrigation import ScheduledIrrigation
-from typing import Literal, Optional
-from typing_extensions import Self
-from pydantic import model_validator, computed_field
 
 
 class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin):
@@ -80,35 +90,36 @@ class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin):
         swrdc (Literal[0, 1]): Switch for calculation of relative root density
         rdctb (Arrays): root density as function of relative rooting depth
     """
+
     swcf: Literal[1, 2]
-    table_dvs_cf: Optional[Table] = None
-    table_dvs_ch: Optional[Table] = None
-    albedo: Optional[float] = Field(default=None, **UNITRANGE)
-    rsc: Optional[float] = Field(default=None, ge=0.0, le=1.0e6)
-    rsw: Optional[float] = Field(default=None, ge=0.0, le=1.0e6)
+    table_dvs_cf: Table | None = None
+    table_dvs_ch: Table | None = None
+    albedo: float | None = Field(default=None, **UNITRANGE)
+    rsc: float | None = Field(default=None, ge=0.0, le=1.0e6)
+    rsw: float | None = Field(default=None, ge=0.0, le=1.0e6)
     # In WOFOST reference yaml files this is called TSUM1
     tsumea: float = Field(default=None, ge=0.0, le=1.0e4)
     # In WOFOST reference yaml files this is called TSUM2
     tsumam: float = Field(default=None, ge=0.0, le=1.0e4)
     # In SWAP this parameter seems to meen something different than in the
     # WOFOST template. The range of value is the same though.
-    tbase: Optional[float] = Field(default=None, ge=-10.0, le=30.0)
+    tbase: float | None = Field(default=None, ge=-10.0, le=30.0)
     kdif: float = Field(ge=0.0, le=2.0)
     kdir: float = Field(ge=0.0, le=2.0)
-    swrd: Optional[Literal[1, 2, 3]] = None
-    rdtb: Optional[Arrays] = None
+    swrd: Literal[1, 2, 3] | None = None
+    rdtb: Arrays | None = None
     rdi: float = Field(default=None, ge=0.0, le=1000.0)
     rri: float = Field(default=None, ge=0.0, le=100.0)
     rdc: float = Field(default=None, ge=0.0, le=1000.0)
-    swdmi2rd: Optional[Literal[0, 1]] = None
-    rlwtb: Optional[Arrays] = None
+    swdmi2rd: Literal[0, 1] | None = None
+    rlwtb: Arrays | None = None
     wrtmax: float = Field(default=None, ge=0.0, le=1.0e5)
     swrdc: Literal[0, 1] = 0
     rdctb: Arrays
 
 
 class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
-    """Additional settings for the 
+    """Additional settings for the
 
     Warning:
         The validation for this class is not complete. Also check the Optional attributes!
@@ -154,52 +165,55 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
         rdrrtb (Arrays):
         rdrstb (Arrays):
     """
-    idsl: Optional[Literal[0, 1, 2]] = None  # for grass at least
-    dtsmtb: Optional[Arrays] = None   # for grass at least
-    dlo: Optional[float] = Field(default=None, ge=0.0, le=24.0)
-    dlc: Optional[float] = Field(default=None, ge=0.0, le=24.0)
-    vernsat: Optional[float] = Field(default=None, ge=0.0, le=100.0)
-    vernbase: Optional[float] = Field(default=None, ge=0.0, le=100.0)
-    verndvs: Optional[float] = Field(default=None, ge=0.0, le=0.3)
-    verntb: Optional[Arrays] = None
+
+    idsl: Literal[0, 1, 2] | None = None  # for grass at least
+    dtsmtb: Arrays | None = None  # for grass at least
+    dlo: float | None = Field(default=None, ge=0.0, le=24.0)
+    dlc: float | None = Field(default=None, ge=0.0, le=24.0)
+    vernsat: float | None = Field(default=None, ge=0.0, le=100.0)
+    vernbase: float | None = Field(default=None, ge=0.0, le=100.0)
+    verndvs: float | None = Field(default=None, ge=0.0, le=0.3)
+    verntb: Arrays | None = None
     tdwi: float = Field(ge=0.0, le=10_000)
     laiem: float = Field(ge=0.0, le=10)
     rgrlai: float = Field(**UNITRANGE)
-    spa: Optional[float] = Field(**UNITRANGE, default=None)
+    spa: float | None = Field(**UNITRANGE, default=None)
     ssa: float = Field(**UNITRANGE)
     span: float = Field(**YEARRANGE)
     slatb: Arrays
-    eff:  float = Field(ge=0.0, le=10.0)
+    eff: float = Field(ge=0.0, le=10.0)
     amaxtb: Arrays
     tmpftb: Arrays
     tmnftb: Arrays
-    cvo: Optional[float] = Field(
-        **UNITRANGE, default=None)  # for grass at least
+    cvo: float | None = Field(**UNITRANGE, default=None)  # for grass at least
     cvl: float = Field(**UNITRANGE)
     cvr: float = Field(**UNITRANGE)
     cvs: float = Field(**UNITRANGE)
     q10: float = Field(ge=0.0, le=5.0)
     rml: float = Field(**UNITRANGE)
-    rmo: Optional[float] = Field(
-        **UNITRANGE, default=None)  # for grass at least
+    rmo: float | None = Field(**UNITRANGE, default=None)  # for grass at least
     rmr: float = Field(**UNITRANGE)
     rms: float = Field(**UNITRANGE)
     rfsetb: Arrays
     frtb: Arrays
     fltb: Arrays
     fstb: Arrays
-    fotb: Optional[Arrays] = None  # for grass at least
+    fotb: Arrays | None = None  # for grass at least
     perdl: float = Field(ge=0.0, le=3.0)
     rdrrtb: Arrays
     rdrstb: Arrays
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_crop_wofost(self) -> Self:
         # validation of the base class
         if self.swcf == 1:
-            assert self.table_dvs_cf is not None, "table_dvs_cf is required when swcf is 1."
+            assert self.table_dvs_cf is not None, (
+                "table_dvs_cf is required when swcf is 1."
+            )
         elif self.swcf == 2:
-            assert self.table_dvs_ch is not None, "table_dvs_ch is required when swcf is 2."
+            assert self.table_dvs_ch is not None, (
+                "table_dvs_ch is required when swcf is 2."
+            )
             assert self.albedo is not None, "albedo is required when swcf is 2."
             assert self.rsc is not None, "rsc is required when swcf is 2."
             assert self.rsw is not None, "rsw is required when swcf is 2."
@@ -255,18 +269,22 @@ class CropDevelopmentSettingsFixed(CropDevelopmentSettings):
     """
 
     idev: Literal[1, 2]
-    lcc: Optional[int] = Field(default=None, **YEARRANGE)
+    lcc: int | None = Field(default=None, **YEARRANGE)
     swgc: Literal[1, 2]
     gctb: Arrays
-    kytb: Optional[Arrays] = None
+    kytb: Arrays | None = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_crop_fixed(self) -> Self:
         # validation of the base class
         if self.swcf == 1:
-            assert self.table_dvs_cf is not None, "table_dvs_cf is required when swcf is 1."
+            assert self.table_dvs_cf is not None, (
+                "table_dvs_cf is required when swcf is 1."
+            )
         elif self.swcf == 2:
-            assert self.table_dvs_ch is not None, "table_dvs_ch is required when swcf is 2."
+            assert self.table_dvs_ch is not None, (
+                "table_dvs_ch is required when swcf is 2."
+            )
             assert self.albedo is not None, "albedo is required when swcf is 2."
             assert self.rsc is not None, "rsc is required when swcf is 2."
             assert self.rsw is not None, "rsw is required when swcf is 2."
@@ -305,10 +323,11 @@ class CropDevelopmentSettingsGrass(CropDevelopmentSettingsWOFOST):
         tsumdepth (Optional[float]): Life span under leaves under optimum conditions [0..366 d, R]
         tsumtime (Optional[float]): Lower threshold temperature for ageing of leaves [-10..30 degree C, R]
     """
+
     swtsum: Literal[0, 1, 2]
-    tsumtemp: Optional[float] = None
-    tsumdepth: Optional[float] = None
-    tsumtime: Optional[float] = None
+    tsumtemp: float | None = None
+    tsumdepth: float | None = None
+    tsumtime: float | None = None
 
 
 class OxygenStress(PySWAPBaseModel, SerializableMixin):
@@ -356,47 +375,64 @@ class OxygenStress(PySWAPBaseModel, SerializableMixin):
 
     swoxygen: Literal[0, 1, 2]
     swwrtnonox: Literal[0, 1]
-    swoxygentype: Optional[Literal[1, 2]] = None
-    aeratecrit: Optional[float] = Field(default=None, ge=0.0001, le=1.0)
-    hlim1: Optional[float] = Field(default=None, ge=-100.0, le=100.0)
-    hlim2u: Optional[float] = Field(default=None, ge=-1000.0, le=100.0)
-    hlim2l: Optional[float] = Field(default=None, ge=-1000.0, le=100.0)
-    q10_microbial: Optional[float] = Field(default=None, ge=1.0, le=4.0)
-    specific_resp_humus: Optional[float] = Field(default=None, **UNITRANGE)
-    srl: Optional[float] = Field(default=None, ge=0.0, le=1.0e10)
-    swrootradius: Optional[Literal[1, 2]] = None
-    dry_mat_cont_roots: Optional[float] = Field(default=None, **UNITRANGE)
-    air_filled_root_por: Optional[float] = Field(default=None, **UNITRANGE)
-    spec_weight_root_tissue: Optional[float] = Field(
-        default=None, ge=0.0, le=1.0e5)
-    var_a: Optional[float] = Field(default=None, **UNITRANGE)
-    root_radiuso2: Optional[float] = Field(default=None, ge=1.0e-6, le=0.1)
-    q10_root: Optional[float] = Field(default=None, ge=1.0, le=4.0)
-    f_senes: Optional[float] = Field(default=None, **UNITRANGE)
-    c_mroot: Optional[float] = Field(default=None, **UNITRANGE)
-    mrftb: Optional[Arrays] = None
-    wrtb: Optional[Arrays] = None
+    swoxygentype: Literal[1, 2] | None = None
+    aeratecrit: float | None = Field(default=None, ge=0.0001, le=1.0)
+    hlim1: float | None = Field(default=None, ge=-100.0, le=100.0)
+    hlim2u: float | None = Field(default=None, ge=-1000.0, le=100.0)
+    hlim2l: float | None = Field(default=None, ge=-1000.0, le=100.0)
+    q10_microbial: float | None = Field(default=None, ge=1.0, le=4.0)
+    specific_resp_humus: float | None = Field(default=None, **UNITRANGE)
+    srl: float | None = Field(default=None, ge=0.0, le=1.0e10)
+    swrootradius: Literal[1, 2] | None = None
+    dry_mat_cont_roots: float | None = Field(default=None, **UNITRANGE)
+    air_filled_root_por: float | None = Field(default=None, **UNITRANGE)
+    spec_weight_root_tissue: float | None = Field(default=None, ge=0.0, le=1.0e5)
+    var_a: float | None = Field(default=None, **UNITRANGE)
+    root_radiuso2: float | None = Field(default=None, ge=1.0e-6, le=0.1)
+    q10_root: float | None = Field(default=None, ge=1.0, le=4.0)
+    f_senes: float | None = Field(default=None, **UNITRANGE)
+    c_mroot: float | None = Field(default=None, **UNITRANGE)
+    mrftb: Arrays | None = None
+    wrtb: Arrays | None = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_oxygen(self) -> Self:
         if self.swoxygen == 1:
             assert self.hlim1 is not None, "hlim1 is required when swoxygen is 1."
             assert self.hlim2u is not None, "hlim2u is required when swoxygen is 1."
             assert self.hlim2l is not None, "hlim2l is required when swoxygen is 1."
         elif self.swoxygen == 2:
-            assert self.q10_microbial is not None, "q10_microbial is required when swoxygen is 2."
-            assert self.specific_resp_humus is not None, "specific_resp_humus is required when swoxygen is 2."
+            assert self.q10_microbial is not None, (
+                "q10_microbial is required when swoxygen is 2."
+            )
+            assert self.specific_resp_humus is not None, (
+                "specific_resp_humus is required when swoxygen is 2."
+            )
             assert self.srl is not None, "srl is required when swoxygen is 2."
-            assert self.swrootradius is not None, "swrootradius is required when swoxygen is 2."
+            assert self.swrootradius is not None, (
+                "swrootradius is required when swoxygen is 2."
+            )
             if self.swrootradius == 1:
-                assert self.dry_mat_cont_roots is not None, "dry_mat_cont_roots is required when swrootradius is 1."
-                assert self.air_filled_root_por is not None, "air_filled_root_por is required when swrootradius is 1."
-                assert self.spec_weight_root_tissue is not None, "spec_weight_root_tissue is required when swrootradius is 1."
-                assert self.var_a is not None, "var_a is required when swrootradius is 1."
+                assert self.dry_mat_cont_roots is not None, (
+                    "dry_mat_cont_roots is required when swrootradius is 1."
+                )
+                assert self.air_filled_root_por is not None, (
+                    "air_filled_root_por is required when swrootradius is 1."
+                )
+                assert self.spec_weight_root_tissue is not None, (
+                    "spec_weight_root_tissue is required when swrootradius is 1."
+                )
+                assert self.var_a is not None, (
+                    "var_a is required when swrootradius is 1."
+                )
             elif self.swrootradius == 2:
-                assert self.root_radiuso2 is not None, "root_radiuso2 is required when swrootradius is 2."
+                assert self.root_radiuso2 is not None, (
+                    "root_radiuso2 is required when swrootradius is 2."
+                )
         if self.swwrtnonox == 1:
-            assert self.aeratecrit is not None, "aeratecrit is required when swwrtnonox is 1."
+            assert self.aeratecrit is not None, (
+                "aeratecrit is required when swwrtnonox is 1."
+            )
 
         return self
 
@@ -429,27 +465,28 @@ class DroughtStress(PySWAPBaseModel, SerializableMixin):
         criterhr (Optional[float]): Maximum difference of Hroot between iterations; convergence criterium
         taccur (Optional[float]): Maximum absolute difference between simulated and calculated potential transpiration rate
     """
-    swdrought: Literal[1, 2]
-    swjarvis: Optional[Literal[0, 1, 2, 3, 4]] = None
-    alphcrit: Optional[float] = Field(default=None, ge=0.2, le=1.0)
-    hlim3h: Optional[float] = Field(default=None, ge=-1.0e4, le=100.0)
-    hlim3l: Optional[float] = Field(default=None, ge=-1.0e4, le=100.0)
-    hlim4: Optional[float] = Field(default=None, ge=-1.6e4, le=100.0)
-    adcrh: Optional[float] = Field(default=None, ge=0.0, le=5.0)
-    adcrl: Optional[float] = Field(default=None, ge=0.0, le=5.0)
-    wiltpoint: Optional[float] = Field(default=None, ge=-1.0e8, le=-1.0e2)
-    kstem: Optional[float] = Field(default=None, ge=1.0e-10, le=10.0)
-    rxylem: Optional[float] = Field(default=None, ge=1.0e-4, le=1.0)
-    rootradius: Optional[float] = Field(default=None, ge=1.0e-4, le=1.0)
-    kroot: Optional[float] = Field(default=None, ge=1.0e-10, le=1.0e10)
-    rootcoefa: Optional[float] = Field(default=None, **UNITRANGE)
-    swhydrlift: Optional[Literal[0, 1]] = None
-    rooteff: Optional[float] = Field(default=None, **UNITRANGE)
-    stephr: Optional[float] = Field(default=None, ge=0.0, le=10.0)
-    criterhr: Optional[float] = Field(default=None, ge=0.0, le=10.0)
-    taccur: Optional[float] = Field(default=None, ge=1.0e-5, le=1.0e-2)
 
-    @model_validator(mode='after')
+    swdrought: Literal[1, 2]
+    swjarvis: Literal[0, 1, 2, 3, 4] | None = None
+    alphcrit: float | None = Field(default=None, ge=0.2, le=1.0)
+    hlim3h: float | None = Field(default=None, ge=-1.0e4, le=100.0)
+    hlim3l: float | None = Field(default=None, ge=-1.0e4, le=100.0)
+    hlim4: float | None = Field(default=None, ge=-1.6e4, le=100.0)
+    adcrh: float | None = Field(default=None, ge=0.0, le=5.0)
+    adcrl: float | None = Field(default=None, ge=0.0, le=5.0)
+    wiltpoint: float | None = Field(default=None, ge=-1.0e8, le=-1.0e2)
+    kstem: float | None = Field(default=None, ge=1.0e-10, le=10.0)
+    rxylem: float | None = Field(default=None, ge=1.0e-4, le=1.0)
+    rootradius: float | None = Field(default=None, ge=1.0e-4, le=1.0)
+    kroot: float | None = Field(default=None, ge=1.0e-10, le=1.0e10)
+    rootcoefa: float | None = Field(default=None, **UNITRANGE)
+    swhydrlift: Literal[0, 1] | None = None
+    rooteff: float | None = Field(default=None, **UNITRANGE)
+    stephr: float | None = Field(default=None, ge=0.0, le=10.0)
+    criterhr: float | None = Field(default=None, ge=0.0, le=10.0)
+    taccur: float | None = Field(default=None, ge=1.0e-5, le=1.0e-2)
+
+    @model_validator(mode="after")
     def _validate_prepartion(self) -> Self:
         if self.swdrought == 1:
             assert self.hlim3h is not None, "hlim3h is required when swdrought is 1."
@@ -458,16 +495,26 @@ class DroughtStress(PySWAPBaseModel, SerializableMixin):
             assert self.adcrh is not None, "adcrh is required when swdrought is 1."
             assert self.adcrl is not None, "adcrl is required when swdrought is 1."
         if self.swdrought == 2:
-            assert self.wiltpoint is not None, "wiltpoint is required when swdrought is 2."
+            assert self.wiltpoint is not None, (
+                "wiltpoint is required when swdrought is 2."
+            )
             assert self.kstem is not None, "kstem is required when swdrought is 2."
             assert self.rxylem is not None, "rxylem is required when swdrought is 2."
-            assert self.rootradius is not None, "rootradius is required when swdrought is 2."
+            assert self.rootradius is not None, (
+                "rootradius is required when swdrought is 2."
+            )
             assert self.kroot is not None, "kroot is required when swdrought is 2."
-            assert self.rootcoefa is not None, "rootcoefa is required when swdrought is 2."
-            assert self.swhydrlift is not None, "swhydrlift is required when swdrought is 2."
+            assert self.rootcoefa is not None, (
+                "rootcoefa is required when swdrought is 2."
+            )
+            assert self.swhydrlift is not None, (
+                "swhydrlift is required when swdrought is 2."
+            )
             assert self.rooteff is not None, "rooteff is required when swdrought is 2."
             assert self.stephr is not None, "stephr is required when swdrought is 2."
-            assert self.criterhr is not None, "criterhr is required when swdrought is 2."
+            assert self.criterhr is not None, (
+                "criterhr is required when swdrought is 2."
+            )
             assert self.taccur is not None, "taccur is required when swdrought is 2."
 
         return self
@@ -487,18 +534,23 @@ class SaltStress(PySWAPBaseModel, SerializableMixin):
         saltslope (Optional[float]): Decline of root water uptake above threshold
         salthead (Optional[float]): Conversion factor salt concentration (mg/cm3) into osmotic head (cm)
     """
-    swsalinity: Literal[0, 1, 2]
-    saltmax: Optional[float] = Field(default=None, ge=0.0, le=100.0)
-    saltslope: Optional[float] = Field(default=None, **UNITRANGE)
-    salthead: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
 
-    @model_validator(mode='after')
+    swsalinity: Literal[0, 1, 2]
+    saltmax: float | None = Field(default=None, ge=0.0, le=100.0)
+    saltslope: float | None = Field(default=None, **UNITRANGE)
+    salthead: float | None = Field(default=None, ge=0.0, le=1000.0)
+
+    @model_validator(mode="after")
     def _validate_prepartion(self) -> Self:
         if self.swsalinity == 1:
             assert self.saltmax is not None, "saltmax is required when swsalinity is 1."
-            assert self.saltslope is not None, "saltslope is required when swsalinity is 1."
+            assert self.saltslope is not None, (
+                "saltslope is required when swsalinity is 1."
+            )
         elif self.swsalinity == 2:
-            assert self.salthead is not None, "salthead is required when swsalinity is 2."
+            assert self.salthead is not None, (
+                "salthead is required when swsalinity is 2."
+            )
 
         return self
 
@@ -524,19 +576,26 @@ class CompensateRWUStress(PySWAPBaseModel, SerializableMixin):
         alphacrit (Optional[float]): Critical stress index for compensation of root water uptake
         dcritrtz (Optional[float]): Threshold of rootzone thickness after which compensation occurs
     """
-    swcompensate: Literal[0, 1, 2]
-    swstressor: Optional[Literal[1, 2, 3, 4, 5]] = None
-    alphacrit: Optional[float] = Field(default=None, ge=0.2, le=1.0)
-    dcritrtz: Optional[float] = Field(default=None, ge=0.02, le=100.0)
 
-    @model_validator(mode='after')
+    swcompensate: Literal[0, 1, 2]
+    swstressor: Literal[1, 2, 3, 4, 5] | None = None
+    alphacrit: float | None = Field(default=None, ge=0.2, le=1.0)
+    dcritrtz: float | None = Field(default=None, ge=0.02, le=100.0)
+
+    @model_validator(mode="after")
     def _validate_prepartion(self) -> Self:
         if self.swcompensate in [1, 2]:
-            assert self.swstressor is not None, "swstressor is required when swcompensate is 1 or 2."
+            assert self.swstressor is not None, (
+                "swstressor is required when swcompensate is 1 or 2."
+            )
         if self.swcompensate == 1:
-            assert self.alphacrit is not None, "alphacrit is required when swcompensate is 1."
+            assert self.alphacrit is not None, (
+                "alphacrit is required when swcompensate is 1."
+            )
         if self.swcompensate == 2:
-            assert self.dcritrtz is not None, "dcritrtz is required when swcompensate is 2."
+            assert self.dcritrtz is not None, (
+                "dcritrtz is required when swcompensate is 2."
+            )
 
         return self
 
@@ -560,16 +619,19 @@ class Interception(PySWAPBaseModel, SerializableMixin):
             * AVPREC = Average rainfall intensity
             * AVEVAP = Average evaporation intensity during rainfall from a wet canopy
     """
-    swinter: Literal[0, 1, 2]
-    cofab: Optional[float] = Field(default=None, **UNITRANGE)
-    table_intertb: Optional[Table] = None
 
-    @model_validator(mode='after')
+    swinter: Literal[0, 1, 2]
+    cofab: float | None = Field(default=None, **UNITRANGE)
+    table_intertb: Table | None = None
+
+    @model_validator(mode="after")
     def _validate_prepartion(self) -> Self:
         if self.swinter == 1:
             assert self.cofab is not None, "cofab is required when swinter is 1."
         elif self.swinter == 1:
-            assert self.table_intertb is not None, "table_intertb is required when swinter is 2."
+            assert self.table_intertb is not None, (
+                "table_intertb is required when swinter is 2."
+            )
 
         return self
 
@@ -590,18 +652,18 @@ class CO2Correction(PySWAPBaseModel, SerializableMixin):
     """
 
     swco2: Literal[0, 1]
-    atmofil: Optional[str] = None
-    co2amaxtb: Optional[Arrays] = None
-    co2efftb: Optional[Arrays] = None
-    co2tratb: Optional[Arrays] = None
+    atmofil: str | None = None
+    co2amaxtb: Arrays | None = None
+    co2efftb: Arrays | None = None
+    co2tratb: Arrays | None = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_co2correction(self) -> Self:
         if self.swco2 == 1:
-            assert self.atmofil is not None, 'amofil is required when swco2 is 1'
-            assert self.co2amaxtb is not None, 'co2amaxtb is required when swco2 is 1'
-            assert self.co2efftb is not None, 'co2efftb is required when swco2 is 1'
-            assert self.co2tratb is not None, 'co2tratb is required when swco2 is 1'
+            assert self.atmofil is not None, "amofil is required when swco2 is 1"
+            assert self.co2amaxtb is not None, "co2amaxtb is required when swco2 is 1"
+            assert self.co2efftb is not None, "co2efftb is required when swco2 is 1"
+            assert self.co2tratb is not None, "co2tratb is required when swco2 is 1"
 
         return self
 
@@ -645,39 +707,45 @@ class Preparation(PySWAPBaseModel, SerializableMixin):
     swsow: Literal[0, 1]
     swgerm: Literal[0, 1, 2]
     swharv: Literal[0, 1]
-    dvsend: Optional[float] = Field(default=None, ge=0.0, le=3.0)
-    zprep: Optional[float] = Field(default=None, ge=-100.0, le=0.0)
-    hprep: Optional[float] = Field(default=None, ge=-200.0, le=0.0)
-    maxprepdelay: Optional[int] = Field(default=None, ge=1, le=366)
-    zsow: Optional[float] = Field(default=None, ge=-100.0, le=0.0)
-    hsow: Optional[float] = Field(default=None, ge=-200.0, le=0.0)
-    ztempsow: Optional[float] = Field(default=None,  ge=-100.0, le=0.0)
-    tempsow: Optional[float] = Field(default=None, ge=0.0, le=30.0)
-    maxsowdelay: Optional[int] = Field(default=None, ge=1, le=366)
-    tsumemeopt: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
-    tbasem: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
-    teffmx: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
-    hdrygerm: Optional[float] = Field(default=None, ge=-1000.0, le=1000.0)
-    hwetgerm: Optional[float] = Field(default=None, ge=-100.0, le=1000.0)
-    zgerm: Optional[float] = Field(default=None, ge=-100.0, le=1000.0)
-    agerm: Optional[float] = Field(default=None, ge=0.0, le=1000.0)
+    dvsend: float | None = Field(default=None, ge=0.0, le=3.0)
+    zprep: float | None = Field(default=None, ge=-100.0, le=0.0)
+    hprep: float | None = Field(default=None, ge=-200.0, le=0.0)
+    maxprepdelay: int | None = Field(default=None, ge=1, le=366)
+    zsow: float | None = Field(default=None, ge=-100.0, le=0.0)
+    hsow: float | None = Field(default=None, ge=-200.0, le=0.0)
+    ztempsow: float | None = Field(default=None, ge=-100.0, le=0.0)
+    tempsow: float | None = Field(default=None, ge=0.0, le=30.0)
+    maxsowdelay: int | None = Field(default=None, ge=1, le=366)
+    tsumemeopt: float | None = Field(default=None, ge=0.0, le=1000.0)
+    tbasem: float | None = Field(default=None, ge=0.0, le=1000.0)
+    teffmx: float | None = Field(default=None, ge=0.0, le=1000.0)
+    hdrygerm: float | None = Field(default=None, ge=-1000.0, le=1000.0)
+    hwetgerm: float | None = Field(default=None, ge=-100.0, le=1000.0)
+    zgerm: float | None = Field(default=None, ge=-100.0, le=1000.0)
+    agerm: float | None = Field(default=None, ge=0.0, le=1000.0)
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def _validate_prepartion(self) -> Self:
         if self.swprep == 1:
             assert self.zprep is not None, "zprep is required when swprep is 1."
             assert self.hprep is not None, "hprep is required when swprep is 1."
-            assert self.maxprepdelay is not None, "maxprepdelay is required when swprep is 1."
+            assert self.maxprepdelay is not None, (
+                "maxprepdelay is required when swprep is 1."
+            )
 
         if self.swsow == 1:
             assert self.zsow is not None, "zsow is required when swsow is 1."
             assert self.hsow is not None, "hsow is required when swsow is 1."
             assert self.ztempsow is not None, "ztempsow is required when swsow is 1."
             assert self.tempsow is not None, "tempsow is required when swsow is 1."
-            assert self.maxsowdelay is not None, "maxsowdelay is required when swsow is 1."
+            assert self.maxsowdelay is not None, (
+                "maxsowdelay is required when swsow is 1."
+            )
 
         if self.swgerm in (1, 2):
-            assert self.tsumemeopt is not None, "tsumemeopt is required when swgerm is 1 or 2."
+            assert self.tsumemeopt is not None, (
+                "tsumemeopt is required when swgerm is 1 or 2."
+            )
             assert self.tbasem is not None, "tbasem is required when swgerm is 1 or 2."
             assert self.teffmx is not None, "teffmx is required when swgerm is 1 or 2."
         elif self.swgerm == 2:
@@ -753,25 +821,25 @@ class GrasslandManagement(PySWAPBaseModel, SerializableMixin):
 
     seqgrazmow: IntList
     swharvest: Literal[1, 2]
-    dateharvest: Optional[DateList] = None
-    swdmgrz: Optional[Literal[1, 2]] = None
-    dmgrazing: Optional[Arrays] = None
-    dmgrztb: Optional[Arrays] = None
-    maxdaygrz: Optional[int] = None
-    swlossgrz: Optional[Literal[0, 1]] = None
-    tagprest: Optional[float] = None
-    dewrest: Optional[float] = None
-    table_lsda: Optional[Table] = None
-    table_lsdb: Optional[Table] = None
-    swdmmow: Optional[int] = None
-    dmharvest: Optional[float] = None
-    daylastharvest: Optional[int] = None
-    dmlastharvest: Optional[float] = None
-    dmmowtb: Optional[Arrays] = None
-    maxdaymow: Optional[int] = None
-    swlossmow: Optional[int] = None
-    mowrest: Optional[float] = None
-    table_dmmowdelay: Optional[Table] = None
+    dateharvest: DateList | None = None
+    swdmgrz: Literal[1, 2] | None = None
+    dmgrazing: Arrays | None = None
+    dmgrztb: Arrays | None = None
+    maxdaygrz: int | None = None
+    swlossgrz: Literal[0, 1] | None = None
+    tagprest: float | None = None
+    dewrest: float | None = None
+    table_lsda: Table | None = None
+    table_lsdb: Table | None = None
+    swdmmow: int | None = None
+    dmharvest: float | None = None
+    daylastharvest: int | None = None
+    dmlastharvest: float | None = None
+    dmmowtb: Arrays | None = None
+    maxdaymow: int | None = None
+    swlossmow: int | None = None
+    mowrest: float | None = None
+    table_dmmowdelay: Table | None = None
     swpotrelmf: int
     relmf: float
 
@@ -792,15 +860,15 @@ class GrasslandManagement(PySWAPBaseModel, SerializableMixin):
 class CropFile(PySWAPBaseModel, FileMixin):
     """Main class for the .crp file.
 
-    This class collects all the settings for the crop file. Currently the types of the 
+    This class collects all the settings for the crop file. Currently the types of the
     attributes are set to Any because the validation is not yet implemented.
 
     Attributes:
         name (str): Name of the crop
         path (Optional[str]): Path to the .crp file
         prep (Optional[Preparation]): Preparation settings
-        cropdev_settings (Optional[CropDevelopmentSettings | 
-            CropDevelopmentSettingsFixed | 
+        cropdev_settings (Optional[CropDevelopmentSettings |
+            CropDevelopmentSettingsFixed |
             CropDevelopmentSettingsWOFOST]): Crop development settings
         oxygenstress (Optional[OxygenStress]): Oxygen stress settings
         droughtstress (Optional[DroughtStress]): Drought stress settings
@@ -812,22 +880,23 @@ class CropFile(PySWAPBaseModel, FileMixin):
     """
 
     name: str = Field(exclude=True)
-    path: Optional[str] = None
-    prep: Optional[Preparation] = None
-    cropdev_settings: Optional[CropDevelopmentSettings |
-                               CropDevelopmentSettingsFixed |
-                               CropDevelopmentSettingsWOFOST |
-                               CropDevelopmentSettingsGrass] = None
-    oxygenstress: Optional[OxygenStress] = None
-    droughtstress: Optional[DroughtStress] = None
-    saltstress: Optional[SaltStress] = SaltStress(swsalinity=0)
-    compensaterwu: Optional[CompensateRWUStress] = CompensateRWUStress(
-        swcompensate=0)
-    interception: Optional[Interception] = None
-    scheduledirrigation: Optional[ScheduledIrrigation] = ScheduledIrrigation(
-        schedule=0)
-    grasslandmanagement: Optional[GrasslandManagement] = None
-    co2correction: Optional[CO2Correction] = None
+    path: str | None = None
+    prep: Preparation | None = None
+    cropdev_settings: (
+        CropDevelopmentSettings
+        | CropDevelopmentSettingsFixed
+        | CropDevelopmentSettingsWOFOST
+        | CropDevelopmentSettingsGrass
+        | None
+    ) = None
+    oxygenstress: OxygenStress | None = None
+    droughtstress: DroughtStress | None = None
+    saltstress: SaltStress | None = SaltStress(swsalinity=0)
+    compensaterwu: CompensateRWUStress | None = CompensateRWUStress(swcompensate=0)
+    interception: Interception | None = None
+    scheduledirrigation: ScheduledIrrigation | None = ScheduledIrrigation(schedule=0)
+    grasslandmanagement: GrasslandManagement | None = None
+    co2correction: CO2Correction | None = None
 
     @computed_field(return_type=str)
     def content(self):

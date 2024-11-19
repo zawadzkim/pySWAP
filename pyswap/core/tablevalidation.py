@@ -8,8 +8,8 @@ Classes:
     BaseModel: Base class for all pySWAP schemas.
 """
 
-import pandera as pa
 import pandas as pd
+import pandera as pa
 from pandera.typing import DataFrame
 
 

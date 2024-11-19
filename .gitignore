@@ -45,3 +45,8 @@ RD_Erika/
 .data
 .examples
 *.h5
+
+node_modules/
+.ruff_cache/
+.pytest_cache/
+.logs/

@@ -8,10 +8,11 @@ Classes:
     Result: Stores the result of a model run.
 
 """
-from pydantic import BaseModel, ConfigDict, computed_field, Field
-from typing import Optional, List, Dict
-from pandas import DataFrame
+
 import re
+
+from pandas import DataFrame
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 
 
 class Result(BaseModel):
@@ -33,27 +34,25 @@ class Result(BaseModel):
     """
 
     log: str
-    output: Optional[DataFrame] = Field(default=None, repr=False)
-    output_tz: Optional[DataFrame] = Field(default=None, repr=False)
-    output_old: Optional[Dict[str, str]] = Field(default=None, repr=False)
-    warning: Optional[List[str]] = Field(default=None, repr=False)
+    output: DataFrame | None = Field(default=None, repr=False)
+    output_tz: DataFrame | None = Field(default=None, repr=False)
+    output_old: dict[str, str] | None = Field(default=None, repr=False)
+    warning: list[str] | None = Field(default=None, repr=False)
 
     model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-        extra='forbid'
+        arbitrary_types_allowed=True, validate_assignment=True, extra="forbid"
     )
 
     @computed_field(return_type=str)
     def iteration_stats(self):
         """Return the part of the string that describes the iteration statistics."""
-        return re.search(r'.*(Iteration statistics\s*.*)$', self.log, re.DOTALL)[1]
+        return re.search(r".*(Iteration statistics\s*.*)$", self.log, re.DOTALL)[1]
 
     @computed_field(return_type=str)
     def blc_summary(self):
         """Return the .blc file if it exists."""
-        return self.output_old.get('blc') if self.output_old else None
+        return self.output_old.get("blc") if self.output_old else None
 
     def yearly_summary(self):
         """Return yearly sums of all output variables."""
-        return self.output.resample('YE').sum()
+        return self.output.resample("YE").sum()
