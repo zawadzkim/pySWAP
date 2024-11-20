@@ -18,17 +18,13 @@ def _make_hupselbrook():
     simset = ps.GeneralSettings(
         tstart="2002-01-01",
         tend="2004-12-31",
+        extensions=["vap","blc","sba","inc","csv"],
         nprintday=1,
         swerror=1,
         swscre=0,
         swmonth=1,
         swyrvar=0,
         datefix="2004-12-31",
-        swvap=1,
-        swblc=1,
-        swsba=1,
-        swinc=1,
-        swcsv=1,
         inlist_csv=[
             "rain",
             "irrig",
@@ -47,16 +43,17 @@ def _make_hupselbrook():
 
     # %% Meteorology section
 
-    meteo_location = ps.MeteoLocation(
-        lat=52.0,
-        alt=10.0
-    )
+    # meteo_location = ps.MeteoLocation(
+    #     lat=52.0,
+    #     alt=10.0
+    # )
 
-    meteo_data = ps.MetFile(metfil='283.met',
-                            content=testcase.load_met('hupselbrook'))
+    meteo_data = ps.MetFile(metfil="283.met", content=testcase.load_met("hupselbrook"))
 
     meteo = ps.Meteorology(
-        meteo_location=meteo_location,
+        # meteo_location=meteo_location,
+        lat=52.0,
+        alt=10.0,
         swetr=0,
         metfile=meteo_data,
         swdivide=1,

@@ -1,8 +1,8 @@
 import platform
-from datetime import date as d
-from typing import Literal, Self
+from datetime import date
+from typing import Literal, Self, ClassVar, List
 
-from pydantic import Field, model_validator
+from pydantic import Field, model_validator, ConfigDict, field_validator
 
 from ..core import (
     UNITRANGE,
@@ -29,10 +29,10 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
         based on the list of extensions.
 
     Attributes:
-        pathwork (str): Path to the working directory
-        pathatm (str): Path to folder with weather files
-        pathcrop (str): Path to folder with crop files
-        pathdrain (str): Path to folder with drainage files
+        pathwork (str): Path to the working directory. Immutable attribute.
+        pathatm (str): Path to folder with weather files. Immutable attribute.
+        pathcrop (str): Path to folder with crop files. Immutable attribute.
+        pathdrain (str): Path to folder with drainage files. Immutable attribute.
         swscre (Literal[0, 1, 3]): Switch, display progression of simulation
             run to screen
         swerror (Literal[0, 1]): Switch for printing errors to screen
@@ -54,33 +54,10 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
         outfil (str): Generic file name of output files
         swheader (Literal[0, 1]): Print header at the start of each
             balance period
-        swwba (Literal[0, 1]): Switch, output daily water balance
-        swend (Literal[0, 1]): Switch, output end-conditions
-        swvap (Literal[0, 1]): Switch, output soil profiles of moisture,
-            solute and temperature
-        swbal (Literal[0, 1]): Switch, output file with yearly water balance
-        swblc (Literal[0, 1]): Switch, output file with detailed yearly
-            water balance
-        swsba (Literal[0, 1]): Switch, output file of daily solute balance
-        swate (Literal[0, 1]): Switch, output file with soil
-            temperature profiles
-        swbma (Literal[0, 1]): Switch, output file with water fluxes,
-            only for macropore flow
-        swdrf (Literal[0, 1]): Switch, output of drainage fluxes,
-            only for extended drainage
-        swswb (Literal[0, 1]): Switch, output surface water reservoir,
-            only for extended drainage
-        swini (Literal[0, 1]): Switch, output of initial SoilPhysParam and
-            HeatParam
-        swinc (Literal[0, 1]): Switch, output of water balance increments
-        swcrp (Literal[0, 1]): Switch, output of simple or detailed
-            crop growth model
-        swstr (Literal[0, 1]): Switch, output of stress values for wetness,
-            drought, salinity and frost
-        swirg (Literal[0, 1]): Switch, output of irrigation gifts
-        swcsv (Literal[0, 1]): Switch, csv output
-        inlist_csv (Optional[StringList]): list of variables for the csv output
-        swcsv_tz (Literal[0, 1]): Switch, csv output with depth
+        extensions (list): list of file extensions SWAP should return. 
+            Available options are: ["wba", "end", "vap", "bal", "blc", "sba", "ate",
+            "bma", "drf", "swb", "ini", "inc", "crp", "str", "irg", "csv", "csv_tz"]
+        inlist_csv (Optional[StringList]): list of 
         inlist_csv_tz (Optional[StringList]): list of variables for
             the csv tz output
         swafo (Literal[0, 1, 2]): Switch, output file with
@@ -94,15 +71,27 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
         dznew (Optional[FloatList]): Thickness of compartments
     """
 
-    pathwork: String = BASE_PATH
-    pathatm: String = BASE_PATH
-    pathcrop: String = BASE_PATH
-    pathdrain: String = BASE_PATH
+    model_config = ConfigDict(
+        extra="allow",
+        validate_assignment=True
+    )
+
+    _all_extensions: ClassVar[List[str]] = [
+        "wba", "end", "vap", "bal", "blc", "sba", "ate", "bma", "drf", "swb", 
+        "ini", "inc", "crp", "str", "irg", "csv", "csv_tz"
+    ]
+    
+    extensions: List[str] = Field(exclude=True)
+    
+    pathwork: String = Field(default=BASE_PATH, frozen=True)
+    pathatm: String = Field(default=BASE_PATH, frozen=True)
+    pathcrop: String = Field(default=BASE_PATH, frozen=True)
+    pathdrain: String = Field(default=BASE_PATH, frozen=True)
     swscre: Literal[0, 1, 3] = 0
     swerror: Literal[0, 1] = 0
 
-    tstart: d  # convert this to DD-MM-YYYY
-    tend: d  # convert this to DD-MM-YYYY
+    tstart: date  # convert this to DD-MM-YYYY
+    tend: date  # convert this to DD-MM-YYYY
 
     nprintday: int = Field(default=1, ge=1, le=1440)
     swmonth: Literal[0, 1] = 1
@@ -118,24 +107,8 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
 
     outfil: String = "result"
     swheader: Literal[0, 1] = 0
-    swwba: Literal[0, 1] = 0
-    swend: Literal[0, 1] = 0
-    swvap: Literal[0, 1] = 0
-    swbal: Literal[0, 1] = 0
-    swblc: Literal[0, 1] = 0
-    swsba: Literal[0, 1] = 0
-    swate: Literal[0, 1] = 0
-    swbma: Literal[0, 1] = 0
-    swdrf: Literal[0, 1] = 0
-    swswb: Literal[0, 1] = 0
-    swini: Literal[0, 1] = 0
-    swinc: Literal[0, 1] = 0
-    swcrp: Literal[0, 1] = 0
-    swstr: Literal[0, 1] = 0
-    swirg: Literal[0, 1] = 0
-    swcsv: Literal[0, 1] = 1
+
     inlist_csv: StringList | None = None
-    swcsv_tz: Literal[0, 1] = 0
     inlist_csv_tz: StringList | None = None
     swafo: Literal[0, 1, 2] = 0
     swaun: Literal[0, 1, 2] = 0
@@ -143,6 +116,18 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
     swdiscrvert: Literal[0, 1] = 0
     numnodnew: int | None = None
     dznew: FloatList | None = None
+
+    @field_validator('extensions')
+    def validate_extensions(cls, extensions):
+        invalid_extensions = [ext for ext in extensions if ext not in cls._all_extensions]
+        if invalid_extensions:
+            raise ValueError(f"Invalid extensions: {invalid_extensions}")
+        return extensions
+
+    def model_post_init(self, __context):
+        for ext in self._all_extensions:
+            switch_name = f'sw{ext}'
+            setattr(self, switch_name, 1 if ext in self.extensions else 0)
 
     @model_validator(mode="after")
     def _validate_model(self) -> Self:

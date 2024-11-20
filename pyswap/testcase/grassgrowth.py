@@ -19,6 +19,7 @@ def _make_grassgrowth():
     simset = ps.GeneralSettings(
         tstart="1980-01-01",
         tend="1984-12-31",
+        extensions=["csv"],
         nprintday=1,
         swerror=1,
         swmonth=0,
@@ -27,7 +28,6 @@ def _make_grassgrowth():
         swodat=0,
         swyrvar=0,
         datefix="1984-12-31",
-        swcsv=1,
         inlist_csv=["pgrassdm", "grassdm", "pmowdm", "mowdm"],
     )
 
