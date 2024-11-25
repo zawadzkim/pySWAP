@@ -2,10 +2,10 @@ from typing import Literal, Self
 
 from pydantic import model_validator
 
-from ..core import PySWAPBaseModel, SerializableMixin, String, Table
+from ..core import PySWAPBaseModel, SerializableMixin, String, Table, YAMLValidatorMixin
 
 
-class SurfaceFlow(PySWAPBaseModel, SerializableMixin):
+class SurfaceFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Surface flow settings (ponding, runoff and runon).
 
     Attributes:
@@ -36,17 +36,3 @@ class SurfaceFlow(PySWAPBaseModel, SerializableMixin):
     pondmx: float | None = None
     rufil: String | None = None
     table_pondmxtb: Table | None = None
-
-    @model_validator(mode="after")
-    def _validate_surface_flow(self) -> Self:
-        if self.swpondmx == 0:
-            assert self.pondmx is not None, "pondmx is required when swpondmx is 0"
-        else:
-            assert self.table_pondmxtb is not None, (
-                "pondmxtb is required when swpondmx is 1"
-            )
-
-        if self.swrunon == 1:
-            assert self.rufil is not None, "runfil is required when swrunon is 1"
-
-        return self

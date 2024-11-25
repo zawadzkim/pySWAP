@@ -10,9 +10,10 @@ from typing import Literal, Self
 from pydantic import model_validator
 
 from ..core import PySWAPBaseModel, SerializableMixin
+from ..core.mixins import YAMLValidatorMixin
 
 
-class Evaporation(PySWAPBaseModel, SerializableMixin):
+class Evaporation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Evaporation settings.
 
     Attributes:
@@ -43,17 +44,3 @@ class Evaporation(PySWAPBaseModel, SerializableMixin):
     cofredbl: float | None = None
     rsigni: float | None = None
     cofredbo: float | None = None
-
-    @model_validator(mode="after")
-    def _validate_evaporation(self) -> Self:
-        if self.swcfbs:
-            assert self.cfbs is not None, "cfbs is required when swcfbs is True"
-
-        if self.swredu == 1:
-            assert self.cofredbl is not None, "cofredbl is required when swredu is 1"
-            assert self.rsigni is not None, "rsigni is required when swredu is 1"
-
-        elif self.swredu == 2:
-            assert self.cofredbo is not None, "cofredbo is required when swredu is 2"
-
-        return self

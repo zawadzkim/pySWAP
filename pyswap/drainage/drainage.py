@@ -10,11 +10,11 @@ from typing import Literal, Self
 from pydantic import Field, model_validator
 
 from ..core import PySWAPBaseModel
-from ..core.mixins import ComplexSerializableMixin
+from ..core.mixins import ComplexSerializableMixin, YAMLValidatorMixin
 from .drafile import DraFile
 
 
-class Drainage(PySWAPBaseModel, ComplexSerializableMixin):
+class Drainage(PySWAPBaseModel, ComplexSerializableMixin, YAMLValidatorMixin):
     """The lateral drainage settings of the simulation.
 
     Attributes:
@@ -33,13 +33,6 @@ class Drainage(PySWAPBaseModel, ComplexSerializableMixin):
     @property
     def dra(self):
         return self.concat_nested_models(self.drafile)
-
-    @model_validator(mode="after")
-    def _validate_drainage(self) -> Self:
-        if self.swdra > 0:
-            assert self.drafile is not None, "drafile is required when swdra is 1 or 2"
-
-        return self
 
     def write_dra(self, path: str):
         self.drafile.save_file(

@@ -16,11 +16,13 @@ from ..core import (
     StringList,
 )
 
+from pyswap.core.mixins import YAMLValidatorMixin
+
 IS_WINDOWS = platform.system() == "Windows"
 BASE_PATH = ".\\" if IS_WINDOWS else "./"
 
 
-class GeneralSettings(PySWAPBaseModel, SerializableMixin):
+class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """General settings of the simulation.
 
     !!! todo
@@ -129,34 +131,3 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin):
             switch_name = f'sw{ext}'
             setattr(self, switch_name, 1 if ext in self.extensions else 0)
 
-    @model_validator(mode="after")
-    def _validate_model(self) -> Self:
-        if not self.swmonth:
-            assert self.period is not None, "period is required when swmonth is 0"
-            assert self.swres is not None, "swres is required when swmonth is 0"
-            assert self.swodat is not None, "swodat is required when swmonth is 0"
-            if self.swodat:
-                assert self.outdatin is not None, (
-                    "outdatin is required when swodat is 1"
-                )
-
-        if self.swyrvar:
-            assert self.outdat is not None, "outdat is required when svyrvar is 1"
-        else:
-            assert self.datefix is not None, "datefix is required when swyrvar is 0"
-
-        if self.swafo in [1, 2] or self.swaun in [1, 2]:
-            assert self.critdevmasbal is not None, (
-                "critdevmasbal is required when SWAFO = 1 "
-            )
-            "or 2 or SWAUN = 1 or 2"
-            assert self.swdiscrvert, (
-                "SWDISCRVERT is required when SWAFO = 1 or 2 or SWAUN = 1 or 2"
-            )
-        if self.swdiscrvert:
-            assert self.numnodnew is not None, (
-                "NUMNODNEW is required when SWDISCRVERT = 1"
-            )
-            assert self.dznew is not None, "DZNEW is required when SWDISCRVERT = 1"
-
-        return self

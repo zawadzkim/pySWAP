@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class PySWAPBaseModel(BaseModel):
@@ -21,6 +21,14 @@ class PySWAPBaseModel(BaseModel):
     model_config = ConfigDict(
         arbitrary_types_allowed=True, validate_assignment=True, extra="forbid"
     )
+
+    name: Optional[str] = Field(default="", exclude=True)
+
+    @model_validator(mode='after')
+    def set_name(cls, values):
+        if not values.name:
+            values.name = cls.__name__.lower()
+        return values
 
     def model_string(self) -> str:
         """Returns a custom model string representation that matches the

@@ -9,6 +9,7 @@ from typing import Literal, Self
 from pydantic import Field, field_validator, model_validator
 
 from pyswap.core import PySWAPBaseModel, SerializableMixin, String, Table
+from pyswap.core.mixins import YAMLValidatorMixin
 
 
 class BottomBoundaryBase(PySWAPBaseModel, SerializableMixin):

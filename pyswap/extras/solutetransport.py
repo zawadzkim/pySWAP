@@ -7,15 +7,12 @@ Classes:
 from typing import Literal
 
 from ..core import PySWAPBaseModel, SerializableMixin, Table
+from ..core.mixins import YAMLValidatorMixin
 
 
-class SoluteTransport(PySWAPBaseModel, SerializableMixin):
+class SoluteTransport(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """
     Solute transport settings.
-
-    !!! warning
-
-        Validation not yet included in the current release.
 
     Attributes:
         swsolu (Literal[0, 1]):

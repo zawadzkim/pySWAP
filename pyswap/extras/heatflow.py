@@ -9,9 +9,10 @@ from typing import Literal, Self
 from pydantic import model_validator
 
 from ..core import PySWAPBaseModel, SerializableMixin, String, Table
+from ..core.mixins import YAMLValidatorMixin
 
 
-class HeatFlow(PySWAPBaseModel, SerializableMixin):
+class HeatFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Heat flow settings for SWAP simulation.
 
     !!! warning
@@ -66,30 +67,3 @@ class HeatFlow(PySWAPBaseModel, SerializableMixin):
     table_soiltextures: Table | None = None
     table_initsoil: Table | None = None
     table_bbctsoil: Table | None = None
-
-    @model_validator(mode="after")
-    def _check_heatflow(self) -> Self:
-        if self.swhea == 1:
-            assert self.swcalt is not None, "swcalt must be specified if swhea is 1"
-            if self.swcalt == 1:
-                assert self.tampli is not None, (
-                    "tampli must be specified if swcalt is 1"
-                )
-                assert self.tmean is not None, "tmean must be specified if swcalt is 1"
-                assert self.timref is not None, (
-                    "timref must be specified if swcalt is 1"
-                )
-                assert self.ddamp is not None, "ddamp must be specified if swcalt is 1"
-            elif self.swcalt == 2:
-                assert self.table_soiltextures is not None, (
-                    "table_soiltextures must be specified if swcalt is 2"
-                )
-                if self.swtopbhea == 2:
-                    assert self.tsoilfile is not None, (
-                        "tsoilfile must be specified if swtopbhea is 2"
-                    )
-                if self.swbotbhea == 2:
-                    assert self.table_bbctsoil is not None, (
-                        "table_bbctsoil must be specified if swbotbhea is 2"
-                    )
-        return self

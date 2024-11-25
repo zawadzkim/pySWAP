@@ -25,6 +25,8 @@ from ..core import (
     Table,
 )
 
+from ..core.mixins import YAMLValidatorMixin
+
 
 class DraSettings(PySWAPBaseModel, SerializableMixin):
     """General settings for the drainage file
@@ -68,7 +70,7 @@ class DrainageFluxTable(PySWAPBaseModel, SerializableMixin):
     table_qdrntb: Table
 
 
-class DrainageFormula(PySWAPBaseModel, SerializableMixin):
+class DrainageFormula(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Settings for the case when dramet is 2.
 
     Attributes:
@@ -128,7 +130,7 @@ class DrainageFormula(PySWAPBaseModel, SerializableMixin):
         return self
 
 
-class DrainageInfRes(PySWAPBaseModel, SerializableMixin):
+class DrainageInfRes(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Settings for the case when dramet is 3.
 
     Attributes:
@@ -149,20 +151,8 @@ class DrainageInfRes(PySWAPBaseModel, SerializableMixin):
     swtopnrsrf: Literal[0, 1] | None = None
     list_levelfluxes: ObjectList | None = None
 
-    @model_validator(mode="after")
-    def _validate_drainfiltrationres(self) -> Self:
-        if self.swintfl == 1:
-            assert self.cofintflb is not None, (
-                "cofintflb has to be provided if swintfl is 1."
-            )
-            assert self.expintflb is not None, (
-                "expintflb has to be provided if swintfl is 1."
-            )
 
-        return self
-
-
-class Flux(PySWAPBaseModel, SerializableMixin):
+class Flux(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """These objects are needed for the DrainageInfiltrationResitance class.
     Flux object should be created for each level of drainage.
 
@@ -191,13 +181,6 @@ class Flux(PySWAPBaseModel, SerializableMixin):
     zbotdr: float = Field(ge=-1000.0, le=0.0)
     swdtyp: Literal[1, 2]
     table_datowltb: Table
-
-    @model_validator(mode="after")
-    def _validate_flux(self) -> Self:
-        if self.swallo == 1:
-            assert self.l is not None, "l has to be provided if swallo is 1."
-
-        return self
 
     def model_dump(self, **kwargs):
         d = super().model_dump(**kwargs)

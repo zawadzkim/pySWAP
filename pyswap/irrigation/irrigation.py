@@ -13,8 +13,7 @@ from pydantic import Field, model_validator
 from ..core import YEARRANGE, DayMonth, PySWAPBaseModel, SerializableMixin, Table
 from .irgfile import IrgFile
 
-
-class FixedIrrigation(PySWAPBaseModel, SerializableMixin):
+class FixedIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Fixed irrigation settings.
 
     !!! note
@@ -32,20 +31,6 @@ class FixedIrrigation(PySWAPBaseModel, SerializableMixin):
     swirgfil: Literal[0, 1] | None = None
     table_irrigevents: Table | None = None
     irgfile: IrgFile | None = Field(default=None, repr=False)
-
-    @model_validator(mode="after")
-    def _validate_fixed_irrigation(self) -> Self:
-        if self.swirfix == 1:
-            if self.swirgfil:
-                assert self.irgfile is not None, (
-                    "irgfile is required when swirgfil is True"
-                )
-            else:
-                assert self.table_irrigevents is not None, (
-                    "irrigevents is required when swirgfil is False"
-                )
-
-        return self
 
     def write_irg(self, path) -> str:
         self.irgfile.save_file(
