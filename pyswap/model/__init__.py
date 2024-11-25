@@ -4,9 +4,17 @@
 The main subpackage for the SWAP model.
 
 Modules:
-    model: SWAP model class
-    result: SWAP result class
+    model: SWAP model settings.
+    result: SWAP model result.
+    metadata: SWAP model metadata.
 """
 
-from .model import Model
-from .result import Result
+from pyswap.model.metadata import Metadata
+from pyswap.model.model import Model
+from pyswap.model.result import Result
+
+__all__ = [
+    "Metadata",
+    "Model",
+    "Result",
+]

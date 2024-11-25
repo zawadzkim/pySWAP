@@ -24,14 +24,14 @@ Other parameters:
         the elements separated by newlines.
 """
 
-from datetime import date as d
+from datetime import date
 from decimal import Decimal
 from typing import Annotated
 
 from pandas import DataFrame
 from pydantic.functional_serializers import PlainSerializer
 
-from .serializers import (
+from pyswap.core.serializers import (
     serialize_arrays,
     serialize_csv_table,
     serialize_object_list,

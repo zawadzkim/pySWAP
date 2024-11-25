@@ -1,39 +1,22 @@
-from .simsettings import Metadata, GeneralSettings, RichardsSettings, MeteoLocation, ModelLocation
-from .atmosphere import Meteorology, MetFile
-from .boundary import BBCFile, BottomBoundary
-from .core.database import HDF5
-from .drainage import (
-    DraFile,
-    Drainage,
-    DrainageFluxTable,
-    DrainageFormula,
-    DrainageInfRes,
-    DraSettings,
-    Flux,
-)
-from .extras import HeatFlow, SoluteTransport
-from .irrigation import FixedIrrigation, IrgFile, ScheduledIrrigation
-from .model import Model, Result
-from .plant import (
-    CO2Correction,
-    CompensateRWUStress,
-    Crop,
-    CropDevelopmentSettings,
-    CropDevelopmentSettingsFixed,
-    CropDevelopmentSettingsWOFOST,
-    CropFile,
-    DroughtStress,
-    GrasslandManagement,
-    Interception,
-    OxygenStress,
-    Preparation,
-    SaltStress,
-)
-from .simsettings import GeneralSettings, Metadata, RichardsSettings
-from .soilwater import Evaporation, SnowAndFrost, SoilMoisture, SoilProfile, SurfaceFlow
-from .gis.location import Location
 import logging
-from .libs import all_paths
+
+# For the direct access on the package level
+from pyswap.components import *
+from pyswap.gis import *
+from pyswap.model import *
+from pyswap.core.db import *
+
+# for the __all__ variable
+from pyswap import components, gis, model
+from pyswap.core import db
+
+
+__all__ = [                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+    *components.__all__,
+    *gis.__all__,
+    *model.__all__,
+    *db.__all__,
+]
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

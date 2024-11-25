@@ -14,6 +14,8 @@ import re
 from pandas import DataFrame
 from pydantic import BaseModel, ConfigDict, Field, computed_field
 
+__all__ = ["Result"]
+
 
 class Result(BaseModel):
     """Class to store the result of a model run.

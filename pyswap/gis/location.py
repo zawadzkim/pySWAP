@@ -1,8 +1,10 @@
-from ..core import PySWAPBaseModel
-from pydantic import Field, field_validator
-from shapely import Point
-from pyproj import CRS, Transformer
 from decimal import Decimal
+
+from pydantic import Field, field_validator
+from pyproj import CRS, Transformer
+from shapely import Point
+
+from pyswap.core.basemodel import PySWAPBaseModel
 
 
 class Location(PySWAPBaseModel):

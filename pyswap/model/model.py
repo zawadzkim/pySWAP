@@ -4,8 +4,8 @@ Classes:
     Model: Main class that runs the SWAP model.
 """
 
+import logging
 import os
-import platform
 import shutil
 import subprocess
 import tempfile
@@ -16,27 +16,29 @@ from pathlib import Path
 from pandas import read_csv, to_datetime
 from pydantic import Field
 
-from ..atmosphere import Meteorology
-from ..boundary import BottomBoundary
-from ..core import ComplexSerializableMixin, FileMixin, PySWAPBaseModel
-from ..drainage import Drainage
-from ..extras import HeatFlow, SoluteTransport
-from ..irrigation import FixedIrrigation
-from ..plant import Crop
-from ..simsettings import GeneralSettings, Metadata, RichardsSettings
-from ..soilwater import (
+from pyswap.components.boundary import BottomBoundary
+from pyswap.components.crop import Crop
+from pyswap.components.drainage import Drainage
+from pyswap.components.irrigation import FixedIrrigation
+from pyswap.components.meteorology import Meteorology
+from pyswap.components.simsettings import GeneralSettings, RichardsSettings
+from pyswap.components.soilwater import (
     Evaporation,
     SnowAndFrost,
     SoilMoisture,
     SoilProfile,
     SurfaceFlow,
 )
-import logging 
-from .result import Result
-
-IS_WINDOWS = platform.system() == "Windows"
+from pyswap.components.transport import HeatFlow, SoluteTransport
+from pyswap.core import IS_WINDOWS
+from pyswap.core.basemodel import PySWAPBaseModel
+from pyswap.core.mixins import ComplexSerializableMixin, FileMixin
+from pyswap.libs import swap_linux, swap_windows
+from pyswap.model.metadata import Metadata
+from pyswap.model.result import Result
 
 logger = logging.getLogger(__name__)
+__all__ = ["Model"]
 
 
 class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):

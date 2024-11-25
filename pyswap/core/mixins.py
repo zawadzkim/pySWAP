@@ -1,9 +1,11 @@
-import chardet
-
-from .basemodel import PySWAPBaseModel
-from pyswap.libs import VALIDATIONRULES
-from pydantic import model_validator
 from typing import Self
+
+import chardet
+from pydantic import model_validator
+
+from pyswap.core import VALIDATIONRULES
+from pyswap.core.basemodel import PySWAPBaseModel
+
 
 class FileMixin:
     """Saving and readin files.

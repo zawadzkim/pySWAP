@@ -4,6 +4,8 @@ pyswap fields (pyswap.core.utils.fields)
 
 from pandas import DataFrame, DatetimeIndex
 
+from pyswap.core.basemodel import PySWAPBaseModel
+
 
 def serialize_table(table: DataFrame) -> str:
     """Convert the DataFrame to a string.
