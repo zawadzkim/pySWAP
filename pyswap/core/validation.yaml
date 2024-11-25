@@ -164,7 +164,6 @@ GrasslandManagement:
       - dmmowtb
       - table_dmmowdelay
 
-
 Meteorology:
   swetr:
     1:
@@ -285,7 +284,7 @@ SoluteTransport:
       - cpre
       - cdrain
       - swbotbc
-      - swsp  # determines the table_miscellaneous columns contant
+      - swsp # determines the table_miscellaneous columns contant
       - table_miscellaneous
       - ddif
       - tscf
