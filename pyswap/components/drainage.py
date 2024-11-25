@@ -1,35 +1,41 @@
 """
-Compose the .dra file for SWAP simulation.
+## Lateral drainage settings
+
+Settings for the lateral drainage of the .swp file, including the .dra file settings.
 
 Classes:
-    DraFile: Class for the .dra file.
-    DraSettings: Class for the settings of the drainage module.
-    DrainageFluxTable: Class for the drainage flux table.
-    DrainageFormula: Class for the drainage formula.
-    DrainageInfRes: Class for the drainage infiltration resistance.
-    Flux: Class for the flux.
+    DraSettings: General section of the .dra file.
+    DrainageFluxTable: Settings for the case when dramet is 1 in .dra file.
+    DrainageFormula: Settings for the case when dramet is 2 in .dra file.
+    DrainageInfRes: Settings for the case when dramet is 3 in .dra file.
+    Flux: Fluxes between drainage levels in .dra file.
+    DraFile: Drainage file (.dra) settings.
+    Drainage: The lateral drainage settings of .swp file.
 """
 
-from typing import Literal, Self
 
-from pydantic import Field, model_validator
+from typing import Literal
 
-from ..core import (
-    UNITRANGE,
-    FileMixin,
-    FloatList,
-    ObjectList,
-    PySWAPBaseModel,
-    SerializableMixin,
-    String,
-    Table,
-)
+from pydantic import Field
 
-from ..core.mixins import YAMLValidatorMixin
+from pyswap.core.fields import FloatList, ObjectList, String, Table
+from pyswap.core.valueranges import UNITRANGE
+from pyswap.core.mixins import ComplexSerializableMixin, YAMLValidatorMixin, FileMixin, SerializableMixin
+from pyswap.core.basemodel import PySWAPBaseModel
+
+__all__ = [
+    "DraSettings",
+    "DrainageFluxTable",
+    "DrainageFormula",
+    "DrainageInfRes",
+    "Flux",
+    "DraFile",
+    "Drainage",
+]
 
 
 class DraSettings(PySWAPBaseModel, SerializableMixin):
-    """General settings for the drainage file
+    """General section of the .dra file.
 
     Attributes:
         dramet (Literal[1, 2, 3]): Method of lateral drainage calculation
@@ -49,7 +55,6 @@ class DraSettings(PySWAPBaseModel, SerializableMixin):
             * 0 - No adjustment
             * 1 - Adjusment based on depth of top of model discharge
             * 2 - Adjusment based on factor of top of model discharge
-
     """
 
     dramet: Literal[1, 2, 3]
@@ -59,7 +64,7 @@ class DraSettings(PySWAPBaseModel, SerializableMixin):
 
 
 class DrainageFluxTable(PySWAPBaseModel, SerializableMixin):
-    """Settings for the case when dramet is 1.
+    """Settings for the case when dramet is 1 in .dra file.
 
     Attributes:
         lm1 (float): Drain spacing
@@ -71,7 +76,7 @@ class DrainageFluxTable(PySWAPBaseModel, SerializableMixin):
 
 
 class DrainageFormula(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
-    """Settings for the case when dramet is 2.
+    """Settings for the case when dramet is 2 in .dra file.
 
     Attributes:
         lm2 (float): Drain spacing.
@@ -116,22 +121,9 @@ class DrainageFormula(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     kvbot: float | None = Field(default=None, ge=0.0, le=1000.0)
     geofac: float | None = Field(default=None, ge=0.0, le=100.0)
 
-    @model_validator(mode="after")
-    def _validate_draformula(self) -> Self:
-        if self.ipos in [3, 4, 5]:
-            assert self.khbot is not None, "khbot has to be provided if IPOS is 3."
-            assert self.zintf is not None, "zintf has to be provided if IPOS is 3."
-        if self.ipos in [4, 5]:
-            assert self.kvtop is not None, "kvtop has to be provided if IPOS is 3."
-            assert self.kvbot is not None, "kvbot has to be provided if IPOS is 3."
-        if self.ipos == 5:
-            assert self.geofac is not None, "geofac has to be provided if IPOS is 3."
-
-        return self
-
 
 class DrainageInfRes(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
-    """Settings for the case when dramet is 3.
+    """Settings for the case when dramet is 3 in .dra file.
 
     Attributes:
         nrlevs (int): Number of drainage levels.
@@ -153,8 +145,12 @@ class DrainageInfRes(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
 
 class Flux(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
-    """These objects are needed for the DrainageInfiltrationResitance class.
-    Flux object should be created for each level of drainage.
+    """Fluxes between drainage levels in .dra file.
+
+    !!! note
+
+        These objects are needed for the DrainageInfiltrationResitance class.
+        Flux object should be created for each level of drainage.
 
     Attributes:
         level_number (int): Number of the level.
@@ -196,7 +192,7 @@ class Flux(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
 
 class DraFile(PySWAPBaseModel, FileMixin):
-    """Main class representing the drainage file (.dra) for SWAP.
+    """Drainage file (.dra) settings.
 
     Attributes:
         drfil (str): Name of the file.
@@ -211,3 +207,32 @@ class DraFile(PySWAPBaseModel, FileMixin):
     fluxtable: DrainageFluxTable | None = Field(default=None, exclude=True)
     drainageformula: DrainageFormula | None = Field(default=None, exclude=True)
     drainageinfres: DrainageInfRes | None = Field(default=None, exclude=True)
+
+
+class Drainage(PySWAPBaseModel, ComplexSerializableMixin, YAMLValidatorMixin):
+    """The lateral drainage settings of .swp file.
+
+    Attributes:
+        swdra (Literal[0, 1, 2]): Switch for lateral drainage.
+
+            * 0 - No drainage.
+            * 1 - Simulate with a basic drainage routine.
+            * 2 - Simulate with surface water management.
+
+        drafile (Optional[Any]): Content of the drainage file.
+    """
+
+    swdra: Literal[0, 1, 2]
+    drafile: DraFile | None = Field(default=None)
+
+    @property
+    def dra(self):
+        return self.concat_nested_models(self.drafile)
+
+    def write_dra(self, path: str):
+        self.drafile.save_file(
+            string=self.dra, extension="dra", fname=self.drafile.drfil, path=path
+        )
+
+        print("dra file saved.")
+

@@ -1,23 +1,47 @@
-""" "
+"""
 Irrigation settings for the SWAP simuluation.
 
 Classes:
+    IrgFile: The irrigation file.
     FixedIrrigation: Fixed irrigation settings.
     ScheduledIrrigation: Irrigation scheduling settings.
+    IRRIGATION: Information for each fixed irrigation event.
+
+Functions:
+    irg_from_csv: Load the irrigation file from a CSV file.
 """
 
 from typing import Literal, Self
 
+from pandas import DataFrame, read_csv
+import pandera as pa
+from pandera.typing import Series
 from pydantic import Field, model_validator
 
-from ..core import YEARRANGE, DayMonth, PySWAPBaseModel, SerializableMixin, Table
-from .irgfile import IrgFile
+from pyswap.core.basemodel import PySWAPBaseModel
+from pyswap.core.mixins import FileMixin, YAMLValidatorMixin, SerializableMixin
+from pyswap.core.fields import DayMonth, Table, String
+from pyswap.core.basemodel import BaseTableModel
+from pyswap.core.valueranges import YEARRANGE
+
+
+__all__ = ["IrgFile", "FixedIrrigation", "ScheduledIrrigation", "IRRIGATION"]
+
+
+class IrgFile(PySWAPBaseModel, FileMixin):
+    """The irrigation file.
+
+    Attributes:
+        irgfil (str): the name of the irgfile without .irg extension.
+        content (DataFrame): The content of the irrigation file.
+    """
+
+    irgfil: String
+    content: DataFrame = Field(exclude=True)
+
 
 class FixedIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
-    """Fixed irrigation settings.
-
-    !!! note
-        This class is only used in the .swp file.
+    """Fixed irrigation settings in the .swp file.
 
     Attributes:
         swirfix (Literal[0, 1]): Switch for fixed irrigation applications
@@ -42,13 +66,10 @@ class FixedIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
 
 class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin):
-    """Irrigation scheduling settings.
+    """Irrigation scheduling settings in the .crp file..
 
     !!! warning
         The docstring needs to be updated.
-
-    !!! note
-        This class is only used in the .crp file.
 
     Attributes:
         schedule (Literal[0, 1]): Switch for application irrigation scheduling
@@ -96,6 +117,7 @@ class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin):
     cirrs: float | None = Field(default=None, ge=0.0, le=100.0)
     isuas: Literal[0, 1] | None = None
     tcs: Literal[1, 2, 3, 4, 6, 7, 8] | None = None
+
     phfieldcapacity: float | None = Field(default=None, ge=-1000.0, le=0.0)
     irgthreshold: float | None = Field(default=None, ge=0.0, le=20.0)
     dcrit: float | None = Field(default=None, ge=-100.0, le=0.0)
@@ -138,3 +160,36 @@ class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin):
                 )
 
         return self
+
+
+def irg_from_csv(irgfil: str, path: str) -> IrgFile:
+    """Load the irrigation file from a CSV file.
+
+    Parameters:
+        irgfil (str): the name of the irgfile without .irg extension.
+        path (str): The path to the CSV file.
+
+    Returns:
+        IrgFile: The irrigation file.
+    """
+    return IrgFile(content=read_csv(path), irgfil=irgfil)
+
+
+class IRRIGATION(BaseTableModel):
+    """information for each fixed irrigation event.
+
+    Attributes:
+        IRDATE (Series[datetime]):date of irrigation.
+        IRDEPTH (Series[float]): amount of water [0..1000 mm, R].
+        IRCONC (Series[float]): concentration of irrigation water [0..1000 mg/cm3, R].
+        IRTYPE (Series[int]): type of irrigation
+
+            * 0 - sprinkling
+            * 1 - surface
+
+    """
+
+    IRDATE: Series[pa.DateTime]  # type: ignore
+    IRDEPTH: Series[float] = pa.Field(ge=0.0, le=1000.0)
+    IRCONC: Series[float] = pa.Field(ge=0.0, le=1000.0)
+    IRTYPE: Series[int] = pa.Field(ge=0, le=1)

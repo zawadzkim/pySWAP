@@ -1,25 +1,15 @@
-import platform
 from datetime import date
-from typing import Literal, Self, ClassVar, List
+from typing import ClassVar, Literal
 
-from pydantic import Field, model_validator, ConfigDict, field_validator
+from pydantic import ConfigDict, Field, field_validator
 
-from ..core import (
-    UNITRANGE,
-    YEARRANGE,
-    DateList,
-    DayMonth,
-    FloatList,
-    PySWAPBaseModel,
-    SerializableMixin,
-    String,
-    StringList,
-)
+from pyswap.core import BASE_PATH
+from pyswap.core.basemodel import PySWAPBaseModel
+from pyswap.core.mixins import YAMLValidatorMixin, SerializableMixin
+from pyswap.core.fields import String, StringList, FloatList, DateList, DayMonth
+from pyswap.core.valueranges import UNITRANGE, YEARRANGE
 
-from pyswap.core.mixins import YAMLValidatorMixin
-
-IS_WINDOWS = platform.system() == "Windows"
-BASE_PATH = ".\\" if IS_WINDOWS else "./"
+__all__ = ["GeneralSettings", "RichardsSettings"]
 
 
 class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
@@ -56,10 +46,10 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         outfil (str): Generic file name of output files
         swheader (Literal[0, 1]): Print header at the start of each
             balance period
-        extensions (list): list of file extensions SWAP should return. 
+        extensions (list): list of file extensions SWAP should return.
             Available options are: ["wba", "end", "vap", "bal", "blc", "sba", "ate",
             "bma", "drf", "swb", "ini", "inc", "crp", "str", "irg", "csv", "csv_tz"]
-        inlist_csv (Optional[StringList]): list of 
+        inlist_csv (Optional[StringList]): list of
         inlist_csv_tz (Optional[StringList]): list of variables for
             the csv tz output
         swafo (Literal[0, 1, 2]): Switch, output file with
@@ -73,18 +63,30 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         dznew (Optional[FloatList]): Thickness of compartments
     """
 
-    model_config = ConfigDict(
-        extra="allow",
-        validate_assignment=True
-    )
+    model_config = ConfigDict(extra="allow", validate_assignment=True)
 
-    _all_extensions: ClassVar[List[str]] = [
-        "wba", "end", "vap", "bal", "blc", "sba", "ate", "bma", "drf", "swb", 
-        "ini", "inc", "crp", "str", "irg", "csv", "csv_tz"
+    _all_extensions: ClassVar[list[str]] = [
+        "wba",
+        "end",
+        "vap",
+        "bal",
+        "blc",
+        "sba",
+        "ate",
+        "bma",
+        "drf",
+        "swb",
+        "ini",
+        "inc",
+        "crp",
+        "str",
+        "irg",
+        "csv",
+        "csv_tz",
     ]
-    
-    extensions: List[str] = Field(exclude=True)
-    
+
+    extensions: list[str] = Field(exclude=True)
+
     pathwork: String = Field(default=BASE_PATH, frozen=True)
     pathatm: String = Field(default=BASE_PATH, frozen=True)
     pathcrop: String = Field(default=BASE_PATH, frozen=True)
@@ -119,15 +121,44 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     numnodnew: int | None = None
     dznew: FloatList | None = None
 
-    @field_validator('extensions')
+    @field_validator("extensions")
     def validate_extensions(cls, extensions):
-        invalid_extensions = [ext for ext in extensions if ext not in cls._all_extensions]
+        invalid_extensions = [
+            ext for ext in extensions if ext not in cls._all_extensions
+        ]
         if invalid_extensions:
             raise ValueError(f"Invalid extensions: {invalid_extensions}")
         return extensions
 
     def model_post_init(self, __context):
         for ext in self._all_extensions:
-            switch_name = f'sw{ext}'
+            switch_name = f"sw{ext}"
             setattr(self, switch_name, 1 if ext in self.extensions else 0)
 
+
+class RichardsSettings(PySWAPBaseModel, SerializableMixin):
+    """Settings for the Richards' equation.
+
+    Attributes:
+        swkmean (int): Switch for averaging method of hydraulic conductivity
+        swkimpl (Literal[0, 1]): Switch for updating hydraulic conductivity during iteration
+        dtmin (float): Minimum timestep
+        dtmax (float): Maximum timestep
+        gwlconv (float): Maximum difference of groundwater level between time steps
+        critdevh1cp (float): Maximum relative difference in pressure heads per compartment
+        critdevh2cp (float): Maximum absolute difference in pressure heads per compartment
+        critdevponddt (float): Maximum water balance error of ponding layer
+        maxit (int): Maximum number of iteration cycles
+        maxbacktr (int): Maximum number of back track cycles within an iteration cycle
+    """
+
+    swkmean: int
+    swkimpl: Literal[0, 1]
+    dtmin: float = 0.000001
+    dtmax: float = 0.04
+    gwlconv: float = 100.0
+    critdevh1cp: float = 0.01
+    critdevh2cp: float = 0.1
+    critdevponddt: float = 0.0001
+    maxit: int = 30
+    maxbacktr: int = 3

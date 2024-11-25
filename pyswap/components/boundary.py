@@ -1,18 +1,18 @@
-"""Because the boudary condition section in the swp file is the same as
-the optional file output, except a couple of attributes and some functionality,
-it made sense to create a base class. Due to some circular import issues,
-it could not be in neither of the existing modules."""
+from pyswap.core.basemodel import PySWAPBaseModel
+from pyswap.core.fields import String, Table
+from pyswap.core.mixins import YAMLValidatorMixin, FileMixin, SerializableMixin
+
+
+from pydantic import Field, field_validator, model_validator
+
 
 from decimal import Decimal
 from typing import Literal, Self
 
-from pydantic import Field, field_validator, model_validator
-
-from pyswap.core import PySWAPBaseModel, SerializableMixin, String, Table
-from pyswap.core.mixins import YAMLValidatorMixin
+__all__ = ["BottomBoundary", "BBCFile"]
 
 
-class BottomBoundaryBase(PySWAPBaseModel, SerializableMixin):
+class BottomBoundaryBase(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """
     Bottom boundary settings for SWAP model.
 
@@ -187,3 +187,37 @@ class BottomBoundaryBase(PySWAPBaseModel, SerializableMixin):
     )
     def set_decimals(cls, v):
         return v.quantize(Decimal("0.00"))
+
+
+class BBCFile(BottomBoundaryBase, FileMixin):
+    """Bottom boundary file.
+
+    All attributes are the same as in the BottomBOundaryBase. There
+    is an additional property allowing to save the content to a file.
+    """
+
+
+class BottomBoundary(BottomBoundaryBase):
+    """Bottom boundary condition settings in the swp file.
+
+    Attributes:
+        swbbcfile (Literal[0, 1]): Switch for file with bottom boundary data:
+
+            * 0 - data are specified in current file
+            * 1 - data are specified in separate file
+
+
+        bbcfile (Optional[BBCFile]): the BBCFile object.
+    """
+
+    swbbcfile: Literal[0, 1]
+    bbcfile: BBCFile | None = None
+
+    @property
+    def bbc(self):
+        return "".join(self.bbcfile.concat_attributes())
+
+    def write_bbc(self, path: str):
+        self.bbcfile.save_file(
+            string=self.bbc, extension="bbc", fname=self.bbcfil, path=path
+        )
