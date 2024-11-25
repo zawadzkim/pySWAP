@@ -1,20 +1,14 @@
 from importlib import resources
 from importlib.abc import Traversable
-import yaml
-from pathlib import Path
 
-all_paths: Traversable = resources.files(__name__)
-"""The whole directory of test groundwater sensor data."""
+libs: Traversable = resources.files(__name__)
+"""Libs module directory."""
 
-crop_params: Traversable = all_paths / "WOFOST_crop_parameters"
+swap_linux: Traversable = libs / "swap420-linux" / "swap420"
+"""The directory of the SWAP420 Linux executable."""
+
+swap_windows: Traversable = libs / "swap420-exe" / "swap420.exe"
+"""The directory of the SWAP420 Windows executable."""
+
+crop_params: Traversable = libs / "WOFOST_crop_parameters"
 """The directory of WOFOST crop parameters."""
-
-RULES_FILE = all_paths / "validation.yaml"
-"""The path to the validation rules file."""
-
-def load_validation_rules():
-    """Load validation rules from the YAML file."""
-    with open(RULES_FILE, "r") as file:
-        return yaml.safe_load(file)
-
-VALIDATIONRULES = load_validation_rules()
