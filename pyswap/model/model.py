@@ -31,9 +31,12 @@ from ..soilwater import (
     SoilProfile,
     SurfaceFlow,
 )
+import logging 
 from .result import Result
 
 IS_WINDOWS = platform.system() == "Windows"
+
+logger = logging.getLogger(__name__)
 
 
 class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):

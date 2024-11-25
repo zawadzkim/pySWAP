@@ -2,12 +2,15 @@
 
 import pickle
 from typing import Literal
+import logging
 
 import h5py
 import numpy as np
 from pydantic import BaseModel, Field, computed_field
 
 from pyswap.model import Model, Result
+
+logger = logging.getLogger(__name__)
 
 
 class HDF5(BaseModel):
@@ -27,8 +30,8 @@ class HDF5(BaseModel):
             try:
                 f.create_group(group_name)
             except ValueError:
-                raise ValueError(
-                    f"Cannot create group {group_name}. It may already exist. If you want to overwrite it, set overwrite=True."
+                logger.warning(
+                    f"Cannot create group {group_name}. It may already exist. Skipping creation."
                 )
         return f[group_name]
 
@@ -64,8 +67,8 @@ class HDF5(BaseModel):
                 pickle_data = pickle.dumps(data)
                 group.create_dataset(name, data=np.void(pickle_data))
             except ValueError:
-                raise ValueError(
-                    f"Cannot create dataset {name}. It may already exist. If you want to overwrite it, set overwrite=True."
+                logger.warning(
+                    f"Cannot create dataset {name}. It may already exist. Skipping creation."
                 )
 
         with h5py.File(self.filename, "a") as f:
