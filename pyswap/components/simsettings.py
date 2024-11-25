@@ -62,7 +62,6 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         numnodnew (Optional[int]): New number of nodes
         dznew (Optional[FloatList]): Thickness of compartments
     """
-
     model_config = ConfigDict(extra="allow", validate_assignment=True)
 
     _all_extensions: ClassVar[list[str]] = [
@@ -85,7 +84,7 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         "csv_tz",
     ]
 
-    extensions: list[str] = Field(exclude=True)
+    extensions: list[str] = Field(default_factory=list, exclude=True)
 
     pathwork: String = Field(default=BASE_PATH, frozen=True)
     pathatm: String = Field(default=BASE_PATH, frozen=True)
@@ -94,17 +93,15 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     swscre: Literal[0, 1, 3] = 0
     swerror: Literal[0, 1] = 0
 
-    tstart: date  # convert this to DD-MM-YYYY
-    tend: date  # convert this to DD-MM-YYYY
+    tstart: date
+    tend: date
 
     nprintday: int = Field(default=1, ge=1, le=1440)
     swmonth: Literal[0, 1] = 1
     swyrvar: Literal[0, 1] = 0
-    # if swmonth is 0
     period: int | None = Field(default=None, **YEARRANGE)
     swres: Literal[0, 1] | None = None
     swodat: Literal[0, 1] | None = None
-    # if swyrvar is 1
     outdatin: DateList | None = None
     datefix: DayMonth | None = None
     outdat: DateList | None = None
@@ -130,10 +127,33 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
             raise ValueError(f"Invalid extensions: {invalid_extensions}")
         return extensions
 
-    def model_post_init(self, __context):
+    def model_post_init(self, __context=None):
         for ext in self._all_extensions:
             switch_name = f"sw{ext}"
             setattr(self, switch_name, 1 if ext in self.extensions else 0)
+
+    def add_extension(self, extension: str):
+        """
+        Add a new extension to the list and trigger updates.
+        """
+        if extension not in self._all_extensions:
+            raise ValueError(f"Invalid extension: {extension}")
+        if extension not in self.extensions:
+            new_instance = self.model_copy(deep=True)
+            new_instance.extensions.append(extension)
+            new_instance.model_post_init()
+            return new_instance
+
+    def remove_extension(self, extension: str):
+        """
+        Remove an extension from the list and trigger updates.
+        """
+        if extension not in self.extensions:
+            raise ValueError(f"Extension '{extension}' is not in the list.")
+        new_instance = self.model_copy(deep=True)
+        new_instance.extensions.remove(extension)
+        new_instance.model_post_init()
+        return new_instance
 
 
 class RichardsSettings(PySWAPBaseModel, SerializableMixin):
