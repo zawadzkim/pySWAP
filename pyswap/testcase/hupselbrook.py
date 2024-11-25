@@ -1,7 +1,15 @@
 from datetime import date as dt
 
+# %%
 import pyswap as ps
+import pyswap.components.boundary
+import pyswap.components.crop
+import pyswap.components.drainage
+import pyswap.components.meteorology
+import pyswap.components.soilwater
 from pyswap import testcase
+
+# %%
 
 
 def _make_hupselbrook():
@@ -18,7 +26,7 @@ def _make_hupselbrook():
     simset = ps.GeneralSettings(
         tstart="2002-01-01",
         tend="2004-12-31",
-        extensions=["vap","blc","sba","inc","csv"],
+        extensions=["vap", "blc", "sba", "inc", "csv"],
         nprintday=1,
         swerror=1,
         swscre=0,
@@ -43,15 +51,13 @@ def _make_hupselbrook():
 
     # %% Meteorology section
 
-    meteo_location = ps.Location(
-        lat=52.0,
-        lon=21.0,
-        alt=10.0
+    meteo_location = ps.Location(lat=52.0, lon=21.0, alt=10.0)
+
+    meteo_data = pyswap.components.meteorology.MetFile(
+        metfil="283.met", content=testcase.load_met("hupselbrook")
     )
 
-    meteo_data = ps.MetFile(metfil="283.met", content=testcase.load_met("hupselbrook"))
-
-    meteo = ps.Meteorology(
+    meteo = pyswap.components.meteorology.Meteorology(
         meteo_location=meteo_location,
         swetr=0,
         metfile=meteo_data,
@@ -61,32 +67,33 @@ def _make_hupselbrook():
         angstroma=0.25,
         angstromb=0.5,
     )
+
     # %% Creating the .crp file for maize (fixed crop)
 
-    maize_prep = ps.plant.Preparation(swprep=0, swsow=0, swgerm=0, dvsend=3.0, swharv=0)
+    maize_prep = ps.Preparation(swprep=0, swsow=0, swgerm=0, dvsend=3.0, swharv=0)
 
     scheduled_irrigation = ps.ScheduledIrrigation(schedule=0)
 
     DVS = [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
 
-    maize_gctb = ps.plant.GCTB.create({
+    maize_gctb = ps.GCTB.create({
         "DVS": DVS,
         "LAI": [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20],
     })
 
-    maize_chtb = ps.plant.CHTB.create({
+    maize_chtb = ps.CHTB.create({
         "DVS": DVS,
         "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
     })
 
-    maize_rdtb = ps.plant.RDTB.create({
+    maize_rdtb = ps.RDTB.create({
         "DVS": [0.0, 0.3, 0.5, 0.7, 1.0, 2.0],
         "RD": [5.0, 20.0, 50.0, 80.0, 90.0, 100.0],
     })
 
-    maize_rdctb = ps.plant.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
+    maize_rdctb = ps.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
 
-    maize_cropdev_settings = ps.plant.CropDevelopmentSettingsFixed(
+    maize_cropdev_settings = ps.CropDevelopmentSettingsFixed(
         idev=1,
         lcc=168,
         kdif=0.6,
@@ -103,7 +110,7 @@ def _make_hupselbrook():
         rdctb=maize_rdctb,
     )
 
-    maize_ox_stress = ps.plant.OxygenStress(
+    maize_ox_stress = ps.OxygenStress(
         swoxygen=1,
         swwrtnonox=0,
         aeratecrit=0.5,
@@ -112,7 +119,7 @@ def _make_hupselbrook():
         hlim2l=-30.0,
     )
 
-    maize_dr_stress = ps.plant.DroughtStress(
+    maize_dr_stress = ps.DroughtStress(
         swdrought=1,
         hlim3h=-325.0,
         hlim3l=-600.0,
@@ -122,9 +129,9 @@ def _make_hupselbrook():
     )
 
     # serves both, Fixed crop and WOFOST
-    maize_interception = ps.plant.Interception(swinter=1, cofab=0.25)
+    maize_interception = ps.Interception(swinter=1, cofab=0.25)
 
-    crpmaize = ps.plant.CropFile(
+    crpmaize = ps.CropFile(
         name="maizes",
         prep=maize_prep,
         scheduledirrigation=scheduled_irrigation,
@@ -136,7 +143,7 @@ def _make_hupselbrook():
 
     # %% Creating .crp file for potato (WOFOST)
 
-    potato_prep = ps.Preparation(
+    potato_prep = pyswap.components.crop.Preparation(
         swprep=0,
         swsow=0,
         swgerm=2,
@@ -151,7 +158,7 @@ def _make_hupselbrook():
         swharv=0,
     )
 
-    potato_chtb = ps.plant.CHTB.create({
+    potato_chtb = ps.CHTB.create({
         "DVS": [0.0, 1.0, 2.0],
         "CH": [
             1.0,
@@ -160,104 +167,115 @@ def _make_hupselbrook():
         ],
     })
 
-    potato_dtsmtb = ps.plant.DTSMTB.create({
+    # Available in potato.yaml
+    potato_dtsmtb = ps.DTSMTB.create({
         "TAV": [0.0, 2.0, 13.0, 30.0],
         "DTSM": [0.0, 0.0, 11.0, 28.0],
     })
 
-    potato_slatb = ps.plant.SLATB.create({
+    # Available in potato.yaml
+    potato_slatb = ps.SLATB.create({
         "DVS": [0.0, 1.1, 2.0],
         "SLA": [0.0030, 0.0030, 0.0015],
     })
 
-    potato_amaxtb = ps.plant.AMAXTB.create({
+    # Available in potato.yaml
+    potato_amaxtb = ps.AMAXTB.create({
         "DVS": [0.0, 1.57, 2.0],
         "AMAX": [30.0, 30.0, 0.0],
     })
 
-    potato_tmpftb = ps.plant.TMPFTB.create({
+    # Available in potato.yaml
+    potato_tmpftb = ps.TMPFTB.create({
         "tavd": [0.0, 3.0, 10.0, 15.0, 20.0, 26.0, 33.0],
         "tmpf": [0.01, 0.01, 0.75, 1.00, 1.00, 0.75, 0.01],
     })
 
-    potato_tmnftb = ps.plant.TMNFTB.create({"TMNR": [0.0, 3.0], "TMNF": [0.0, 1.0]})
+    # Available in potato.yaml
+    potato_tmnftb = ps.TMNFTB.create({"TMNR": [0.0, 3.0], "TMNF": [0.0, 1.0]})
 
-    potato_rfsetb = ps.plant.RFSETB.create({"DVS": [0.0, 2.0], "RFSE": [1.0, 1.0]})
+    # Available in potato.yaml
+    potato_rfsetb = ps.RFSETB.create({"DVS": [0.0, 2.0], "RFSE": [1.0, 1.0]})
 
-    potato_frtb = ps.plant.FRTB.create({
+    # Available in potato.yaml
+    potato_frtb = ps.FRTB.create({
         "DVS": [0.00, 1.00, 1.36, 2.00],
         "FR": [0.2, 0.2, 0.0, 0.0],
     })
 
-    potato_fltb = ps.plant.FLTB.create({
+    # Available in potato.yaml
+    potato_fltb = ps.FLTB.create({
         "DVS": [0.00, 1.00, 1.27, 1.36, 2.00],
         "FL": [0.8, 0.8, 0.0, 0.0, 0.0],
     })
 
-    potato_fstb = ps.plant.FSTB.create({
+    # Available in potato.yaml
+    potato_fstb = ps.FSTB.create({
         "DVS": [0.00, 1.00, 1.27, 1.36, 2.00],
         "FS": [0.20, 0.20, 0.25, 0.00, 0.00],
     })
 
-    potato_fotb = ps.plant.FOTB.create({
+    # Available in potato.yaml
+    potato_fotb = ps.FOTB.create({
         "DVS": [0.00, 1.00, 1.27, 1.36, 2.00],
         "FO": [0.00, 0.00, 0.75, 1.00, 1.00],
     })
 
-    potato_rdrrtb = ps.plant.RDRRTB.create({
+    # Available in potato.yaml
+    potato_rdrrtb = ps.RDRRTB.create({
         "DVS": [0.0000, 1.5000, 1.5001, 2.0000],
         "RDRR": [0.00, 0.00, 0.02, 0.02],
     })
-
-    potato_rdrstb = ps.plant.RDRSTB.create({
+    # Available in potato.yaml
+    potato_rdrstb = ps.RDRSTB.create({
         "DVS": [0.0000, 1.5000, 1.5001, 2.0000],
         "RDRS": [0.00, 0.00, 0.02, 0.02],
     })
 
-    potato_rdctb = ps.plant.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
-
-    potato_cropdev_settings = ps.CropDevelopmentSettingsWOFOST(
+    # Available in potato.yaml
+    potato_rdctb = ps.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
+    potato_cropdev_settings = pyswap.components.crop.CropDevelopmentSettingsWOFOST(
         swcf=2,
         table_dvs_ch=potato_chtb,
         albedo=0.19,
         rsc=207.0,
         rsw=0.0,
-        idsl=0,
-        tsumea=150.0,
-        tsumam=1550.0,
+        idsl=0,  # Available in potato.yaml
+        tsumea=150.0,  # TSUMEM available in potato.yaml
+        tsumam=1550.0,  # TSUMEM available in potato.yaml
         dtsmtb=potato_dtsmtb,
-        tdwi=75.0,
+        tdwi=75.0,  # Available in potato.yaml
         laiem=0.0589,
-        rgrlai=0.012,
-        spa=0.0,
-        ssa=0.0,
-        span=37.0,
-        tbase=2.0,
+        rgrlai=0.012,  # Available in potato.yaml
+        spa=0.0,  # Available in potato.yaml
+        ssa=0.0,  # Available as table SSATB (SSA/DVS) in potato.yaml
+        span=37.0,  # Available in potato.yaml
+        tbase=2.0,  # Available in potato.yaml
         slatb=potato_slatb,
-        kdif=1.0,
+        kdif=1.0,  # Available as table KDIFTB (SSA/DVS) in potato.yaml
         kdir=0.75,
-        eff=0.45,
+        eff=0.45,  # Available as table EFFTB (SSA/DVS) in potato.yaml
         amaxtb=potato_amaxtb,
         tmpftb=potato_tmpftb,
         tmnftb=potato_tmnftb,
-        cvl=0.72,
-        cvo=0.85,
-        cvr=0.72,
-        cvs=0.69,
-        q10=2.0,
-        rml=0.03,
-        rmo=0.0045,
-        rmr=0.01,
-        rms=0.015,
+        cvl=0.72,  # Available in potato.yaml
+        cvo=0.85,  # Available in potato.yaml
+        cvr=0.72,  # Available in potato.yaml
+        cvs=0.69,  # Available in potato.yaml
+        q10=2.0,  # Available in potato.yaml
+        rml=0.03,  # Available in potato.yaml
+        rmo=0.0045,  # Available in potato.yaml
+        rmr=0.01,  # Available in potato.yamlg
+        rms=0.015,  # Available in potato.yaml
         rfsetb=potato_rfsetb,
         frtb=potato_frtb,
         fltb=potato_fltb,
         fstb=potato_fstb,
         fotb=potato_fotb,
-        perdl=0.03,
+        perdl=0.03,  # Available in potato.yaml
         swrd=2,
-        rdi=10.0,
-        rri=1.2,
+        rdi=10.0,  # Available in potato.yaml
+        rri=1.2,  # Available in potato.yaml
         rdc=50.0,
         swdmi2rd=1,
         rdctb=potato_rdctb,
@@ -265,7 +283,7 @@ def _make_hupselbrook():
         rdrrtb=potato_rdrrtb,
     )
 
-    potato_ox_stress = ps.OxygenStress(
+    potato_ox_stress = pyswap.components.crop.OxygenStress(
         swoxygen=1,
         swwrtnonox=1,
         aeratecrit=0.5,
@@ -276,7 +294,7 @@ def _make_hupselbrook():
         root_radiuso2=0.00015,
     )
 
-    potato_dr_stress = ps.DroughtStress(
+    potato_dr_stress = pyswap.components.crop.DroughtStress(
         swdrought=1,
         hlim3h=-300.0,
         hlim3l=-500.0,
@@ -285,7 +303,7 @@ def _make_hupselbrook():
         adcrl=0.1,
     )
 
-    crppotato = ps.CropFile(
+    crppotato = pyswap.components.crop.CropFile(
         name="potatod",
         prep=potato_prep,
         cropdev_settings=potato_cropdev_settings,
@@ -297,62 +315,62 @@ def _make_hupselbrook():
     )
 
     # %% Grass crp file
-    grass_chtb = ps.plant.CHTB_GRASS.create({
+    grass_chtb = ps.CHTB_GRASS.create({
         "DNR": [0.0, 180.0, 366.0],
         "CH": [12.0, 12.0, 12.0],
     })
 
-    grass_slatb = ps.plant.SLATB_GRASS.create({
+    grass_slatb = ps.SLATB_GRASS.create({
         "DNR": [1.00, 80.00, 300.00, 366.00],
         "SLA": [0.0015, 0.0015, 0.0020, 0.0020],
     })
 
-    amaxtb_grass = ps.plant.AMAXTB_GRASS.create({
+    amaxtb_grass = ps.AMAXTB_GRASS.create({
         "DNR": [1.00, 95.00, 200.00, 275.00, 366.00],
         "AMAX": [40.00, 40.00, 35.00, 25.00, 25.00],
     })
 
-    grass_tmpftb = ps.plant.TMPFTB.create({
+    grass_tmpftb = ps.TMPFTB.create({
         "TAVD": [0.00, 5.00, 15.00, 25.00, 40.00],
         "TMPF": [0.00, 0.70, 1.00, 1.00, 0.00],
     })
-    grass_tmnftb = ps.plant.TMNFTB.create({"TMNR": [0.0, 4.0], "TMNF": [0.0, 1.0]})
+    grass_tmnftb = ps.TMNFTB.create({"TMNR": [0.0, 4.0], "TMNF": [0.0, 1.0]})
 
-    grass_rfsetb = ps.plant.RFSETB_GRASS.create({
+    grass_rfsetb = ps.RFSETB_GRASS.create({
         "DNR": [1.00, 366.00],
         "RFSE": [1.0000, 1.0000],
     })
 
-    grass_frtb = ps.plant.FRTB_GRASS.create({
+    grass_frtb = ps.FRTB_GRASS.create({
         "DNR": [1.00, 366.00],
         "FR": [0.3000, 0.3000],
     })
 
-    grass_fltb = ps.plant.FLTB_GRASS.create({
+    grass_fltb = ps.FLTB_GRASS.create({
         "DNR": [1.00, 366.00],
         "FL": [0.6000, 0.6000],
     })
 
-    grass_fstb = ps.plant.FSTB_GRASS.create({
+    grass_fstb = ps.FSTB_GRASS.create({
         "DNR": [1.00, 366.00],
         "FS": [0.4000, 0.4000],
     })
 
-    grass_rdrrtb = ps.plant.RDRRTB_GRASS.create({
+    grass_rdrrtb = ps.RDRRTB_GRASS.create({
         "DNR": [1.0, 180.0, 366.0],
         "RDRR": [0.0, 0.02, 0.02],
     })
 
-    grass_rdrstb = ps.plant.RDRSTB_GRASS.create({
+    grass_rdrstb = ps.RDRSTB_GRASS.create({
         "DNR": [1.0, 180.0, 366.0],
         "RDRS": [0.0, 0.02, 0.02],
     })
 
-    grass_rlwtb = ps.plant.RLWTB.create({"RW": [300.00, 2500.00], "RL": [20.0, 40.0]})
+    grass_rlwtb = ps.RLWTB.create({"RW": [300.00, 2500.00], "RL": [20.0, 40.0]})
 
-    grass_rdctb = ps.plant.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
+    grass_rdctb = ps.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
 
-    grass_settings = ps.plant.CropDevelopmentSettingsGrass(
+    grass_settings = ps.CropDevelopmentSettingsGrass(
         swcf=2,
         table_dvs_ch=grass_chtb,
         albedo=0.23,
@@ -394,11 +412,11 @@ def _make_hupselbrook():
         rdctb=grass_rdctb,
     )
 
-    grass_ox_stress = ps.OxygenStress(
+    grass_ox_stress = pyswap.components.crop.OxygenStress(
         swoxygen=1, hlim1=0.0, hlim2u=1.0, hlim2l=-1.0, swwrtnonox=0
     )
 
-    grass_drought_stress = ps.DroughtStress(
+    grass_drought_stress = pyswap.components.crop.DroughtStress(
         swdrought=1,
         swjarvis=4,
         alphcrit=0.7,
@@ -409,23 +427,23 @@ def _make_hupselbrook():
         adcrl=0.1,
     )
 
-    grass_salt_stress = ps.SaltStress(swsalinity=0)
+    grass_salt_stress = pyswap.components.crop.SaltStress(swsalinity=0)
 
-    grass_interception = ps.Interception(swinter=1, cofab=0.25)
+    grass_interception = pyswap.components.crop.Interception(swinter=1, cofab=0.25)
 
-    grass_co2 = ps.CO2Correction(swco2=0)
+    grass_co2 = pyswap.components.crop.CO2Correction(swco2=0)
 
-    grass_dmmowtb = ps.plant.DMMOWTB.create({
+    grass_dmmowtb = ps.DMMOWTB.create({
         "DNR": [120.0, 152.0, 182.0, 213.0, 366.0],
         "DMMOW": [4700.0, 3700.0, 3200.0, 2700.0, 2700.0],
     })
 
-    grass_dmmowdelay = ps.plant.DMMOWDELAY.create({
+    grass_dmmowdelay = ps.DMMOWDELAY.create({
         "DMMOWDELAY": [0.0, 2000.0, 4000.0],
         "DAYDELAY": [2, 3, 4],
     })
 
-    grass_management = ps.GrasslandManagement(
+    grass_management = pyswap.components.crop.GrasslandManagement(
         seqgrazmow=[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
         swharvest=1,
         swdmmow=2,
@@ -440,7 +458,7 @@ def _make_hupselbrook():
 
     grass_irrigation = ps.ScheduledIrrigation(schedule=0)
 
-    crpgrass = ps.plant.CropFile(
+    crpgrass = ps.CropFile(
         name="grassd",
         cropdev_settings=grass_settings,
         oxygenstress=grass_ox_stress,
@@ -454,23 +472,23 @@ def _make_hupselbrook():
 
     # %% Creating the main Crop object
 
-    croprotation = ps.plant.CROPROTATION.create({
+    croprotation = ps.CROPROTATION.create({
         "CROPSTART": [dt(2002, 5, 1), dt(2003, 5, 10), dt(2004, 1, 1)],
         "CROPEND": [dt(2002, 10, 15), dt(2003, 9, 29), dt(2004, 12, 31)],
         "CROPFIL": ["'maizes'", "'potatod'", "'grassd'"],
         "CROPTYPE": [1, 2, 3],
     })
 
-    crop = ps.plant.Crop(
+    crop = ps.Crop(
         swcrop=1,
         rds=200.0,
         table_croprotation=croprotation,
-        cropfiles=[crpmaize, crppotato, crpgrass],
+        cropfiles={"maizes": crpmaize, "potatod": crppotato, "grassd": crpgrass},
     )
 
     # %% irrigation setup
 
-    irrig_events = ps.irrigation.IRRIGATION.create({
+    irrig_events = ps.IRRIGATION.create({
         "IRDATE": ["2002-01-05"],
         "IRDEPTH": [5.0],
         "IRCONC": [1000.0],
@@ -499,7 +517,7 @@ def _make_hupselbrook():
 
     # %% setting soil profile
 
-    soil_profile = ps.soilwater.SOILPROFILE.create({
+    soil_profile = ps.SOILPROFILE.create({
         "ISUBLAY": [1, 2, 3, 4],
         "ISOILLAY": [1, 1, 2, 2],
         "HSUBLAY": [10.0, 20.0, 30.0, 140.0],
@@ -507,7 +525,7 @@ def _make_hupselbrook():
         "NCOMP": [10, 4, 6, 14],
     })
 
-    soil_hydraulic_functions = ps.soilwater.SOILHYDRFUNC.create({
+    soil_hydraulic_functions = ps.SOILHYDRFUNC.create({
         "ORES": [0.01, 0.02],
         "OSAT": [0.42, 0.38],
         "ALFA": [0.0276, 0.0213],
@@ -531,7 +549,9 @@ def _make_hupselbrook():
 
     # %% drainage settings
 
-    dra_settings = ps.DraSettings(dramet=2, swdivd=1, cofani=[1.0, 1.0], swdislay=0)
+    dra_settings = pyswap.components.drainage.DraSettings(
+        dramet=2, swdivd=1, cofani=[1.0, 1.0], swdislay=0
+    )
 
     dra_formula = ps.DrainageFormula(
         lm2=11.0,

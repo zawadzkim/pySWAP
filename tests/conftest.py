@@ -1,7 +1,8 @@
 # conftest.py
 import pytest
-from pydantic import BaseModel, ConfigDict
-from pyswap.core import PySWAPBaseModel
+
+from pyswap.core.basemodel import PySWAPBaseModel
+
 
 @pytest.fixture(scope="module")
 def sample_file(tmp_path_factory):
@@ -26,17 +27,15 @@ def sample_file(tmp_path_factory):
 """
     tmp_dir = tmp_path_factory.mktemp("data")
     file_path = tmp_dir / "test_sample_input.txt"
-    with open(file_path, 'w') as f:
+    with open(file_path, "w") as f:
         f.write(file_content)
     return file_path
-
-
-
 
 
 # class ComplexModel(PySWAPBaseModel):
 #     simple_model: SimpleModel
 #     extra_attr: float
+
 
 @pytest.fixture()
 def simple_model():

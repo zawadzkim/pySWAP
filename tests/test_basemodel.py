@@ -1,7 +1,3 @@
-import pytest
-from pydantic import BaseModel
-from pyswap.core import PySWAPBaseModel
-
 # def test_pyswap_base_model_initialization(simple_model):
 #     assert isinstance(simple_model, PySWAPBaseModel)
 #     assert isinstance(simple_model, BaseModel)
@@ -10,7 +6,10 @@ from pyswap.core import PySWAPBaseModel
 def test_model_string_with_none_values(simple_model):
     model = simple_model(attr1="test", attr2=12, table_data="1 2 3")
     expected_output = "ATTR1 = test\nATTR2 = 12\n1 2 3"
-    assert model.model_string() == expected_output, f"Expected: \n {expected_output} \n but got \n {model.model_string()}"
+    assert model.model_string() == expected_output, (
+        f"Expected: \n {expected_output} \n but got \n {model.model_string()}"
+    )
+
 
 # def test_concat_sections(complex_model, expected_complex_output):
 #     assert complex_model._concat_sections() == expected_complex_output

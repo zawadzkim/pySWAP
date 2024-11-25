@@ -1,14 +1,14 @@
 ***************************************************************************
 * File name: ANDE-M.998
 * Contents: SWAP - Meteo data - duur 5 min discretisatie
-* Jos Boesten 26 Nov 2001: rain value for 15-6 changed into 14.0 
+* Jos Boesten 26 Nov 2001: rain value for 15-6 changed into 14.0
 * Mechteld ter Horst 12 mei 2006: ETrefMakkink --> calculated with SunTMakkink
 * Mechteld ter Horst: rainfall duration per 5 minutes
 ***************************************************************************
  Station   DD MM YYYY   RAD     Tmin      Tmax      HUM     WIND    RAIN   ETref  wet
 *          nr nr   nr   kJ/m2     C        C        kPa     m/s      mm      mm    d
 
-'ANDE-M'  1   1 1998  2497.5    10.1    11.6     0.8    4.61     0.0   0.3680  0.0000 
+'ANDE-M'  1   1 1998  2497.5    10.1    11.6     0.8    4.61     0.0   0.3680  0.0000
 'ANDE-M'  2   1 1998   936.8     7.3    11.7     0.9    7.53    12.3   0.1314  0.1101
 'ANDE-M'  3   1 1998   374.0     4.9    10.5     0.8    9.99    16.8   0.0495  0.0736
 'ANDE-M'  4   1 1998  1641.8     0.1    10.0     0.8    9.87     3.6   0.1951  0.0357
@@ -372,4 +372,4 @@
 'ANDE-M' 28  12 1998   534.4     4.5     7.9     0.9    5.00     7.5   0.0682  0.0781
 'ANDE-M' 29  12 1998  3151.2     5.9    13.1     0.7    4.21     0.0   0.4363  0.0000
 'ANDE-M' 30  12 1998  3340.5    10.3    14.1     0.8    4.43     0.0   0.5048  0.0000
-'ANDE-M' 31  12 1998  2000.8     8.6    13.4     0.7    5.05     0.0   0.2919  0.0000                                       
+'ANDE-M' 31  12 1998  2000.8     8.6    13.4     0.7    5.05     0.0   0.2919  0.0000
