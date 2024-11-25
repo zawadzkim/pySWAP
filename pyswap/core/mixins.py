@@ -107,15 +107,17 @@ class SerializableMixin:
 
 class ComplexSerializableMixin(SerializableMixin):
     """Serialize a class composed of nested models."""
+
     @staticmethod
     def concat_nested_models(file):
         string_list = []
 
         for section in dict(file).values():
-            if section is None or isinstance(section, str):
+            if section is None or isinstance(section, str) or isinstance(section, dict):
                 continue
             string_list.extend(section.concat_attributes())
         return "".join(string_list)
+
 
 class YAMLValidatorMixin:
     """A mixin class that provides YAML-based validation for parameters.
@@ -123,7 +125,7 @@ class YAMLValidatorMixin:
             validate_parameters: Validates parameters against required rules.
             validate_with_yaml: Validates parameters using external YAML rules.
     """
-    
+
     @staticmethod
     def validate_parameters(switch_name, switch_value, params, rules: dict):
         """Validates parameters against required rules.
@@ -136,23 +138,25 @@ class YAMLValidatorMixin:
         Raises:
             ValueError: If required parameters are missing.
         """
-        
+
         required_params = rules.get(switch_name, {}).get(switch_value, [])
-        
+
         if not required_params:
             return  # No rules for this switch value
 
-        missing_params = [param for param in required_params if params.get(param) is None]
-        
+        missing_params = [
+            param for param in required_params if params.get(param) is None
+        ]
+
         if missing_params:
             raise ValueError(
                 f"The following parameters are required for {switch_name}={switch_value}: {', '.join(missing_params)}"
             )
-        
+
     @model_validator(mode="after")
     def validate_with_yaml(self) -> Self:
         """Validates parameters using external YAML rules.
-        
+
         Returns:
             Self: The instance of the class after validation.
         """
@@ -161,5 +165,7 @@ class YAMLValidatorMixin:
         for switch_name in rules.keys():
             switch_value = getattr(self, switch_name, None)
             if switch_value is not None:  # Only validate if the switch is set
-                self.validate_parameters(switch_name, switch_value, self.__dict__, rules)
+                self.validate_parameters(
+                    switch_name, switch_value, self.__dict__, rules
+                )
         return self

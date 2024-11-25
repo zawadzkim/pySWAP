@@ -45,4 +45,6 @@ class Location(PySWAPBaseModel):
 
         new_lon, new_lat, new_alt = transformer.transform(self.lon, self.lat, self.alt)
 
-        return self.model_copy(update={"lon": new_lon, "lat": new_lat, "alt": new_alt, "crs": target_crs})
+        return self.model_copy(
+            update={"lon": new_lon, "lat": new_lat, "alt": new_alt, "crs": target_crs}
+        )
