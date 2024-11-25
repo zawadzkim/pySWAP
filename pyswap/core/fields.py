@@ -40,14 +40,14 @@ from pyswap.core.serializers import (
 
 Table = Annotated[
     DataFrame,
-    PlainSerializer(lambda x: serialize_table(x), return_type=str, when_used="json"),
+    PlainSerializer(serialize_table, return_type=str, when_used="json"),
 ]
 """Serialize pd.DataFrame with headers to a string without leading variable name."""
 
 
 Arrays = Annotated[
     DataFrame,
-    PlainSerializer(lambda x: serialize_arrays(x), return_type=str, when_used="json"),
+    PlainSerializer(serialize_arrays, return_type=str, when_used="json"),
 ]
 """Serialize pd.DataFrame without headers to a string with leading variable name."""
 
@@ -59,7 +59,7 @@ CSVTable = Annotated[
 ]
 
 DayMonth = Annotated[
-    d,
+    date,
     PlainSerializer(
         lambda x: f"{x.strftime('%d %m')}", return_type=str, when_used="json"
     ),
@@ -87,7 +87,7 @@ IntList = Annotated[
 ]
 
 DateList = Annotated[
-    list[d],
+    list[date],
     PlainSerializer(
         lambda x: "\n" + "\n".join([d.strftime("%Y-%m-%d") for d in x]),
         return_type=str,
@@ -101,9 +101,7 @@ Switch = Annotated[
 
 ObjectList = Annotated[
     list,
-    PlainSerializer(
-        lambda x: serialize_object_list(x), return_type=str, when_used="json"
-    ),
+    PlainSerializer(serialize_object_list, return_type=str, when_used="json"),
 ]
 
-String = Annotated[str, PlainSerializer(lambda x: f"'{x}'")]
+String = Annotated[str, PlainSerializer(lambda x: f"'{x}'", return_type=str)]
