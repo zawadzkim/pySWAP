@@ -43,17 +43,16 @@ def _make_hupselbrook():
 
     # %% Meteorology section
 
-    # meteo_location = ps.MeteoLocation(
-    #     lat=52.0,
-    #     alt=10.0
-    # )
+    meteo_location = ps.Location(
+        lat=52.0,
+        lon=21.0,
+        alt=10.0
+    )
 
     meteo_data = ps.MetFile(metfil="283.met", content=testcase.load_met("hupselbrook"))
 
     meteo = ps.Meteorology(
-        # meteo_location=meteo_location,
-        lat=52.0,
-        alt=10.0,
+        meteo_location=meteo_location,
         swetr=0,
         metfile=meteo_data,
         swdivide=1,

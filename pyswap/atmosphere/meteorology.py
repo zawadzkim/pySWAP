@@ -81,15 +81,14 @@ class Meteorology(PySWAPBaseModel, SerializableMixin):
         write_met: Writes the .met file.
     """
 
-    # lat: Decimal = Field(ge=-90, le=90)
-    meteo_location: MeteoLocation
+    lat: Optional[Decimal] = Field(default=None, ge=-90, le=90)
+    meteo_location: Optional[Location] = Field(default=None, exclude=True)
     swetr: Literal[0, 1]
     swdivide: Literal[0, 1]
     swrain: Literal[0, 1, 2, 3] | None = 0
     swetsine: Literal[0, 1] = 0
-    metfile: Optional[MetFile] = Field(
-        default=None, repr=False)
-    # alt: Decimal = Field(ge=-400.0, le=3000.0)
+    metfile: Optional[MetFile] = Field(default=None, repr=False)
+    alt: Decimal = Optional[Field(default=None, ge=-400.0, le=3000.0)]
     altw: Decimal = Field(default=None, ge=0.0, le=99.0)
     angstroma: Decimal = Field(default=None, **UNITRANGE)
     angstromb: Decimal = Field(default=None, **UNITRANGE)
@@ -102,8 +101,7 @@ class Meteorology(PySWAPBaseModel, SerializableMixin):
     def met(self):
         return self.metfile.content.to_csv(index=False, lineterminator="\n")
 
-    # @field_validator('lat', 'alt', 'altw', 'angstroma', 'angstromb')
-    @field_validator('altw', 'angstroma', 'angstromb')
+    @field_validator("altw", "angstroma", "angstromb")
     def set_decimals(cls, v):
         return v.quantize(Decimal("0.00"))
 
