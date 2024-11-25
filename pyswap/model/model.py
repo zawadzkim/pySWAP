@@ -77,22 +77,67 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
         run: Run the model.
     """
 
-    metadata: Metadata
+    metadata: Metadata | None = None
     version: str = Field(exclude=True, default="base")
-    general_settings: GeneralSettings
-    meteorology: Meteorology
-    crop: Crop
-    fixedirrigation: FixedIrrigation = FixedIrrigation(swirfix=0)
-    soilmoisture: SoilMoisture
-    surfaceflow: SurfaceFlow
-    evaporation: Evaporation
-    soilprofile: SoilProfile
+    general_settings: GeneralSettings | None = None
+    meteorology: Meteorology | None = None
+    crop: Crop | None = None
+    fixedirrigation: FixedIrrigation | None = FixedIrrigation(swirfix=0)
+    soilmoisture: SoilMoisture | None = None
+    surfaceflow: SurfaceFlow | None = None
+    evaporation: Evaporation | None = None
+    soilprofile: SoilProfile | None = None
     snowandfrost: SnowAndFrost | None = SnowAndFrost(swsnow=0, swfrost=0)
     richards: RichardsSettings | None = RichardsSettings(swkmean=1, swkimpl=0)
-    lateraldrainage: Drainage
-    bottomboundary: BottomBoundary
+    lateraldrainage: Drainage | None = None
+    bottomboundary: BottomBoundary | None = None
     heatflow: HeatFlow | None = HeatFlow(swhea=0)
     solutetransport: SoluteTransport | None = SoluteTransport(swsolu=0)
+    components: dict | None = Field(exclude=True, default_factory=dict)
+
+    @property
+    def added_components(self):
+        return self.components.keys()
+
+    def add_component(self, component: PySWAPBaseModel, replace: bool = True):
+        """Add a model component (section) to dictionary.
+
+        Got this from Pastas.
+
+        The components dictionary holds objects that represent each section of the model.
+
+        Parameters:
+            component (PySWAPBaseModel): component (section) of SWAP model.
+            replace (bool): Whether to replace the section if one of the same
+                name is already in the dictionary.
+        """
+
+        if isinstance(component, list):
+            for comp in component:
+                self.add_component(comp)
+
+        elif (component.name in self.components.keys()) and not replace:
+            message = (
+                "The component with the same name already exists "
+                "in this model. Select another name."
+            )
+            logger.error(message)
+            raise ValueError(message)
+
+        else:
+            if component.name in self.components.keys():
+                logger.warning(
+                    "The component with the same name already exists "
+                    "in this model. The component is replaced."
+                )
+            self.components[component.name] = component
+
+    def remove_component(self, component: str):
+        self.components.pop(component, None)
+
+    def validate_components(self):
+        """Validate whether all required components are added to the dictionary."""
+        pass
 
     @property
     def swp(self):
