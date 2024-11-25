@@ -42,18 +42,14 @@ Table = Annotated[
     DataFrame,
     PlainSerializer(lambda x: serialize_table(x), return_type=str, when_used="json"),
 ]
+"""Serialize pd.DataFrame with headers to a string without leading variable name."""
 
 
 Arrays = Annotated[
     DataFrame,
     PlainSerializer(lambda x: serialize_arrays(x), return_type=str, when_used="json"),
 ]
-"""
-Arrays are used in the .crp file. The problem is that they are not supposed to
-contain headers and the variables (keys) are the same for all options
-(DFs might contain different column names). Need to find a way to ensure
-the appropriate table is passed to the crop file.
-"""
+"""Serialize pd.DataFrame without headers to a string with leading variable name."""
 
 CSVTable = Annotated[
     DataFrame,

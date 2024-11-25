@@ -12,15 +12,21 @@ def serialize_table(table: DataFrame) -> str:
 
     Arguments:
         table: The DataFrame to be serialized.
+
+    Result:
+        >>> ' A  B\n 1  4\n 2  5\n 3  6\n'
     """
     return f"{table.to_string(index=False)}\n"
 
 
 def serialize_arrays(table: DataFrame) -> str:
-    """Convert the DataFrame to a string without headers and newline in front
+    """Convert the DataFrame to a string without headers and newline in front.
 
-    Args:
+    Arguments:
         table: The DataFrame to be serialized.
+
+    Result:
+        >>> 'ARRAYS = \n1 4\n2 5\n3 6\n\n'
     """
     return f"\n{table.to_string(index=False, header=False)}\n"
 
@@ -31,7 +37,7 @@ def serialize_csv_table(table: DataFrame) -> str:
     This serializer is specifically tailored to output the data in the
     format of the ,met files used in SWAP.
 
-    Args:
+    Arguments:
         table: The DataFrame to be serialized.
     """
     if isinstance(table.index, DatetimeIndex):
@@ -60,7 +66,7 @@ def serialize_csv_table(table: DataFrame) -> str:
     return table.to_csv(index=False, lineterminator="\n")
 
 
-def serialize_object_list(list) -> str:
+def serialize_object_list(list: list[PySWAPBaseModel]) -> str:
     """Serialize a list of objects to a string."""
     string = ""
     for item in list:

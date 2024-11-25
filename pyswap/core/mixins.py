@@ -121,9 +121,9 @@ class ComplexSerializableMixin(SerializableMixin):
 
 class YAMLValidatorMixin:
     """A mixin class that provides YAML-based validation for parameters.
-        Methods:
-            validate_parameters: Validates parameters against required rules.
-            validate_with_yaml: Validates parameters using external YAML rules.
+    Methods:
+        validate_parameters: Validates parameters against required rules.
+        validate_with_yaml: Validates parameters using external YAML rules.
     """
 
     @staticmethod
