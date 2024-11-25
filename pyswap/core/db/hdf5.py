@@ -1,8 +1,8 @@
 """This file contains classes and functions for handling HDF5 integration."""
 
+import logging
 import pickle
 from typing import Literal
-import logging
 
 import h5py
 import numpy as np
@@ -19,13 +19,22 @@ class HDF5(BaseModel):
 
     @computed_field(return_type=dict)
     def list_projects(self):
-        with h5py.File(self.filename, "a") as f:
-            # Use the visititems method to traverse the file structure
+        """List all the projects in the HDF5 file."""
+        with h5py.File(self.filename, "r") as f:
             projects = list(f.keys())
         return projects
 
+    @computed_field(return_type=dict)
+    def list_models(self):
+        """List all the models in the HDF5 file."""
+        with h5py.File(self.filename, "r") as f:
+            # Use the visititems method to traverse the file structure
+            models = {project: list(f[project].keys()) for project in f.keys()}
+        return models
+
     @staticmethod
     def _get_or_create_group(f, group_name):
+        """Get a group from an HDF5 file or create it if it does not exist."""
         if group_name not in f:
             try:
                 f.create_group(group_name)
@@ -33,7 +42,7 @@ class HDF5(BaseModel):
                 logger.warning(
                     f"Cannot create group {group_name}. It may already exist. Skipping creation."
                 )
-        return f[group_name]
+        return f.require_group(group_name)
 
     def save_model(
         self,
@@ -105,33 +114,37 @@ class HDF5(BaseModel):
         model: str | None = None,
         load_results: bool = False,
         mode: Literal["python", "json", "yaml"] = "python",
-    ) -> tuple[Model, Result]:
+    ) -> dict:
         """Load a single model or all models within a specific project."""
 
         def _load_pickled(
             group: h5py.Group, name: str, load_results: bool
-        ) -> tuple[Model, Result]:
+        ) -> tuple[Model, Result | None]:
             pickle_in = group[name]["input"][()].tobytes()
-            pickle_out = group[name]["output"][()].tobytes() if load_results else None
+            pickle_out = (
+                group[name]["output"][()].tobytes()
+                if load_results and "output" in group[name]
+                else None
+            )
 
             model = pickle.loads(pickle_in)
-            result = pickle.loads(pickle_out) if load_results else None
+            result = pickle.loads(pickle_out) if pickle_out else None
             return model, result
 
-        with h5py.File(self.filename, "r") as f:
-            project_grp = f[project]
+        loaded_models = {}
 
+        all_models = self.list_models[project]
+
+        with h5py.File(self.filename, "r") as f:
             if mode == "python":
                 if model is None:
-                    all_models = list(project_grp.keys())
                     for item in all_models:
-                        self.models[item] = _load_pickled(
-                            group=project_grp, name=item, load_results=load_results
+                        loaded_models[item] = _load_pickled(
+                            group=f[project], name=item, load_results=load_results
                         )
-
                 else:
-                    self.models[model] = _load_pickled(
-                        group=project_grp, name=model, load_results=load_results
+                    loaded_models[model] = _load_pickled(
+                        group=f[project], name=model, load_results=load_results
                     )
 
             if mode == "json":
@@ -140,34 +153,6 @@ class HDF5(BaseModel):
             if mode == "yaml":
                 raise NotImplementedError("YAML mode is not yet implemented")
 
+        self.models.update(loaded_models)
+        return loaded_models
 
-if __name__ == "__main__":
-    from pyswap import testcase
-
-    f = HDF5(filename="data.h5")
-
-    # Create instances of the model and result
-    model = testcase.get("hupselbrook")
-    model2 = model.model_copy(
-        update={"version": "v2", "crop": model.crop.model_copy(update={"rds": 195})}
-    )
-    model3 = model.model_copy(
-        update={"version": "v3", "crop": model.crop.model_copy(update={"rds": 100})}
-    )
-    result = model.run("./")
-    result2 = model.run("./")
-    result3 = model.run("./")
-
-    # Save to HDF5
-    f.save_model(
-        model=model, result=result, overwrite_datasets=True, overwrite_project=True
-    )
-    f.save_model(model=model2, result=result2, overwrite_datasets=True)
-    f.save_model(model=model3, result=result3, overwrite_datasets=True)
-
-    # Load from HDF5
-    f.load("pySWAP test - hupsel brook", load_results=True)
-
-    print(f.models["base"][1].output[["TACT", "TPOT"]].resample("YE").sum())
-    print(f.models["v2"][1].output[["TACT", "TPOT"]].resample("YE").sum())
-    print(f.models["v3"][1].output[["TACT", "TPOT"]].resample("YE").sum())
