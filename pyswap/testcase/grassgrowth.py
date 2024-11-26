@@ -11,6 +11,7 @@ import pyswap.components.soilwater
 import pyswap.components.transport
 
 from .load_dataset import IS_WINDOWS
+from pyswap import testcase
 
 
 def _make_grassgrowth():
@@ -38,7 +39,6 @@ def _make_grassgrowth():
     )
 
     # %% Meteorology section
-    from pyswap import testcase
 
     meteo_data = pyswap.components.meteorology.MetFile(
         metfil="260.met", content=testcase.load_met("grassgrowth")
@@ -59,60 +59,60 @@ def _make_grassgrowth():
     )
 
     # %% Grass crp file
-    grass_chtb = ps.plant.CHTB_GRASS.create({
+    grass_chtb = ps.components.crop.CHTB_GRASS.create({
         "DNR": [0.0, 180.0, 366.0],
         "CH": [12.0, 12.0, 12.0],
     })
 
-    grass_slatb = ps.plant.SLATB_GRASS.create({
+    grass_slatb = ps.components.crop.SLATB_GRASS.create({
         "DNR": [1.00, 80.00, 300.00, 366.00],
         "SLA": [0.0015, 0.0015, 0.0020, 0.0020],
     })
 
-    amaxtb_grass = ps.plant.AMAXTB_GRASS.create({
+    amaxtb_grass = ps.components.crop.AMAXTB_GRASS.create({
         "DNR": [1.00, 95.00, 200.00, 275.00, 366.00],
         "AMAX": [40.00, 40.00, 35.00, 25.00, 25.00],
     })
 
-    grass_tmpftb = ps.plant.TMPFTB.create({
+    grass_tmpftb = ps.components.crop.TMPFTB.create({
         "TAVD": [0.00, 5.00, 15.00, 25.00, 40.00],
         "TMPF": [0.00, 0.70, 1.00, 1.00, 0.00],
     })
-    grass_tmnftb = ps.plant.TMNFTB.create({"TMNR": [0.0, 4.0], "TMNF": [0.0, 1.0]})
+    grass_tmnftb = ps.components.crop.TMNFTB.create({"TMNR": [0.0, 4.0], "TMNF": [0.0, 1.0]})
 
-    grass_rfsetb = ps.plant.RFSETB_GRASS.create({
+    grass_rfsetb = ps.components.crop.RFSETB_GRASS.create({
         "DNR": [1.00, 366.00],
         "RFSE": [1.0000, 1.0000],
     })
 
-    grass_frtb = ps.plant.FRTB_GRASS.create({
+    grass_frtb = ps.components.crop.FRTB_GRASS.create({
         "DNR": [1.00, 366.00],
         "FR": [0.3000, 0.3000],
     })
 
-    grass_fltb = ps.plant.FLTB_GRASS.create({
+    grass_fltb = ps.components.crop.FLTB_GRASS.create({
         "DNR": [1.00, 366.00],
         "FL": [0.6000, 0.6000],
     })
 
-    grass_fstb = ps.plant.FSTB_GRASS.create({
+    grass_fstb = ps.components.crop.FSTB_GRASS.create({
         "DNR": [1.00, 366.00],
         "FS": [0.4000, 0.4000],
     })
 
-    grass_rdrrtb = ps.plant.RDRRTB_GRASS.create({
+    grass_rdrrtb = ps.components.crop.RDRRTB_GRASS.create({
         "DNR": [1.0, 180.0, 366.0],
         "RDRR": [0.0, 0.02, 0.02],
     })
 
-    grass_rdrstb = ps.plant.RDRSTB_GRASS.create({
+    grass_rdrstb = ps.components.crop.RDRSTB_GRASS.create({
         "DNR": [1.0, 180.0, 366.0],
         "RDRS": [0.0, 0.02, 0.02],
     })
 
-    grass_rdctb = ps.plant.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
+    grass_rdctb = ps.components.crop.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
 
-    grass_settings = ps.plant.CropDevelopmentSettingsGrass(
+    grass_settings = ps.components.crop.CropDevelopmentSettingsGrass(
         swcf=2,
         table_dvs_ch=grass_chtb,
         albedo=0.23,
@@ -174,12 +174,12 @@ def _make_grassgrowth():
 
     grass_co2 = pyswap.components.crop.CO2Correction(swco2=0)
 
-    grass_dmmowtb = ps.plant.DMMOWTB.create({
+    grass_dmmowtb = ps.components.crop.DMMOWTB.create({
         "DNR": [120.0, 152.0, 182.0, 213.0, 366.0],
         "DMMOW": [4700.0, 3700.0, 3200.0, 2700.0, 2700.0],
     })
 
-    grass_dmmowdelay = ps.plant.DMMOWDELAY.create({
+    grass_dmmowdelay = ps.components.crop.DMMOWDELAY.create({
         "DMMOWDELAY": [0.0, 2000.0, 4000.0],
         "DAYDELAY": [2, 3, 4],
     })
@@ -233,7 +233,7 @@ def _make_grassgrowth():
 
     grass_irrigation = ps.ScheduledIrrigation(schedule=0)
 
-    crpgrass = ps.plant.CropFile(
+    crpgrass = ps.components.crop.CropFile(
         name="grassd",
         cropdev_settings=grass_settings,
         oxygenstress=grass_ox_stress,
@@ -247,7 +247,7 @@ def _make_grassgrowth():
 
     # %% Creating the main Crop object
 
-    croprotation = ps.plant.CROPROTATION.create({
+    croprotation = ps.components.crop.CROPROTATION.create({
         "CROPSTART": [
             "1980-01-01",
             "1981-01-01",
@@ -266,7 +266,7 @@ def _make_grassgrowth():
         "CROPTYPE": [3, 3, 3, 3, 3],
     })
 
-    crop = ps.plant.Crop(
+    crop = ps.components.crop.Crop(
         swcrop=1,
         rds=200.0,
         table_croprotation=croprotation,
@@ -291,14 +291,14 @@ def _make_grassgrowth():
 
     # %% setting soil profile
 
-    soil_profile = ps.soilwater.SOILPROFILE.create({
+    soil_profile = ps.components.soilwater.SOILPROFILE.create({
         "ISUBLAY": [1, 2, 3, 4, 5, 6, 7, 8, 9],
         "ISOILLAY": [1, 1, 2, 3, 3, 4, 4, 5, 5],
         "HSUBLAY": [5.0, 10.0, 10.0, 5.0, 20.0, 50.0, 20.0, 100.0, 120.0],
         "HCOMP": [1.0, 2.5, 5.0, 5.0, 10.0, 10.0, 20.0, 20.0, 40.0],
         "NCOMP": [5, 4, 2, 1, 2, 5, 1, 5, 3],
     })
-    soil_hydraulic_functions = ps.soilwater.SOILHYDRFUNC.create({
+    soil_hydraulic_functions = ps.components.soilwater.SOILHYDRFUNC.create({
         "ORES": [0.02, 0.02, 0.02, 0.01, 0.01],
         "OSAT": [0.40, 0.40, 0.40, 0.36, 0.36],
         "ALFA": [0.0227, 0.0227, 0.0227, 0.0216, 0.0216],
@@ -368,14 +368,14 @@ def _make_grassgrowth():
 
     # %% heatflow
 
-    soil_texture = ps.extras.SOILTEXTURES.create({
+    soil_texture = ps.components.transport.SOILTEXTURES.create({
         "PSAND": [0.68, 0.68, 0.77, 0.86, 0.88],
         "PSILT": [0.27, 0.28, 0.19, 0.08, 0.09],
         "PCLAY": [0.05, 0.04, 0.04, 0.06, 0.03],
         "ORGMAT": [0.113, 0.053, 0.018, 0.019, 0.011],
     })
 
-    soil_init_t = ps.extras.INITSOILTEMP.create({
+    soil_init_t = ps.components.transport.INITSOILTEMP.create({
         "ZH": [-10.0, -40.0, -70.0, -95.0],
         "TSOIL": [15.0, 12.0, 10.0, 9.0],
     })
@@ -392,7 +392,7 @@ def _make_grassgrowth():
     # %% model setup
     model = ps.Model(
         metadata=meta,
-        general_settings=simset,
+        generalsettings=simset,
         meteorology=meteo,
         crop=crop,
         heatflow=heat_flow,

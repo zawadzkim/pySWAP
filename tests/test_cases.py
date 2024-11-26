@@ -61,6 +61,7 @@ def test_hupselbrook_model():
 def test_grassgrowth():
     model = testcase.get("grassgrowth")
     result = model.run("./", silence_warnings=True)
+    
     expected_data = pd.DataFrame({
         "PGRASSDM": {
             pd.Timestamp("1980-12-31 00:00:00"): 1375.2639006557376,
@@ -95,7 +96,7 @@ def test_grassgrowth():
     expected_data.index.name = "DATETIME"
     expected_data_resampled = expected_data.resample("YE").mean()
 
-    resampled_output = result.output.resample("YE").mean()
+    resampled_output = result.csv.resample("YE").mean()
 
     pd.testing.assert_frame_equal(
         resampled_output,
