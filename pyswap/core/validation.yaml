@@ -363,6 +363,14 @@ GeneralSettings:
       - numnodnew
       - dznew
 
+  swcsv:
+    1:
+      - inlist_csv
+
+  swcsv_tz:
+    1:
+      - inlist_csv_tz
+
 Evaporation:
   swcfbs:
     1:
