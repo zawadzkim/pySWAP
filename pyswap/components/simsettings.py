@@ -1,7 +1,7 @@
 from datetime import date
 from typing import ClassVar, Literal
 
-from pydantic import ConfigDict, Field, field_validator
+from pydantic import ConfigDict, Field, model_validator
 
 from pyswap.core import BASE_PATH
 from pyswap.core.basemodel import PySWAPBaseModel
@@ -118,31 +118,46 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     numnodnew: int | None = None
     dznew: FloatList | None = None
 
-    @field_validator("extensions")
-    def validate_extensions(cls, extensions):
+    @model_validator(mode="after")
+    def validate_extensions(self):
         invalid_extensions = [
-            ext for ext in extensions if ext not in cls._all_extensions
+            ext for ext in self.extensions if ext not in self._all_extensions
         ]
         if invalid_extensions:
             raise ValueError(f"Invalid extensions: {invalid_extensions}")
-        return extensions
+        return self
 
     def model_post_init(self, __context=None):
         for ext in self._all_extensions:
             switch_name = f"sw{ext}"
             setattr(self, switch_name, 1 if ext in self.extensions else 0)
 
-    def add_extension(self, extension: str):
+    def add_extension(self, extension: str, inlist: list = None):
         """
         Add a new extension to the list and trigger updates.
         """
         if extension not in self._all_extensions:
             raise ValueError(f"Invalid extension: {extension}")
+        
+        if extension == "csv":
+            if not any([self.inlist_csv, inlist]):
+                raise ValueError(f"Missing 'inlist_csv' for extension '{extension}'")
+            if inlist:
+                self.inlist_csv = inlist
+        
+        elif extension == "csv_tz":
+            if not any([self.inlist_csv_tz, inlist]):
+                raise ValueError(f"Missing 'inlist_csv_tz' for extension '{extension}'")
+            if inlist:
+                self.inlist_csv_tz = inlist
+
         if extension not in self.extensions:
-            new_instance = self.model_copy(deep=True)
-            new_instance.extensions.append(extension)
-            new_instance.model_post_init()
-            return new_instance
+            self.extensions.append(extension)
+            self.model_post_init()
+            self.model_validate(self)
+        else:
+            logger.warning(f"Extension '{extension}' is already in the list.")
+        return self
 
     def remove_extension(self, extension: str):
         """
@@ -150,10 +165,16 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         """
         if extension not in self.extensions:
             raise ValueError(f"Extension '{extension}' is not in the list.")
-        new_instance = self.model_copy(deep=True)
-        new_instance.extensions.remove(extension)
-        new_instance.model_post_init()
-        return new_instance
+        self.extensions.remove(extension)
+
+        if extension == "csv":
+            self.inlist_csv = None
+        elif extension == "csv_tz":
+            self.inlist_csv_tz = None
+
+        self.model_post_init()
+        self.model_validate(self)
+        return self
 
 
 class RichardsSettings(PySWAPBaseModel, SerializableMixin):
