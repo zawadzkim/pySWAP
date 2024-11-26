@@ -141,11 +141,11 @@ class ModelRunner:
             if warnings and not silence_warnings:
                 self.raise_swap_warning(warnings=warnings)
 
-            if 'csv' in self.model.general_settings.extensions:
+            if 'csv' in self.model.generalsettings.extensions:
                 output = reader.read_swap_csv(which = "csv")
                 result.output.update({"csv": output})
 
-            if 'csv_tz' in self.model.general_settings.extensions:
+            if 'csv_tz' in self.model.generalsettings.extensions:
                 output_tz = reader.read_swap_csv(which = "csv_tz")
                 result.output.update({"csv_tz": output_tz})
 
@@ -267,11 +267,10 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
     """
 
     _validate_on_run: bool = False
-    _use_comp_dict: bool = False
 
     metadata: Metadata | None = None
     version: str = Field(exclude=True, default="base")
-    general_settings: GeneralSettings | None = None
+    generalsettings: GeneralSettings | None = None
     meteorology: Meteorology | None = None
     crop: Crop | None = None
     fixedirrigation: FixedIrrigation | None = FixedIrrigation(swirfix=0)
@@ -285,72 +284,6 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
     bottomboundary: BottomBoundary | None = None
     heatflow: HeatFlow | None = HeatFlow(swhea=0)
     solutetransport: SoluteTransport | None = SoluteTransport(swsolu=0)
-    comp: dict = Field(default_factory=dict, exclude=True)
-
-    @property
-    def components(self):
-        """Return the components of the model already added to the model."""
-        return self.comp.keys()
-    
-    def get_component(self, component: str, copy: bool = False):
-        """Get a model component (section) from dictionary.
-
-        Parameters:
-            component (str): Name of the component (section) to get.
-            copy (bool): Whether to return a copy of the component.
-
-        Returns:
-            PySWAPBaseModel: The model component.
-        """
-
-        if copy:
-            return self.comp.get(component.lower()).model_copy(deep=True)
-        else:
-            return self.comp.get(component.lower())
-
-    def set_component(self, component: PySWAPBaseModel, replace: bool = True):
-        """Add or replace a model component (section) in dictionary.
-
-        Got this from Pastas.
-
-        Parameters:
-            component (PySWAPBaseModel): component (section) of SWAP model.
-            replace (bool): Whether to replace the section if one of the same
-                name is already in the dictionary.
-        """
-        
-        if isinstance(component, list):
-            for comp in component:
-                self.set_component(comp)
-
-        elif (component.name in self.comp.keys()) and not replace:
-            message = (
-                "The component with the same name already exists "
-                "in this model. Set replace to True if you want to "
-                "replace it with a new one."
-            )
-            logger.warning(message)
-            return None
-
-        else:
-            if component.name in self.comp.keys():
-                logger.warning(
-                    "The component with the same name already exists "
-                    "in this model. The component is replaced."
-                )
-
-            self.comp[component.name] = component
-
-    def remove_component(self, component: str):
-        """Remove a component from the dictionary.
-        
-        Parameters:
-            component (str): Name of the component to remove,
-                case-insensitive, corresponds to pySWAP class name.
-        """
-        if component not in self.comp:
-            raise KeyError(f"Component '{component}' not found.")
-        self.comp.pop(component)
 
     @model_validator(mode='after')
     def validate_all_components(self):
@@ -362,9 +295,12 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
             "soilmoisture", "surfaceflow", "evaporation", "soilprofile", "snowandfrost",
             "richards", "lateraldrainage", "bottomboundary", "heatflow", "solutetransport"
         ]
-        missing_components = [comp for comp in required_components if comp not in self.comp]
+
+        missing_components = [comp for comp in required_components if getattr(self, comp) is None]
+
         if missing_components:
             raise ValueError(f"Missing required components: {', '.join(missing_components)}")
+        
         return self
 
     def validate(self):
@@ -386,6 +322,5 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
 
     def run(self, path: str | Path, silence_warnings: bool = False):
         """Run the model using ModelRunner."""
-        if self.comp:
-            self.validate()
+        self.validate()
         return ModelRunner(self).run(path, silence_warnings)
