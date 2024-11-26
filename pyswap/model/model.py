@@ -311,6 +311,12 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
             self._validate_on_run = False
             logger.info("Validation successful.")
 
+    def write_swp(self, path: str | Path, **kwargs):
+        """Write the .swp input file."""
+        self.save_file(
+            string=self.swp, path=path, fname="swap", extension="swp", **kwargs
+        )
+
     @property
     def swp(self):
         """The content of the swp file.
