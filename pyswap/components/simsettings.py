@@ -1,5 +1,6 @@
 from datetime import date
 from typing import ClassVar, Literal
+import logging
 
 from pydantic import ConfigDict, Field, model_validator
 
@@ -11,6 +12,7 @@ from pyswap.core.valueranges import UNITRANGE, YEARRANGE
 
 __all__ = ["GeneralSettings", "RichardsSettings"]
 
+logger = logging.getLogger(__name__)
 
 class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """General settings of the simulation.
