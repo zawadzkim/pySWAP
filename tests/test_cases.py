@@ -103,7 +103,3 @@ def test_grassgrowth():
         check_dtype=False,
         rtol=1e-2,
     )
-
-
-if __name__ == "__main__":
-    pytest.main()
