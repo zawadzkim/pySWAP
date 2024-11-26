@@ -67,6 +67,7 @@ class Result(BaseModel):
         """Return the .blc file if it exists."""
         return self.output.get("blc", None)
 
+    @computed_field(return_type=DataFrame)
     def yearly_summary(self):
         """Return yearly sums of all output variables."""
         return self.csv.resample("YE").sum()
