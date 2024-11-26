@@ -3,17 +3,19 @@
 Classes:
     Model: Main class that runs the SWAP model.
 """
+
 from __future__ import annotations
-from typing import Literal
+
 import logging
 import os
 import shutil
 import subprocess
 import tempfile
 from pathlib import Path
+from typing import Literal
 
-from pandas import read_csv, to_datetime, DataFrame
-from pydantic import Field, model_validator
+from pandas import DataFrame, read_csv, to_datetime
+from pydantic import Field, model_validator, PrivateAttr
 
 from pyswap.components.boundary import BottomBoundary
 from pyswap.components.crop import Crop
@@ -51,7 +53,9 @@ class ModelBuilder:
         """Copy the appropriate SWAP executable to the temporary directory."""
         if IS_WINDOWS:
             shutil.copy(swap_windows, self.tempdir)
-            logger.info("Copying the windows version of SWAP into temporary directory...")
+            logger.info(
+                "Copying the windows version of SWAP into temporary directory..."
+            )
         else:
             shutil.copy(swap_linux, self.tempdir)
             logger.info("Copying linux executable into temporary directory...")
@@ -79,7 +83,7 @@ class ModelBuilder:
 
 class ModelRunner:
     """Class responsible for running the model.
-    
+
     Attributes:
         model (Model): The model to run.
 
@@ -116,7 +120,6 @@ class ModelRunner:
     def run(self, path: str | Path, silence_warnings: bool = False):
         """Main function that runs the model."""
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
-
             builder = ModelBuilder(self.model, tempdir)
             builder.copy_executable().write_inputs()
 
@@ -124,7 +127,7 @@ class ModelRunner:
 
             if "normal completion" not in result:
                 raise Exception(f"Model run failed. \n {result}")
-            
+
             logger.info(result)
 
             # --- Handle the results ---
@@ -137,22 +140,23 @@ class ModelRunner:
 
             warnings = reader.identify_warnings(log)
             result.warning = warnings
-            
+
             if warnings and not silence_warnings:
                 self.raise_swap_warning(warnings=warnings)
 
-            if 'csv' in self.model.generalsettings.extensions:
-                output = reader.read_swap_csv(which = "csv")
+            if "csv" in self.model.generalsettings.extensions:
+                output = reader.read_swap_csv(which="csv")
                 result.output.update({"csv": output})
 
-            if 'csv_tz' in self.model.generalsettings.extensions:
-                output_tz = reader.read_swap_csv(which = "csv_tz")
+            if "csv_tz" in self.model.generalsettings.extensions:
+                output_tz = reader.read_swap_csv(which="csv_tz")
                 result.output.update({"csv_tz": output_tz})
 
             ascii_files = reader.read_swap_ascii()
 
             result.output.update(ascii_files)
             return result
+
 
 class ResultReader:
     """Class responsible for reading the model results."""
@@ -163,7 +167,7 @@ class ResultReader:
 
     def read_swap_csv(self, which: Literal["csv", "csv_tz"]) -> DataFrame:
         """Read the output csv file.
-        
+
         Since there are only two types of output files (csv and csv_ts), we
         handle them in the same method.
 
@@ -200,7 +204,7 @@ class ResultReader:
         elif len(log_files) > 1:
             msg = "Multiple .log files found in the directory."
             raise FileExistsError(msg)
-        
+
         log_file = log_files[0]
 
         with open(log_file) as file:
@@ -262,7 +266,7 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
         run: Run the model.
     """
 
-    _validate_on_run: bool = False
+    _validate_on_run: bool = PrivateAttr(default=False)
 
     metadata: Metadata | None = None
     version: str = Field(exclude=True, default="base")
@@ -281,28 +285,44 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
     heatflow: HeatFlow | None = HeatFlow(swhea=0)
     solutetransport: SoluteTransport | None = SoluteTransport(swsolu=0)
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def validate_all_components(self):
-        if not getattr(self, '_validate_on_run', False):
+        if not getattr(self, "_validate_on_run", False):
             return self
 
         required_components = [
-            "metadata", "generalsettings", "meteorology", "crop", "fixedirrigation",
-            "soilmoisture", "surfaceflow", "evaporation", "soilprofile", "snowandfrost",
-            "richards", "lateraldrainage", "bottomboundary", "heatflow", "solutetransport"
+            "metadata",
+            "generalsettings",
+            "meteorology",
+            "crop",
+            "fixedirrigation",
+            "soilmoisture",
+            "surfaceflow",
+            "evaporation",
+            "soilprofile",
+            "snowandfrost",
+            "richards",
+            "lateraldrainage",
+            "bottomboundary",
+            "heatflow",
+            "solutetransport",
         ]
 
-        missing_components = [comp for comp in required_components if getattr(self, comp) is None]
+        missing_components = [
+            comp for comp in required_components if getattr(self, comp) is None
+        ]
 
         if missing_components:
-            raise ValueError(f"Missing required components: {', '.join(missing_components)}")
-        
+            raise ValueError(
+                f"Missing required components: {', '.join(missing_components)}"
+            )
+
         return self
 
     def validate(self):
         try:
             self._validate_on_run = True
-            self.model_validate(self, context={'_validate_on_run': True})
+            self.model_validate(self, context={"_validate_on_run": True})
         finally:
             self._validate_on_run = False
             logger.info("Validation successful.")
