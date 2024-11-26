@@ -236,7 +236,8 @@ class ResultReader:
                 f.split(".")[1]: self.model.read_file(Path(self.tempdir, f))
                 for f in list_dir
             }
-        return dict_files
+            return dict_files
+        return {}
 
 
 class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
