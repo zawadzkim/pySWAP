@@ -235,7 +235,7 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
 
     Attributes:
         metadata (Any): Metadata of the model.
-        general_settings (Any): Simulation settings.
+        generalsettings (Any): Simulation settings.
         meteorology (Any): Meteorological data.
         crop (Any): Crop data.
         fixedirrigation (Any): Fixed irrigation settings.
@@ -253,16 +253,7 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
 
     Methods:
         write_swp: Write the .swp input file.
-        _copy_executable: Copy the appropriate SWAP executable to
-            the temporary directory.
-        _run_swap: Run the SWAP executable.
-        _read_output: Read the output file.
-        _read_output_tz: Read the output file with time zone.
-        _read_vap: Read the .vap output file.
-        _write_inputs: Write the input files.
-        _identify_warnings: Identify warnings in the log file.
-        _raise_swap_warning: Raise a warning.
-        _read_output_old: Save the old output files.
+        validate: Validate the model.
         run: Run the model.
     """
 
