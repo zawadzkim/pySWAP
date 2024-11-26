@@ -24,9 +24,9 @@ from pyswap import testcase
 
 def test_hupselbrook_model():
     model = testcase.get("hupselbrook")
-    result = model.run("./", silence_warnings=True, old_output=True)
+    result = model.run("./", silence_warnings=True)
 
-    resampled_output = result.output.resample("YE").sum()
+    resampled_output = result.csv.resample("YE").sum()
 
     data = {
         "RAIN": [84.18, 71.98, 80.55],

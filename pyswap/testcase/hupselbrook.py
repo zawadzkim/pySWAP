@@ -15,6 +15,8 @@ from pyswap import testcase
 def _make_hupselbrook():
     # %% Basic settings of the model
 
+    ml = ps.Model()
+
     meta = ps.Metadata(
         author="John Doe",
         institution="University of Somewhere",
@@ -22,6 +24,8 @@ def _make_hupselbrook():
         project="pySWAP test - hupselbrook",
         swap_ver="4.2",
     )
+
+    ml.metadata = meta
 
     simset = ps.GeneralSettings(
         tstart="2002-01-01",
@@ -49,6 +53,8 @@ def _make_hupselbrook():
         ],
     )
 
+    ml.generalsettings = simset
+
     # %% Meteorology section
 
     meteo_location = ps.Location(lat=52.0, lon=21.0, alt=10.0)
@@ -67,6 +73,8 @@ def _make_hupselbrook():
         angstroma=0.25,
         angstromb=0.5,
     )
+
+    ml.meteorology = meteo
 
     # %% Creating the .crp file for maize (fixed crop)
 
@@ -486,6 +494,8 @@ def _make_hupselbrook():
         cropfiles={"maizes": crpmaize, "potatod": crppotato, "grassd": crpgrass},
     )
 
+    ml.crop = crop
+
     # %% irrigation setup
 
     irrig_events = ps.IRRIGATION.create({
@@ -499,9 +509,12 @@ def _make_hupselbrook():
         swirfix=1, swirgfil=0, table_irrigevents=irrig_events
     )
 
+    ml.fixedirrigation = fixed_irrigation
+
     # %% Soil moisture setup
 
     soilmoisture = ps.SoilMoisture(swinco=2, gwli=-75.0)
+    ml.soilmoisture = soilmoisture
 
     # %% surface flow settings
 
@@ -509,11 +522,15 @@ def _make_hupselbrook():
         swpondmx=0, pondmx=0.2, rsro=0.5, rsroexp=1.0, swrunon=0
     )
 
+    ml.surfaceflow = surfaceflow
+
     # %% evaporation settings
 
     evaporation = ps.Evaporation(
         cfevappond=1.25, swcfbs=0, rsoil=30.0, swredu=1, cofredbl=0.35, rsigni=0.5
     )
+
+    ml.evaporation = evaporation
 
     # %% setting soil profile
 
@@ -547,6 +564,8 @@ def _make_hupselbrook():
         swmacro=0,
     )
 
+    ml.soilprofile = soilprofile
+
     # %% drainage settings
 
     dra_settings = pyswap.components.drainage.DraSettings(
@@ -570,22 +589,12 @@ def _make_hupselbrook():
 
     lateral_drainage = ps.Drainage(swdra=1, drafile=dra_file)
 
+    ml.lateraldrainage = lateral_drainage
+
     # %% bottom boundary
 
     bottom_boundary = ps.BottomBoundary(swbbcfile=0, swbotb=6)
 
-    model = ps.Model(
-        metadata=meta,
-        general_settings=simset,
-        meteorology=meteo,
-        crop=crop,
-        fixedirrigation=fixed_irrigation,
-        soilmoisture=soilmoisture,
-        surfaceflow=surfaceflow,
-        evaporation=evaporation,
-        soilprofile=soilprofile,
-        lateraldrainage=lateral_drainage,
-        bottomboundary=bottom_boundary,
-    )
+    ml.bottomboundary = bottom_boundary
 
-    return model
+    return ml
