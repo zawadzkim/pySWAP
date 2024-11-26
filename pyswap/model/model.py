@@ -14,7 +14,7 @@ from importlib import resources
 from pathlib import Path
 
 from pandas import read_csv, to_datetime
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from pyswap.components.boundary import BottomBoundary
 from pyswap.components.crop import Crop
@@ -242,6 +242,9 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
         run: Run the model.
     """
 
+    _validate_on_run: bool = False
+    _use_comp_dict: bool = False
+
     metadata: Metadata | None = None
     version: str = Field(exclude=True, default="base")
     general_settings: GeneralSettings | None = None
@@ -258,51 +261,96 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
     bottomboundary: BottomBoundary | None = None
     heatflow: HeatFlow | None = HeatFlow(swhea=0)
     solutetransport: SoluteTransport | None = SoluteTransport(swsolu=0)
-    components: dict | None = Field(exclude=True, default_factory=dict)
+    comp: dict = Field(default_factory=dict, exclude=True)
 
     @property
-    def added_components(self):
-        return self.components.keys()
+    def components(self):
+        """Return the components of the model already added to the model."""
+        return self.comp.keys()
+    
+    def get_component(self, component: str, copy: bool = False):
+        """Get a model component (section) from dictionary.
 
-    def add_component(self, component: PySWAPBaseModel, replace: bool = True):
-        """Add a model component (section) to dictionary.
+        Parameters:
+            component (str): Name of the component (section) to get.
+            copy (bool): Whether to return a copy of the component.
+
+        Returns:
+            PySWAPBaseModel: The model component.
+        """
+
+        if copy:
+            return self.comp.get(component.lower()).model_copy(deep=True)
+        else:
+            return self.comp.get(component.lower())
+
+    def set_component(self, component: PySWAPBaseModel, replace: bool = True):
+        """Add or replace a model component (section) in dictionary.
 
         Got this from Pastas.
-
-        The components dictionary holds objects that represent each section of the model.
 
         Parameters:
             component (PySWAPBaseModel): component (section) of SWAP model.
             replace (bool): Whether to replace the section if one of the same
                 name is already in the dictionary.
         """
-
+        
         if isinstance(component, list):
             for comp in component:
-                self.add_component(comp)
+                self.set_component(comp)
 
-        elif (component.name in self.components.keys()) and not replace:
+        elif (component.name in self.comp.keys()) and not replace:
             message = (
                 "The component with the same name already exists "
-                "in this model. Select another name."
+                "in this model. Set replace to True if you want to "
+                "replace it with a new one."
             )
-            logger.error(message)
-            raise ValueError(message)
+            logger.warning(message)
+            return None
 
         else:
-            if component.name in self.components.keys():
+            if component.name in self.comp.keys():
                 logger.warning(
                     "The component with the same name already exists "
                     "in this model. The component is replaced."
                 )
-            self.components[component.name] = component
+
+            self.comp[component.name] = component
 
     def remove_component(self, component: str):
-        self.components.pop(component, None)
+        """Remove a component from the dictionary.
+        
+        Parameters:
+            component (str): Name of the component to remove,
+                case-insensitive, corresponds to pySWAP class name.
+        """
+        if component not in self.comp:
+            raise KeyError(f"Component '{component}' not found.")
+        self.comp.pop(component)
 
-    def validate_components(self):
-        """Validate whether all required components are added to the dictionary."""
-        pass
+
+    @model_validator(mode='after')
+    def validate_all_components(self):
+        if not getattr(self, '_validate_on_run', False):
+            return self
+
+        required_components = [
+            "metadata", "generalsettings", "meteorology", "crop", "fixedirrigation",
+            "soilmoisture", "surfaceflow", "evaporation", "soilprofile", "snowandfrost",
+            "richards", "lateraldrainage", "bottomboundary", "heatflow", "solutetransport"
+        ]
+        missing_components = [comp for comp in required_components if comp not in self.comp]
+        if missing_components:
+            raise ValueError(f"Missing required components: {', '.join(missing_components)}")
+        return self
+
+    def validate(self):
+        try:
+            self._validate_on_run = True
+            self.model_validate(self, context={'_validate_on_run': True})
+        finally:
+            self._validate_on_run = False
+            logger.info("Validation successful.")
 
     @property
     def swp(self):
@@ -315,4 +363,6 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
 
     def run(self, path: str | Path, silence_warnings: bool = False, old_output: bool = True):
         """Run the model using ModelRunner."""
+        if self.comp:
+            self.validate()
         return ModelRunner(self).run(path, silence_warnings, old_output)
