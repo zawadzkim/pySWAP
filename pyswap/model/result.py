@@ -22,17 +22,16 @@ class Result(BaseModel):
 
     Attributes:
         log (str): The log file of the model run.
-        summary (str, optional): The summary file of the model run.
         output (DataFrame, optional): The output file of the model run.
-        output_tz (DataFrame, optional): The output file of the model run with timezone.
-        output_old (Dict[str, str], optional): The old output files of the model run.
         warning (List[str], optional): The warnings of the model run.
-        model_config (ConfigDict): The configuration for the model.
 
-    Methods:
+    Properties:
+        model_config (dict): The model configuration.
+        ascii (dict): The output in ASCII format.
+        csv (DataFrame): The output in CSV format.
         iteration_stats (str): The part of the log file that describes the iteration statistics.
         blc_summary (str): The .blc file if it exists.
-        water_balance (str): The water balance of the model run.
+        yearly_summary (DataFrame): Yearly sums of all output variables.
     """
 
     log: str | None = Field(default=None, repr=False)
