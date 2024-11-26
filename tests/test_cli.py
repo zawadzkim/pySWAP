@@ -125,6 +125,3 @@ def test_git_initialization_and_gitignore(setup_and_teardown):
                 f"Expected pattern '{pattern}' not found in .gitignore file."
             )
 
-
-if __name__ == "__main__":
-    pytest.main()
