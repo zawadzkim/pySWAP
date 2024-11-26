@@ -35,15 +35,28 @@ class Result(BaseModel):
         water_balance (str): The water balance of the model run.
     """
 
-    log: str
-    output: DataFrame | None = Field(default=None, repr=False)
-    output_tz: DataFrame | None = Field(default=None, repr=False)
-    output_old: dict[str, str] | None = Field(default=None, repr=False)
+    log: str | None = Field(default=None, repr=False)
+    output: dict | None = Field(default_factory=dict, repr=False)
     warning: list[str] | None = Field(default=None, repr=False)
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True, validate_assignment=True, extra="forbid"
     )
+
+    @computed_field(return_type=dict)
+    def ascii(self):
+        """Return the output in ASCII format."""
+        return {k: v for k, v in self.output.items() if not k.endswith("csv")}
+
+    @computed_field(return_type=DataFrame)
+    def csv(self):
+        """Return the output in CSV format."""
+        return self.output.get("csv", None)
+    
+    @computed_field(return_type=DataFrame)
+    def csv_tz(self):
+        """Return the output in CSV format with depth."""
+        return self.output.get("csv_tz", None)
 
     @computed_field(return_type=str)
     def iteration_stats(self):
@@ -53,8 +66,8 @@ class Result(BaseModel):
     @computed_field(return_type=str)
     def blc_summary(self):
         """Return the .blc file if it exists."""
-        return self.output_old.get("blc") if self.output_old else None
+        return self.output.get("blc", None)
 
     def yearly_summary(self):
         """Return yearly sums of all output variables."""
-        return self.output.resample("YE").sum()
+        return self.csv.resample("YE").sum()

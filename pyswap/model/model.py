@@ -174,7 +174,7 @@ class ResultReader:
             DataFrame: The output file as a DataFrame.
         """
 
-        outfil = self.model.general_settings.outfil
+        outfil = self.model.generalsettings.outfil
         output_suffix = "_output.csv" if which == "csv" else "_output_tz.csv"
         index_col = "DATETIME" if which == "csv" else "DATE"
 
@@ -212,20 +212,25 @@ class ResultReader:
     def identify_warnings(log: str) -> list:
         """Read through the log file and catch warnings emitted by the SWAP executable."""
         lines = log.split("\n")
-        warnings = [line for line in lines if line.strip().lower().startswith("warning")]
+        warnings = [
+            line for line in lines if line.strip().lower().startswith("warning")
+        ]
         return warnings
 
     def read_swap_ascii(self):
         """Read all output files that are not in csv format as strings."""
-        ascii_extensions = [ext for ext in self.model.general_settings.extensions if ext not in ["csv", "csv_tz"]]
+        ascii_extensions = [
+            ext
+            for ext in self.model.generalsettings.extensions
+            if ext not in ["csv", "csv_tz"]
+        ]
 
         list_dir = os.listdir(self.tempdir)
-        list_dir = [
-            f for f in list_dir if f.endswith(tuple(ascii_extensions))
-        ]
+        list_dir = [f for f in list_dir if f.endswith(tuple(ascii_extensions))]
         if list_dir:
             dict_files = {
-            f.split(".")[1]: self.model.read_file(Path(self.tempdir, f)) for f in list_dir
+                f.split(".")[1]: self.model.read_file(Path(self.tempdir, f))
+                for f in list_dir
             }
         return dict_files
 
