@@ -4,16 +4,15 @@ Classes:
     Model: Main class that runs the SWAP model.
 """
 from __future__ import annotations
+from typing import Literal
 import logging
 import os
 import shutil
 import subprocess
 import tempfile
-import warnings
-from importlib import resources
 from pathlib import Path
 
-from pandas import read_csv, to_datetime
+from pandas import read_csv, to_datetime, DataFrame
 from pydantic import Field, model_validator
 
 from pyswap.components.boundary import BottomBoundary
@@ -44,46 +43,58 @@ __all__ = ["Model"]
 class ModelBuilder:
     """Class responsible for building the model components."""
 
-    def __init__(self, model: Model):
+    def __init__(self, model: Model, tempdir: str):
         self.model = model
+        self.tempdir = tempdir
 
-    def _write_swp(self, path: str) -> None:
-        """Write the .swp input file."""
-        self.model.save_file(string=self.model.swp, path=path, fname="swap", extension="swp")
+    def copy_executable(self) -> None:
+        """Copy the appropriate SWAP executable to the temporary directory."""
+        if IS_WINDOWS:
+            shutil.copy(swap_windows, self.tempdir)
+            logger.info("Copying the windows version of SWAP into temporary directory...")
+        else:
+            shutil.copy(swap_linux, self.tempdir)
+            logger.info("Copying linux executable into temporary directory...")
 
-    def _write_inputs(self, path: str) -> None:
+        return self
+
+    def write_inputs(self) -> None:
         logger.info("Preparing files...")
-        self._write_swp(path)
+
+        self.model.write_swp(self.tempdir)
+
         if self.model.lateraldrainage.drafile:
-            self.model.lateraldrainage.write_dra(path)
+            self.model.lateraldrainage.write_dra(self.tempdir)
         if self.model.crop.cropfiles:
-            self.model.crop.write_crop(path)
+            self.model.crop.write_crop(self.tempdir)
         if self.model.meteorology.metfile:
-            self.model.meteorology.write_met(path)
+            self.model.meteorology.write_met(self.tempdir)
         if self.model.fixedirrigation.irgfile:
-            self.model.irrigation.fixedirrig.write_irg(path)
+            self.model.fixedirrigation.write_irg(self.tempdir)
         if self.model.bottomboundary.swbbcfile:
-            self.model.bottomboundary.write_bbc(path)
+            self.model.bottomboundary.write_bbc(self.tempdir)
+
+        return self
 
 
 class ModelRunner:
-    """Class responsible for running the model."""
+    """Class responsible for running the model.
+    
+    Attributes:
+        model (Model): The model to run.
+
+    Methods:
+        copy_executable: Copy the appropriate SWAP executable to the temporary directory.
+        run_swap: Run the SWAP executable.
+        raise_swap_warning: Raise a warning.
+        run: Main function that runs the model
+    """
 
     def __init__(self, model: Model):
         self.model = model
 
     @staticmethod
-    def _copy_executable(tempdir: Path) -> None:
-        """Copy the appropriate SWAP executable to the temporary directory."""
-        if IS_WINDOWS:
-            shutil.copy(swap_windows, tempdir)
-            logger.info("Copying the windows version of SWAP into temporary directory...")
-        else:
-            shutil.copy(swap_linux, tempdir)
-            logger.info("Copying linux executable into temporary directory...")
-
-    @staticmethod
-    def _run_swap(tempdir: Path) -> str:
+    def run_swap(tempdir: Path) -> str:
         """Run the SWAP executable."""
         swap_path = Path(tempdir, "swap.exe") if IS_WINDOWS else "./swap420"
         p = subprocess.Popen(
@@ -94,80 +105,91 @@ class ModelRunner:
             cwd=tempdir,
         )
         stdout = p.communicate(input=b"\n")[0]
+
         return stdout.decode()
 
-    def _raise_swap_warning(self, message):
-        warnings.warn(message, Warning, stacklevel=3)
+    def raise_swap_warning(self, warnings: list):
+        """Gets the output from identify_warnings() and logs them."""
+        for message in warnings:
+            logger.warning(message)
 
-    def run(self, path: str | Path, silence_warnings: bool = False, old_output: bool = True):
+    def run(self, path: str | Path, silence_warnings: bool = False):
         """Main function that runs the model."""
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
 
-            self._copy_executable(tempdir)
-            ModelBuilder(self.model)._write_inputs(tempdir)
-            result = self._run_swap(tempdir)
+            builder = ModelBuilder(self.model, tempdir)
+            builder.copy_executable().write_inputs()
+
+            result = self.run_swap(tempdir)
 
             if "normal completion" not in result:
                 raise Exception(f"Model run failed. \n {result}")
             
             logger.info(result)
 
-            r = ResultReader()
+            # --- Handle the results ---
+            result = Result()
 
-            log = r._read_log_file(tempdir)
-            warnings = r._identify_warnings(log)
+            reader = ResultReader(self.model, tempdir)
 
-            output = None
-            output_tz = None
+            log = reader.read_swap_log(tempdir)
+            result.log = log
+
+            warnings = reader.identify_warnings(log)
+            result.warning = warnings
+            
+            if warnings and not silence_warnings:
+                self.raise_swap_warning(warnings=warnings)
 
             if 'csv' in self.model.general_settings.extensions:
-                output_path = Path(tempdir, f"{self.model.general_settings.outfil}_output.csv")
-                if output_path.exists():
-                    output = r._read_output(output_path)
-                else:
-                    logger.warning(f"Expected output file {output_path} not found.")
+                output = reader.read_swap_csv(which = "csv")
+                result.output.update({"csv": output})
 
             if 'csv_tz' in self.model.general_settings.extensions:
-                output_tz_path = Path(tempdir, f"{self.model.general_settings.outfil}_output_tz.csv")
-                if output_tz_path.exists():
-                    output_tz = r._read_output_tz(output_tz_path)
-                else:
-                    logger.warning(f"Expected output_tz file {output_tz_path} not found.")
+                output_tz = reader.read_swap_csv(which = "csv_tz")
+                result.output.update({"csv_tz": output_tz})
 
-            if warnings and not silence_warnings:
-                logger.warning("Warnings:")
-                for warning in warnings:
-                    self._raise_swap_warning(message=warning)
-                    
-            dict_files = r._read_output_old(self.model, tempdir) if old_output else None
-            
-            result = Result(
-                output=output,
-                output_tz=output_tz,
-                log=log,
-                output_old=dict_files,
-                warning=warnings,
-            )
+            ascii_files = reader.read_swap_ascii()
+
+            result.output.update(ascii_files)
             return result
 
 class ResultReader:
     """Class responsible for reading the model results."""
 
-    @staticmethod
-    def _read_output(path: Path):
-        """Read the output csv file."""
-        df = read_csv(path, comment="*", index_col="DATETIME")
+    def __init__(self, model: Model, tempdir: str):
+        self.model: Model = model
+        self.tempdir = tempdir
+
+    def read_swap_csv(self, which: Literal["csv", "csv_tz"]) -> DataFrame:
+        """Read the output csv file.
+        
+        Since there are only two types of output files (csv and csv_ts), we
+        handle them in the same method.
+
+        Parameters:
+            which (str): The type of output file to read.
+
+        Returns:
+            DataFrame: The output file as a DataFrame.
+        """
+
+        outfil = self.model.general_settings.outfil
+        output_suffix = "_output.csv" if which == "csv" else "_output_tz.csv"
+        index_col = "DATETIME" if which == "csv" else "DATE"
+
+        path = Path(self.tempdir, outfil + output_suffix)
+
+        if not path.exists():
+            logger.warning(f"Expected output file {path} not found.")
+            return DataFrame()
+
+        df = read_csv(path, comment="*", index_col=index_col)
         df.index = to_datetime(df.index)
+
         return df
 
-    @staticmethod
-    def _read_output_tz(path: Path):
-        """Read the output csv file with the depth information."""
-        df = read_csv(path, comment="*", index_col="DATE")
-        df.index = to_datetime(df.index)
-        return df
-
-    def _read_log_file(self, directory: Path) -> str:
+    def read_swap_log(self, directory: Path) -> str:
         """Read the log file."""
 
         log_files = [f for f in Path(directory).glob("*.log") if f.name != "reruns.log"]
@@ -187,21 +209,23 @@ class ResultReader:
         return log_content
 
     @staticmethod
-    def _identify_warnings(log: str) -> list[Warning]:
+    def identify_warnings(log: str) -> list:
         """Read through the log file and catch warnings emitted by the SWAP executable."""
         lines = log.split("\n")
         warnings = [line for line in lines if line.strip().lower().startswith("warning")]
         return warnings
 
-    def _read_output_old(self, model: Model, tempdir: Path):
+    def read_swap_ascii(self):
         """Read all output files that are not in csv format as strings."""
-        list_dir = os.listdir(tempdir)
+        ascii_extensions = [ext for ext in self.model.general_settings.extensions if ext not in ["csv", "csv_tz"]]
+
+        list_dir = os.listdir(self.tempdir)
         list_dir = [
-            f for f in list_dir if not f.find(model.general_settings.outfil) and not f.endswith(".csv")
+            f for f in list_dir if f.endswith(tuple(ascii_extensions))
         ]
         if list_dir:
             dict_files = {
-                f.split(".")[1]: model.read_file(Path(tempdir, f)) for f in list_dir
+            f.split(".")[1]: self.model.read_file(Path(self.tempdir, f)) for f in list_dir
             }
         return dict_files
 
@@ -328,7 +352,6 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
             raise KeyError(f"Component '{component}' not found.")
         self.comp.pop(component)
 
-
     @model_validator(mode='after')
     def validate_all_components(self):
         if not getattr(self, '_validate_on_run', False):
@@ -361,8 +384,8 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
         """
         return self.concat_nested_models(self)
 
-    def run(self, path: str | Path, silence_warnings: bool = False, old_output: bool = True):
+    def run(self, path: str | Path, silence_warnings: bool = False):
         """Run the model using ModelRunner."""
         if self.comp:
             self.validate()
-        return ModelRunner(self).run(path, silence_warnings, old_output)
+        return ModelRunner(self).run(path, silence_warnings)
