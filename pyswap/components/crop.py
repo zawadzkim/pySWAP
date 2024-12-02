@@ -26,14 +26,14 @@ Warning:
     (yaml) and code readability."""
 
 
-from typing import Literal
+from typing import Literal, Self
 
 from pydantic import Field, computed_field
 import pandera as pa
 from pandera.typing import Series
 
-from pyswap.core.io.ascii import open_ascii, save_ascii
-from pyswap.core.fields import Arrays, DateList, IntList, Table
+from pyswap.core.io.io_ascii import open_ascii, save_ascii
+from pyswap.core.fields import Arrays, DateList, IntList, Table, Subsection
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.mixins import SerializableMixin, YAMLValidatorMixin, FileMixin
 from pyswap.core.fields import Table
