@@ -1,7 +1,9 @@
-from typing import Self
+from typing import Self, get_origin, get_args, Literal
+from typing_extensions import Annotated, Union
 
 import chardet
-from pydantic import model_validator
+from pydantic import model_validator, model_serializer
+from pydantic.fields import FieldInfo
 
 from pyswap.core import VALIDATIONRULES
 from pyswap.core.basemodel import PySWAPBaseModel
