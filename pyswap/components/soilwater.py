@@ -4,7 +4,6 @@ from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.fields import String, Table
 from pyswap.core.mixins import YAMLValidatorMixin, SerializableMixin
 
-
 from typing import Literal
 
 from pyswap.core.basemodel import BaseTableModel
@@ -105,6 +104,7 @@ class SoilMoisture(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     inifil: String | None = None
 
 
+
 class SoilProfile(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Vertical discretization of soil profile, soil hydraulic functions and
         hysteresis of soil water retention.
@@ -142,6 +142,7 @@ class SoilProfile(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     tau: float | None = None
     table_soilprofile: Table
     table_soilhydrfunc: Table | None = None
+
 
 
 class SurfaceFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
