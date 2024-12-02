@@ -1,45 +1,17 @@
 """Script reading YAML crop settings files."""
 
+
+# %%
 import os
 from pathlib import Path
 from pprint import pprint
-
-import yaml
+from pyswap.libs import crop_params
+from pyswap.core.io.io_yaml import load_yaml
 from pydantic import BaseModel, computed_field
 
-LIBDIR: Path = Path("pyswap/libs/WOFOST_crop_parameters").absolute()
+class WOFOSTCropFile(BaseModel):
+    """Class for managing the content of a single WOFOST crop parameters file"""
 
-
-def croptypes():
-    """Print the list of available files"""
-    pprint([file for file in os.listdir(LIBDIR) if file.endswith(".yaml")])
-
-
-def read_yaml(fname: str, path: str | None = None) -> str:
-    def read(path: str) -> str:
-        with path.open("r") as f:
-            content = yaml.safe_load(f)
-            return content
-
-    if not path:
-        return WOFOSTCrop(
-            yaml_content=read(Path(LIBDIR, fname).with_suffix(".yaml").absolute())
-        )
-    else:
-        return WOFOSTCrop(
-            yaml_content=read(Path(path, fname).with_suffix(".yaml").absolute())
-        )
-
-
-class WOFOSTCrop(BaseModel):
-    """Class for managing the library of WOFOST crop parameters from https://github.com/ajwdewit.
-
-    The library is included as a submodule in pySWAP and is located at pyswap/libs/WOFOST_crop_parameters.
-    All files in that library have .yaml extension and fairly uniform format so it made sense to set up a
-    pySWAP specific data structure for reading them.
-    """
-
-    libdir: Path = LIBDIR
     yaml_content: dict
 
     @computed_field(return_type=dict)
@@ -82,10 +54,116 @@ class WOFOSTCrop(BaseModel):
         content = self.yaml_content["CropParameters"]["Varieties"][variety]
         return content["Metadata"]
 
+    def populate_attributes(self, params: dict):
+        for key, value in params.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+            else:
+                print(f"Warning: Attribute '{key}' does not exist in the class.")
 
-if __name__ == "__main__":
-    wmaize = read_yaml("maize")
-    string = ""
-    for k, v in wmaize.get_variety("Grain_maize_201").items():
-        string += f"{k} = {v}\n"
-    print(string)
+class WOFOSTCropDB(BaseModel):
+    """Simple class for managing crop parameters files.
+
+    Initially, it's meant to be used with A. de Wit's WOFOST crop parameters
+    database which is a collection of YAML files. However, it can be easily
+    extended to support other formats and databases when they emerge. All
+    methods should return the content as WOFOSTCropFile instances. This way
+    we ensure that whatever the source format is, the content is always
+    usable in the same way.
+
+    Attributes:
+        libdir: Path to the directory with crop parameters
+
+    Properties:
+        croptypes: List all available crop types (files in the directory)
+    
+    Methods:
+        load_crop_file: Load a specific crop file and return the content as a
+            WOFOSTCropFile instance
+    """
+
+    libdir: Path = crop_params
+
+    @computed_field(return_type=None)
+    def croptypes(self):
+        """Print the list of available files"""
+        pprint(load_yaml(crop_params / "crops.yaml")["available_crops"])
+
+
+    @staticmethod
+    def format_tables(table: list) -> dict:
+        """Format tables from YAML to a dictionary with two lists.
+        
+        In the YAML file, the tables seem to be formatted
+        in a way where the odd elements in the lists are one
+        column and the even elements are the other. This method
+        converts this format to a dictionary with two lists.
+        """
+        return {
+            "col1": table[::2],
+            "col2": table[1::2]
+        }
+    
+    def load_crop_file(self, crop: str):
+        """Load a specific crop file and return the content as a dictionary"""
+        path = self.libdir / f"{crop}" if crop.endswith(".yaml") else self.libdir / f"{crop}.yaml"
+        return WOFOSTCropFile(yaml_content=load_yaml(path))
+
+
+
+# %%
+db = WOFOSTCropDB()
+db.croptypes
+
+# %%
+
+potato = db.load_crop_file("potato")
+potato.varieties
+
+# %%
+
+potato_params = potato.get_variety("Potato_701")
+
+# %%
+import pandas as pd
+
+VERNRTB = potato_params["VERNRTB"]
+
+df = pd.DataFrame(db.format_tables(VERNRTB))
+
+df
+
+# %%
+
+# Example usage:
+potato = db.load_crop_file("potato")
+params = {
+    'CO2EFFTB': [40.0, 0.0, 360.0, 1.0, 720.0, 1.11, 1000.0, 1.11, 2000.0, 1.11],
+    'NON_EXISTENT_ATTR': 123,  # This will trigger a warning
+    # ... other parameters ...
+}
+potato.populate_attributes(params)
+
+
+# %%
+from typing import get_origin, get_args
+from typing_extensions import Annotated, Union
+
+def is_annotated_table_or_array(attr_type):
+    origin = get_origin(attr_type)
+    if origin is Annotated:
+        base_type = get_args(attr_type)[-1]
+        return base_type in ["Table", "Arrays", "ObjectList"]
+    elif origin is Union:
+        return any(is_annotated_table_or_array(arg) for arg in get_args(attr_type))
+    return False
+
+def check_attributes(cls):
+    for attr_type in cls.__annotations__.values():
+        return is_annotated_table_or_array(attr_type)
+
+
+from pyswap import CropDevelopmentSettingsFixed
+
+print(check_attributes(CropDevelopmentSettingsFixed))
+# %%

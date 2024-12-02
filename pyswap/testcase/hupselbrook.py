@@ -1,6 +1,6 @@
-from datetime import date as dt
 
 # %%
+from datetime import date as dt
 import pyswap as ps
 import pyswap.components.boundary
 import pyswap.components.crop
@@ -242,6 +242,7 @@ def _make_hupselbrook():
 
     # Available in potato.yaml
     potato_rdctb = ps.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
+    
     potato_cropdev_settings = pyswap.components.crop.CropDevelopmentSettingsWOFOST(
         swcf=2,
         table_dvs_ch=potato_chtb,
@@ -249,8 +250,8 @@ def _make_hupselbrook():
         rsc=207.0,
         rsw=0.0,
         idsl=0,  # Available in potato.yaml
-        tsumea=150.0,  # TSUMEM available in potato.yaml
-        tsumam=1550.0,  # TSUMEM available in potato.yaml
+        tsum1=150.0,  # TSUMEM available in potato.yaml
+        tsum2=1550.0,  # TSUMEM available in potato.yaml
         dtsmtb=potato_dtsmtb,
         tdwi=75.0,  # Available in potato.yaml
         laiem=0.0589,

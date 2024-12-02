@@ -17,7 +17,7 @@ import platform
 from importlib import resources
 from importlib.abc import Traversable
 
-from pyswap.core.io.yaml import load_yaml
+from pyswap.core.io.io_yaml import load_yaml
 
 root: Traversable = resources.files("pyswap")
 """Root directory of the package."""

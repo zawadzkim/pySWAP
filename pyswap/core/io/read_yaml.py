@@ -65,10 +65,6 @@ def generate_dvs_list(
             "Method must be either 'linear', 'logarithmic' or 'exponential'"
         )
 
-
-# %%
-
-
 # %%
 from pyswap.libs import crop_params
 
@@ -76,26 +72,5 @@ path_potato = crop_params / "potato.yaml"
 potato_yaml = read_yaml(path_potato)
 
 potato_varieties = get_varieties(potato_yaml)
-
-
-# Metadata:
-#     ## Meta data at the crop level goes here
-
-# CropParameters:
-#     GenericC3: &GenericC3
-
-#         ## All parameters for C3 crops go here
-
-#     GenericC4: &GenericC4
-
-#         ## All parameters for C4 crops go here
-
-#     EcoTypes:
-#         springbarley: &springbarley
-#             <<: *GenericC3           # Ecotype springbarley inherits from GenericC3
-
-#             ## All parameters specific for springbarley go here
-
-#     Varieties:
 
 # %%
