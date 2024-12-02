@@ -139,6 +139,13 @@ class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     rainfil: String | None = None
     nmetdetail: int | None = Field(default=None, ge=1, le=96)
 
+    @model_validator(mode="after")
+    def validate_with_yaml(self):
+        """Override validation to check _validate flag first."""
+        if not self.validation:
+            return self
+        return super().validate_with_yaml()
+
     @property
     def met(self):
         return self.metfile.content.to_csv(index=False, lineterminator="\n")
@@ -152,6 +159,7 @@ class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         if self.meteo_location:
             self.lat = self.meteo_location.lat
             self.alt = self.meteo_location.alt
+        self._validate = True
 
     def write_met(self, path: str):
         """Write the .met file.
