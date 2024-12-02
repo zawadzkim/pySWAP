@@ -77,46 +77,66 @@ class SerializableMixin:
     concatenate the files.
     """
 
-    @staticmethod
-    def format(attr, value) -> str:
-        if attr.startswith("table_") or attr.startswith("list_"):
-            fstring = f"{value}"
-        else:
-            fstring = f"{attr} = {value}\n"
-        return fstring
+    def if_is_union_type(self, field_info):
+        """Check if the field type is a Union type.
+        
+        If it is, look for the json_schema_extra attribute in the field_info
+        of the first argument of the Union type. If it is not found, return None.
+        """
 
-    def concat_attributes(self) -> list[str | None]:
-        """Concatenate the attributes of a PySWAPBaseModel class into a string.
+        field_type = field_info.annotation
+        if get_origin(field_type) is Union:
+            union_args = get_args(field_type)
+            args = get_args(union_args[0])
+            # look for the FieldInfo object in the Union type
+            field_info = [item for item in args if isinstance(item, FieldInfo)]
 
-        The object it's used on should be an instance of a PySWAPBaseModel
-        with maximum 1 depth level. This is checked in
-        the issubclass() conditional."""
+            # if the FieldInfo object is not found, return None
+            if not field_info:
+                return None
+            
+            # Otherwise, there should be only one FieldInfo object
+            return field_info[0].json_schema_extra
+        return None
 
-        if not issubclass(type(self), PySWAPBaseModel):
-            raise TypeError("Can only be used on a PySWAPBaseModel instance!")
-        string = []
-        for attr, value in self.model_dump(mode="json", exclude_none=True).items():
-            if isinstance(value, dict):
-                for k, v in value.items():
-                    string.append(self.format(k, v))
+    def is_annotated_exception_type(self, field_name):
+        """Check if the attribute type is Table, Arrays, or ObjectList.
+        
+        If the attribute is a Table, Arrays, or ObjectList, return True. First try
+        to assign the json_schema_extra from a Union type. If that fails, assign
+        the json_schema_extra from the field_info. If the json_schema_extra is
+        None, return False.
+        """
+        # Every special field will have a FieldInfo object
+        field_info = self.model_fields.get(field_name, None)
+        if field_info is None:
+            return False
+        
+        json_schema_extra = self.if_is_union_type(field_info) or field_info.json_schema_extra
+
+        if json_schema_extra is None:
+            return False
+        return json_schema_extra.get("is_annotated_exception_type", False)
+
+    @model_serializer(when_used="json", mode="wrap")
+    def serialize_model(self, handler):
+        """Get a dictionary of SWAP formatted strings."""
+        result = {}
+        validated_self = handler(self)
+        for field_name, field_value in validated_self.items():
+            if self.is_annotated_exception_type(field_name):
+                result[field_name] = field_value
             else:
-                string.append(self.format(attr, value))
+                result[field_name] = f"{field_name.upper()} = {field_value}"
+        return result
 
-        return string
-
-
-class ComplexSerializableMixin(SerializableMixin):
-    """Serialize a class composed of nested models."""
-
-    @staticmethod
-    def concat_nested_models(file):
-        string_list = []
-
-        for section in dict(file).values():
-            if section is None or isinstance(section, str) or isinstance(section, dict):
-                continue
-            string_list.extend(section.concat_attributes())
-        return "".join(string_list)
+    def model_string(self, mode: Literal["str", "list"] = "string") -> str | list[str]:
+        """Concatenate the formatted strings from dictionsty to one string."""
+        dump = self.model_dump(mode="json", exclude_none=True, by_alias=True).values()
+        if mode == "list":
+            return list(dump)
+        else:
+            return "\n".join(dump)
 
 
 class YAMLValidatorMixin:
