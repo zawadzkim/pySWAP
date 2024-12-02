@@ -621,7 +621,7 @@ class GrasslandManagement(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin
     relmf: float
 
 
-class CropFile(PySWAPBaseModel, FileMixin):
+class CropFile(PySWAPBaseModel, FileMixin, SerializableMixin):
     """Main class for the .crp file.
 
     This class collects all the settings for the crop file. Currently the types of the
@@ -647,29 +647,21 @@ class CropFile(PySWAPBaseModel, FileMixin):
 
     name: str = Field(exclude=True)
     path: str | None = None
-    prep: Preparation | None = None
-    cropdev_settings: (
-        CropDevelopmentSettings
-        | CropDevelopmentSettingsFixed
-        | CropDevelopmentSettingsWOFOST
-        | CropDevelopmentSettingsGrass
-        | None
-    ) = None
-    oxygenstress: OxygenStress | None = None
-    droughtstress: DroughtStress | None = None
-    saltstress: SaltStress | None = SaltStress(swsalinity=0)
-    compensaterwu: CompensateRWUStress | None = CompensateRWUStress(swcompensate=0)
-    interception: Interception | None = None
-    scheduledirrigation: ScheduledIrrigation | None = ScheduledIrrigation(schedule=0)
-    grasslandmanagement: GrasslandManagement | None = None
-    co2correction: CO2Correction | None = None
+    prep: Subsection | None = None
+    cropdev_settings: Subsection | None = None
+    oxygenstress: Subsection | None = None
+    droughtstress: Subsection | None = None
+    saltstress: Subsection | None = SaltStress(swsalinity=0)
+    compensaterwu: Subsection | None = CompensateRWUStress(swcompensate=0)
+    interception: Subsection | None = None
+    scheduledirrigation: Subsection | None = ScheduledIrrigation(schedule=0)
+    grasslandmanagement: Subsection | None = None
+    co2correction: Subsection | None = None
 
-    @computed_field(return_type=str)
-    def content(self):
-        if self.path:
-            return open_ascii(self.path)
-        else:
-            return self._concat_sections()
+    @property
+    def crp(self) -> str:
+        """Return the model string of the .crp file."""
+        return self.model_string()
 
 
 class Crop(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
@@ -698,7 +690,7 @@ class Crop(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         count = 0
         for name, cropfile in self.cropfiles.items():
             count += 1
-            save_ascii(string=cropfile.content, extension="crp", fname=name, path=path)
+            save_ascii(string=cropfile.crp, extension="crp", fname=name, path=path)
 
         print(f"{count} crop file(s) saved.")
 

@@ -30,6 +30,7 @@ from typing import Annotated
 
 from pandas import DataFrame
 from pydantic.functional_serializers import PlainSerializer
+from pydantic import Field
 
 from pyswap.core.serializers import (
     serialize_arrays,
@@ -37,17 +38,18 @@ from pyswap.core.serializers import (
     serialize_object_list,
     serialize_table,
 )
+from pyswap.core.basemodel import PySWAPBaseModel
 
 Table = Annotated[
     DataFrame,
     PlainSerializer(serialize_table, return_type=str, when_used="json"),
+    Field(json_schema_extra={"is_annotated_exception_type": True})
 ]
 """Serialize pd.DataFrame with headers to a string without leading variable name."""
 
-
 Arrays = Annotated[
     DataFrame,
-    PlainSerializer(serialize_arrays, return_type=str, when_used="json"),
+    PlainSerializer(serialize_arrays, return_type=str, when_used="json")
 ]
 """Serialize pd.DataFrame without headers to a string with leading variable name."""
 
@@ -105,3 +107,15 @@ ObjectList = Annotated[
 ]
 
 String = Annotated[str, PlainSerializer(lambda x: f"'{x}'", return_type=str)]
+
+File = Annotated[
+    PySWAPBaseModel,
+    PlainSerializer(lambda x: x.model_string(), return_type=str, when_used="json"),
+    Field(json_schema_extra={"is_annotated_exception_type": True})
+    ]
+
+Subsection = Annotated[
+    PySWAPBaseModel,
+    PlainSerializer(lambda x: x.model_string(), return_type=str),
+    Field(json_schema_extra={"is_annotated_exception_type": True})
+]

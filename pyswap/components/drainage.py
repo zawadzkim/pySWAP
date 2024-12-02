@@ -18,9 +18,9 @@ from typing import Literal
 
 from pydantic import Field
 
-from pyswap.core.fields import FloatList, ObjectList, String, Table
+from pyswap.core.fields import FloatList, ObjectList, String, Table, File, Subsection
 from pyswap.core.valueranges import UNITRANGE
-from pyswap.core.mixins import ComplexSerializableMixin, YAMLValidatorMixin, FileMixin, SerializableMixin
+from pyswap.core.mixins import YAMLValidatorMixin, FileMixin, SerializableMixin
 from pyswap.core.basemodel import PySWAPBaseModel
 
 __all__ = [
@@ -191,7 +191,7 @@ class Flux(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         return d
 
 
-class DraFile(PySWAPBaseModel, FileMixin):
+class DraFile(PySWAPBaseModel, FileMixin, SerializableMixin):
     """Drainage file (.dra) settings.
 
     Attributes:
@@ -203,13 +203,13 @@ class DraFile(PySWAPBaseModel, FileMixin):
     """
 
     drfil: String
-    general: DraSettings = Field(exclude=True)
-    fluxtable: DrainageFluxTable | None = Field(default=None, exclude=True)
-    drainageformula: DrainageFormula | None = Field(default=None, exclude=True)
-    drainageinfres: DrainageInfRes | None = Field(default=None, exclude=True)
+    general: Subsection | None = None
+    fluxtable: Subsection | None = None
+    drainageformula: Subsection | None = None
+    drainageinfres: Subsection | None = None
 
 
-class Drainage(PySWAPBaseModel, ComplexSerializableMixin, YAMLValidatorMixin):
+class Drainage(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """The lateral drainage settings of .swp file.
 
     Attributes:
@@ -223,11 +223,11 @@ class Drainage(PySWAPBaseModel, ComplexSerializableMixin, YAMLValidatorMixin):
     """
 
     swdra: Literal[0, 1, 2]
-    drafile: DraFile | None = Field(default=None)
+    drafile: File | None = Field(default=None)
 
     @property
     def dra(self):
-        return self.concat_nested_models(self.drafile)
+        return self.model_string()
 
     def write_dra(self, path: str):
         self.drafile.save_file(

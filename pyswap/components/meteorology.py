@@ -22,7 +22,7 @@ from datetime import datetime as dt
 from pandas import read_csv
 import pandera as pa
 from pandera.typing import Series
-from pyswap.core.fields import  CSVTable, String, Table
+from pyswap.core.fields import  CSVTable, String, Table, File
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.valueranges import UNITRANGE, YEARRANGE
 from pyswap.core.mixins import FileMixin, YAMLValidatorMixin, SerializableMixin
@@ -30,16 +30,16 @@ from pyswap.core.basemodel import BaseTableModel
 from pyswap.gis import Location
 
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 
 
 from decimal import Decimal
-from typing import Literal, Optional
+from typing import Literal
 
 __all__ = ["MetFile", "Meteorology", "DAILYMETEODATA", "SHORTINTERVALMETEODATA", "DETAILEDRAINFALL", "RAINFLUX", "load_from_csv", "load_from_knmi"]
 
 
-class MetFile(PySWAPBaseModel, FileMixin):
+class MetFile(PySWAPBaseModel, FileMixin, SerializableMixin):
     """Meteorological data for the .met file.
 
     This object is created by functions fetching or loading meteorological data
@@ -120,6 +120,8 @@ class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     Methods:
         write_met: Writes the .met file.
     """
+    validation: bool = Field(default=False, exclude=True)
+
 
     lat: Decimal | None = Field(default=None, ge=-90, le=90)
     meteo_location: Location | None = Field(default=None, exclude=True)
@@ -127,8 +129,8 @@ class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     swdivide: Literal[0, 1]
     swrain: Literal[0, 1, 2, 3] | None = 0
     swetsine: Literal[0, 1] = 0
-    metfile: MetFile | None = Field(default=None, repr=False)
-    alt: Decimal = Optional[Field(default=None, ge=-400.0, le=3000.0)]
+    metfile: File | None = Field(default=None, repr=False)
+    alt: Decimal | None = Field(default=None, ge=-400.0, le=3000.0)
     altw: Decimal = Field(default=None, ge=0.0, le=99.0)
     angstroma: Decimal = Field(default=None, **UNITRANGE)
     angstromb: Decimal = Field(default=None, **UNITRANGE)

@@ -33,10 +33,11 @@ from pyswap.components.soilwater import (
 from pyswap.components.transport import HeatFlow, SoluteTransport
 from pyswap.core import IS_WINDOWS
 from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.mixins import ComplexSerializableMixin, FileMixin
+from pyswap.core.mixins import SerializableMixin, FileMixin
 from pyswap.libs import swap_linux, swap_windows
 from pyswap.model.metadata import Metadata
 from pyswap.model.result import Result
+from pyswap.core.fields import Subsection
 
 logger = logging.getLogger(__name__)
 __all__ = ["Model"]
@@ -240,7 +241,7 @@ class ResultReader:
         return {}
 
 
-class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
+class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     """Main class that runs the SWAP model.
 
     Attributes:
@@ -269,22 +270,22 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
 
     _validate_on_run: bool = PrivateAttr(default=False)
 
-    metadata: Metadata | None = None
+    metadata: Subsection | None = None
     version: str = Field(exclude=True, default="base")
-    generalsettings: GeneralSettings | None = None
-    meteorology: Meteorology | None = None
-    crop: Crop | None = None
-    fixedirrigation: FixedIrrigation | None = FixedIrrigation(swirfix=0)
-    soilmoisture: SoilMoisture | None = None
-    surfaceflow: SurfaceFlow | None = None
-    evaporation: Evaporation | None = None
-    soilprofile: SoilProfile | None = None
-    snowandfrost: SnowAndFrost | None = SnowAndFrost(swsnow=0, swfrost=0)
-    richards: RichardsSettings | None = RichardsSettings(swkmean=1, swkimpl=0)
-    lateraldrainage: Drainage | None = None
-    bottomboundary: BottomBoundary | None = None
-    heatflow: HeatFlow | None = HeatFlow(swhea=0)
-    solutetransport: SoluteTransport | None = SoluteTransport(swsolu=0)
+    generalsettings: Subsection | None = None
+    meteorology: Subsection | None = None
+    crop: Subsection | None = None
+    fixedirrigation: Subsection | None = FixedIrrigation(swirfix=0)
+    soilmoisture: Subsection | None = None
+    surfaceflow: Subsection | None = None
+    evaporation: Subsection | None = None
+    soilprofile: Subsection | None = None
+    snowandfrost: Subsection | None = SnowAndFrost(swsnow=0, swfrost=0)
+    richards: Subsection | None = RichardsSettings(swkmean=1, swkimpl=0)
+    lateraldrainage: Subsection | None = None
+    bottomboundary: Subsection | None = None
+    heatflow: Subsection | None = HeatFlow(swhea=0)
+    solutetransport: Subsection | None = SoluteTransport(swsolu=0)
 
     @model_validator(mode="after")
     def validate_all_components(self):
@@ -341,7 +342,7 @@ class Model(PySWAPBaseModel, FileMixin, ComplexSerializableMixin):
         Looping over the dict() because when model_dump() is
         used, the nested models are automatically serialized.
         """
-        return self.concat_nested_models(self)
+        return self.model_string()
 
     def run(self, path: str | Path, silence_warnings: bool = False):
         """Run the model using ModelRunner."""
