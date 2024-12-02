@@ -102,9 +102,11 @@ class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorM
     rsc: float | None = Field(default=None, ge=0.0, le=1.0e6)
     rsw: float | None = Field(default=None, ge=0.0, le=1.0e6)
     # In WOFOST reference yaml files this is called TSUM1
-    tsumea: float = Field(default=None, ge=0.0, le=1.0e4)
+    # renamed this parameter to match the WOFOST template, but the alias is still tsumea
+    tsum1: float = Field(serialization_alias="tsumea", default=None, ge=0.0, le=1.0e4)
     # In WOFOST reference yaml files this is called TSUM2
-    tsumam: float = Field(default=None, ge=0.0, le=1.0e4)
+    # renamed this parameter to match the WOFOST template, but the alias is still tsumam
+    tsum2: float = Field(serialization_alias="tsumam", default=None, ge=0.0, le=1.0e4)
     # In SWAP this parameter seems to meen something different than in the
     # WOFOST template. The range of value is the same though.
     tbase: float | None = Field(default=None, ge=-10.0, le=30.0)
@@ -120,6 +122,12 @@ class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorM
     wrtmax: float = Field(default=None, ge=0.0, le=1.0e5)
     swrdc: Literal[0, 1] = 0
     rdctb: Arrays
+
+    def set_params_for_variety(self, params: dict) -> Self:
+        """Set parameters for the variety."""
+        for key, value in params.items():
+            setattr(self, key, value)
+        return self
 
 
 class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
