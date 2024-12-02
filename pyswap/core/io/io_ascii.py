@@ -44,4 +44,3 @@ def save_ascii(
 
     with open(f"{path}/{fname}", f"{mode}", encoding=f"{encoding}") as f:
         f.write(string)
-
