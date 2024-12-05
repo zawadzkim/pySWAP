@@ -17,18 +17,10 @@ from typing import Literal
 from pandas import DataFrame, read_csv, to_datetime
 from pydantic import Field, model_validator, PrivateAttr
 
-from pyswap.components.boundary import BottomBoundary
-from pyswap.components.crop import Crop
-from pyswap.components.drainage import Drainage
 from pyswap.components.irrigation import FixedIrrigation
-from pyswap.components.meteorology import Meteorology
-from pyswap.components.simsettings import GeneralSettings, RichardsSettings
+from pyswap.components.simsettings import  RichardsSettings
 from pyswap.components.soilwater import (
-    Evaporation,
     SnowAndFrost,
-    SoilMoisture,
-    SoilProfile,
-    SurfaceFlow,
 )
 from pyswap.components.transport import HeatFlow, SoluteTransport
 from pyswap.core import IS_WINDOWS
