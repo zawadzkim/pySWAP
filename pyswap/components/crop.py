@@ -26,9 +26,9 @@ Warning:
     (yaml) and code readability."""
 
 
-from typing import Literal, Self
+from typing import Literal
 
-from pydantic import Field, computed_field
+from pydantic import Field, model_validator, PrivateAttr
 import pandera as pa
 from pandera.typing import Series
 
@@ -40,6 +40,7 @@ from pyswap.core.fields import Table
 from pyswap.core.valueranges import DVSRANGE, UNITRANGE, YEARRANGE
 from pyswap.core.basemodel import BaseTableModel
 from pyswap.components.irrigation import ScheduledIrrigation
+from pyswap.core.db.cropdb import WOFOSTCropFile
 
 __all__ = [
     "CropDevelopmentSettings", "CropDevelopmentSettingsWOFOST", "CropDevelopmentSettingsFixed", "OxygenStress", 
@@ -87,6 +88,8 @@ class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorM
         swrdc (Literal[0, 1]): Switch for calculation of relative root density
         rdctb (Arrays): root density as function of relative rooting depth
     """
+    _validation: bool = PrivateAttr(default=False)
+    wofost_crop: WOFOSTCropFile | None = None
 
     swcf: Literal[1, 2]
     dvs_cf: Table | None = None
@@ -116,11 +119,19 @@ class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorM
     swrdc: Literal[0, 1] = 0
     rdctb: Arrays
 
-    def set_params_for_variety(self, params: dict) -> Self:
-        """Set parameters for the variety."""
+    @model_validator(mode="after")
+    def validate_with_yaml(self):
+        """Override validation to check _validate flag first."""
+        if not self._validation:
+            return self
+        return super().validate_with_yaml()
+
+    def populate_attributes(self, params: dict):
         for key, value in params.items():
-            setattr(self, key, value)
-        return self
+            if hasattr(self, key):
+                setattr(self, key, value)
+            else:
+                print(f"Warning: Attribute '{key}' does not exist in the class.")
 
 
 class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
@@ -687,13 +698,15 @@ class Crop(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
 
 #------------------------------------------ Crop tables ------------------------------------------#
-__all__.extend([
+all_tables = [
     "RDTB", "RDCTB", "GCTB", "CHTB", "KYTB", "MRFTB", "WRTB",
     "CROPROTATION", "DTSMTB", "SLATB", "AMAXTB", "TMPFTB", "TMNFTB", "RFSETB", "FRTB", "FLTB",
     "FSTB", "FOTB", "RDRRTB", "RDRSTB", "DMGRZTB", "LSDATB", "LSDBTB", "RLWTB", "DMMOWTB", "DMMOWDELAY",
     "CHTB_GRASS", "SLATB_GRASS", "AMAXTB_GRASS", "RFSETB_GRASS", "FRTB_GRASS", "FLTB_GRASS", "FSTB_GRASS", 
     "RDRRTB_GRASS", "RDRSTB_GRASS"
-])
+]
+
+__all__.extend(all_tables)
 
 class RDTB(BaseTableModel):
     """Rooting Depth [0..1000 cm, R], as a function of development stage [0..2 -, R].
