@@ -51,13 +51,6 @@ __all__ = [
 class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Crop development settings (parts 1-xx form the template)
 
-    Note:
-        The validation of this class should be optimized. The current implementation
-        repeats the validation of the base class in each subclass. The observed issue is that
-        when the validator is inherited from the base class and there is another validator in the
-        subclass (even if they have different names), at the validation step of the child class the
-        validator throws an error that the attribute is NoneType. To be fixed later.
-
     Attributes:
         swcf (Literal[1, 2]): Choose between crop factor and crop height
 
@@ -218,16 +211,6 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
 
 class CropDevelopmentSettingsFixed(CropDevelopmentSettings):
     """Fixed crop development settings (parts 1-xx form the template)
-
-    Warning:
-        This class is not complete. It is missing the validation.
-
-    Note:
-        I noticed an issue with the tables here. They are actually arrays (each
-        array is a column) that are preceeded by the variable name and "=". That variable
-        name is the same for all options of tables which have different column names (e.g., DVS/LAI or
-        DVS/SCF) but the variable name is the same (e.g., GCTB).
-        TODO: implement a check of the column before the df is converted to string.
 
     Attributes:
         idev (Literal[1, 2]): Duration of crop growing period
