@@ -62,8 +62,11 @@ class BaseTableModel(pa.DataFrameModel):
         coerce = True
 
     @classmethod
-    def create(cls, data: dict) -> DataFrame:
+    def create(cls, data: dict, columns: list | None = None) -> DataFrame:
         df = pd.DataFrame(data)
-        df.columns = df.columns.str.upper()
+        if columns:
+            df.columns = columns
+        else:
+            df.columns = df.columns.str.upper()
         validated_df = cls.validate(df)
         return validated_df
