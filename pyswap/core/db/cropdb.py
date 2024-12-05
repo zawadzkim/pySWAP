@@ -73,8 +73,7 @@ class WOFOSTCropFile(BaseModel):
                 cols = list(table_class.__annotations__.keys())
                 if isinstance(v, list):
                     variety[k] = table_class.create(self._format_tables(v), columns=cols)
-        return {k: self._format_tables(v) if isinstance(v, list) else v for k, v in variety.items()}
-        # return variety
+        return variety
     
     @staticmethod
     def _format_tables(table: list) -> dict:
