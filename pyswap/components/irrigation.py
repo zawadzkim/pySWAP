@@ -53,7 +53,7 @@ class FixedIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
     swirfix: Literal[0, 1]
     swirgfil: Literal[0, 1] | None = None
-    table_irrigevents: Table | None = None
+    irrigevents: Table | None = None
     irgfile: IrgFile | None = Field(default=None, repr=False)
 
     def write_irg(self, path) -> str:
@@ -65,7 +65,7 @@ class FixedIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         )
 
 
-class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin):
+class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Irrigation scheduling settings in the .crp file..
 
     !!! warning
@@ -130,36 +130,12 @@ class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin):
     dcslim: Literal[0, 1] | None = None
     irgdepmin: float | None = Field(default=None, ge=0.0, le=100.0)
     irgdepmax: float | None = Field(default=None, ge=0.0, le=1.0e7)
-    table_tc1tb: Table | None = None
-    table_tc2tb: Table | None = None
-    table_tc3tb: Table | None = None
-    table_tc4tb: Table | None = None
-    table_tc7tb: Table | None = None
-    table_tc8tb: Table | None = None
-
-    @model_validator(mode="after")
-    def _validate_scheduled_irrigation(self) -> Self:
-        if self.tcs == 1:
-            self.dvs_tc1 = {"dvs_tc1": [0.0, 2.0], "Trel": [0.95, 0.95]}
-        elif self.tcs == 2:
-            self.dvs_tc2 = {"dvs_tc2": [0.0, 2.0], "RAW": [0.95, 0.95]}
-        elif self.tcs == 3:
-            self.dvs_tc3 = {"dvs_tc3": [0.0, 2.0], "TAW": [0.50, 0.50]}
-        elif self.tcs == 4:
-            self.dvs_tc4 = {"dvs_tc4": [0.0, 2.0], "DWA": [0.40, 0.40]}
-        elif self.tcs == 5:
-            self.dvs_tc5 = {"dvs_tc5": [0.0, 2.0], "Value_tc5": [-1000.0, -1000.0]}
-        elif self.tcs == 6:
-            assert self.irgthreshold is not None, (
-                "irgthreshold is required when tcs is 6"
-            )
-            assert self.tcsfix is not None, "tcsfix is required when tcs is 6"
-            if self.tcsfix:
-                assert self.irgdayfix is not None, (
-                    "irgdayfix is required when tcsfix is True"
-                )
-
-        return self
+    tc1tb: Table | None = None
+    tc2tb: Table | None = None
+    tc3tb: Table | None = None
+    tc4tb: Table | None = None
+    tc7tb: Table | None = None
+    tc8tb: Table | None = None
 
 
 def irg_from_csv(irgfil: str, path: str) -> IrgFile:

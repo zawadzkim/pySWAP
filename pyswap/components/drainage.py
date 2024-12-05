@@ -72,7 +72,7 @@ class DrainageFluxTable(PySWAPBaseModel, SerializableMixin):
     """
 
     lm1: float = Field(ge=1.0, le=1000.0)
-    table_qdrntb: Table
+    qdrntb: Table
 
 
 class DrainageFormula(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
@@ -141,7 +141,7 @@ class DrainageInfRes(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     cofintflb: float | None = Field(default=None, ge=0.01, le=10.0)
     expintflb: float | None = Field(default=None, ge=0.1, le=1.0)
     swtopnrsrf: Literal[0, 1] | None = None
-    list_levelfluxes: ObjectList | None = None
+    levelfluxes: ObjectList | None = None
 
 
 class Flux(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):

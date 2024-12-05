@@ -96,8 +96,8 @@ class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorM
     """
 
     swcf: Literal[1, 2]
-    table_dvs_cf: Table | None = None
-    table_dvs_ch: Table | None = None
+    dvs_cf: Table | None = None
+    dvs_ch: Table | None = None
     albedo: float | None = Field(default=None, **UNITRANGE)
     rsc: float | None = Field(default=None, ge=0.0, le=1.0e6)
     rsw: float | None = Field(default=None, ge=0.0, le=1.0e6)
@@ -460,7 +460,7 @@ class Interception(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
     swinter: Literal[0, 1, 2]
     cofab: float | None = Field(default=None, **UNITRANGE)
-    table_intertb: Table | None = None
+    intertb: Table | None = None
 
 
 class CO2Correction(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
@@ -614,8 +614,8 @@ class GrasslandManagement(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin
     swlossgrz: Literal[0, 1] | None = None
     tagprest: float | None = None
     dewrest: float | None = None
-    table_lsda: Table | None = None
-    table_lsdb: Table | None = None
+    lsda: Table | None = None
+    lsdb: Table | None = None
     swdmmow: int | None = None
     dmharvest: float | None = None
     daylastharvest: int | None = None
@@ -624,7 +624,7 @@ class GrasslandManagement(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin
     maxdaymow: int | None = None
     swlossmow: int | None = None
     mowrest: float | None = None
-    table_dmmowdelay: Table | None = None
+    dmmowdelay: Table | None = None
     swpotrelmf: int
     relmf: float
 
@@ -691,7 +691,7 @@ class Crop(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
     swcrop: Literal[0, 1]
     rds: float | None = Field(default=None, ge=1, le=5000)
-    table_croprotation: Table | None = None
+    croprotation: Table | None = None
     cropfiles: dict[str, CropFile] | None = Field(default=None, exclude=True)
 
     def write_crop(self, path: str):

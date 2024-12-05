@@ -99,7 +99,7 @@ class SoilMoisture(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """
 
     swinco: Literal[1, 2, 3]
-    table_head_soildepth: Table | None = None
+    head_soildepth: Table | None = None
     gwli: float | None = None
     inifil: String | None = None
 
@@ -140,8 +140,8 @@ class SoilProfile(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     swmacro: Literal[0, 1]
     filenamesophy: String | None = None
     tau: float | None = None
-    table_soilprofile: Table
-    table_soilhydrfunc: Table | None = None
+    soilprofile: Table
+    soilhydrfunc: Table | None = None
 
 
 
@@ -175,7 +175,7 @@ class SurfaceFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     rsroexp: float = 1.0
     pondmx: float | None = None
     rufil: String | None = None
-    table_pondmxtb: Table | None = None
+    pondmxtb: Table | None = None
 
 
 class INIPRESSUREHEAD(BaseTableModel):
