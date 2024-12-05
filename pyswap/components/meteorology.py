@@ -30,7 +30,7 @@ from pyswap.core.basemodel import BaseTableModel
 from pyswap.gis import Location
 
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, field_validator, model_validator, PrivateAttr
 
 
 from decimal import Decimal
@@ -120,15 +120,14 @@ class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     Methods:
         write_met: Writes the .met file.
     """
-    validation: bool = Field(default=False, exclude=True)
-
+    _validation: bool = PrivateAttr(default=False)
 
     lat: Decimal | None = Field(default=None, ge=-90, le=90)
     meteo_location: Location | None = Field(default=None, exclude=True)
     swetr: Literal[0, 1]
     swdivide: Literal[0, 1]
     swrain: Literal[0, 1, 2, 3] | None = 0
-    swetsine: Literal[0, 1] = 0
+    swetsine: Literal[0, 1] = 0 
     metfile: File | None = Field(default=None, repr=False)
     alt: Decimal | None = Field(default=None, ge=-400.0, le=3000.0)
     altw: Decimal = Field(default=None, ge=0.0, le=99.0)
@@ -141,8 +140,8 @@ class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
     @model_validator(mode="after")
     def validate_with_yaml(self):
-        """Override validation to check _validate flag first."""
-        if not self.validation:
+        """Delay the validation to post_init."""
+        if not self._validation:
             return self
         return super().validate_with_yaml()
 
@@ -155,11 +154,14 @@ class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         return v.quantize(Decimal("0.00"))
 
     def model_post_init(self, __context):
-        """Set lat, and alt from `meteo_location` if they are not provided."""
+        """Set lat, and alt from `meteo_location` if Location object is provided."""
         if self.meteo_location:
             self.lat = self.meteo_location.lat
             self.alt = self.meteo_location.alt
-        self._validate = True
+
+        self._validation = True
+        self.validate_with_yaml()
+        self._validation = False
 
     def write_met(self, path: str):
         """Write the .met file.
