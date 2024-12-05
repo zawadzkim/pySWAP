@@ -424,3 +424,55 @@ SurfaceFlow:
   swrunon:
     1:
       - rufil
+
+ScheduledIrrigation:
+  schedule:
+    1:
+      - startirr
+      - endirr
+      - cirrs
+      - isuas
+      - tcs
+      - dcs
+      - dcslim
+      - tcsfix
+  tcs:
+    1:
+      - tc1tb
+    2:
+      - tc2tb
+      - phfieldcapacity
+    3:
+      - tc3tb
+      - phfieldcapacity
+    4:
+      - tc4tb
+      - phfieldcapacity
+    6:
+      - irgthreshold
+    7:
+      - tc7tb
+      - dcrit
+      - swcirrthres
+    8:
+      - tc8tb
+      - dcrit
+      - swcirrthres
+  swcirrthres:
+    1:
+      - cirrthres
+      - perirrsurp
+  tcsfix:
+    1:
+      - irgdayfix
+  dcs:
+    1:
+      - phfieldcapacity
+      - tc1tb
+      - raithreshold
+    2:
+      - tc2tb
+  dcslim:
+    1:
+      - irgdepmin
+      - irgdepmax
