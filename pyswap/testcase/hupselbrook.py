@@ -109,7 +109,7 @@ def _make_hupselbrook():
         swgc=1,
         gctb=maize_gctb,
         swcf=2,
-        table_dvs_ch=maize_chtb,
+        dvs_ch=maize_chtb,
         albedo=0.23,
         rsc=61.0,
         rsw=0.0,
@@ -245,7 +245,7 @@ def _make_hupselbrook():
     
     potato_cropdev_settings = pyswap.components.crop.CropDevelopmentSettingsWOFOST(
         swcf=2,
-        table_dvs_ch=potato_chtb,
+        dvs_ch=potato_chtb,
         albedo=0.19,
         rsc=207.0,
         rsw=0.0,
@@ -381,7 +381,7 @@ def _make_hupselbrook():
 
     grass_settings = ps.CropDevelopmentSettingsGrass(
         swcf=2,
-        table_dvs_ch=grass_chtb,
+        dvs_ch=grass_chtb,
         albedo=0.23,
         rsc=100.0,
         rsw=0.0,
@@ -460,7 +460,7 @@ def _make_hupselbrook():
         maxdaymow=42,
         swlossmow=0,
         mowrest=700.0,
-        table_dmmowdelay=grass_dmmowdelay,
+        dmmowdelay=grass_dmmowdelay,
         swpotrelmf=1,
         relmf=0.90,
     )
@@ -491,7 +491,7 @@ def _make_hupselbrook():
     crop = ps.Crop(
         swcrop=1,
         rds=200.0,
-        table_croprotation=croprotation,
+        croprotation=croprotation,
         cropfiles={"maizes": crpmaize, "potatod": crppotato, "grassd": crpgrass},
     )
 
@@ -507,7 +507,7 @@ def _make_hupselbrook():
     })
 
     fixed_irrigation = ps.FixedIrrigation(
-        swirfix=1, swirgfil=0, table_irrigevents=irrig_events
+        swirfix=1, swirgfil=0, irrigevents=irrig_events
     )
 
     ml.fixedirrigation = fixed_irrigation
@@ -558,10 +558,10 @@ def _make_hupselbrook():
 
     soilprofile = ps.SoilProfile(
         swsophy=0,
-        table_soilprofile=soil_profile,
+        soilprofile=soil_profile,
         swhyst=0,
         tau=0.2,
-        table_soilhydrfunc=soil_hydraulic_functions,
+        soilhydrfunc=soil_hydraulic_functions,
         swmacro=0,
     )
 

@@ -114,7 +114,7 @@ def _make_grassgrowth():
 
     grass_settings = ps.components.crop.CropDevelopmentSettingsGrass(
         swcf=2,
-        table_dvs_ch=grass_chtb,
+        dvs_ch=grass_chtb,
         albedo=0.23,
         rsc=100.0,
         rsw=0.0,
@@ -226,7 +226,7 @@ def _make_grassgrowth():
         maxdaymow=42,
         swlossmow=0,
         mowrest=700.0,
-        table_dmmowdelay=grass_dmmowdelay,
+        dmmowdelay=grass_dmmowdelay,
         swpotrelmf=1,
         relmf=0.90,
     )
@@ -269,7 +269,7 @@ def _make_grassgrowth():
     crop = ps.components.crop.Crop(
         swcrop=1,
         rds=200.0,
-        table_croprotation=croprotation,
+        croprotation=croprotation,
         cropfiles={"grassd": crpgrass},
     )
 
@@ -312,9 +312,9 @@ def _make_grassgrowth():
 
     soilprofile = pyswap.components.soilwater.SoilProfile(
         swsophy=0,
-        table_soilprofile=soil_profile,
+        soilprofile=soil_profile,
         swhyst=0,
-        table_soilhydrfunc=soil_hydraulic_functions,
+        soilhydrfunc=soil_hydraulic_functions,
         swmacro=0,
     )
     # %% drainage settings
@@ -340,7 +340,7 @@ def _make_grassgrowth():
     )
 
     drainageinfiltrationres = pyswap.components.drainage.DrainageInfRes(
-        nrlevs=1, swintfl=0, list_levelfluxes=[flux1]
+        nrlevs=1, swintfl=0, levelfluxes=[flux1]
     )
 
     dra_file = pyswap.components.drainage.DraFile(
@@ -360,7 +360,7 @@ def _make_grassgrowth():
     else:
         table_gwlevel = read_csv(gwleveltable_path, lineterminator="\n")
 
-    bbc_file = pyswap.components.boundary.BBCFile(swbotb=1, table_gwlevel=table_gwlevel)
+    bbc_file = pyswap.components.boundary.BBCFile(swbotb=1, gwlevel=table_gwlevel)
 
     bottom_boundary = pyswap.components.boundary.BottomBoundary(
         swbbcfile=1, bbcfile=bbc_file, bbcfil="swap"

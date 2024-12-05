@@ -196,7 +196,7 @@ def _make_oxygenstress():
         maxdaymow=42,
         swlossmow=0,
         mowrest=700.0,
-        table_dmmowdelay=grass_dmmowdelay,
+        dmmowdelay=grass_dmmowdelay,
         swpotrelmf=1,
         relmf=0.90,
     )
@@ -257,7 +257,7 @@ def _make_oxygenstress():
     })
 
     crop = ps.Crop(
-        swcrop=1, rds=200.0, table_croprotation=crop_rotation, cropfiles=[crpgrass]
+        swcrop=1, rds=200.0, croprotation=crop_rotation, cropfiles=[crpgrass]
     )
 
     # %% soil water section
@@ -298,8 +298,8 @@ def _make_oxygenstress():
     soil = pyswap.components.soilwater.SoilProfile(
         swsophy=0,
         swhyst=0,
-        table_soilprofile=soil_profile,
-        table_soilhydrfunc=soil_hydr_func,
+        soilprofile=soil_profile,
+        soilhydrfunc=soil_hydr_func,
         swmacro=0,
     )
 
@@ -340,7 +340,7 @@ def _make_oxygenstress():
     )
 
     inf_res = pyswap.components.drainage.DrainageInfRes(
-        nrlevs=2, swintfl=0, list_levelfluxes=[flux1, flux2]
+        nrlevs=2, swintfl=0, levelfluxes=[flux1, flux2]
     )
 
     drafile = pyswap.components.drainage.DraFile(
@@ -527,7 +527,7 @@ def _make_oxygenstress():
         rimlay=500.0,
         sw3=2,
         sw4=0,
-        table_haquif=haquiftb,
+        haquif=haquiftb,
     )
 
     # %% heat flow
