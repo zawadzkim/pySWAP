@@ -169,3 +169,34 @@ class IRRIGATION(BaseTableModel):
     IRDEPTH: Series[float] = pa.Field(ge=0.0, le=1000.0)
     IRCONC: Series[float] = pa.Field(ge=0.0, le=1000.0)
     IRTYPE: Series[int] = pa.Field(ge=0, le=1)
+
+
+class TC1TB(BaseTableModel):
+    """tc1tb option table"""
+    DVS_TC1: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
+    TREL: Series[float] = pa.Field(ge=0.0, le=1.0, default=[0.95, 0.95])
+
+class TC2TB(BaseTableModel):
+    """tc2tb option table"""
+    DVS_TC2: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
+    RAW: Series[float] = pa.Field(ge=0.0, le=1.0, default=[0.95, 0.95])
+
+class TC3TB(BaseTableModel):
+    """tc3tb option table"""
+    DVS_TC3: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
+    TAW: Series[float] = pa.Field(ge=0.0, le=1.0, default=[0.50, 0.50])
+    
+class TC4TB(BaseTableModel):
+    """tc4tb option table"""
+    DVS_TC4: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
+    DWA: Series[float] = pa.Field(ge=0.0, le=500.0, default=[0.40, 0.40])
+    
+class TC7TB(BaseTableModel):
+    """tc7tb option table"""
+    DVS_TC5: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
+    HCRI: Series[float] = pa.Field(ge=-1000.0, le=-100.0, default=[-1000.0, -1000.0])
+
+class TC8TB(BaseTableModel):
+    """tc8tb option table"""
+    DVS_TC8: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
+    TCRI: Series[float] = pa.Field(ge=-1000.0, le=-100.0, default=[-1000.0, -1000.0])
