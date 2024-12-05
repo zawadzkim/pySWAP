@@ -1,9 +1,9 @@
 CropDevelopmentSettings: &CropDevelopmentSettings
   swcf:
     1:
-      - table_dvs_cf
+      - dvs_cf
     2:
-      - table_dvs_ch
+      - dvs_ch
       - albedo
       - rsc
       - rsw
@@ -104,7 +104,7 @@ Interception:
     1:
       - cofab
     2:
-      - table_intertb
+      - intertb
 
 CO2Correction:
   swco2:
@@ -153,7 +153,7 @@ GrasslandManagement:
     2:
       - tagprest
       - dewrest
-      - table_lsda
+      - lsda
   swdmmow:
     1:
       - dmharvest
@@ -162,14 +162,14 @@ GrasslandManagement:
       - maxdaymow
     2:
       - dmmowtb
-      - table_dmmowdelay
+      - dmmowdelay
 
 Meteorology:
   swetr:
     1:
       - swetsine
       - swrain
-      - table_rainflux
+      - rainflux
     0:
       - alt
       - altw
@@ -178,7 +178,7 @@ Meteorology:
       - swmetdetail
   swrain:
     1:
-      - table_rainflux
+      - rainflux
     3:
       - rainfil
   swmetdetail:
@@ -188,7 +188,7 @@ Meteorology:
 BottomBoundaryBase:
   swbotb:
     1:
-      - table_gwlevel
+      - gwlevel
     2:
       - sw2
     3:
@@ -196,14 +196,14 @@ BottomBoundaryBase:
     4:
       - swqhbot
     5:
-      - table_hbot5
+      - hbot5
   sw2:
     1:
       - sinave
       - sinamp
       - sinmax
     2:
-      - table_qbot
+      - qbot
   sw3:
     1:
       - aqave
@@ -211,14 +211,14 @@ BottomBoundaryBase:
       - aqtmax
       - aqper
     2:
-      - table_haquif
+      - haquif
   swqhbot:
     1:
       - cofqha
       - cofqhb
       - cofqhc
     2:
-      - table_qtab
+      - qtab
 
 DrainageFormula:
   ipos:
@@ -266,7 +266,7 @@ HeatFlow:
       - timref
       - ddamp
     2:
-      - table_soiltextures
+      - soiltextures
       - swtopbhea
       - swbotbhea
   swtopbhea:
@@ -274,7 +274,7 @@ HeatFlow:
       - tsoilfile
   swbotbhea:
     2:
-      - table_bbctsoil
+      - bbctsoil
 
 # Needs a thorough revision and further improvement. Alsoome parameters rely on SWINCO paramaters from
 # the soilmoisture section and are not validated.
@@ -285,7 +285,7 @@ SoluteTransport:
       - cdrain
       - swbotbc
       - swsp # determines the table_miscellaneous columns contant
-      - table_miscellaneous
+      - miscellaneous
       - ddif
       - tscf
       - swdc
@@ -294,7 +294,7 @@ SoluteTransport:
     1:
       - cseep
     2:
-      - table_cseeparrtb
+      - cseeparrtb
   swsp:
     1:
       - frexp
@@ -311,7 +311,7 @@ SoluteTransport:
       - kfsat
       - decsat
       - cdraini
-      - table_inissoil
+      - inissoil
 
 FixedIrrigation:
   swirfix:
@@ -319,7 +319,7 @@ FixedIrrigation:
       - swirgfil
     swirgfil:
       0:
-        - table_irrigevents
+        - irrigevents
       1:
         - irgfile
 
@@ -327,7 +327,7 @@ Crop:
   swcrop:
     1:
       - rds
-      - table_croprotation
+      - croprotation
       - cropfiles
 
 GeneralSettings:
@@ -397,7 +397,7 @@ SnowAndFrost:
 SoilProfile:
   swsophy:
     0:
-      - table_soilhydrfunc
+      - soilhydrfunc
     1:
       - filenamesophy
   swhyst:
@@ -409,7 +409,7 @@ SoilProfile:
 SoilMoisture:
   swinco:
     1:
-      - table_head_soildepth
+      - head_soildepth
     2:
       - gwli
     3:
@@ -420,7 +420,7 @@ SurfaceFlow:
     0:
       - pondmx
     1:
-      - table_pondmxtb
+      - pondmxtb
   swrunon:
     1:
       - rufil
