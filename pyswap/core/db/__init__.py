@@ -8,4 +8,7 @@
 
 from pyswap.core.db.hdf5 import HDF5
 
-__all__ = ["HDF5"]
+from pyswap.core.db.cropdb import WOFOSTCropDB
+
+
+__all__ = ["HDF5", "WOFOSTCropDB"]
