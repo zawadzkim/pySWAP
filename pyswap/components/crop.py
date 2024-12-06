@@ -32,15 +32,15 @@ from pydantic import Field, model_validator, PrivateAttr
 import pandera as pa
 from pandera.typing import Series
 
-from pyswap.core.io.io_ascii import open_ascii, save_ascii
+from pyswap.core.io.io_ascii import save_ascii
 from pyswap.core.fields import Arrays, DateList, IntList, Table, Subsection
 from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.mixins import SerializableMixin, YAMLValidatorMixin, FileMixin
+from pyswap.core.mixins import SerializableMixin, YAMLValidatorMixin, FileMixin, WOFOSTUpdateMixin
 from pyswap.core.fields import Table
 from pyswap.core.valueranges import DVSRANGE, UNITRANGE, YEARRANGE
 from pyswap.core.basemodel import BaseTableModel
 from pyswap.components.irrigation import ScheduledIrrigation
-from pyswap.core.db.cropdb import WOFOSTCropFile
+from pyswap.core.db.cropdb import CropVariety
 
 __all__ = [
     "CropDevelopmentSettings", "CropDevelopmentSettingsWOFOST", "CropDevelopmentSettingsFixed", "OxygenStress", 
@@ -49,7 +49,7 @@ __all__ = [
 ]
 
 
-class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, WOFOSTUpdateMixin):
     """Crop development settings (parts 1-xx form the template)
 
     Attributes:
@@ -89,7 +89,7 @@ class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorM
         rdctb (Arrays): root density as function of relative rooting depth
     """
     _validation: bool = PrivateAttr(default=False)
-    wofost_crop: WOFOSTCropFile | None = None
+    wofost_variety: CropVariety | None = Field(default=None, exclude=True)
 
     swcf: Literal[1, 2]
     dvs_cf: Table | None = None
@@ -99,23 +99,23 @@ class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorM
     rsw: float | None = Field(default=None, ge=0.0, le=1.0e6)
     # In WOFOST reference yaml files this is called TSUM1
     # renamed this parameter to match the WOFOST template, but the alias is still tsumea
-    tsum1: float = Field(serialization_alias="tsumea", default=None, ge=0.0, le=1.0e4)
+    tsum1: float | None = Field(serialization_alias="tsumea", default=None, ge=0.0, le=1.0e4)
     # In WOFOST reference yaml files this is called TSUM2
     # renamed this parameter to match the WOFOST template, but the alias is still tsumam
-    tsum2: float = Field(serialization_alias="tsumam", default=None, ge=0.0, le=1.0e4)
+    tsum2: float | None = Field(serialization_alias="tsumam", default=None, ge=0.0, le=1.0e4)
     # In SWAP this parameter seems to meen something different than in the
     # WOFOST template. The range of value is the same though.
     tbase: float | None = Field(default=None, ge=-10.0, le=30.0)
-    kdif: float = Field(ge=0.0, le=2.0)
-    kdir: float = Field(ge=0.0, le=2.0)
+    kdif: float | None = Field(default=None, ge=0.0, le=2.0)
+    kdir: float | None = Field(default=None, ge=0.0, le=2.0)
     swrd: Literal[1, 2, 3] | None = None
     rdtb: Arrays | None = None
-    rdi: float = Field(default=None, ge=0.0, le=1000.0)
-    rri: float = Field(default=None, ge=0.0, le=100.0)
-    rdc: float = Field(default=None, ge=0.0, le=1000.0)
+    rdi: float | None = Field(default=None, ge=0.0, le=1000.0)
+    rri: float | None = Field(default=None, ge=0.0, le=100.0)
+    rdc: float | None = Field(default=None, ge=0.0, le=1000.0)
     swdmi2rd: Literal[0, 1] | None = None
     rlwtb: Arrays | None = None
-    wrtmax: float = Field(default=None, ge=0.0, le=1.0e5)
+    wrtmax: float | None = Field(default=None, ge=0.0, le=1.0e5)
     swrdc: Literal[0, 1] = 0
     rdctb: Arrays
 
@@ -125,13 +125,6 @@ class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorM
         if not self._validation:
             return self
         return super().validate_with_yaml()
-
-    def populate_attributes(self, params: dict):
-        for key, value in params.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-            else:
-                print(f"Warning: Attribute '{key}' does not exist in the class.")
 
 
 class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
@@ -190,34 +183,34 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
     vernbase: float | None = Field(default=None, ge=0.0, le=100.0)
     verndvs: float | None = Field(default=None, ge=0.0, le=0.3)
     verntb: Arrays | None = None
-    tdwi: float = Field(ge=0.0, le=10_000)
-    laiem: float = Field(ge=0.0, le=10)
-    rgrlai: float = Field(**UNITRANGE)
+    tdwi: float | None = Field(default=None, ge=0.0, le=10_000)
+    laiem: float | None = Field(default=None, ge=0.0, le=10)
+    rgrlai: float | None = Field(default=None, **UNITRANGE)
     spa: float | None = Field(**UNITRANGE, default=None)
-    ssa: float = Field(**UNITRANGE)
-    span: float = Field(**YEARRANGE)
-    slatb: Arrays
-    eff: float = Field(ge=0.0, le=10.0)
-    amaxtb: Arrays
-    tmpftb: Arrays
-    tmnftb: Arrays
-    cvo: float | None = Field(**UNITRANGE, default=None)  # for grass at least
-    cvl: float = Field(**UNITRANGE)
-    cvr: float = Field(**UNITRANGE)
-    cvs: float = Field(**UNITRANGE)
-    q10: float = Field(ge=0.0, le=5.0)
-    rml: float = Field(**UNITRANGE)
-    rmo: float | None = Field(**UNITRANGE, default=None)  # for grass at least
-    rmr: float = Field(**UNITRANGE)
-    rms: float = Field(**UNITRANGE)
-    rfsetb: Arrays
-    frtb: Arrays
-    fltb: Arrays
-    fstb: Arrays
+    ssa: float | None = Field(default=None, **UNITRANGE)
+    span: float | None = Field(default=None, **YEARRANGE)
+    slatb: Arrays | None = None
+    eff: float | None = Field(default=None, ge=0.0, le=10.0)
+    amaxtb: Arrays | None = None
+    tmpftb: Arrays | None = None
+    tmnftb: Arrays | None = None
+    cvo: float | None = Field(default=None, **UNITRANGE)  # for grass at least
+    cvl: float | None = Field(default=None, **UNITRANGE)
+    cvr: float | None = Field(default=None, **UNITRANGE)
+    cvs: float | None = Field(default=None, **UNITRANGE)
+    q10: float | None = Field(default=None, ge=0.0, le=5.0)
+    rml: float | None = Field(default=None, **UNITRANGE)
+    rmo: float | None | None = Field(**UNITRANGE, default=None)  # for grass at least
+    rmr: float | None = Field(default=None, **UNITRANGE)
+    rms: float | None = Field(default=None, **UNITRANGE)
+    rfsetb: Arrays | None = None
+    frtb: Arrays | None = None
+    fltb: Arrays | None = None
+    fstb: Arrays | None = None
     fotb: Arrays | None = None  # for grass at least
-    perdl: float = Field(ge=0.0, le=3.0)
-    rdrrtb: Arrays
-    rdrstb: Arrays
+    perdl: float | None = Field(default=None, ge=0.0, le=3.0)
+    rdrrtb: Arrays | None = None
+    rdrstb: Arrays | None = None
 
 
 class CropDevelopmentSettingsFixed(CropDevelopmentSettings):
@@ -457,7 +450,7 @@ class Interception(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     intertb: Table | None = None
 
 
-class CO2Correction(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class CO2Correction(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, WOFOSTUpdateMixin):
     """CO2 correction settings for WOFOST-type .crp file.
 
     Attributes:
@@ -471,12 +464,21 @@ class CO2Correction(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         co2efftb (Optional[Arrays]): orrection of radiation use efficiency as a function of atmospheric CO2 concentration
         co2tratb (Optional[Arrays]): Correction of transpiration as a function of atmospheric CO2 concentration
     """
+    _validation: bool = PrivateAttr(default=False)
+    wofost_variety: CropVariety | None = Field(default=None, exclude=True)
 
     swco2: Literal[0, 1]
     atmofil: str | None = None
     co2amaxtb: Arrays | None = None
     co2efftb: Arrays | None = None
     co2tratb: Arrays | None = None
+
+    @model_validator(mode="after")
+    def validate_with_yaml(self):
+        """Override validation to check _validate flag first."""
+        if not self._validation:
+            return self
+        return super().validate_with_yaml()
 
 
 class Preparation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
@@ -518,7 +520,7 @@ class Preparation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     swsow: Literal[0, 1]
     swgerm: Literal[0, 1, 2]
     swharv: Literal[0, 1]
-    dvsend: float | None = Field(default=None, ge=0.0, le=3.0)
+    dvsend: float | None = Field(default=None, ge=0.0, le=3.0)  # Available in WOFOST crop file
     zprep: float | None = Field(default=None, ge=-100.0, le=0.0)
     hprep: float | None = Field(default=None, ge=-200.0, le=0.0)
     maxprepdelay: int | None = Field(default=None, ge=1, le=366)
@@ -528,8 +530,8 @@ class Preparation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     tempsow: float | None = Field(default=None, ge=0.0, le=30.0)
     maxsowdelay: int | None = Field(default=None, ge=1, le=366)
     tsumemeopt: float | None = Field(default=None, ge=0.0, le=1000.0)
-    tbasem: float | None = Field(default=None, ge=0.0, le=1000.0)
-    teffmx: float | None = Field(default=None, ge=0.0, le=1000.0)
+    tbasem: float | None = Field(default=None, ge=0.0, le=1000.0)  # Available in WOFOST crop file
+    teffmx: float | None = Field(default=None, ge=0.0, le=1000.0)  # Available in WOFOST crop file
     hdrygerm: float | None = Field(default=None, ge=-1000.0, le=1000.0)
     hwetgerm: float | None = Field(default=None, ge=-100.0, le=1000.0)
     zgerm: float | None = Field(default=None, ge=-100.0, le=1000.0)

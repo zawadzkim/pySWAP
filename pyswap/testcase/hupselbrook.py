@@ -7,6 +7,8 @@ import pyswap.components.crop
 import pyswap.components.drainage
 import pyswap.components.meteorology
 import pyswap.components.soilwater
+from pyswap.core.db import WOFOSTCropDB
+
 from pyswap import testcase
 
 # %%
@@ -175,122 +177,31 @@ def _make_hupselbrook():
         ],
     })
 
-    # Available in potato.yaml
-    potato_dtsmtb = ps.DTSMTB.create({
-        "TAV": [0.0, 2.0, 13.0, 30.0],
-        "DTSM": [0.0, 0.0, 11.0, 28.0],
-    })
-
-    # Available in potato.yaml
-    potato_slatb = ps.SLATB.create({
-        "DVS": [0.0, 1.1, 2.0],
-        "SLA": [0.0030, 0.0030, 0.0015],
-    })
-
-    # Available in potato.yaml
-    potato_amaxtb = ps.AMAXTB.create({
-        "DVS": [0.0, 1.57, 2.0],
-        "AMAX": [30.0, 30.0, 0.0],
-    })
-
-    # Available in potato.yaml
-    potato_tmpftb = ps.TMPFTB.create({
-        "tavd": [0.0, 3.0, 10.0, 15.0, 20.0, 26.0, 33.0],
-        "tmpf": [0.01, 0.01, 0.75, 1.00, 1.00, 0.75, 0.01],
-    })
-
-    # Available in potato.yaml
-    potato_tmnftb = ps.TMNFTB.create({"TMNR": [0.0, 3.0], "TMNF": [0.0, 1.0]})
-
-    # Available in potato.yaml
-    potato_rfsetb = ps.RFSETB.create({"DVS": [0.0, 2.0], "RFSE": [1.0, 1.0]})
-
-    # Available in potato.yaml
-    potato_frtb = ps.FRTB.create({
-        "DVS": [0.00, 1.00, 1.36, 2.00],
-        "FR": [0.2, 0.2, 0.0, 0.0],
-    })
-
-    # Available in potato.yaml
-    potato_fltb = ps.FLTB.create({
-        "DVS": [0.00, 1.00, 1.27, 1.36, 2.00],
-        "FL": [0.8, 0.8, 0.0, 0.0, 0.0],
-    })
-
-    # Available in potato.yaml
-    potato_fstb = ps.FSTB.create({
-        "DVS": [0.00, 1.00, 1.27, 1.36, 2.00],
-        "FS": [0.20, 0.20, 0.25, 0.00, 0.00],
-    })
-
-    # Available in potato.yaml
-    potato_fotb = ps.FOTB.create({
-        "DVS": [0.00, 1.00, 1.27, 1.36, 2.00],
-        "FO": [0.00, 0.00, 0.75, 1.00, 1.00],
-    })
-
-    # Available in potato.yaml
-    potato_rdrrtb = ps.RDRRTB.create({
-        "DVS": [0.0000, 1.5000, 1.5001, 2.0000],
-        "RDRR": [0.00, 0.00, 0.02, 0.02],
-    })
-    # Available in potato.yaml
-    potato_rdrstb = ps.RDRSTB.create({
-        "DVS": [0.0000, 1.5000, 1.5001, 2.0000],
-        "RDRS": [0.00, 0.00, 0.02, 0.02],
-    })
-
-    # Available in potato.yaml
     potato_rdctb = ps.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
     
+    db = WOFOSTCropDB()
+    potato = db.load_crop_file("potato")
+    potato_params = potato.get_variety("Potato_701")
+
     potato_cropdev_settings = pyswap.components.crop.CropDevelopmentSettingsWOFOST(
+        wofost_variety=potato_params,
         swcf=2,
         dvs_ch=potato_chtb,
         albedo=0.19,
+        laiem=0.0589,
+        ssa=0.0,  # Available as table SSATB (SSA/DVS) in potato.yaml
+        kdif=1.0,  # Available as table KDIFTB (SSA/DVS) in potato.yaml
         rsc=207.0,
         rsw=0.0,
-        idsl=0,  # Available in potato.yaml
-        tsum1=150.0,  # TSUMEM available in potato.yaml
-        tsum2=1550.0,  # TSUMEM available in potato.yaml
-        dtsmtb=potato_dtsmtb,
-        tdwi=75.0,  # Available in potato.yaml
-        laiem=0.0589,
-        rgrlai=0.012,  # Available in potato.yaml
-        spa=0.0,  # Available in potato.yaml
-        ssa=0.0,  # Available as table SSATB (SSA/DVS) in potato.yaml
-        span=37.0,  # Available in potato.yaml
-        tbase=2.0,  # Available in potato.yaml
-        slatb=potato_slatb,
-        kdif=1.0,  # Available as table KDIFTB (SSA/DVS) in potato.yaml
         kdir=0.75,
         eff=0.45,  # Available as table EFFTB (SSA/DVS) in potato.yaml
-        amaxtb=potato_amaxtb,
-        tmpftb=potato_tmpftb,
-        tmnftb=potato_tmnftb,
-        cvl=0.72,  # Available in potato.yaml
-        cvo=0.85,  # Available in potato.yaml
-        cvr=0.72,  # Available in potato.yaml
-        cvs=0.69,  # Available in potato.yaml
-        q10=2.0,  # Available in potato.yaml
-        rml=0.03,  # Available in potato.yaml
-        rmo=0.0045,  # Available in potato.yaml
-        rmr=0.01,  # Available in potato.yamlg
-        rms=0.015,  # Available in potato.yaml
-        rfsetb=potato_rfsetb,
-        frtb=potato_frtb,
-        fltb=potato_fltb,
-        fstb=potato_fstb,
-        fotb=potato_fotb,
-        perdl=0.03,  # Available in potato.yaml
         swrd=2,
-        rdi=10.0,  # Available in potato.yaml
-        rri=1.2,  # Available in potato.yaml
         rdc=50.0,
         swdmi2rd=1,
-        rdctb=potato_rdctb,
-        rdrstb=potato_rdrstb,
-        rdrrtb=potato_rdrrtb,
+        rdctb=potato_rdctb
     )
+
+    potato_cropdev_settings.update_from_wofost()
 
     potato_ox_stress = pyswap.components.crop.OxygenStress(
         swoxygen=1,

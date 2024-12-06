@@ -1,7 +1,12 @@
 """
 # Crop database
 
-This module wraps the crop parameters database for WOFOST (A. de Wit). 
+This module wraps the crop parameters database for WOFOST (A. de Wit).
+
+!!! warning
+    This module is a part of a broader effort to integrate the WOFOST
+    crop parameter database into pySWAP. There WILL be some refactoring
+    in the near future.
 """
 
 from pathlib import Path
@@ -44,20 +49,44 @@ class WOFOSTCropFile(BaseModel):
     def varieties(self):
         return list(self.yaml_content["CropParameters"]["Varieties"])
 
-    def get_variety(self, variety: str, what: Literal["parameters", "metadata", "all"] = "parameters"):
-        variety = self.yaml_content["CropParameters"]["Varieties"][variety]
-        if what == "all":
-            return variety
-        elif what == "parameters":
-            return {k: v[0] for k, v in variety.items() if k != "Metadata"}
-        elif what == "metadata":
-            return variety["Metadata"]
-        else:
-            message = "Invalid value for 'what'. Choose from 'parameters', 'metadata', 'all'."
-            raise ValueError(message)
+    def get_variety(self, variety: str):
+        return CropVariety(variety=self.yaml_content["CropParameters"]["Varieties"][variety])
 
+class CropVariety(BaseModel):
+    """Wrapping the variety in a separate class to make it easier to access.
+    
+    Attributes:
+        variety: The entire variety dictionary from the YAML file (incl. metadata).
+
+    Properties:
+        parameters: Bare parameters of the variety (all metadata removed).
+        metadata: The metadata of the variety.
+    """
+    variety: dict
+
+    @computed_field(return_type=dict)
+    def parameters(self):
+        return {k: v[0] for k, v in self.variety.items() if k != "Metadata" and v[0] != -99.0}
+    
+    @computed_field(return_type=dict)
+    def metadata(self):
+        return self.variety["Metadata"]
+    
     @staticmethod
-    def get_class_object(class_name: str):
+    def get_table_class(class_name: str):
+        """Get the schema class of a table.
+        
+        In pySWAP tables are validated with Pandera DataFrameModel. Each table
+        required by SWAP has its own schema class. This method returns the
+        schema class of a table based on its name.
+
+        Parameters:
+            class_name: Name of the table class. Meant to be automatically
+                generated from the key in the YAML file.
+
+        Returns:
+            class_: The schema class of the table if it exists, otherwise None.
+        """
         import importlib
         module = importlib.import_module("pyswap.components.crop")
         if hasattr(module, class_name):
@@ -66,9 +95,10 @@ class WOFOSTCropFile(BaseModel):
         else:
              None
     
-    def format_tables(self, variety: dict):
+    def format_tables(self):
+        variety = self.parameters
         for k, v in variety.items():
-            table_class = self.get_class_object(k)
+            table_class = self.get_table_class(k)
             if table_class:
                 cols = list(table_class.__annotations__.keys())
                 if isinstance(v, list):
@@ -88,19 +118,6 @@ class WOFOSTCropFile(BaseModel):
             "col1": table[::2],
             "col2": table[1::2]
         }
-
-
-def cropdb_to_pyswap(cropdb: WOFOSTCropFile):
-    """Convert a WOFOST crop database to pySWAP models
-    
-    The WOFOST crop database primarily contains information needed
-    for the following pySWAP models:
-    - CropSettings
-    - CO2Correction
-    - parts of Preparation
-    """
-    pass
-
 
 class WOFOSTCropDB(BaseModel):
     """Simple class for managing crop parameters files.
