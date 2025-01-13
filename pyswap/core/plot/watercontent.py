@@ -31,16 +31,17 @@ def water_content(
 
     sns.set_context("poster")
 
-    df_wcont = df_vap[["depth", "date", "wcontent"]]
-    df_wcont["date"] = pd.to_datetime(df_wcont["date"])
-    df_wcont["date"] = df_wcont["date"].dt.strftime("%Y-%m")
-    df_wcont["depth"] = df_wcont["depth"].astype(float)
-    df_wcont["wcontent"] = df_wcont["wcontent"].astype(float)
-    pivot_table = df_wcont.pivot(columns="date", index="depth", values="wcontent")
+    df_wcont = df[[depth_col, date_col, wcontent_col]]
 
-    pivot_table.sort_index(ascending=True, inplace=True)
+    df_wcont.loc[:, date_col] = pd.to_datetime(df_wcont[date_col])
+    df_wcont.loc[:, depth_col] = df_wcont[depth_col].astype(float)
+    df_wcont.loc[:, wcontent_col] = df_wcont[wcontent_col].astype(float)
+
+    pivot_table = df_wcont.pivot(columns=date_col, index=depth_col, values=wcontent_col)
+    pivot_table = pivot_table.sort_index(axis=1)
+
     plt.figure(figsize=(34, 8))
-    ax = sns.heatmap(pivot_table, cmap="YlGnBu")
+    sns.heatmap(pivot_table, cmap="YlGnBu")
     plt.title(title)
     plt.xlabel("Date")
     plt.ylabel("Depth (cm)")
@@ -48,5 +49,8 @@ def water_content(
     plt.gca().invert_yaxis()
 
     plt.xticks(rotation=45)
-    plt.tight_layout(pad=20)
-    plt.show()
+
+    format_months = lambda x, p: pivot_table.columns[int(x)].strftime("%Y-%m")    
+    plt.gca().xaxis.set_major_formatter(
+        plt.FuncFormatter(format_months)
+    )
