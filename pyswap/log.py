@@ -1,3 +1,5 @@
+"""Simple logging configuration for the package."""
+
 import logging
 
 
