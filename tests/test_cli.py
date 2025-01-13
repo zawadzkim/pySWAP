@@ -124,4 +124,3 @@ def test_git_initialization_and_gitignore(setup_and_teardown):
             assert pattern in gitignore_content, (
                 f"Expected pattern '{pattern}' not found in .gitignore file."
             )
-

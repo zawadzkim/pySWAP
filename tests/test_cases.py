@@ -61,7 +61,7 @@ def test_hupselbrook_model():
 def test_grassgrowth():
     model = testcase.get("grassgrowth")
     result = model.run("./", silence_warnings=True)
-    
+
     expected_data = pd.DataFrame({
         "PGRASSDM": {
             pd.Timestamp("1980-12-31 00:00:00"): 1375.2639006557376,

@@ -1,4 +1,5 @@
 # %%
+import pyswap.components.tables
 from pyswap.core.db import WOFOSTCropDB
 import pyswap
 
@@ -6,7 +7,7 @@ import pyswap
 db = WOFOSTCropDB()
 db.croptypes
 
- # %%
+# %%
 
 potato = db.load_crop_file("potato")
 potato.varieties
@@ -43,7 +44,10 @@ potato_chtb = pyswap.CHTB.create({
     ],
 })
 
-potato_rdctb = pyswap.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
+potato_rdctb = pyswap.components.tables.RDCTB.create({
+    "RRD": [0.0, 1.0],
+    "RDENS": [1.0, 0.0],
+})
 
 # This is Potato_701 variety from wofost crop file
 potato_cropdev_settings = pyswap.components.crop.CropDevelopmentSettingsWOFOST(
@@ -59,7 +63,7 @@ potato_cropdev_settings = pyswap.components.crop.CropDevelopmentSettingsWOFOST(
     swrd=2,
     rdc=50.0,
     swdmi2rd=1,
-    rdctb=potato_rdctb
+    rdctb=potato_rdctb,
 )
 
 potato_cropdev_settings
