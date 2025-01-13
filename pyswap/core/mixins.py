@@ -1,128 +1,161 @@
-from typing import Self, get_origin, get_args, Literal
-from typing_extensions import Annotated, Union
+"""Reusable mixins enhancing functionality of specific PySWAPBaseModel.
 
-import chardet
+To keep the main PySWAPBaseModel class and the components library clean and
+focused, mixins are used to add additional functionality to the classes that
+need it. The concept of the mixins was inspired by the Django framework and it
+really helps to keep the code clean and organized.
+
+Should more functionality be needed in the future for one or more classes, it
+should be implemented as a mixin and then inherited by the classes that need it.
+
+Classes:
+
+    FileMixin: Custom saving functionality for models that need file I/O.
+    SerializableMixin: Converting a model to a SWAP-formatted string.
+    YAMLValidatorMixin: Validating parameters using external YAML rules.
+    WOFOSTUpdateMixin: Interface for the WOFOST crop parameters database for
+        pySWAP.
+"""
+
+from typing import Self, get_origin, get_args, Literal, Any
+from pathlib import Path
+from typing_extensions import Union
+
 from pydantic import model_validator, model_serializer
 from pydantic.fields import FieldInfo
 
-from pyswap.core import VALIDATIONRULES
+from pyswap.core.defaults import VALIDATIONRULES
+from pyswap.log import logging
 from pyswap.core.basemodel import PySWAPBaseModel
+
+logger = logging.getLogger(__name__)
 
 
 class FileMixin:
-    """Saving and readin files.
+    """Custom saving functionality for models that need file I/O.
 
-    Not all classes require to be saved or have read functionality. Therefore,
-    it makes sense to move this functionality from the main PySWAPBaseModel
-    class to a mixin and use it only on classes that need it.
+    !!! note:
 
-    Functions:
+        The _extension attribute should be set in the class that inherits
+        this mixin. It is recommended that pydantic's PrivateAttr is used to
+        hide this attribute from the user.
+
+    Methods:
         save_file: Saves a string to a file.
-        read_file: Reads a file from a string.
-
     """
 
-    @staticmethod
     def save_file(
+        self,
         string: str,
         fname: str,
-        path: str,
-        mode: str = "w",
-        extension: str | None = None,
-        encoding: str = "ascii",
-    ) -> str:
+        path: Path,
+    ) -> None:
         """Saves a string to a file.
 
-        Arguments:
+        The extension should now be provided in each class inheriting this
+        mixin as a private attribute.
+
+        Parameters:
             string: The string to be saved to a file.
-            extension: The extension that the file should have (e.g. 'txt',
-                'csv', etc.).
             fname: The name of the file.
             path: The path where the file should be saved.
-            mode: The mode in which the file should be opened (e.g. 'w' for
-                write, 'a' for append, etc.).
-            encoding: The encoding to use for the file (default is 'ascii').
-
-        Returns:
-            Success message.
         """
 
-        if extension is not None:
-            fname = f"{fname}.{extension}"
+        if not hasattr(self, "_extension"):
+            msg = "The _extension attribute should be set."
+            raise AttributeError(msg)
 
-        with open(f"{path}/{fname}", f"{mode}", encoding=f"{encoding}") as f:
+        ext = self._extension
+        fname = f"{fname}.{ext}" if ext else fname
+
+        with open(f"{path}/{fname}", "w", encoding="ascii") as f:
             f.write(string)
 
-        return f"{fname}.{extension} saved successfully."
+        logger.info(f"{fname} saved successfully.")
 
-    @staticmethod
-    def read_file(file_path: str) -> str:
-        """Open file and detect encoding with chardet.
-
-        Arguments:
-            file_path (str): Path to the file to be opened.
-        """
-        with open(file_path, "rb") as f:
-            raw_data = f.read()
-        encoding = chardet.detect(raw_data)["encoding"]
-
-        return raw_data.decode(encoding)
+        return None
 
 
 class SerializableMixin:
     """Converting a model to a SWAP-formatted string.
 
-    This mixin is supposed to be used on classes that should
-    directly serialize to a file and do not contain nested classes.
-    Each class that has nested classes inheriting from this mixin
-    should have a method utilizing this the functionality here to
-    concatenate the files.
+    This mixin is only inherited by classes that directly serialize to a
+    SWAP-formatted string. The assumptions are that the inheriting classes:
+
+    - do not contain nested classes.
+    - if the class contains nested classes it should either use Subsection field
+        types or override the `model_string()` method.
+
+    Methods:
+        if_is_union_type: Check if the field type is a Union type.
+        is_annotated_exception_type: Check if the attribute type is Table,
+            Arrays, or ObjectList.
+        serialize_model: Override the default serialization method.
+        model_string: Concatenate the formatted strings from dictionary to
+            one string.
     """
 
-    def if_is_union_type(self, field_info):
+    def if_is_union_type(self, field_info: FieldInfo) -> dict | None:
         """Check if the field type is a Union type.
-        
+
         If it is, look for the json_schema_extra attribute in the field_info
-        of the first argument of the Union type. If it is not found, return None.
+        of the first argument of the Union type. If it is not found, return
+        None. It was necessary in cases of, for example, optional classes like
+        Union[Table, None].
+
+        Parameters:
+            field_info (FieldInfo): The FieldInfo object of the field.
         """
 
         field_type = field_info.annotation
+
         if get_origin(field_type) is Union:
             union_args = get_args(field_type)
             args = get_args(union_args[0])
-            # look for the FieldInfo object in the Union type
+
             field_info = [item for item in args if isinstance(item, FieldInfo)]
 
-            # if the FieldInfo object is not found, return None
             if not field_info:
                 return None
-            
-            # Otherwise, there should be only one FieldInfo object
+
+            # Only return the json_schema_extra attribute. This is used in some
+            # cases to pass addotional information from the serializer in
+            # pyswap.core.fields module to the model_dump.
             return field_info[0].json_schema_extra
         return None
 
-    def is_annotated_exception_type(self, field_name):
+    def is_annotated_exception_type(self, field_name: str) -> bool:
         """Check if the attribute type is Table, Arrays, or ObjectList.
-        
-        If the attribute is a Table, Arrays, or ObjectList, return True. First try
-        to assign the json_schema_extra from a Union type. If that fails, assign
-        the json_schema_extra from the field_info. If the json_schema_extra is
-        None, return False.
+
+        For Table, Arrays, and ObjectList types True is returned, ensuring a
+        separate serialization path.
+
+        First try to assign the json_schema_extra from a Union type. If that
+        fails, assign the json_schema_extra from the field_info. If the
+        json_schema_extra is None, return False.
         """
         # Every special field will have a FieldInfo object
         field_info = self.model_fields.get(field_name, None)
+
         if field_info is None:
             return False
-        
-        json_schema_extra = self.if_is_union_type(field_info) or field_info.json_schema_extra
+
+        json_schema_extra = (
+            self.if_is_union_type(field_info) or field_info.json_schema_extra
+        )
 
         if json_schema_extra is None:
             return False
+
         return json_schema_extra.get("is_annotated_exception_type", False)
 
     @model_serializer(when_used="json", mode="wrap")
-    def serialize_model(self, handler):
-        """Get a dictionary of SWAP formatted strings."""
+    def serialize_model(self, handler: Any):
+        """Override the default serialization method.
+
+        In the intermediate step, a dictionary is created with SWAP formatted
+        strings.
+        """
         result = {}
         validated_self = handler(self)
         for field_name, field_value in validated_self.items():
@@ -132,9 +165,26 @@ class SerializableMixin:
                 result[field_name] = f"{field_name.upper()} = {field_value}"
         return result
 
-    def model_string(self, mode: Literal["str", "list"] = "string") -> str | list[str]:
-        """Concatenate the formatted strings from dictionsty to one string."""
-        dump = self.model_dump(mode="json", exclude_none=True, by_alias=True).values()
+    def model_string(
+        self, mode: Literal["str", "list"] = "string", **kwargs
+    ) -> str | list[str]:
+        """Concatenate the formatted strings from dictionary to one string.
+
+
+        !!! note:
+            By alias is True, because in some cases, particularily in the case
+            of CropSettings, the WOFOST names of parameters in the database were
+            different from those used in SWAP. This allows those parameters to
+            be properly matched, yet serialized properly in SWAP input files.
+
+        Parameters:
+            mode (Literal["str", "list]): The output format.
+            kwargs: Additional keyword arguments passed to `model_dump()`.
+        """
+        dump = self.model_dump(
+            mode="json", exclude_none=True, by_alias=True, **kwargs
+        ).values()
+
         if mode == "list":
             return list(dump)
         else:
@@ -142,15 +192,27 @@ class SerializableMixin:
 
 
 class YAMLValidatorMixin:
-    """A mixin class that provides YAML-based validation for parameters.
+    """A mixin class that provides YAML-based validation for models.
+
+    Initially, pySWAP had model serializers on each model component class which
+    had a number of assertions to validate the parameters (i.e., require
+    parameters rlwtb and wrtmax if swrd = 3). This create quite a lot of chaos
+    in the code, and since none of it was used by inspection tools, it was
+    decided to move the validation to a separate mixin class using rules defined
+    in a YAML file.
+
     Methods:
         validate_parameters: Validates parameters against required rules.
         validate_with_yaml: Validates parameters using external YAML rules.
+        validate_switch_options: Validates switch options against allowed values.
     """
 
     @staticmethod
-    def validate_parameters(switch_name, switch_value, params, rules: dict):
+    def validate_parameters(
+        switch_name: str, switch_value: str, params: dict, rules: dict
+    ):
         """Validates parameters against required rules.
+
         Parameters:
             switch_name (str): The name of the switch (e.g., 'swcf').
             switch_value (Any): The value of the switch (e.g., 1 or 2).
@@ -177,11 +239,18 @@ class YAMLValidatorMixin:
 
     @model_validator(mode="after")
     def validate_with_yaml(self) -> Self:
-        """Validates parameters using external YAML rules.
+        """Validates parameters using rules from yaml file.
 
-        Returns:
-            Self: The instance of the class after validation.
+        All model validators are run when the model is created. This method
+        makes sure that YAML validation is postponed until all the parameters
+        are set by the users. This is important, because in newest releases of
+        pyswap it is possible to update model components with parameters from
+        external sources (e.g., WOFOST variety settings).
         """
+
+        if not self._validation:
+            return self
+
         rules = VALIDATIONRULES.get(self.__class__.__name__, {})
 
         for switch_name in rules.keys():
@@ -190,4 +259,23 @@ class YAMLValidatorMixin:
                 self.validate_parameters(
                     switch_name, switch_value, self.__dict__, rules
                 )
+
+        self._validation = False
         return self
+
+
+class WOFOSTUpdateMixin:
+    """Interface for the WOFOST crop parameters database for pySWAP.
+
+    This mixin should be inherited by classes that share parameters with the
+    WOFOST crop database.
+    """
+
+    def update_from_wofost(self: PySWAPBaseModel):
+        """Update the model with the WOFOST variety settings.
+
+        This method overrides the default `update()` method to facilitate the
+        use of wofost_variety parameter set on some of the model components.
+        """
+        new = self.wofost_variety.format_tables()
+        self.update(new, inplace=True)

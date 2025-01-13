@@ -1,5 +1,4 @@
-"""
-## Meteorology module.
+"""Meteorology settings and data.
 
 This module contains the classes and functions to handle meteorological settings and data for simulations.
 

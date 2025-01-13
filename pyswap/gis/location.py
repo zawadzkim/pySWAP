@@ -1,3 +1,9 @@
+"""Location class and related functionality.
+
+Classes:
+    Location: A generic class representing a location.
+"""
+
 from decimal import Decimal
 
 from pydantic import Field, field_validator
@@ -8,13 +14,22 @@ from pyswap.core.basemodel import PySWAPBaseModel
 
 
 class Location(PySWAPBaseModel):
-    """Location of the PySWAP model.
+    """A generic class representing a location.
 
-    Arguments:
+    This class can represent any location used in the package, e.g., weather
+    station, model soil column, etc.).
+
+    Attributes:
         lon (Decimal): point longitude.
         lat (Decimal): point latitude.
         lat (Decimal): point elevation in meters.
         crs (string): Coordinate Reference System of the input coordinates.
+
+    Properties:
+        point: Return a Shapely Point object.
+
+    Methods:
+        to_crs: Transform the location to a new Coordinate Reference System.
     """
 
     lon: Decimal
@@ -36,6 +51,15 @@ class Location(PySWAPBaseModel):
             raise ValueError(f"Invalid CRS: {v}")
 
     def to_crs(self, target_crs: str) -> "Location":
+        """Transform the location to a new Coordinate Reference System.
+
+        Arguments:
+            target_crs (str): The target CRS.
+
+        Returns:
+            Location: A new Location object with the transformed coordinates.
+        """
+
         try:
             target_crs_obj = CRS.from_user_input(target_crs)
         except:
@@ -46,5 +70,6 @@ class Location(PySWAPBaseModel):
         new_lon, new_lat, new_alt = transformer.transform(self.lon, self.lat, self.alt)
 
         return self.model_copy(
-            update={"lon": new_lon, "lat": new_lat, "alt": new_alt, "crs": target_crs}
+            update={"lon": new_lon, "lat": new_lat, "alt": new_alt, "crs": target_crs},
+            deep=True,
         )

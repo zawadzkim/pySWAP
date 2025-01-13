@@ -1,6 +1,49 @@
-"""Custom field types used for serilization in the model_dump(mode='json').
+"""Custom field types for pySWAP serialization and deserialization.
 
-Other parameters:
+The use of custom Annotated fields in combination with Pydantic allows for the
+serialization and deserialization of objects to the appropriate format used in
+the SWAP. This is particularily useful when Should a new type of field be
+implemented, the design should follow the pattern below:
+
+```Python
+CustonType = Annotated[
+    <native python type>,
+    pydantic.AfterValidator(custom_parsing_function),
+    pydantic.PlainSerializer(custom_serializer, return_type=<native python type>, when_used="json"),
+    pydantic.Field(<custom field parameters>)
+    ]
+```
+
+Where:
+
+- <native python type>: A native python type of the field that he user has to
+    provide (e.g., int).
+- pydantic.AfterValidator (optional):
+    Pydantic validator runs after the field value passed by the user is
+    initially parsed and validated (e.g., for required fields). It then takes a
+    custom parsing function as an argument and returns the final value
+    compatible with pySWAP serialization. For custom validation functions refer
+    to `pyswap.core.parsers` module.
+- pydantic.PlainSerializer:
+    A serializer in called when Model.model_dump(mode="json") is called.
+    Internally in pySWAP this is done in PySWAPBaseModel.model_string() method.
+    It takes a custom serialization function as an argument and returns the
+    parameter in a string format compatible with SWAP. For custom serializer
+    functions, refer to `pyswap.core.serializers` module.
+- pydantic.Field:
+    In Pydantic Field object is used to define metadata for a field. In pySWAP,
+    the context attribute is used to pass additional information to the
+    serializer functions.
+
+Then use the custom type in the models:
+
+```Python
+class SWAPSection(PySWAPBaseModel):
+    field: CustomType
+```
+
+Fields in this module:
+
     Table (DataFrame): A DataFrame object serialized as a string with just
         the headers and the data.
     Arrays (DataFrame): A DataFrame object serialized as a string with just
@@ -30,15 +73,39 @@ from typing import Annotated
 
 from pandas import DataFrame
 from pydantic.functional_serializers import PlainSerializer
+from pydantic import AfterValidator
 from pydantic import Field
 
+from pyswap.core.parsers import parse_day_month, parse_string_list, parse_quoted_string
 from pyswap.core.serializers import (
     serialize_arrays,
     serialize_csv_table,
+    serialize_decimal,
     serialize_object_list,
     serialize_table,
+    serialize_day_month,
 )
+
 from pyswap.core.basemodel import PySWAPBaseModel
+
+__all__ = [
+    "Table",
+    "Arrays",
+    "CSVTable",
+    "DayMonth",
+    "StringList",
+    "FloatList",
+    "IntList",
+    "DateList",
+    "Switch",
+    "ObjectList",
+    "String",
+    "File",
+    "Subsection",
+    "Decimal2f",
+    "Decimal3f",
+    "Decimal4f",
+]
 
 Table = Annotated[
     DataFrame,
@@ -59,6 +126,7 @@ CSVTable = Annotated[
         lambda x: serialize_csv_table(x), return_type=str, when_used="json"
     ),
 ]
+"""Serialize pd.DataFrame to a string in CSV format."""
 
 DayMonth = Annotated[
     date,
@@ -66,11 +134,13 @@ DayMonth = Annotated[
         lambda x: f"{x.strftime('%d %m')}", return_type=str, when_used="json"
     ),
 ]
+"""Serialize date object to a string with just the day and month."""
 
 StringList = Annotated[
     list[str],
     PlainSerializer(lambda x: f"'{','.join(x)}'", return_type=str, when_used="json"),
 ]
+"""Serialize list of strings to a string with elements separated by commas."""
 
 FloatList = Annotated[
     list[float],
@@ -80,6 +150,7 @@ FloatList = Annotated[
         when_used="json",
     ),
 ]
+"""Serialize list of floats to a string with elements separated by spaces."""
 
 IntList = Annotated[
     list[int],
@@ -87,6 +158,7 @@ IntList = Annotated[
         lambda x: " ".join([str(f) for f in x]), return_type=str, when_used="json"
     ),
 ]
+"""Serialize list of integers to a string with elements separated by spaces."""
 
 DateList = Annotated[
     list[date],
@@ -96,23 +168,27 @@ DateList = Annotated[
         when_used="json",
     ),
 ]
-
-Switch = Annotated[
-    bool | int, PlainSerializer(lambda x: int(x), return_type=int, when_used="json")
-]
+"""Serialize list of date objects to a string with elements separated by newlines."""
 
 ObjectList = Annotated[
     list,
     PlainSerializer(serialize_object_list, return_type=str, when_used="json"),
 ]
+"""Serialize list of objects to a string with elements separated by newlines."""
 
-String = Annotated[str, PlainSerializer(lambda x: f"'{x}'", return_type=str)]
+String = Annotated[
+    str,
+    PlainSerializer(lambda x: f"'{x}'", return_type=str),
+    AfterValidator(parse_quoted_string),
+]
+"""Serialize string to a string with quotation marks."""
 
 File = Annotated[
     PySWAPBaseModel,
     PlainSerializer(lambda x: x.model_string(), return_type=str, when_used="json"),
-    Field(json_schema_extra={"is_annotated_exception_type": True})
-    ]
+    Field(json_schema_extra={"is_annotated_exception_type": True}),
+]
+"""Serialize PySWAPBaseModel to a string."""
 
 Subsection = Annotated[
     PySWAPBaseModel,

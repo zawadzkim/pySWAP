@@ -1,12 +1,12 @@
-"""
-# Crop database
+"""Classes that wrap the crop parameters database for WOFOST (A. de Wit).
 
-This module wraps the crop parameters database for WOFOST (A. de Wit).
+From the classes here, only the WOFOSTCropDB is directly accessed by the user,
+however, the final usable object will be the CropVariety.
 
-!!! warning
-    This module is a part of a broader effort to integrate the WOFOST
-    crop parameter database into pySWAP. There WILL be some refactoring
-    in the near future.
+Classes:
+    WOFOSTCropDB: Class for managing crop parameters files.
+    WOFOSTCropFile: Class for managing the content of a single WOFOST crop parameters file.
+    CropVariety: Wrapping the variety in a separate class to make it easier to access.
 """
 
 from pathlib import Path
@@ -15,8 +15,6 @@ from pyswap.libs import crop_params
 from pyswap.core.io.io_yaml import load_yaml
 from pydantic import BaseModel, computed_field
 import pandera as pa
-
-from typing import Literal
 
 
 class WOFOSTCropFile(BaseModel):
@@ -50,11 +48,14 @@ class WOFOSTCropFile(BaseModel):
         return list(self.yaml_content["CropParameters"]["Varieties"])
 
     def get_variety(self, variety: str):
-        return CropVariety(variety=self.yaml_content["CropParameters"]["Varieties"][variety])
+        return CropVariety(
+            variety=self.yaml_content["CropParameters"]["Varieties"][variety]
+        )
+
 
 class CropVariety(BaseModel):
     """Wrapping the variety in a separate class to make it easier to access.
-    
+
     Attributes:
         variety: The entire variety dictionary from the YAML file (incl. metadata).
 
@@ -62,20 +63,25 @@ class CropVariety(BaseModel):
         parameters: Bare parameters of the variety (all metadata removed).
         metadata: The metadata of the variety.
     """
+
     variety: dict
 
     @computed_field(return_type=dict)
     def parameters(self):
-        return {k: v[0] for k, v in self.variety.items() if k != "Metadata" and v[0] != -99.0}
-    
+        return {
+            k: v[0]
+            for k, v in self.variety.items()
+            if k != "Metadata" and v[0] != -99.0
+        }
+
     @computed_field(return_type=dict)
     def metadata(self):
         return self.variety["Metadata"]
-    
+
     @staticmethod
     def get_table_class(class_name: str):
         """Get the schema class of a table.
-        
+
         In pySWAP tables are validated with Pandera DataFrameModel. Each table
         required by SWAP has its own schema class. This method returns the
         schema class of a table based on its name.
@@ -88,13 +94,14 @@ class CropVariety(BaseModel):
             class_: The schema class of the table if it exists, otherwise None.
         """
         import importlib
+
         module = importlib.import_module("pyswap.components.crop")
         if hasattr(module, class_name):
             class_ = getattr(module, class_name)
             return class_ if issubclass(class_, pa.DataFrameModel) else None
         else:
-             None
-    
+            None
+
     def format_tables(self):
         variety = self.parameters
         for k, v in variety.items():
@@ -102,22 +109,22 @@ class CropVariety(BaseModel):
             if table_class:
                 cols = list(table_class.__annotations__.keys())
                 if isinstance(v, list):
-                    variety[k] = table_class.create(self._format_tables(v), columns=cols)
-        return variety
-    
+                    variety[k] = table_class.create(
+                        self._format_tables(v), columns=cols
+                    )
+        return {k.lower(): v for k, v in variety.items()}
+
     @staticmethod
     def _format_tables(table: list) -> dict:
         """Format tables from YAML to a dictionary with two lists.
-        
+
         In the YAML file, the tables seem to be formatted
         in a way where the odd elements in the lists are one
         column and the even elements are the other. This method
         converts this format to a dictionary with two lists.
         """
-        return {
-            "col1": table[::2],
-            "col2": table[1::2]
-        }
+        return {"col1": table[::2], "col2": table[1::2]}
+
 
 class WOFOSTCropDB(BaseModel):
     """Simple class for managing crop parameters files.
@@ -134,7 +141,7 @@ class WOFOSTCropDB(BaseModel):
 
     Properties:
         croptypes: List all available crop types (files in the directory)
-    
+
     Methods:
         load_crop_file: Load a specific crop file and return the content as a
             WOFOSTCropFile instance
@@ -146,10 +153,14 @@ class WOFOSTCropDB(BaseModel):
     def croptypes(self):
         """Print the list of available files"""
         pprint(load_yaml(crop_params / "crops.yaml")["available_crops"])
-        
+
     def load_crop_file(self, crop: str):
         """Load a specific crop file and return the content as a dictionary"""
-        path = self.libdir / f"{crop}" if crop.endswith(".yaml") else self.libdir / f"{crop}.yaml"
+        path = (
+            self.libdir / f"{crop}"
+            if crop.endswith(".yaml")
+            else self.libdir / f"{crop}.yaml"
+        )
         return WOFOSTCropFile(yaml_content=load_yaml(path))
 
 

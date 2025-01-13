@@ -1,3 +1,10 @@
+"""Boundary conditions settings.
+
+Classes:
+
+    BottomBoundary: Bottom boundary settings.
+"""
+
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.fields import String, Table
 from pyswap.core.mixins import YAMLValidatorMixin, FileMixin, SerializableMixin
@@ -12,12 +19,18 @@ from typing import Literal, Self
 __all__ = ["BottomBoundary", "BBCFile"]
 
 
-class BottomBoundaryBase(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
-    """
-    Bottom boundary settings for SWAP model.
+class BottomBoundary(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, FileMixin):
+    """Bottom boundary settings.
+
+    Technically in SWAP boundary conditions can be specified either inside the
+    .swp file or in a separate .bbc file. The `swbbcfile` attribute determines
+    whether the boundary conditions are written to a .bbc file.
 
     Attributes:
-        swbotb (Literal[1, 2, 3, 4, 5, 6, 7, 8]): Switch for type of
+        swbbcfile (Optional[Literal[0, 1]]): Specify boundary conditions in
+            current file (0) or in a separate .bbc file (1).
+
+        swbotb (Optional[Literal[1, 2, 3, 4, 5, 6, 7, 8]]): Switch for type of
             bottom boundary.
 
             * 1 - prescribe groundwater level;
@@ -65,36 +78,36 @@ class BottomBoundaryBase(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin)
             * 1 - bottom flux is calculated with an exponential relation
             * 2 - bottom flux is derived from a table
 
-        bbcfile (Optional[str]): Name of file with bottom boundary data
+        bbcfil (Optional[String]): Name of file with bottom boundary data
             (without .BBC extension).
-        sinave (Optional[Decimal]): Average value of bottom flux.
-        sinamp (Optional[Decimal]): Amplitude of bottom flux sine function.
-        sinmax (Optional[Decimal]): Time of the year with maximum bottom flux.
-        shape (Optional[Decimal]): Shape factor to derive average groundwater
+        sinave (Optional[Decimal2f]): Average value of bottom flux.
+        sinamp (Optional[Decimal2f]): Amplitude of bottom flux sine function.
+        sinmax (Optional[Decimal2f]): Time of the year with maximum bottom flux.
+        shape (Optional[Decimal2f]): Shape factor to derive average groundwater
             level.
-        hdrain (Optional[Decimal]): Mean drain base to correct for average
+        hdrain (Optional[Decimal2f]): Mean drain base to correct for average
             groundwater level.
-        rimlay (Optional[Decimal]): Vertical resistance of aquitard.
-        aqave (Optional[Decimal]): Average hydraulic head in underlaying
+        rimlay (Optional[Decimal2f]): Vertical resistance of aquitard.
+        aqave (Optional[Decimal2f]): Average hydraulic head in underlaying
             aquifer.
-        aqamp (Optional[Decimal]): Amplitude hydraulic head sinus wave.
-        aqtmax (Optional[Decimal]): First time of the year with maximum
+        aqamp (Optional[Decimal2f]): Amplitude hydraulic head sinus wave.
+        aqtmax (Optional[Decimal2f]): First time of the year with maximum
             hydraulic head.
-        aqper (Optional[Decimal]): Period of hydraulic head sinus wave.
-        cofqha (Optional[Decimal]): Coefficient A for exponential relation for
+        aqper (Optional[Decimal2f]): Period of hydraulic head sinus wave.
+        cofqha (Optional[Decimal2f]): Coefficient A for exponential relation for
             bottom flux.
-        cofqhb (Optional[Decimal]): Coefficient B for exponential relation for
+        cofqhb (Optional[Decimal2f]): Coefficient B for exponential relation for
             bottom flux.
-        cofqhc (Optional[Decimal]): Coefficient C for exponential relation for
+        cofqhc (Optional[Decimal2f]): Coefficient C for exponential relation for
             bottom flux.
         gwlevel (Optional[Table]): Table with groundwater level data.
-        table_qbot (Optional[Table]): Table with bottom flux data.
-        table_haquif (Optional[Table]): Table with average pressure head in
+        qbot (Optional[Table]): Table with bottom flux data.
+        haquif (Optional[Table]): Table with average pressure head in
             underlaying aquifer.
-        table_qbot4 (Optional[Table]): Table with bottom flux data.
-        table_qtab (Optional[Table]): Table with groundwater level-bottom
-            flux relation
-        table_hbot (Optional[Table]): Table with the bottom compartment
+        qbot4 (Optional[Table]): Table with bottom flux data.
+        qtab (Optional[Table]): Table with groundwater level-bottom
+            flux relation.
+        hbot5 (Optional[Table]): Table with the bottom compartment
             pressure head.
     """
 
@@ -126,54 +139,40 @@ class BottomBoundaryBase(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin)
     qtab: Table | None = None
     hbot5: Table | None = None
 
-    @field_validator(
-        "sinave",
-        "sinamp",
-        "sinmax",
-        "shape",
-        "hdrain",
-        "rimlay",
-        "aqave",
-        "aqamp",
-        "aqtmax",
-        "aqper",
-        "cofqha",
-        "cofqhb",
-        "cofqhc",
-    )
-    def set_decimals(cls, v):
-        return v.quantize(Decimal("0.00"))
+    def model_string(self, **kwargs) -> str:
+        """Override model_string method to handle the swbbcfile attribute.
 
+        This method is called in the final serialization step, when each section
+        is converted into a string representation. So, depending on the
+        swbbcfile attribute, this function will return:
 
-class BBCFile(BottomBoundaryBase, FileMixin):
-    """Bottom boundary file.
+            - a full section string representation, as for when all boundary
+                conditions are included in the .swp file, or;
+            - it will only include swbbcfile and bbcfil (the name of the file
+                when the other parameters are defined). In that case, the other
+                parameters are written to a separate .bbc file using the
+                write_bbc method.
+        """
+        if self.swbbcfile == 1:
+            return super().model_string(include={"swbbcfile", "bbcfil"}, **kwargs)
+        else:
+            return super().model_string()
 
-    All attributes are the same as in the BottomBOundaryBase. There
-    is an additional property allowing to save the content to a file.
-    """
+    def write_bbc(self, path: Path):
+        """Write bottom boundary conditions to a .bbc file.
 
+        This method is only available when the swbbcfile attribute is set to 1.
+        Writes entire setion settings (except swbbcfile and bbcfil, defined in
+        the .swp file) to a separate .bbc file.
 
-class BottomBoundary(BottomBoundaryBase):
-    """Bottom boundary condition settings in the swp file.
+        Parameters:
+            path (Path): Path to the directory where the .bbc file will be
+                saved.
+        """
+        if self.swbbcfile != 1:
+            raise ValueError(
+                "Bottom boundary conditions are not set to be written to a .bbc file."
+            )
 
-    Attributes:
-        swbbcfile (Literal[0, 1]): Switch for file with bottom boundary data:
-
-            * 0 - data are specified in current file
-            * 1 - data are specified in separate file
-
-
-        bbcfile (Optional[BBCFile]): the BBCFile object.
-    """
-
-    swbbcfile: Literal[0, 1]
-    bbcfile: BBCFile | None = None
-
-    @property
-    def bbc(self):
-        return "".join(self.bbcfile.concat_attributes())
-
-    def write_bbc(self, path: str):
-        self.bbcfile.save_file(
-            string=self.bbc, extension="bbc", fname=self.bbcfil, path=path
-        )
+        bbc = super().model_string(exclude={"swbbcfile", "bbcfil"})
+        self.save_file(string=bbc, fname=self.bbcfil, path=path)

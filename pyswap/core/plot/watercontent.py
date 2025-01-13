@@ -1,15 +1,34 @@
+"""
+Functions:
+    water_content: Plot water content as heatmap.
+"""
+
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
 
-def water_content(df_vap: pd.DataFrame, title: str = "Water content"):
-    """Plot water content as heatmap with time on the x-axis and depth on the y-axis.
+def water_content(
+    df: pd.DataFrame,
+    depth_col: str,
+    date_col: str,
+    wcontent_col: str,
+    title: str = "Water content",
+):
+    """Plot water content as heatmap.
+
+    For this function to work, the user should either use the `vap` output
+    converted to a dataframe, or make sure that in the csv_tz output they
+    provide, only the water content data is present.
 
     Parameters:
-        df_vap (pd.DataFrame): DataFrame containing the water content data
+        df (pd.DataFrame): DataFrame containing the water content data
+        depth_col (str): Column name for depth data
+        date_col (str): Column name for date data
+        wcontent_col (str): Column name for water content data
         title (str, optional): Title of the plot. Defaults to 'Water content'.
     """
+
     sns.set_context("poster")
 
     df_wcont = df_vap[["depth", "date", "wcontent"]]

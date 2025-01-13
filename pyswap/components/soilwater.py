@@ -15,23 +15,19 @@ class Evaporation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Evaporation settings.
 
     Attributes:
-        swcfbs (int): Switch for use of soil factor CFBS to calculate Epot
-        from ETref swredu (int): Switch for the method for reduction of
-        potential soil evaporation:
+        swcfbs (Literal[0, 1]): Switch for use of soil factor CFBS to calculate Epot from ETref.
+        swredu (Literal[0, 1, 2]): Switch for the method for reduction of potential soil evaporation:
 
             * 0 - reduction to maximum Darcy flux.
             * 1 - reduction to maximum Darcy flux and to maximum Black (1969).
-            * 2 - reduction to maximum Darcy flux and to maximum
-                Boesten/Stroosnijder (1986).
+            * 2 - reduction to maximum Darcy flux and to maximum Boesten/Stroosnijder (1986).
 
-        cfevappond (Optional[float]): hen ETref is used, evaporation
-            coefficient in case of ponding.
-        cfbs (Optional[float]): Coefficient for potential soil evaporation.
-        rsoil (Optional[float]): Soil resistance of wet soil.
-        cofredbl (Optional[float]): Soil evaporation coefficient of Black.
-        rsigni (Optional[float]): Minimum rainfall to reset method of Black.
-        cofredbo (Optional[float]): Soil evaporation coefficient of
-            Boesten/Stroosnijder.
+        cfevappond (Optional[Decimal2f]): When ETref is used, evaporation coefficient in case of ponding [0..3].
+        cfbs (Optional[Decimal2f]): Coefficient for potential soil evaporation [0.5..1.5].
+        rsoil (Optional[Decimal2f]): Soil resistance of wet soil [0..1000.0].
+        cofredbl (Optional[Decimal2f]): Soil evaporation coefficient of Black [0..1].
+        rsigni (Optional[Decimal2f]): Minimum rainfall to reset method of Black [0..100].
+        cofredbo (Optional[Decimal2f]): Soil evaporation coefficient of Boesten/Stroosnijder [0..1].
     """
 
     swcfbs: Literal[0, 1]
@@ -51,18 +47,16 @@ class SnowAndFrost(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         swsnow (Literal[0, 1]): Switch for calculation of
             snow accumulation and melt.
         swfrost (Literal[0, 1]): Switch, in case of frost reduce
-            soil water flow
-        snowinco (Optional[float]): Initial snow water equivalent
-        teprrain (Optional[float]): Temperature above which all
-            precipitation is rain
-        teprsnow (Optional[float]): Temperature below which all
-            precipitation is snow
-        snowcoef (Optional[float]): Snowmelt calibration factor
-        tfroststa (Optional[float]): Soil temperature (oC) where reduction
-            of water fluxes starts
-        tfrostend (Optional[float]): Soil temperature (oC) where reduction
-            of water fluxes ends
-
+            soil water flow.
+        snowinco (Optional[Decimal2f]): Initial snow water equivalent [0..1000 cm].
+        teprrain (Optional[Decimal2f]): Temperature above which all
+            precipitation is rain [0..10 oC].
+        teprsnow (Optional[Decimal2f]): Temperature below which all
+            precipitation is snow [-10..0 oC].
+        tfroststa (Optional[Decimal2f]): Soil temperature (oC) where reduction
+            of water fluxes starts [-10.0..5.0 oC].
+        tfrostend (Optional[Decimal2f]): Soil temperature (oC) where reduction
+            of water fluxes ends [-10.0..5.0 oC].
     """
 
     swsnow: Literal[0, 1]
@@ -78,12 +72,8 @@ class SnowAndFrost(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 class SoilMoisture(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Soil moisture content and water balance.
 
-    !!! warning
-        swinco = 3 is not yet implemented. The model will run, but the output
-        will not be retrieved.
-
     Attributes:
-        swinco (int): Switch for the type of initial soil moisture condition:
+        swinco (Literal[1, 2, 3]): Switch for the type of initial soil moisture condition:
 
             * 1 - pressure head as function of soil depth.
             * 2 - pressure head of each compartment is in
@@ -91,9 +81,9 @@ class SoilMoisture(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
             * 3 - read final pressure heads from output file of previous
                 Swap simulation.
 
-        table_head_soildepth (Optional[Table]): Table with head and
+        head_soildepth (Optional[Table]): Table with head and
             soil depth data.
-        gwli (Optional[float]): Initial groundwater level [cm].
+        gwli (Optional[Decimal2f]): Initial groundwater level [-10000..100 cm].
         inifil (Optional[str]): name of output file *.END which contains
             initial values.
     """
@@ -127,11 +117,11 @@ class SoilProfile(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
         filenamesophy (Optional[str]): Names of input files with
             soil hydraulic tables for each soil layer
-        tau (Optional[float]): Minimum pressure head difference to change
-            wetting-drying
+        tau (Optional[Decimal2f]): Minimum pressure head difference to change
+            wetting-drying [0..1000].
         swmacro (Literal[0, 1]): Switch for preferential flow due to macropores
-        table_soilprofile (Table): Table with soil profile data
-        table_soilhydrfunc (Optional[Table]): Table with
+        soilprofile (Table): Table with soil profile data
+        soilhydrfunc (Optional[Table]): Table with
             soil hydraulic functions
     """
 
@@ -160,13 +150,11 @@ class SurfaceFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
             * 0 - No runon
             * 1 - Use runon data
 
-        rsro (float): Drainage resistance for surface runoff
-        rsroexp (float): Exponent for drainage equation of surface runoff
-        pondmx (Optional[float]): In case of ponding, minimum
-            thickness for runoff
-        rufil (Optional[str]): Name of the runon file
-        table_pondmxtb (Optional[Table]): Minimum thickness for runoff as
-            a function of time
+        rsro (Optional[Decimal2f]): Drainage resistance for surface runoff [0.001..1.0].
+        rsroexp (Optional[Decimal2f]): Exponent for drainage equation of surface runoff [0.01..10.0].
+        pondmx (Optional[Decimal2f]): In case of ponding, minimum thickness for runoff [0..1000].
+        rufil (Optional[str]): Name of the runon file.
+        pondmxtb (Optional[Table]): Minimum thickness for runoff as a function of time.
     """
 
     swpondmx: Literal[0, 1]

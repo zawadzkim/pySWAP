@@ -1,12 +1,13 @@
-"""
-Plotting functionality for pySWAP.
+"""Plotting functionality for pySWAP.
+
+Plotting of results depends heavily on the application of the model. Therefore,
+in this module, I only inclduded a few examples of how to plot results for
+specific cases.
 
 Modules:
     evapotranspiration: Functions for plotting evapotranspiration data.
-    gwl: Functions for plotting groundwater level data.
-    watercontent: Functions for plotting water content data.
+    watercontent: Functions for plotting water content data as heat map.
 """
 
 from .evapotranspiration import *
-from .gwl import *
 from .watercontent import *

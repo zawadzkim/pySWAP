@@ -1,6 +1,16 @@
-"""The main model class.
+"""Building, running and parsing the results of a SWAP model run.
+
+When the Model class begun to grow, it was clear that it needed to be refactored
+into a more modular structure. The functionality to build environment, run and
+parse result has been abstracted to 3 classes, focusing the main (and exposed to
+the user) Model class focused on the model components and their interactions.
+The four classes in this module are:
 
 Classes:
+
+    ModelBuilder: Class responsible for building the model components.
+    ModelRunner: Class responsible for running the model.
+    ResultReader: Class responsible for parsing the model results.
     Model: Main class that runs the SWAP model.
 """
 
@@ -18,16 +28,16 @@ from pandas import DataFrame, read_csv, to_datetime
 from pydantic import Field, model_validator, PrivateAttr
 
 from pyswap.components.irrigation import FixedIrrigation
-from pyswap.components.simsettings import  RichardsSettings
+from pyswap.components.simsettings import RichardsSettings
 from pyswap.components.soilwater import (
     SnowAndFrost,
 )
+from pyswap.core.io.io_ascii import open_ascii
 from pyswap.components.transport import HeatFlow, SoluteTransport
-from pyswap.core import IS_WINDOWS
+from pyswap.core.defaults import IS_WINDOWS
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.mixins import SerializableMixin, FileMixin
 from pyswap.libs import swap_linux, swap_windows
-from pyswap.model.metadata import Metadata
 from pyswap.model.result import Result
 from pyswap.core.fields import Subsection
 
@@ -36,7 +46,17 @@ __all__ = ["Model"]
 
 
 class ModelBuilder:
-    """Class responsible for building the model components."""
+    """Building model components.
+
+    Attributes:
+        model (Model): The model to build.
+        tempdir (str): The temporary directory to store the input files.
+
+    Methods:
+        copy_executable: Copy the appropriate SWAP executable to the
+            temporary directory.
+        write_inputs: Write the input files to the temporary directory.
+    """
 
     def __init__(self, model: Model, tempdir: str):
         self.model = model
@@ -56,6 +76,7 @@ class ModelBuilder:
         return self
 
     def write_inputs(self) -> None:
+        """Write the input files to the temporary directory."""
         logger.info("Preparing files...")
 
         self.model.write_swp(self.tempdir)
@@ -77,11 +98,13 @@ class ModelBuilder:
 class ModelRunner:
     """Class responsible for running the model.
 
+    In the run method, the ResultReader is utilized to abstract the parsing of
+    the model results.
+
     Attributes:
         model (Model): The model to run.
 
     Methods:
-        copy_executable: Copy the appropriate SWAP executable to the temporary directory.
         run_swap: Run the SWAP executable.
         raise_swap_warning: Raise a warning.
         run: Main function that runs the model
@@ -92,7 +115,15 @@ class ModelRunner:
 
     @staticmethod
     def run_swap(tempdir: Path) -> str:
-        """Run the SWAP executable."""
+        """Run the SWAP executable.
+
+        Run the exacutable in the tempdirectory and pass the newline to the
+        stdin when the executable asks for input (upon termination).
+
+        Parameters:
+            tempdir (Path): The temporary directory where the executable
+                is stored.
+        """
         swap_path = Path(tempdir, "swap.exe") if IS_WINDOWS else "./swap420"
         p = subprocess.Popen(
             swap_path,
@@ -106,12 +137,31 @@ class ModelRunner:
         return stdout.decode()
 
     def raise_swap_warning(self, warnings: list):
-        """Gets the output from identify_warnings() and logs them."""
+        """Log the warnings form the model run.
+
+        Parameters:
+            warnings (list): The warnings from the model run parsed with the
+                ResultReaded.
+        """
         for message in warnings:
             logger.warning(message)
 
-    def run(self, path: str | Path, silence_warnings: bool = False):
-        """Main function that runs the model."""
+    def run(self, path: str | Path, silence_warnings: bool = False) -> Result:
+        """Main function that runs the model.
+
+        First ModelBuilder is used to prepare the environment for the model run.
+        Second, the SWAP executable is run and the decoded result passed from
+        the executable is parsed using the ResultReader and used to update the
+        Result object.
+
+        Parameters:
+            path (str | Path): The path to the temporary directory.
+            silence_warnings (bool): If True, warnings are not raised.
+
+        Returns:
+            Result: The parsed model results.
+        """
+
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
             builder = ModelBuilder(self.model, tempdir)
             builder.copy_executable().write_inputs()
@@ -128,7 +178,7 @@ class ModelRunner:
 
             reader = ResultReader(self.model, tempdir)
 
-            log = reader.read_swap_log(tempdir)
+            log = reader.read_swap_log()
             result.log = log
 
             warnings = reader.identify_warnings(log)
@@ -138,31 +188,43 @@ class ModelRunner:
                 self.raise_swap_warning(warnings=warnings)
 
             if "csv" in self.model.generalsettings.extensions:
-                output = reader.read_swap_csv(which="csv")
+                output = reader.read_csv_output(which="csv")
                 result.output.update({"csv": output})
 
             if "csv_tz" in self.model.generalsettings.extensions:
-                output_tz = reader.read_swap_csv(which="csv_tz")
+                output_tz = reader.read_csv_output(which="csv_tz")
                 result.output.update({"csv_tz": output_tz})
 
-            ascii_files = reader.read_swap_ascii()
+            ascii_files = reader.read_ascii_output()
 
             result.output.update(ascii_files)
             return result
 
 
 class ResultReader:
-    """Class responsible for reading the model results."""
+    """Class responsible for reading the model results.
+
+    Attributes:
+        model (Model): The model to read the results from.
+        tempdir (str): The temporary directory where the results are stored.
+
+    Methods:
+        read_csv_output: Read the csv output.
+        read_swap_log: Read the log files.
+        identify_warnings: Catch warnings from the log file.
+        read_ascii_output: Read all output files that are not in csv format
+            as strings.
+    """
 
     def __init__(self, model: Model, tempdir: str):
         self.model: Model = model
         self.tempdir = tempdir
 
-    def read_swap_csv(self, which: Literal["csv", "csv_tz"]) -> DataFrame:
-        """Read the output csv file.
+    def read_csv_output(self, which: Literal["csv", "csv_tz"]) -> DataFrame:
+        """Read the csv output.
 
-        Since there are only two types of output files (csv and csv_ts), we
-        handle them in the same method.
+        There are two types of csv output files: csv and csv_tz. They are both
+        handle in the same method with mode change.
 
         Parameters:
             which (str): The type of output file to read.
@@ -186,14 +248,27 @@ class ResultReader:
 
         return df
 
-    def read_swap_log(self, directory: Path) -> str:
-        """Read the log file."""
+    def read_swap_log(self) -> str:
+        """Read the log files.
 
-        log_files = [f for f in Path(directory).glob("*.log") if f.name != "reruns.log"]
+        Returns:
+            str: The content of the log file.
+
+        Raises:
+            FileNotFoundError: If no log file is found. There should always be
+                a log file. If not, something went wrong.
+            FileExistsError: If multiple log files are found. Not sure if this
+                is possible or not. If so, it should be handled.
+        """
+
+        log_files = [
+            f for f in Path(self.tempdir).glob("*.log") if f.name != "reruns.log"
+        ]
 
         if len(log_files) == 0:
             msg = "No .log file found in the directory."
             raise FileNotFoundError(msg)
+
         elif len(log_files) > 1:
             msg = "Multiple .log files found in the directory."
             raise FileExistsError(msg)
@@ -207,15 +282,33 @@ class ResultReader:
 
     @staticmethod
     def identify_warnings(log: str) -> list:
-        """Read through the log file and catch warnings emitted by the SWAP executable."""
+        """Catch warnings from the log file.
+
+        This is used by the ModelRunner to raise warnings after the model run.
+
+        Parameters:
+            log (str): The log file content.
+
+        Returns:
+            list: A list of warnings.
+        """
         lines = log.split("\n")
         warnings = [
             line for line in lines if line.strip().lower().startswith("warning")
         ]
         return warnings
 
-    def read_swap_ascii(self):
-        """Read all output files that are not in csv format as strings."""
+    def read_ascii_output(self):
+        """Read all output files that are not csv format as strings.
+
+        This method is perhaps a bit oversimplified. In the future, we might
+        think about introducing parsers for the different output files. For now,
+        we just read them as strings.
+
+        Returns:
+            dict: A dictionary of the output strings with extension as key.
+        """
+
         ascii_extensions = [
             ext
             for ext in self.model.generalsettings.extensions
@@ -224,10 +317,10 @@ class ResultReader:
 
         list_dir = os.listdir(self.tempdir)
         list_dir = [f for f in list_dir if f.endswith(tuple(ascii_extensions))]
+
         if list_dir:
             dict_files = {
-                f.split(".")[1]: self.model.read_file(Path(self.tempdir, f))
-                for f in list_dir
+                f.split(".")[1]: open_ascii(Path(self.tempdir, f)) for f in list_dir
             }
             return dict_files
         return {}
@@ -236,23 +329,26 @@ class ResultReader:
 class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     """Main class that runs the SWAP model.
 
+    Even though all sections are set to optional, the model will not run if
+    any of the components are missing.
+
     Attributes:
-        metadata (Any): Metadata of the model.
-        generalsettings (Any): Simulation settings.
-        meteorology (Any): Meteorological data.
-        crop (Any): Crop data.
-        fixedirrigation (Any): Fixed irrigation settings.
-        soilmoisture (Any): Soil moisture data.
-        surfaceflow (Any): Surface flow data.
-        evaporation (Any): Evaporation data.
-        soilprofile (Any): Soil profile data.
-        snowandfrost (Optional[Any]): Snow and frost data.
-            Default is `SnowAndFrost(swsnow=0, swfrost=0)`.
-        richards (Optional[Any): Richards data.
-        lateraldrainage (Any): Lateral drainage data.
-        bottomboundary (Any): Bottom boundary data.
-        heatflow (Optional[Any): Heat flow data.
-        solutetransport (Optional[Any): Solute transport data.
+        metadata (Subsection): Metadata of the model.
+        version (str): The version of the model.
+        generalsettings (Subsection): Simulation settings.
+        meteorology (Subsection): Meteorological data.
+        crop (Subsection): Crop data.
+        fixedirrigation (Subsection): Fixed irrigation settings.
+        soilmoisture (Subsection): Soil moisture data.
+        surfaceflow (Subsection): Surface flow data.
+        evaporation (Subsection): Evaporation data.
+        soilprofile (Subsection): Soil profile data.
+        snowandfrost (Subsection): Snow and frost data.
+        richards (Subsection): Richards data.
+        lateraldrainage (Subsection): Lateral drainage data.
+        bottomboundary (Subsection): Bottom boundary data.
+        heatflow (Subsection): Heat flow data.
+        solutetransport (Subsection): Solute transport data.
 
     Methods:
         write_swp: Write the .swp input file.
@@ -279,9 +375,21 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     heatflow: Subsection | None = HeatFlow(swhea=0)
     solutetransport: Subsection | None = SoluteTransport(swsolu=0)
 
+    @property
+    def swp(self):
+        """The content of the swp file.
+
+        Serialization of Subsection field type has been set in a way that it
+        will generate SWAP formatted string when `model_string()` is called on
+        the parent class.
+        """
+        return self.model_string()
+
     @model_validator(mode="after")
     def validate_all_components(self):
-        if not getattr(self, "_validate_on_run", False):
+        """Validate, on run, that all required components are present."""
+
+        if not self._validate_on_run:
             return self
 
         required_components = [
@@ -314,27 +422,32 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         return self
 
     def validate(self):
+        """Execute the model validation when `run()` is called."""
+
         try:
             self._validate_on_run = True
-            self.model_validate(self, context={"_validate_on_run": True})
+            self.model_validate(self)
         finally:
             self._validate_on_run = False
             logger.info("Validation successful.")
 
-    def write_swp(self, path: str | Path, **kwargs):
-        """Write the .swp input file."""
-        self.save_file(
-            string=self.swp, path=path, fname="swap", extension="swp", **kwargs
-        )
+    def write_swp(self, path: str | Path):
+        """Write the .swp input file.
 
-    @property
-    def swp(self):
-        """The content of the swp file.
-
-        Looping over the dict() because when model_dump() is
-        used, the nested models are automatically serialized.
+        Parameters:
+            path (str | Path): The path to write the file to.
         """
-        return self.model_string()
+        self.save_file(string=self.swp, path=path, fname="swap")
+
+    def to_classic_swap(self, path: Path) -> None:
+        """Prepare all the files for a model run in user's directory."""
+        self.validate()
+        builder = ModelBuilder(model=self, tempdir=path)
+
+        builder.write_inputs()
+        builder.copy_executable()
+
+        logger.info(f"Model files written to {path}")
 
     def run(self, path: str | Path, silence_warnings: bool = False):
         """Run the model using ModelRunner."""

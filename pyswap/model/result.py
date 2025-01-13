@@ -1,12 +1,13 @@
 """Capturing model results.
 
-Tip:
-    The Result class is now focusing on the output in CSV format and the log file. the other
-    result files are also retrieved as a list of strings which user can access if needed.
+After a model is run, the results are stored in a `Result` object. The object
+stores the log file, output file, and warnings. Output is a dictionary with
+the keys being the file extensions and the values being the file contents. There
+are also computed properties making the most common output formats easily
+accessible.
 
 Classes:
-    Result: Stores the result of a model run.
-
+    Result: Result of a model run.
 """
 
 import re
@@ -18,20 +19,22 @@ __all__ = ["Result"]
 
 
 class Result(BaseModel):
-    """Class to store the result of a model run.
+    """Result of a model run.
 
     Attributes:
         log (str): The log file of the model run.
-        output (DataFrame, optional): The output file of the model run.
-        warning (List[str], optional): The warnings of the model run.
+        output (DataFrame): The output file of the model run.
+        warning (List[str]): The warnings of the model run.
 
     Properties:
-        model_config (dict): The model configuration.
         ascii (dict): The output in ASCII format.
         csv (DataFrame): The output in CSV format.
-        iteration_stats (str): The part of the log file that describes the iteration statistics.
+        csv_tz (DataFrame): The output in CSV format with depth.
+        iteration_stats (str): Return the part the iteration statistics from
+            the log.
         blc_summary (str): The .blc file if it exists.
-        yearly_summary (DataFrame): Yearly sums of all output variables.
+        yearly_summary (DataFrame): Yearly sums of all output variables. Will
+            return an error if csv was not included in the output file formats.
     """
 
     log: str | None = Field(default=None, repr=False)
@@ -43,31 +46,31 @@ class Result(BaseModel):
     )
 
     @computed_field(return_type=dict)
-    def ascii(self):
-        """Return the output in ASCII format."""
+    def ascii(self) -> dict:
+        """Return all outputs in ASCII format."""
         return {k: v for k, v in self.output.items() if not k.endswith("csv")}
 
     @computed_field(return_type=DataFrame)
-    def csv(self):
+    def csv(self) -> DataFrame:
         """Return the output in CSV format."""
         return self.output.get("csv", None)
-    
+
     @computed_field(return_type=DataFrame)
-    def csv_tz(self):
+    def csv_tz(self) -> DataFrame:
         """Return the output in CSV format with depth."""
         return self.output.get("csv_tz", None)
 
     @computed_field(return_type=str)
-    def iteration_stats(self):
-        """Return the part of the string that describes the iteration statistics."""
+    def iteration_stats(self) -> str:
+        """Return the part the iteration statistics from the log."""
         return re.search(r".*(Iteration statistics\s*.*)$", self.log, re.DOTALL)[1]
 
     @computed_field(return_type=str)
-    def blc_summary(self):
+    def blc_summary(self) -> str:
         """Return the .blc file if it exists."""
         return self.output.get("blc", None)
 
     @computed_field(return_type=DataFrame)
-    def yearly_summary(self):
+    def yearly_summary(self) -> DataFrame:
         """Return yearly sums of all output variables."""
         return self.csv.resample("YE").sum()

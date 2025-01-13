@@ -1,12 +1,11 @@
-"""
-# SWAP model package
+"""SWAP model package
 
 The main subpackage for the SWAP model.
 
 Modules:
-    model: SWAP model settings.
-    result: SWAP model result.
-    metadata: SWAP model metadata.
+    model: Building, running and parsing the results of a SWAP model run.
+    result: Capturing model results.
+    metadata: Model metadata.
 """
 
 from pyswap.model.metadata import Metadata

@@ -1,4 +1,12 @@
-"""This file contains classes and functions for handling HDF5 integration."""
+"""Interacting with HDF5 files.
+
+HDF5 database is meant to store pySWAP models and results in a structured way.
+The class allows users to save and load multiple models and results to a single
+.h5 file.
+
+Classes:
+    HDF5: Class for interacting with HDF5 files.
+"""
 
 import logging
 import pickle
@@ -14,6 +22,19 @@ logger = logging.getLogger(__name__)
 
 
 class HDF5(BaseModel):
+    """Class for interacting with HDF5 files.
+
+    The pySWAP models and results are stored in the HDF5 file as pickled
+    objects. These are complete representations of the models and results
+    that can be loaded back into memory. They also have some metadata attached
+    to them which are stored as atrributes in the HDF5 file. Users can view the
+    models in an HDF5 file viewer.
+
+    Attributes:
+        filename (str): Path to the HDF5 file.
+        models (dict): Dictionary containing the loaded models.
+    """
+
     filename: str
     models: dict | None = Field(default_factory=dict)
 
@@ -35,13 +56,6 @@ class HDF5(BaseModel):
     @staticmethod
     def _get_or_create_group(f, group_name):
         """Get a group from an HDF5 file or create it if it does not exist."""
-        if group_name not in f:
-            try:
-                f.create_group(group_name)
-            except ValueError:
-                logger.warning(
-                    f"Cannot create group {group_name}. It may already exist. Skipping creation."
-                )
         return f.require_group(group_name)
 
     def save_model(
@@ -56,6 +70,13 @@ class HDF5(BaseModel):
 
         Each model in its metadata attribute stores the project name. That is used as the name for the main group. If that name already exists,
         a new group is not created. Then the check is made if the version of the model already exists. If it does, the group is not created.
+
+        Parameters:
+            model (Model): The model to be saved.
+            result (Result): The result to be saved.
+            overwrite_datasets (bool): If True, overwrite the datasets if they already exist.
+            overwrite_project (bool): If True, overwrite the project if it already exists.
+            mode (str): The mode in which to save the data. Options are 'python', 'json', and 'yaml'.
         """
 
         def _overwrite_datasets(group):
@@ -115,7 +136,14 @@ class HDF5(BaseModel):
         load_results: bool = False,
         mode: Literal["python", "json", "yaml"] = "python",
     ) -> dict:
-        """Load a single model or all models within a specific project."""
+        """Load a single model or all models within a specific project.
+
+        Parameters:
+            project (str): The project name.
+            model (str): The model name.
+            load_results (bool): If True, load the results as well.
+            mode (str): The mode in which to load the data. Options are 'python', 'json', and 'yaml'.
+        """
 
         def _load_pickled(
             group: h5py.Group, name: str, load_results: bool
@@ -155,4 +183,3 @@ class HDF5(BaseModel):
 
         self.models.update(loaded_models)
         return loaded_models
-

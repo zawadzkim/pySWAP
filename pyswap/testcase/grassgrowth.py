@@ -8,6 +8,7 @@ import pyswap.components.crop
 import pyswap.components.drainage
 import pyswap.components.meteorology
 import pyswap.components.soilwater
+import pyswap.components.tables
 import pyswap.components.transport
 
 from .load_dataset import IS_WINDOWS
@@ -78,7 +79,10 @@ def _make_grassgrowth():
         "TAVD": [0.00, 5.00, 15.00, 25.00, 40.00],
         "TMPF": [0.00, 0.70, 1.00, 1.00, 0.00],
     })
-    grass_tmnftb = ps.components.crop.TMNFTB.create({"TMNR": [0.0, 4.0], "TMNF": [0.0, 1.0]})
+    grass_tmnftb = ps.components.crop.TMNFTB.create({
+        "TMNR": [0.0, 4.0],
+        "TMNF": [0.0, 1.0],
+    })
 
     grass_rfsetb = ps.components.crop.RFSETB_GRASS.create({
         "DNR": [1.00, 366.00],
@@ -110,7 +114,10 @@ def _make_grassgrowth():
         "RDRS": [0.0, 0.02, 0.02],
     })
 
-    grass_rdctb = ps.components.crop.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
+    grass_rdctb = pyswap.components.tables.RDCTB.create({
+        "RRD": [0.0, 1.0],
+        "RDENS": [1.0, 0.0],
+    })
 
     grass_settings = ps.components.crop.CropDevelopmentSettingsGrass(
         swcf=2,
@@ -291,14 +298,14 @@ def _make_grassgrowth():
 
     # %% setting soil profile
 
-    soil_profile = ps.components.soilwater.SOILPROFILE.create({
+    soil_profile = pyswap.components.tables.SOILPROFILE.create({
         "ISUBLAY": [1, 2, 3, 4, 5, 6, 7, 8, 9],
         "ISOILLAY": [1, 1, 2, 3, 3, 4, 4, 5, 5],
         "HSUBLAY": [5.0, 10.0, 10.0, 5.0, 20.0, 50.0, 20.0, 100.0, 120.0],
         "HCOMP": [1.0, 2.5, 5.0, 5.0, 10.0, 10.0, 20.0, 20.0, 40.0],
         "NCOMP": [5, 4, 2, 1, 2, 5, 1, 5, 3],
     })
-    soil_hydraulic_functions = ps.components.soilwater.SOILHYDRFUNC.create({
+    soil_hydraulic_functions = pyswap.components.tables.SOILHYDRFUNC.create({
         "ORES": [0.02, 0.02, 0.02, 0.01, 0.01],
         "OSAT": [0.40, 0.40, 0.40, 0.36, 0.36],
         "ALFA": [0.0227, 0.0227, 0.0227, 0.0216, 0.0216],
@@ -368,7 +375,7 @@ def _make_grassgrowth():
 
     # %% heatflow
 
-    soil_texture = ps.components.transport.SOILTEXTURES.create({
+    soil_texture = pyswap.components.tables.SOILTEXTURES.create({
         "PSAND": [0.68, 0.68, 0.77, 0.86, 0.88],
         "PSILT": [0.27, 0.28, 0.19, 0.08, 0.09],
         "PCLAY": [0.05, 0.04, 0.04, 0.06, 0.03],

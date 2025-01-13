@@ -1,4 +1,8 @@
-"""Interact with YAML files."""
+"""Interact with YAML files.
+
+Functions:
+    load_yaml: Load a YAML file.
+"""
 
 import yaml
 

@@ -1,3 +1,11 @@
+"""
+General settings for the simulation and settings for the Richards' equation.
+
+Classes:
+    GeneralSettings: General settings of the simulation.
+    RichardsSettings: Settings for the Richards' equation.
+"""
+
 from datetime import date
 from typing import ClassVar, Literal
 import logging
@@ -16,11 +24,6 @@ logger = logging.getLogger(__name__)
 
 class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """General settings of the simulation.
-
-    !!! todo
-        * remove the individual file extension switches and replace with a
-        list of extensions. Make the class automatically generate the switches
-        based on the list of extensions.
 
     Attributes:
         pathwork (str): Path to the working directory. Immutable attribute.
@@ -135,8 +138,12 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
             setattr(self, switch_name, 1 if ext in self.extensions else 0)
 
     def add_extension(self, extension: str, inlist: list = None):
-        """
-        Add a new extension to the list and trigger updates.
+        """Add a new extension to the list and trigger updates.
+
+        Parameters:
+            extension (str): Extension to add to the list.
+            inlist (list): List of variables for the extension. Applicable when
+                extension is 'csv' or 'csv_tz'.
         """
         if extension not in self._all_extensions:
             raise ValueError(f"Invalid extension: {extension}")
@@ -183,16 +190,16 @@ class RichardsSettings(PySWAPBaseModel, SerializableMixin):
     """Settings for the Richards' equation.
 
     Attributes:
-        swkmean (int): Switch for averaging method of hydraulic conductivity
+        swkmean (Literal[1, 2, 3, 4, 5, 6]): Switch for averaging method of hydraulic conductivity
         swkimpl (Literal[0, 1]): Switch for updating hydraulic conductivity during iteration
-        dtmin (float): Minimum timestep
-        dtmax (float): Maximum timestep
-        gwlconv (float): Maximum difference of groundwater level between time steps
-        critdevh1cp (float): Maximum relative difference in pressure heads per compartment
-        critdevh2cp (float): Maximum absolute difference in pressure heads per compartment
-        critdevponddt (float): Maximum water balance error of ponding layer
-        maxit (int): Maximum number of iteration cycles
-        maxbacktr (int): Maximum number of back track cycles within an iteration cycle
+        dtmin (float): Minimum timestep [1.d-7..0.1 d]
+        dtmax (float): Maximum timestep [dtmin..1 d]
+        gwlconv (float): Maximum difference of groundwater level between time steps [1.d-5..1000 cm]
+        critdevh1cp (float): Maximum relative difference in pressure heads per compartment [1.0d-10..1.d3]
+        critdevh2cp (float): Maximum absolute difference in pressure heads per compartment [1.0d-10..1.d3 cm]
+        critdevponddt (float): Maximum water balance error of ponding layer [1.0d-6..0.1 cm]
+        maxit (int): Maximum number of iteration cycles [5..100]
+        maxbacktr (int): Maximum number of back track cycles within an iteration cycle [1..10]
     """
 
     swkmean: int

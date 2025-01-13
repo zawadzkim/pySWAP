@@ -10,7 +10,10 @@ IS_WINDOWS = platform.system() == "Windows"
 BASE_PATH: Path = Path(__file__).parent.joinpath("./data")
 
 RESOURCES: dict[str, Path] = {
-    "hupselbrook": {"met": Path(BASE_PATH, "1-hupselbrook/283.csv")},
+    "hupselbrook": {
+        "met": Path(BASE_PATH, "1-hupselbrook/283.csv"),
+        "swp": Path(BASE_PATH, "1-hupselbrook/swap.swp"),
+    },
     "grassgrowth": {
         "met": Path(BASE_PATH, "2-grassgrowth/260.csv"),
         "gwlevels": Path(BASE_PATH, "2-grassgrowth/gwlevels.csv"),

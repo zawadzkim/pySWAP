@@ -1,5 +1,13 @@
-"""Command Line Interface for pySWAP. Currently the only functionality is creating
-project structure.
+"""Command Line Interface for pySWAP.
+
+This is a prototype subpackage for potential enhancement of pyswap's
+functionality. CLI tools can be very helpful in automating some tasks, like
+loading databases or classic SWAP models.
+
+!!! note:
+
+    At the moment only creating project structure was prototyped. More
+    functionality will be added in the future if users express such need.
 
 Example:
 

@@ -1,5 +1,4 @@
-"""
-Irrigation settings for the SWAP simuluation.
+"""Irrigation settings for the SWAP simuluation.
 
 Classes:
     IrgFile: The irrigation file.
@@ -66,10 +65,7 @@ class FixedIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
 
 class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
-    """Irrigation scheduling settings in the .crp file..
-
-    !!! warning
-        The docstring needs to be updated.
+    """Irrigation scheduling settings in the .crp file.
 
     Attributes:
         schedule (Literal[0, 1]): Switch for application irrigation scheduling

@@ -1,10 +1,26 @@
-"""Functions serializing obects to the appropriate format used in the custom
-pyswap fields (pyswap.core.utils.fields)
+"""Functions to fine tune the serializatino of pySWAP objects to SWAP
+formatted ASCII.
+
+More complex serialization logic which would be unwieldy to implement directly
+in the Annotated field definitions (pyswap.core.fields module) as lambda
+functions are defined in the serializers module (pyswap.core.serializers). These
+are functions that convert objects to strings in the valid SWAP format.
+
+Serializers in this module:
+    serialize_table: Convert a DataFrame to a string.
+    serialize_arrays: Convert a DataFrame to a string without headers and
+        newline in front.
+    serialize_csv_table: Convert a DataFrame to a string in CSV format.
+    serialize_object_list: Convert a list of objects to a string.
+    serialize_day_month: Convert a date object to a string with just the day
+        and month.
+
 """
 
 from pandas import DataFrame, DatetimeIndex
 
 from pyswap.core.basemodel import PySWAPBaseModel
+from datetime import date
 
 
 def serialize_table(table: DataFrame) -> str:
@@ -67,9 +83,34 @@ def serialize_csv_table(table: DataFrame) -> str:
 
 
 def serialize_object_list(list: list[PySWAPBaseModel]) -> str:
-    """Serialize a list of objects to a string."""
+    """Serialize a list of objects to a string.
+
+    This is mostly used to convert pyswap.Section objects to a string.
+
+    Arguments:
+        list: The list of objects to be serialized.
+    """
     string = ""
     for item in list:
         string += item.model_string()
 
     return string
+
+
+def serialize_day_month(value: date) -> str:
+    """Serialize a date object to a string with just the day and month.
+
+    Arguments:
+        value: The date object to be serialized.
+
+    Result:
+        >>> '01 01'
+    """
+    return value.strftime("%d %m")
+
+
+def serialize_decimal(precision: int):
+    def decimal_serializer(v, info):
+        return f"{round(v, precision):.{precision}f}"
+
+    return decimal_serializer

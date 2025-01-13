@@ -1,9 +1,15 @@
-"""Interact with ASCII files."""
+"""Interact with ASCII files.
+
+Functions:
+    open_ascii: Open an ASCII file and detect its encoding.
+    save_ascii: Save a string to an ASCII file.
+"""
 
 import chardet
+from pathlib import Path
 
 
-def open_ascii(file_path: str) -> str:
+def open_ascii(file_path: Path) -> str:
     """Open file and detect encoding.
 
     Arguments:
@@ -27,7 +33,7 @@ def save_ascii(
     """
     Saves a string to a file with a given extension.
 
-    Arguments:
+    Parameters:
         string (str): The string to be saved to a file.
         extension (str): The extension that the file should have (e.g. 'txt', 'csv', etc.).
         fname (str): The name of the file.

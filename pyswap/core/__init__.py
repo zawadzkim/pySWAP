@@ -1,31 +1,26 @@
-"""
-## Core subpackage
+"""Core functionality for pySWAP.
 
-Core package containing the main classes and functions for the SWAP model. It is used only internally
-by the package. None of the functionality is exposed to the user.
+Core package containing the main classes and functions for the SWAP model. It is
+used mostly internally by the package. None of the functionality is directly
+exposed to the user.
 
 Modules:
-    basemodel: Base model class for pySWAP.
-    fields: Field types for pyswap used for serialization.
-    files: Functions to interact with file system.
-    serializers: Functions to fine tune the serializatino of pySWAP objects.
-    valueranges: Objects containing value ranges used is validation of
-        pySWAP objects.
+    basemodel: Base models inherited by all pySWAP models.
+    defaults: Variables shared across the package.
+    fields: Custom field types for pySWAP serialization and deserialization.
+    mixins: Reusable mixins enhancing functionality of specific PySWAPBaseModel.
+    parsers: Functions to parse SWAP formatted ascii files into pySWAP objects.
+    serializers: Functions to fine tune the serializatino of pySWAP objects to
+        SWAP formatted ASCII.
+    valueranges: Value ranges for pydantic Field objects used in pyswap
+        validation.
+
+Subpackages:
+    cli: Command line interface for pySWAP (PROTOTYPE FEATURE).
+    io: Input/output functionality for pySWAP.
+    db: Database integrations for pySWAP.
+
+Resources:
+    validation.yaml: YAML file containing the validation schema for pySWAP
+        models
 """
-
-import platform
-from importlib import resources
-from importlib.abc import Traversable
-
-from pyswap.core.io.io_yaml import load_yaml
-
-root: Traversable = resources.files("pyswap")
-"""Root directory of the package."""
-
-validation_rules: Traversable = root / "core" / "validation.yaml"
-
-VALIDATIONRULES = load_yaml(validation_rules)
-
-IS_WINDOWS = platform.system() == "Windows"
-BASE_PATH = ".\\" if IS_WINDOWS else "./"
-

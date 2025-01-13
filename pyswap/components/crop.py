@@ -1,9 +1,17 @@
-"""
-## Crop module
+"""Crop settings and crop files for SWAP model.
 
 Similar to the .dra or .swp files, the .crp file is a configuration file for the SWAP model.
 The classes in this module represent distincs sections of the .crp file. The main class is the
 `CropFile` class which holds the settings for the crop simulation.
+
+SWAP has three modes for crop simulations which users define in the CROPROTATION table in the .swp file:
+
+    * 1 - simple crop settings
+    * 2 - detailed, WOFOST general settings
+    * 3 - dynamic grass growth model
+
+For each choice, the .crp file will look different. Therefore, multiple classes
+are defined in this module to deal with thos different settings.
 
 Classes:
     CropFile: Class for the .crp file.
@@ -18,13 +26,7 @@ Classes:
     CO2Correction: Class for the CO2 correction settings.
     ScheduledIrrigation: Class for the scheduled irrigation settings.
     Preparation: Class for the preparation settings.
-
-
-Warning:
-    This script will undergo major changes in the future. Some things to
-    improve include smoother integration with WOFOST configuration files
-    (yaml) and code readability."""
-
+"""
 
 from typing import Literal
 
@@ -49,10 +51,22 @@ __all__ = [
 ]
 
 
-class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, WOFOSTUpdateMixin):
-    """Crop development settings (parts 1-xx form the template)
+class CropDevelopmentSettings(
+    PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, WOFOSTUpdateMixin
+):
+    """Crop development settings.
+
+    !!! note:
+
+        CropDevelopmentSettings is a base class for the different crop
+        development settings (type 1, 2 and 3). Crop parameters can be read from
+        WOFOST database. Because some names of the same parameters are different
+        between the wofost and swap templates, the alias parameter is used to
+        rename the parameters in serialization to SWAP compatible .crp file.
+        Currently it applies to TSUM1 and TSUM2.
 
     Attributes:
+        wofost_variety (CropVariety): Crop variety settings.
         swcf (Literal[1, 2]): Choose between crop factor and crop height
 
             * 1 - Crop factor
@@ -130,49 +144,42 @@ class CropDevelopmentSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorM
 class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
     """Additional settings as defined for the WOFOST model.
 
-    Warning:
-        The validation for this class is not complete. Also check the Optional attributes!
-
-    Note:
-        Use serialization_alias to change the parameter names who are different between WOFOST and SWAP.
-
-    Attributes:
-        idsl (Literal[0, 1, 2]):
-        dtsmtb (Arrays):
-        dlo (Optional[float]):
-        dlc (Optional[float]):
-        vernsat (Optional[float]):
-        vernbase (Optional[float]):
-        verndvs (Optional[float]):
-        verntb (Optional[Arrays]):
-        tdwi (float):
-        laiem (float):
-        rgrlai (float):
-        spa (float):
-        ssa (float):
-        span (float):
-        slatb (Arrays):
-        eff (float):
-        amaxtb (Arrays):
-        tmpftb (Arrays):
-        tmnftb (Arrays):
-        cvo (float):
-        cvl (float):
-        cvr (float):
-        cvs (float):
-        q10 (float):
-        rml (float):
-        rmo (float):
-        rmr (float):
-        rms (float):
-        rfsetb (Arrays):
-        frtb (Arrays):
-        fltb (Arrays):
-        fstb (Arrays):
-        fotb (Arrays):
-        perdl (float):
-        rdrrtb (Arrays):
-        rdrstb (Arrays):
+    idsl (Literal[0, 1, 2]): Switch for crop development.
+    dtsmtb (Arrays): List increase in temperature sum as function of daily average temperature.
+    dlo (Optional[float]): Optimum day length for crop development.
+    dlc (Optional[float]): Minimum day length.
+    vernsat (Optional[float]): Saturated vernalisation requirement.
+    vernbase (Optional[float]): Base vernalisation requirement.
+    verndvs (Optional[float]): Critical development stage after which the effect of vernalisation is halted.
+    verntb (Optional[Arrays]): Table with rate of vernalisation as function of average air temperature.
+    tdwi (float): Initial total crop dry weight.
+    laiem (float): Leaf area index at emergence.
+    rgrlai (float): Maximum relative increase in LAI.
+    spa (float): Specific pod area.
+    ssa (float): Specific stem area.
+    span (float): Life span under leaves under optimum conditions.
+    slatb (Arrays): List specific leaf area as function of crop development stage.
+    eff (float): Light use efficiency for real leaf.
+    amaxtb (Arrays): List maximum CO2 assimilation rate as function of development stage.
+    tmpftb (Arrays): List reduction factor of AMAX as function of average day temperature.
+    tmnftb (Arrays): List reduction factor of AMAX as function of minimum day temperature.
+    cvo (float): Efficiency of conversion into storage organs.
+    cvl (float): Efficiency of conversion into leaves.
+    cvr (float): Efficiency of conversion into roots.
+    cvs (float): Efficiency of conversion into stems.
+    q10 (float): Increase in respiration rate with temperature.
+    rml (float): Maintenance respiration rate of leaves.
+    rmo (float): Maintenance respiration rate of storage organs.
+    rmr (float): Maintenance respiration rate of roots.
+    rms (float): Maintenance respiration rate of stems.
+    rfsetb (Arrays): List reduction factor of senescence as function of development stage.
+    frtb (Arrays): List fraction of total dry matter increase partitioned to the roots as function of development stage.
+    fltb (Arrays): List fraction of total above ground dry matter increase partitioned to the leaves as function of development stage.
+    fstb (Arrays): List fraction of total above ground dry matter increase partitioned to the stems as function of development stage.
+    fotb (Arrays): List fraction of total above ground dry matter increase partitioned to the storage organs as function of development stage.
+    perdl (float): Maximum relative death rate of leaves due to water stress.
+    rdrrtb (Arrays): List relative death rates of roots as function of development stage.
+    rdrstb (Arrays): List relative death rates of stems as function of development stage.
     """
 
     idsl: Literal[0, 1, 2] | None = None  # for grass at least
@@ -214,7 +221,7 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
 
 
 class CropDevelopmentSettingsFixed(CropDevelopmentSettings):
-    """Fixed crop development settings (parts 1-xx form the template)
+    """Fixed crop development settings (Additionaly to CropDevelopmentSettings).
 
     Attributes:
         idev (Literal[1, 2]): Duration of crop growing period
@@ -668,8 +675,8 @@ class CropFile(PySWAPBaseModel, FileMixin, SerializableMixin):
         return self.model_string()
 
 
-class Crop(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
-    """Holds the crop settings of the simulation.
+class Crop(PySWAPBaseModel, SerializableMixin, FileMixin, YAMLValidatorMixin):
+    """Crop settings of the simulation.
 
     Attributes:
         swcrop (int): Switch for crop:

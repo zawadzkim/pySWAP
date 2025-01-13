@@ -1,5 +1,4 @@
-"""
-## Metadata
+"""Model metadata.
 
 Classes:
     Metadata: Metadata of a SWAP model.
@@ -16,6 +15,12 @@ __all__ = ["Metadata"]
 
 class Metadata(PySWAPBaseModel, SerializableMixin):
     """Metadata of a SWAP model.
+
+    Metadata is intended more as a modelling exercise metadata than a model
+    metadata. You should create one Metadata object at the beginning of your
+    model script and pass it to all Model objects you create in between. It is
+    used to describe model runs if they are stored in a database. Only `project`
+    is passed to the swap file.
 
     Attributes:
         author (str): Author of the model.

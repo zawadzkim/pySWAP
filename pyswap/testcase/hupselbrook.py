@@ -1,4 +1,3 @@
-
 # %%
 from datetime import date as dt
 import pyswap as ps
@@ -7,6 +6,7 @@ import pyswap.components.crop
 import pyswap.components.drainage
 import pyswap.components.meteorology
 import pyswap.components.soilwater
+import pyswap.components.tables
 from pyswap.core.db import WOFOSTCropDB
 
 from pyswap import testcase
@@ -38,7 +38,7 @@ def _make_hupselbrook():
         swscre=0,
         swmonth=1,
         swyrvar=0,
-        datefix="2004-12-31",
+        datefix="31 12",
         inlist_csv=[
             "rain",
             "irrig",
@@ -86,7 +86,7 @@ def _make_hupselbrook():
 
     DVS = [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
 
-    maize_gctb = ps.GCTB.create({
+    maize_gctb = pyswap.components.tables.GCTB.create({
         "DVS": DVS,
         "LAI": [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20],
     })
@@ -96,12 +96,15 @@ def _make_hupselbrook():
         "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
     })
 
-    maize_rdtb = ps.RDTB.create({
+    maize_rdtb = pyswap.components.tables.RDTB.create({
         "DVS": [0.0, 0.3, 0.5, 0.7, 1.0, 2.0],
         "RD": [5.0, 20.0, 50.0, 80.0, 90.0, 100.0],
     })
 
-    maize_rdctb = ps.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
+    maize_rdctb = pyswap.components.tables.RDCTB.create({
+        "RRD": [0.0, 1.0],
+        "RDENS": [1.0, 0.0],
+    })
 
     maize_cropdev_settings = ps.CropDevelopmentSettingsFixed(
         idev=1,
@@ -177,8 +180,12 @@ def _make_hupselbrook():
         ],
     })
 
-    potato_rdctb = ps.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
-    
+    potato_rdctb = pyswap.components.tables.RDCTB.create({
+        "RRD": [0.0, 1.0],
+        "RDENS": [1.0, 0.0],
+    })
+
+    # Load the crop database
     db = WOFOSTCropDB()
     potato = db.load_crop_file("potato")
     potato_params = potato.get_variety("Potato_701")
@@ -189,16 +196,16 @@ def _make_hupselbrook():
         dvs_ch=potato_chtb,
         albedo=0.19,
         laiem=0.0589,
-        ssa=0.0,  # Available as table SSATB (SSA/DVS) in potato.yaml
-        kdif=1.0,  # Available as table KDIFTB (SSA/DVS) in potato.yaml
+        ssa=0.0,
+        kdif=1.0,
         rsc=207.0,
         rsw=0.0,
         kdir=0.75,
-        eff=0.45,  # Available as table EFFTB (SSA/DVS) in potato.yaml
+        eff=0.45,
         swrd=2,
         rdc=50.0,
         swdmi2rd=1,
-        rdctb=potato_rdctb
+        rdctb=potato_rdctb,
     )
 
     potato_cropdev_settings.update_from_wofost()
@@ -288,7 +295,10 @@ def _make_hupselbrook():
 
     grass_rlwtb = ps.RLWTB.create({"RW": [300.00, 2500.00], "RL": [20.0, 40.0]})
 
-    grass_rdctb = ps.RDCTB.create({"RRD": [0.0, 1.0], "RDENS": [1.0, 0.0]})
+    grass_rdctb = pyswap.components.tables.RDCTB.create({
+        "RRD": [0.0, 1.0],
+        "RDENS": [1.0, 0.0],
+    })
 
     grass_settings = ps.CropDevelopmentSettingsGrass(
         swcf=2,
@@ -410,7 +420,7 @@ def _make_hupselbrook():
 
     # %% irrigation setup
 
-    irrig_events = ps.IRRIGATION.create({
+    irrig_events = pyswap.components.tables.IRRIGATION.create({
         "IRDATE": ["2002-01-05"],
         "IRDEPTH": [5.0],
         "IRCONC": [1000.0],
@@ -446,7 +456,7 @@ def _make_hupselbrook():
 
     # %% setting soil profile
 
-    soil_profile = ps.SOILPROFILE.create({
+    soil_profile = pyswap.components.tables.SOILPROFILE.create({
         "ISUBLAY": [1, 2, 3, 4],
         "ISOILLAY": [1, 1, 2, 2],
         "HSUBLAY": [10.0, 20.0, 30.0, 140.0],
@@ -454,7 +464,7 @@ def _make_hupselbrook():
         "NCOMP": [10, 4, 6, 14],
     })
 
-    soil_hydraulic_functions = ps.SOILHYDRFUNC.create({
+    soil_hydraulic_functions = pyswap.components.tables.SOILHYDRFUNC.create({
         "ORES": [0.01, 0.02],
         "OSAT": [0.42, 0.38],
         "ALFA": [0.0276, 0.0213],

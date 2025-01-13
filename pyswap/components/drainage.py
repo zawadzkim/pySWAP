@@ -1,5 +1,4 @@
-"""
-## Lateral drainage settings
+"""Lateral drainage settings
 
 Settings for the lateral drainage of the .swp file, including the .dra file settings.
 
@@ -210,7 +209,7 @@ class DraFile(PySWAPBaseModel, FileMixin, SerializableMixin):
 
 
 class Drainage(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
-    """The lateral drainage settings of .swp file.
+    """The lateral drainage settings inside .swp file.
 
     Attributes:
         swdra (Literal[0, 1, 2]): Switch for lateral drainage.
