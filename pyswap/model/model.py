@@ -357,6 +357,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     """
 
     _validate_on_run: bool = PrivateAttr(default=False)
+    _extension = "swp"
 
     metadata: Subsection | None = None
     version: str = Field(exclude=True, default="base")

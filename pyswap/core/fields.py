@@ -110,13 +110,12 @@ __all__ = [
 Table = Annotated[
     DataFrame,
     PlainSerializer(serialize_table, return_type=str, when_used="json"),
-    Field(json_schema_extra={"is_annotated_exception_type": True})
+    Field(json_schema_extra={"is_annotated_exception_type": True}),
 ]
 """Serialize pd.DataFrame with headers to a string without leading variable name."""
 
 Arrays = Annotated[
-    DataFrame,
-    PlainSerializer(serialize_arrays, return_type=str, when_used="json")
+    DataFrame, PlainSerializer(serialize_arrays, return_type=str, when_used="json")
 ]
 """Serialize pd.DataFrame without headers to a string with leading variable name."""
 
@@ -129,15 +128,15 @@ CSVTable = Annotated[
 """Serialize pd.DataFrame to a string in CSV format."""
 
 DayMonth = Annotated[
-    date,
-    PlainSerializer(
-        lambda x: f"{x.strftime('%d %m')}", return_type=str, when_used="json"
-    ),
+    date | str,
+    AfterValidator(parse_day_month),
+    PlainSerializer(serialize_day_month, return_type=str, when_used="json"),
 ]
 """Serialize date object to a string with just the day and month."""
 
 StringList = Annotated[
-    list[str],
+    list[str] | str,
+    AfterValidator(parse_string_list),
     PlainSerializer(lambda x: f"'{','.join(x)}'", return_type=str, when_used="json"),
 ]
 """Serialize list of strings to a string with elements separated by commas."""
@@ -193,5 +192,24 @@ File = Annotated[
 Subsection = Annotated[
     PySWAPBaseModel,
     PlainSerializer(lambda x: x.model_string(), return_type=str),
-    Field(json_schema_extra={"is_annotated_exception_type": True})
+    Field(json_schema_extra={"is_annotated_exception_type": True}),
 ]
+"""Serialize a nested PySWAPBaseModel to a string."""
+
+Decimal2f = Annotated[
+    float,
+    PlainSerializer(serialize_decimal(precision=2), return_type=str, when_used="json"),
+]
+"""Serialize float to a string with 2 decimal places."""
+
+Decimal3f = Annotated[
+    float,
+    PlainSerializer(serialize_decimal(precision=3), return_type=str, when_used="json"),
+]
+"""Serialize float to a string with 3 decimal places."""
+
+Decimal4f = Annotated[
+    float,
+    PlainSerializer(serialize_decimal(precision=4), return_type=str, when_used="json"),
+]
+"""Serialize float to a string with 4 decimal places."""

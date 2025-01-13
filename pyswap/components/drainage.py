@@ -12,10 +12,9 @@ Classes:
     Drainage: The lateral drainage settings of .swp file.
 """
 
-
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, PrivateAttr
 
 from pyswap.core.fields import FloatList, ObjectList, String, Table, File, Subsection
 from pyswap.core.valueranges import UNITRANGE
@@ -201,6 +200,8 @@ class DraFile(PySWAPBaseModel, FileMixin, SerializableMixin):
         drainageinfres (Optional[Any]): Drainage infiltration resistance.
     """
 
+    _extension = PrivateAttr("dra")
+
     drfil: String
     general: Subsection | None = None
     fluxtable: Subsection | None = None
@@ -221,17 +222,13 @@ class Drainage(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         drafile (Optional[Any]): Content of the drainage file.
     """
 
-    swdra: Literal[0, 1, 2]
+    swdra: Literal[0, 1, 2] | None = None
     drafile: File | None = Field(default=None)
 
     @property
     def dra(self):
         return self.model_string()
 
-    def write_dra(self, path: str):
-        self.drafile.save_file(
-            string=self.dra, extension="dra", fname=self.drafile.drfil, path=path
-        )
-
-        print("dra file saved.")
-
+    def write_dra(self, path: str) -> None:
+        self.drafile.save_file(string=self.dra, fname=self.drafile.drfil, path=path)
+        return None

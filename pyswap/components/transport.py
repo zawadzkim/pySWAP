@@ -1,14 +1,14 @@
 import pandera as pa
 from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.fields import String, Table
+from pyswap.core.fields import String, Table, Decimal2f
+from pyswap.core.valueranges import YEARRANGE
 from pyswap.core.mixins import SerializableMixin, YAMLValidatorMixin
-
+from pyswap.components.tables import SOILTEXTURES, INITSOILTEMP
 
 from typing import Literal
+from pydantic import Field
 
-from pyswap.core.basemodel import BaseTableModel
-
-__all__ = ["HeatFlow", "SoluteTransport", "SOILTEXTURES", "INITSOILTEMP"]
+__all__ = ["HeatFlow", "SoluteTransport"]
 
 
 class HeatFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
@@ -35,18 +35,18 @@ class HeatFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         bbctsoil (Optional[Table]): Bottom boundary temperature TBOT [-50..50 oC, R] as function of date DATET [date]
     """
 
-    swhea: Literal[0, 1]
+    swhea: Literal[0, 1] | None = None
     swcalt: Literal[1, 2] | None = None
-    tampli: float | None = None
-    tmean: float | None = None
-    timref: float | None = None
-    ddamp: float | None = None
+    tampli: Decimal2f | None = Field(None, ge=0, le=50)
+    tmean: Decimal2f | None = Field(None, ge=-10, le=30)
+    timref: Decimal2f | None = Field(None, **YEARRANGE)
+    ddamp: Decimal2f | None = Field(None, ge=1, le=500)
     swtopbhea: Literal[1, 2] | None = None
     tsoilfile: String | None = None
     swbotbhea: Literal[1, 2] | None = None
-    table_soiltextures: Table | None = None
-    table_initsoil: Table | None = None
-    table_bbctsoil: Table | None = None
+    soiltextures: Table | None = None
+    initsoil: Table | None = None
+    bbctsoil: Table | None = None
 
 
 class SoluteTransport(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
@@ -79,54 +79,30 @@ class SoluteTransport(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         miscellaneous (Optional[Table]): Table for miscellaneous parameters as function of soil depth.
     """
 
-    swsolu: Literal[0, 1]
-    cpre: float | None = None
-    cdrain: float | None = None
-    swbotbc: Literal[0, 1] | None = None
-    cseep: float | None = None
-    ddif: float | None = None
-    tscf: float | None = None
+    swsolu: Literal[0, 1] | None = None
+    cpre: Decimal2f | None = Field(None, ge=0, le=100)
+    cdrain: Decimal2f | None = Field(None, ge=0, le=100)
+    swbotbc: Literal[0, 1, 2] | None = None
+    cseep: Decimal2f | None = Field(None, ge=0, le=100)
+    ddif: Decimal2f | None = Field(None, ge=0, le=10)
+    tscf: Decimal2f | None = Field(None, ge=0, le=10)
     swsp: Literal[0, 1] | None = None
-    frexp: float | None = None
-    cref: float | None = None
+    frexp: Decimal2f | None = Field(None, ge=0, le=10)
+    cref: Decimal2f | None = Field(None, ge=0, le=1000)
     swdc: Literal[0, 1] | None = None
-    gampar: float | None = None
-    rtheta: float | None = None
-    bexp: float | None = None
+    gampar: Decimal2f | None = Field(None, ge=0, le=0.5)
+    rtheta: Decimal2f | None = Field(None, ge=0, le=0.4)
+    bexp: Decimal2f | None = Field(None, ge=0, le=2)
     swbr: Literal[0, 1] | None = None
-    daquif: float | None = None
-    poros: float | None = None
-    kfsat: float | None = None
-    decsat: float | None = None
-    cdraini: float | None = None
-    table_cseeparrtb: Table | None = None
-    table_inissoil: Table | None = None
-    table_miscellaneous: Table | None = None
+    daquif: Decimal2f | None = Field(None, ge=0, le=10000)
+    poros: Decimal2f | None = Field(None, ge=0, le=0.6)
+    kfsat: Decimal2f | None = Field(None, ge=0, le=100)
+    decsat: Decimal2f | None = Field(None, ge=0, le=10)
+    cdraini: Decimal2f | None = Field(None, ge=0, le=100)
+    cseeparrtb: Table | None = None
+    inissoil: Table | None = None
+    misc: Table | None = None
 
 
-class SOILTEXTURES(BaseTableModel):
-    """Table for soil textures.
-
-    Attributes:
-        PSAND (float): Depth of soil layer [cm, R]
-        PSILT (float): Sand content [g/g mineral parts, R]
-        PCLAY (float): Clay content [g/g mineral parts, R]
-        ORGMAT (float): Organic matter content [g/g dry soil, R]
-    """
-
-    PSAND: float
-    PSILT: float
-    PCLAY: float
-    ORGMAT: float
-
-
-class INITSOILTEMP(BaseTableModel):
-    """Table for initial soil temperature.
-
-    Attributes:
-        ZH (float): Depth of soil layer [cm, R]
-        TSOIL (float): Initial temperature [oC, R]
-    """
-
-    ZH: float = pa.Field(ge=-100000, le=0)
-    TSOIL: float = pa.Field(ge=-50, le=50)
+transport_tables = ["SOILTEXTURES", "INITSOILTEMP"]
+__all__.extend(transport_tables)

@@ -6,17 +6,17 @@ Classes:
 """
 
 from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.fields import String, Table
+from pyswap.core.fields import String, Table, Decimal2f
+from pyswap.core.valueranges import UNITRANGE, YEARRANGE
 from pyswap.core.mixins import YAMLValidatorMixin, FileMixin, SerializableMixin
 
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, PrivateAttr
 
+from typing import Literal
+from pathlib import Path
 
-from decimal import Decimal
-from typing import Literal, Self
-
-__all__ = ["BottomBoundary", "BBCFile"]
+__all__ = ["BottomBoundary"]
 
 
 class BottomBoundary(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, FileMixin):
@@ -111,6 +111,10 @@ class BottomBoundary(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, Fil
             pressure head.
     """
 
+    _extension = PrivateAttr(default="bbc")
+
+    swbbcfile: Literal[0, 1] | None = None
+    bbcfil: String | None = None
     swbotb: Literal[1, 2, 3, 4, 5, 6, 7, 8] | None = None
     sw2: Literal[1, 2] | None = None
     sw3: Literal[1, 2] | None = None
@@ -118,20 +122,19 @@ class BottomBoundary(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, Fil
     swbotb3resvert: Literal[0, 1] | None = None
     swbotb3impl: Literal[0, 1] | None = None
     swqhbot: Literal[1, 2] | None = None
-    bbcfil: String | None = None
-    sinave: Decimal | None = Field(ge=-10.0, le=10.0, default=None)
-    sinamp: Decimal | None = Field(ge=-10.0, le=10.0, default=None)
-    sinmax: Decimal | None = Field(ge=0.0, le=366.0, default=None)
-    shape: Decimal | None = None
-    hdrain: Decimal | None = None
-    rimlay: Decimal | None = None
-    aqave: Decimal | None = None
-    aqamp: Decimal | None = None
-    aqtmax: Decimal | None = None
-    aqper: Decimal | None = None
-    cofqha: Decimal | None = None
-    cofqhb: Decimal | None = None
-    cofqhc: Decimal | None = None
+    sinave: Decimal2f | None = Field(ge=-10.0, le=10.0, default=None)
+    sinamp: Decimal2f | None = Field(ge=-10.0, le=10.0, default=None)
+    sinmax: Decimal2f | None = Field(**YEARRANGE, default=None)
+    shape: Decimal2f | None = Field(**UNITRANGE, default=None)
+    hdrain: Decimal2f | None = Field(ge=-10000.0, le=0.0, default=None)
+    rimlay: Decimal2f | None = Field(ge=0, le=100000.0, default=None)
+    aqave: Decimal2f | None = Field(ge=-10000, le=1000, default=None)
+    aqamp: Decimal2f | None = Field(ge=0, le=1000.0, default=None)
+    aqtmax: Decimal2f | None = Field(**YEARRANGE, default=None)
+    aqper: Decimal2f | None = Field(**YEARRANGE, default=None)
+    cofqha: Decimal2f | None = Field(ge=-100.0, le=100.0, default=None)
+    cofqhb: Decimal2f | None = Field(ge=-1.0, le=1.0, default=None)
+    cofqhc: Decimal2f | None = Field(ge=-10.0, le=10.0, default=None)
     gwlevel: Table | None = None
     qbot: Table | None = None
     haquif: Table | None = None

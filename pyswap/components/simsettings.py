@@ -12,15 +12,16 @@ import logging
 
 from pydantic import ConfigDict, Field, model_validator
 
-from pyswap.core import BASE_PATH
+from pyswap.core.defaults import BASE_PATH
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.mixins import YAMLValidatorMixin, SerializableMixin
-from pyswap.core.fields import String, StringList, FloatList, DateList, DayMonth
+from pyswap.core.fields import String, StringList, DateList, DayMonth, Arrays
 from pyswap.core.valueranges import UNITRANGE, YEARRANGE
 
 __all__ = ["GeneralSettings", "RichardsSettings"]
 
 logger = logging.getLogger(__name__)
+
 
 class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """General settings of the simulation.
@@ -67,7 +68,10 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         numnodnew (Optional[int]): New number of nodes
         dznew (Optional[FloatList]): Thickness of compartments
     """
-    model_config = ConfigDict(extra="allow", validate_assignment=True)
+
+    model_config = ConfigDict(
+        extra="allow", validate_assignment=True, use_enum_values=True
+    )
 
     _all_extensions: ClassVar[list[str]] = [
         "wba",
@@ -98,12 +102,12 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     swscre: Literal[0, 1, 3] = 0
     swerror: Literal[0, 1] = 0
 
-    tstart: date
-    tend: date
+    tstart: date | None = None
+    tend: date | None = None
 
     nprintday: int = Field(default=1, ge=1, le=1440)
-    swmonth: Literal[0, 1] = 1
-    swyrvar: Literal[0, 1] = 0
+    swmonth: Literal[0, 1] | None = None  # 1
+    swyrvar: Literal[0, 1] | None = None  # 0
     period: int | None = Field(default=None, **YEARRANGE)
     swres: Literal[0, 1] | None = None
     swodat: Literal[0, 1] | None = None
@@ -121,7 +125,7 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     critdevmasbal: float | None = Field(default=None, **UNITRANGE)
     swdiscrvert: Literal[0, 1] = 0
     numnodnew: int | None = None
-    dznew: FloatList | None = None
+    dznew: Arrays | None = None
 
     @model_validator(mode="after")
     def validate_extensions(self):
@@ -147,13 +151,13 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         """
         if extension not in self._all_extensions:
             raise ValueError(f"Invalid extension: {extension}")
-        
+
         if extension == "csv":
             if not any([self.inlist_csv, inlist]):
                 raise ValueError(f"Missing 'inlist_csv' for extension '{extension}'")
             if inlist:
                 self.inlist_csv = inlist
-        
+
         elif extension == "csv_tz":
             if not any([self.inlist_csv_tz, inlist]):
                 raise ValueError(f"Missing 'inlist_csv_tz' for extension '{extension}'")
@@ -162,7 +166,7 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
 
         if extension not in self.extensions:
             self.extensions.append(extension)
-            self.model_post_init()
+            self.model_post_init(None)
             self.model_validate(self)
         else:
             logger.warning(f"Extension '{extension}' is already in the list.")
@@ -181,12 +185,12 @@ class GeneralSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         elif extension == "csv_tz":
             self.inlist_csv_tz = None
 
-        self.model_post_init()
+        self.model_post_init(None)
         self.model_validate(self)
         return self
 
 
-class RichardsSettings(PySWAPBaseModel, SerializableMixin):
+class RichardsSettings(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     """Settings for the Richards' equation.
 
     Attributes:
@@ -202,13 +206,13 @@ class RichardsSettings(PySWAPBaseModel, SerializableMixin):
         maxbacktr (int): Maximum number of back track cycles within an iteration cycle [1..10]
     """
 
-    swkmean: int
-    swkimpl: Literal[0, 1]
-    dtmin: float = 0.000001
-    dtmax: float = 0.04
-    gwlconv: float = 100.0
-    critdevh1cp: float = 0.01
-    critdevh2cp: float = 0.1
-    critdevponddt: float = 0.0001
-    maxit: int = 30
-    maxbacktr: int = 3
+    swkmean: Literal[1, 2, 3, 4, 5, 6] | None = None
+    swkimpl: Literal[0, 1] | None = None
+    dtmin: float | None = Field(default=0.000001, ge=1e-7, le=0.1)
+    dtmax: float | None = Field(default=0.04, ge=0.000001, le=1.0)
+    gwlconv: float | None = Field(default=100.0, ge=1e-5, le=1000.0)
+    critdevh1cp: float | None = Field(default=0.01, ge=1e-10, le=1e3)
+    critdevh2cp: float | None = Field(default=0.1, ge=1e-10, le=1e3)
+    critdevponddt: float | None = Field(default=0.0001, ge=1e-6, le=0.1)
+    maxit: int | None = Field(default=30, ge=5, le=100)
+    maxbacktr: int | None = Field(default=3, ge=1, le=10)

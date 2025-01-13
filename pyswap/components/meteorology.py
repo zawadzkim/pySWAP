@@ -5,37 +5,27 @@ This module contains the classes and functions to handle meteorological settings
 Classes:
     MetFile: Meteorological data for the .met file.
     Meteorology: Meteorological settings of the simulation.
-    DAILYMETEODATA: Format detailed daily meteo data.
-    SHORTINTERVALMETEODATA: Format detailed short interval meteo data.
-    DETAILEDRAINFALL: Format detailed rainfall data.
-    RAINFLUX: Format rainfall intensity RAINFLUX as function of time TIME.
 
 Functions:
     load_from_csv: Load meteorological data from a CSV file.
     load_from_knmi: Load meteorological data from KNMI API.
 """
 
-
 from knmi import get_day_data_dataframe, get_hour_data_dataframe
 from datetime import datetime as dt
 from pandas import read_csv
-import pandera as pa
-from pandera.typing import Series
-from pyswap.core.fields import  CSVTable, String, Table, File
+from pyswap.core.fields import CSVTable, String, Table, File, Decimal2f
 from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.valueranges import UNITRANGE, YEARRANGE
+from pyswap.core.valueranges import UNITRANGE
 from pyswap.core.mixins import FileMixin, YAMLValidatorMixin, SerializableMixin
-from pyswap.core.basemodel import BaseTableModel
 from pyswap.gis import Location
+from pyswap.components.tables import SHORTINTERVALMETEODATA, DETAILEDRAINFALL, RAINFLUX
 
+from pydantic import Field, PrivateAttr
 
-from pydantic import Field, field_validator, model_validator, PrivateAttr
-
-
-from decimal import Decimal
 from typing import Literal
 
-__all__ = ["MetFile", "Meteorology", "DAILYMETEODATA", "SHORTINTERVALMETEODATA", "DETAILEDRAINFALL", "RAINFLUX", "load_from_csv", "load_from_knmi"]
+__all__ = ["MetFile", "Meteorology", "load_from_csv", "load_from_knmi"]
 
 
 class MetFile(PySWAPBaseModel, FileMixin, SerializableMixin):
@@ -49,6 +39,9 @@ class MetFile(PySWAPBaseModel, FileMixin, SerializableMixin):
         metfil (str): name of the .met file
         content (CSVTable): meteorological data file
     """
+
+    # None, because the extension has to be added to metfil
+    _extension: bool = PrivateAttr(default=None)
 
     metfil: String
     content: CSVTable | None = Field(default=None, exclude=True)
@@ -119,40 +112,30 @@ class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
     Methods:
         write_met: Writes the .met file.
     """
+
     _validation: bool = PrivateAttr(default=False)
 
-    lat: Decimal | None = Field(default=None, ge=-90, le=90)
+    lat: Decimal2f | None = Field(default=None, ge=-90, le=90)
     meteo_location: Location | None = Field(default=None, exclude=True)
-    swetr: Literal[0, 1]
-    swdivide: Literal[0, 1]
+    swetr: Literal[0, 1] | None = None
+    swdivide: Literal[0, 1] | None = None
     swrain: Literal[0, 1, 2, 3] | None = 0
-    swetsine: Literal[0, 1] = 0 
+    swetsine: Literal[0, 1] = 0
     metfile: File | None = Field(default=None, repr=False)
-    alt: Decimal | None = Field(default=None, ge=-400.0, le=3000.0)
-    altw: Decimal = Field(default=None, ge=0.0, le=99.0)
-    angstroma: Decimal = Field(default=None, **UNITRANGE)
-    angstromb: Decimal = Field(default=None, **UNITRANGE)
+    alt: Decimal2f | None = Field(default=None, ge=-400.0, le=3000.0)
+    altw: Decimal2f = Field(default=None, ge=0.0, le=99.0)
+    angstroma: Decimal2f = Field(default=None, **UNITRANGE)
+    angstromb: Decimal2f = Field(default=None, **UNITRANGE)
     swmetdetail: Literal[0, 1] | None = None
     table_rainflux: Table | None = None
     rainfil: String | None = None
     nmetdetail: int | None = Field(default=None, ge=1, le=96)
 
-    @model_validator(mode="after")
-    def validate_with_yaml(self):
-        """Delay the validation to post_init."""
-        if not self._validation:
-            return self
-        return super().validate_with_yaml()
-
     @property
     def met(self):
         return self.metfile.content.to_csv(index=False, lineterminator="\n")
 
-    @field_validator("altw", "angstroma", "angstromb")
-    def set_decimals(cls, v):
-        return v.quantize(Decimal("0.00"))
-
-    def model_post_init(self, __context):
+    def model_post_init(self, __context=None):
         """Set lat, and alt from `meteo_location` if Location object is provided."""
         if self.meteo_location:
             self.lat = self.meteo_location.lat
@@ -176,8 +159,6 @@ class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         """
 
         self.metfile.save_file(string=self.met, fname=self.metfile.metfil, path=path)
-
-        print(f"{self.metfile.metfil} saved.")
 
 
 def load_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
@@ -257,49 +238,5 @@ def load_from_knmi(
     return MetFile(metfil=metfil, content=df)
 
 
-class DAILYMETEODATA(BaseTableModel):
-    """Format detailed daily meteo data.
-
-    validate that the station is in single quotes.
-    check if the dd, mm, yyyy columns are already in the
-        dataframe. If not, require datetime index and
-        parse the datetime index to separate columns.
-    format decimals in the variables.
-    """
-
-    Station: Series[str]
-    DD: Series[str]
-    MM: Series[str]
-    YYYY: Series[str]
-    RAD: Series[float]
-    Tmin: Series[float]
-    Tmax: Series[float]
-    HUM: Series[float]
-    WIND: Series[float]
-    RAIN: Series[float]
-    ETref: Series[float]
-    WET: Series[float]
-
-
-class SHORTINTERVALMETEODATA(BaseTableModel):
-    Date: Series[pa.DateTime] # type: ignore
-    Record: Series[int] = pa.Field(ge=1, le=10)
-    Rad: Series[float]
-    Temp: Series[float]
-    Hum: Series[float]
-    Wind: Series[float]
-    Rain: Series[float]
-
-
-class DETAILEDRAINFALL(BaseTableModel):
-    Station: Series[str]
-    Day: Series[int]
-    Month: Series[int]
-    Year: Series[int]
-    Time: Series[float]
-    Amount: Series[float]
-
-
-class RAINFLUX(BaseTableModel):
-    TIME: Series[int] = pa.Field(**YEARRANGE)
-    RAINFLUX: Series[float] = pa.Field(ge=0, le=1000.0)
+meteo_tables = ["SHORTINTERVALMETEODATA", "DETAILEDRAINFALL", "RAINFLUX"]
+__all__.extend(meteo_tables)

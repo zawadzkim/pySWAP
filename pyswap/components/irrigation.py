@@ -4,27 +4,23 @@ Classes:
     IrgFile: The irrigation file.
     FixedIrrigation: Fixed irrigation settings.
     ScheduledIrrigation: Irrigation scheduling settings.
-    IRRIGATION: Information for each fixed irrigation event.
 
 Functions:
     irg_from_csv: Load the irrigation file from a CSV file.
 """
 
-from typing import Literal, Self
+from typing import Literal
 
 from pandas import DataFrame, read_csv
-import pandera as pa
-from pandera.typing import Series
-from pydantic import Field, model_validator
+from pydantic import Field
 
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.mixins import FileMixin, YAMLValidatorMixin, SerializableMixin
 from pyswap.core.fields import DayMonth, Table, String
-from pyswap.core.basemodel import BaseTableModel
 from pyswap.core.valueranges import YEARRANGE
 
 
-__all__ = ["IrgFile", "FixedIrrigation", "ScheduledIrrigation", "IRRIGATION"]
+__all__ = ["IrgFile", "FixedIrrigation", "ScheduledIrrigation"]
 
 
 class IrgFile(PySWAPBaseModel, FileMixin):
@@ -50,7 +46,7 @@ class FixedIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         irrigationdata (Optional[IrrigationFile]):
     """
 
-    swirfix: Literal[0, 1]
+    swirfix: Literal[0, 1] | None = None
     swirgfil: Literal[0, 1] | None = None
     irrigevents: Table | None = None
     irgfile: IrgFile | None = Field(default=None, repr=False)
@@ -107,7 +103,7 @@ class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin
         dvs_tc5 (Optional[Table]):
     """
 
-    schedule: Literal[0, 1]
+    schedule: Literal[0, 1] | None = None
     startirr: DayMonth | None = None
     endirr: DayMonth | None = None
     cirrs: float | None = Field(default=None, ge=0.0, le=100.0)
@@ -147,52 +143,5 @@ def irg_from_csv(irgfil: str, path: str) -> IrgFile:
     return IrgFile(content=read_csv(path), irgfil=irgfil)
 
 
-class IRRIGATION(BaseTableModel):
-    """information for each fixed irrigation event.
-
-    Attributes:
-        IRDATE (Series[datetime]):date of irrigation.
-        IRDEPTH (Series[float]): amount of water [0..1000 mm, R].
-        IRCONC (Series[float]): concentration of irrigation water [0..1000 mg/cm3, R].
-        IRTYPE (Series[int]): type of irrigation
-
-            * 0 - sprinkling
-            * 1 - surface
-
-    """
-
-    IRDATE: Series[pa.DateTime]  # type: ignore
-    IRDEPTH: Series[float] = pa.Field(ge=0.0, le=1000.0)
-    IRCONC: Series[float] = pa.Field(ge=0.0, le=1000.0)
-    IRTYPE: Series[int] = pa.Field(ge=0, le=1)
-
-
-class TC1TB(BaseTableModel):
-    """tc1tb option table"""
-    DVS_TC1: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    TREL: Series[float] = pa.Field(ge=0.0, le=1.0, default=[0.95, 0.95])
-
-class TC2TB(BaseTableModel):
-    """tc2tb option table"""
-    DVS_TC2: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    RAW: Series[float] = pa.Field(ge=0.0, le=1.0, default=[0.95, 0.95])
-
-class TC3TB(BaseTableModel):
-    """tc3tb option table"""
-    DVS_TC3: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    TAW: Series[float] = pa.Field(ge=0.0, le=1.0, default=[0.50, 0.50])
-    
-class TC4TB(BaseTableModel):
-    """tc4tb option table"""
-    DVS_TC4: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    DWA: Series[float] = pa.Field(ge=0.0, le=500.0, default=[0.40, 0.40])
-    
-class TC7TB(BaseTableModel):
-    """tc7tb option table"""
-    DVS_TC5: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    HCRI: Series[float] = pa.Field(ge=-1000.0, le=-100.0, default=[-1000.0, -1000.0])
-
-class TC8TB(BaseTableModel):
-    """tc8tb option table"""
-    DVS_TC8: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    TCRI: Series[float] = pa.Field(ge=-1000.0, le=-100.0, default=[-1000.0, -1000.0])
+irrigation_tables = []
+__all__.extend(irrigation_tables)

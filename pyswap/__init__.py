@@ -11,7 +11,7 @@ from pyswap import components, gis, model
 from pyswap.core import db
 
 
-__all__ = [                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+__all__ = [
     *components.__all__,
     *gis.__all__,
     *model.__all__,
