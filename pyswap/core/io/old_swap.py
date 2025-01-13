@@ -1,8 +1,9 @@
 import inspect
-from pathlib import Path
 import re
+from pathlib import Path
 
 import pandas as pd
+import pandera as pa
 
 from pyswap.components import (
     BottomBoundary,
@@ -21,9 +22,6 @@ from pyswap.components import (
     SurfaceFlow,
     tables,
 )
-
-import pandera as pa
-
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.io.io_ascii import open_ascii
 from pyswap.model import Model
@@ -172,7 +170,7 @@ def create_schema_object(data_dict):
                 schema_object = matching_schema.validate(df)
                 schema_objects[matching_schema.__name__.lower()] = schema_object
             except pa.errors.SchemaError as e:
-                print(f"Validation error for {matching_schema.__name__}: {str(e)}")
+                print(f"Validation error for {matching_schema.__name__}: {e!s}")
         else:
             print(f"No matching schema found for columns: {key}")
 

@@ -1,6 +1,6 @@
 ***********************************************************************************************
 * Filename: gras_maaien.crp
-* Contents: SWAP 4 - Data for detailed grass model 
+* Contents: SWAP 4 - Data for detailed grass model
 ***********************************************************************************************
 
 * Differences with input for arable crops
@@ -43,7 +43,7 @@
 ***********************************************************************************************
 
 ***********************************************************************************************
-* Part 2 : Initialisation 
+* Part 2 : Initialisation
 
 * Part 2a: Initial state values
 
@@ -210,7 +210,7 @@
 * List rooting depth RD [0..1000 cm, R], as a function of development stage DVS [0..2 -, R]:
 
 *        DNR   RD            ! (maximum MAGRS records)
-  RDTB =              
+  RDTB =
         1.00   20.00
       180.00   40.00
       366.00   40.00
@@ -228,12 +228,12 @@
 * If case of dependency available root biomass (SWRD=3), specify:
 * List rooting depth RL [0..5000 cm, R] as function of root weight RW [0..5000 kg DM/ha, R]:
 *            RW     RL   (maximum 11 records)
-  RLWTB = 
+  RLWTB =
          300.00   20.0
         2500.00   40.0
-* End of table 
+* End of table
 
-  WRTMAX = 3000.0            ! Maximum root weight [0..1d5 kg DM/ha, R]                
+  WRTMAX = 3000.0            ! Maximum root weight [0..1d5 kg DM/ha, R]
 
 * Always specify:
 * Switch for calculation of relative root density (default SWRDC = 1):
@@ -244,7 +244,7 @@
 * In case of drought stress according to Feddes et al. (1978) (SWDROUGHT = 1), relative root density (-) is sufficient
 
 *    Rdepth Rdensity          ! (maximum 11 records)
-  RDCTB = 
+  RDCTB =
           0.0  1.00
           1.0  0.00
 * End of table
@@ -264,7 +264,7 @@
   HLIM2U =      1.0          ! h below which optimum water extr. starts for top layer [-1000..100 cm, R]
   HLIM2L =     -1.0          ! h below which optimum water extr. starts for sub layer [-1000..100 cm, R]
 
-***********************************************************************************************                
+***********************************************************************************************
 
 ***********************************************************************************************
 * Part 11: Drought stress
@@ -280,7 +280,7 @@
                         ! 3 = Compensation of wet, drought and salt stress
                         ! 4 = Compensation of wet, drought, salt and frost stress
   ALPHACRIT =    0.7    ! Critical stress index (Jarvis, 1989) for compensation of root water uptake [0.2..1 -, R]
-                             
+
 * If SWDROUGHT=1, or in case of irrigation scheduling (SCHEDULE = 1), specify:
   HLIM3H =    -200.0         ! Pressure head below which water uptake reduction starts at high Tpot [-1d4..100 cm, R]
   HLIM3L =    -800.0         ! Pressure head below which water uptake reduction starts at low Tpot [-1d4..100 cm, R]
@@ -291,9 +291,9 @@
 ***********************************************************************************************
 
 ***********************************************************************************************
-* Part 12: salt stress                                            
+* Part 12: salt stress
 
-* Switch salinity stress 
+* Switch salinity stress
   SWSALINITY = 0              ! 0 = No salinity stress
                               ! 1 = Maas and Hoffman reduction function
                               ! 2 = Use osmotic head
@@ -301,7 +301,7 @@
 ***********************************************************************************************
 
 ***********************************************************************************************
-* Part 13: interception                                            
+* Part 13: interception
 
 * For agricultural crops apply interception concept of Von Hoyningen-Hune and Braden
   SWINTER =  1               ! Switch for rainfall interception method:
@@ -311,7 +311,7 @@
 
 * In case of agricultural crops (SWINTER=1) specify:
   COFAB =  0.25              ! Interception coefficient, corresponding to maximum interception amount [0..1 cm, R]
-  
+
 ***********************************************************************************************
 
 ***********************************************************************************************
@@ -470,7 +470,7 @@
 
 ***********************************************************************************************
 * Part 4: Management, other than mowing, grazing, irrigation, for instance pests,diseases or nutrients
- 
+
 * Switch for calculation of potential yield
   SWPOTRELMF = 1             ! 1 = theoretical potential yield
                              ! 2 = attainable yield
@@ -485,7 +485,7 @@
 ***********************************************************************************************
 * Part 1: General
 
-  SCHEDULE = 0 ! Switch for application irrigation scheduling [Y=1, N=0] 
+  SCHEDULE = 0 ! Switch for application irrigation scheduling [Y=1, N=0]
 
 ***********************************************************************************************
 

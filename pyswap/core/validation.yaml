@@ -177,6 +177,7 @@ Meteorology:
       - angstromb
       - swmetdetail
   swrain:
+    0:
     1:
       - rainflux
     3:
@@ -248,12 +249,12 @@ Flux:
     1:
       - l
 
-Drainage:
-  swdra:
-    1:
-      - drafile
-    2:
-      - drafile
+# Drainage:
+#   swdra:
+#     1:
+#       - drafile
+#     2:
+#       - drafile
 
 HeatFlow:
   swhea:
@@ -285,7 +286,7 @@ SoluteTransport:
       - cdrain
       - swbotbc
       - swsp # determines the table_miscellaneous columns contant
-      - miscellaneous
+      - misc
       - ddif
       - tscf
       - swdc
@@ -331,20 +332,33 @@ Crop:
       - cropfiles
 
 GeneralSettings:
+  swscre:
+    0:
+    1:
+    3:
+  swerror:
+    0:
+    1:
   swmonth:
     0:
       - period
       - swres
       - swodat
+    1:
   swdat:
+    0:
     1:
       - outdatin
+  swheader:
+    0:
+    1:
   swyrvar:
     0:
       - datefix
     1:
       - outdat
   swafo:
+    0:
     1:
       - critdevmasbal
       - swdiscrvert
@@ -352,6 +366,7 @@ GeneralSettings:
       - critdevmasbal
       - swdiscrvert
   swaun:
+    0:
     1:
       - critdevmasbal
       - swdiscrvert
@@ -359,6 +374,7 @@ GeneralSettings:
       - critdevmasbal
       - swdiscrvert
   swdiscrvert:
+    0:
     1:
       - numnodnew
       - dznew

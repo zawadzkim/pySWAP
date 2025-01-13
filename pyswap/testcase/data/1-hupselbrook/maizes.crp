@@ -35,7 +35,7 @@
   MAXSOWDELAY = 30            ! Maximum delay of sowing from start of growing season [1..366 d, I]
 
 * Part 0c: Germination
-  
+
 * Switch for germination:
   SWGERM = 0                 ! 0 = No germination
                               ! 1 = Simulate germination depending on temperature
@@ -43,8 +43,8 @@
 
 * If SWGERM = 1 or 2, specify:
   TSUMEMEOPT = 110.0         ! Temperature sum needed for crop emergence [0..1000 degree C, R]
-  TBASEM = 4.0               ! Minimum temperature, used for germination trajectory [0..40 degree C, R]  
-  TEFFMX = 30.0              ! Maximum temperature, used for germination trajectory [0..40 degree C, R]  
+  TBASEM = 4.0               ! Minimum temperature, used for germination trajectory [0..40 degree C, R]
+  TEFFMX = 30.0              ! Maximum temperature, used for germination trajectory [0..40 degree C, R]
 
 * If SWGERM = 2, specify:
   HDRYGERM = -500.0          ! Pressure head rootzone for dry germination trajectory [-1000..-0.01 cm, R]
@@ -55,7 +55,7 @@
 * Part 0d: Harvest
 
   DVSEND = 3.0               ! Development stage at harvest [0..3 -, R]
-  
+
 * Switch for timing of harvest:
   SWHARV = 0                 ! 0 = Timing of harvest depends on end of growing period (CROPEND)
                               ! 1 = Timing of harvest depends on development stage (DVSEND)
@@ -69,10 +69,10 @@
   IDEV = 1                   ! 1 = Duration is fixed
                              ! 2 = Duration is variable
 
-* If duration is fixed (IDEV = 1), specify:                                                
+* If duration is fixed (IDEV = 1), specify:
   LCC = 168                  ! Duration of the crop growing period [1..366 days, I]
 
-* If duration is variable (IDEV = 2), specify:                                                
+* If duration is variable (IDEV = 2), specify:
   TSUMEA = 1050.0            ! Temperature sum from emergence to anthesis [0..1d4 degree C, R]
   TSUMAM = 1000.0            ! Temperature sum from anthesis to maturity  [0..1d4 degree C, R]
   TBASE = 0.0                ! Start value of temperature sum [-10..30 0C, R]
@@ -97,7 +97,7 @@
 * If SWGC = 1 or 2, list Leaf Area Index [0..12 (m2 leaf)/(m2 soil), R] or list Soil Cover Fraction [0..1 (m2 cover)/(m2 soil), R], as function of development stage [0..2 -, R]:
 
 * DVS   LAI or SCF
-  GCTB =                
+  GCTB =
 0.0 0.05
 0.3 0.14
 0.5 0.61
@@ -115,7 +115,7 @@
 * Choose between crop factor and crop height
 * Choose crop factor if ETref is used, either from meteo input file (SWETR = 1) or with Penman-Monteith
 * Choose crop height if Penman-Monteith should be used with actual crop height, albedo and canopy resistance
-  SWCF = 2                   ! 1 = Crop factor 
+  SWCF = 2                   ! 1 = Crop factor
                               ! 2 = Crop height
 
 * If SWCF = 1, list Crop Factor [0..2 -, R] or if SWCF = 2, list Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]:
@@ -131,7 +131,7 @@
 * End of table
 
 * If SWCF = 2, in addition to crop height list crop specific values for:
-  ALBEDO = 0.23              ! Crop reflection coefficient [0..1.0 -, R]                    
+  ALBEDO = 0.23              ! Crop reflection coefficient [0..1.0 -, R]
   RSC = 61.0                 ! Minimum canopy resistance [0..1d6 s/m, R]
   RSW = 0.0                  ! Canopy resistance of intercepted water [0..1d6 s/m, R]
 
@@ -175,7 +175,7 @@
 1200.0 100.0
 * End of table
 
-  WRTMAX = 3000.0            ! Maximum root weight [0..1d5 kg DM/ha, R]                
+  WRTMAX = 3000.0            ! Maximum root weight [0..1d5 kg DM/ha, R]
 
 * Always specify:
 * List root density [0..100 cm/cm3, R] as function of relative rooting depth [0..1 -, R]:
@@ -210,10 +210,10 @@
 
 * If SWOXYGEN=2, specify:
   Q10_MICROBIAL = 2.8        ! Relative increase in microbial respiration at temperature increase of 10 degree C [1.0..4.0 -, R]
-  SPECIFIC_RESP_HUMUS = 0.0016 ! Respiration rate of humus at 25 degree C [0.0..1.0 kg O2/kg degree C/d, R] 
-  SRL = 151375.0              ! Specific root length [0.0..1.d10 m root/kg root, R]      
-  
-* Switch for calculation of root radius:  
+  SPECIFIC_RESP_HUMUS = 0.0016 ! Respiration rate of humus at 25 degree C [0.0..1.0 kg O2/kg degree C/d, R]
+  SRL = 151375.0              ! Specific root length [0.0..1.d10 m root/kg root, R]
+
+* Switch for calculation of root radius:
   SWROOTRADIUS = 2           ! 1 = Calculate root radius
                              ! 2 = Root radius is given in input file
 
@@ -226,7 +226,7 @@
 * If SWROOTRADIUS=2, specify:
   ROOT_RADIUSO2 = 0.00015    ! Root radius for oxygen stress module [1d-6..0.1 m, R]
 
-* If CROPTYPE=1 and SWOXYGEN=2 growth, specify: 
+* If CROPTYPE=1 and SWOXYGEN=2 growth, specify:
   Q10_ROOT = 2.0             ! Relative increase in root respiration at temperature increase of 10 degree C [1.0..4.0 -, R]
   F_SENES = 1.0              ! Reduction factor for senescence, used for maintenance respiration [0..1.0 -, R]
   C_MROOT = 0.016            ! Maintenance coefficient of root [0.0..1.0 kg O2/kg/d, R]
@@ -249,7 +249,7 @@
 
 **********************************************************************************
 * Part 12: Drought stress
-  
+
 * Switch for drought stress:
   SWDROUGHT = 1              ! 1 = Drought stress according to Feddes et al. (1978)
                              ! 2 = Drought stress according to De Jong van Lier et al. (2008)
@@ -258,8 +258,8 @@
   HLIM3H = -325.0            ! Pressure head below which water uptake reduction starts at high Tpot [-1d4..100 cm, R]
   HLIM3L = -600.0            ! Pressure head below which water uptake reduction starts at low Tpot  [-1d4..100 cm, R]
   HLIM4 = -8000.0            ! No water extraction at lower soil water pressure heads [-1.6d4..100 cm, R]
-  ADCRH = 0.5                ! Level of high atmospheric demand, corresponding to HLIM3H [0..5 cm/d, R]     
-  ADCRL = 0.1                ! Level of low atmospheric demand, corresponding to HLIM3L [0..5 cm/d, R]     
+  ADCRH = 0.5                ! Level of high atmospheric demand, corresponding to HLIM3H [0..5 cm/d, R]
+  ADCRL = 0.1                ! Level of low atmospheric demand, corresponding to HLIM3L [0..5 cm/d, R]
 
 **********************************************************************************
 
@@ -272,8 +272,8 @@
                              ! 2 = Use osmotic head
 
 * If SWSALINITY = 1, specify threshold and slope of Maas and Hoffman
-  SALTMAX = 3.0              ! Threshold salt concentration in soil water  [0..100 mg/cm3, R] 
-  SALTSLOPE = 0.1            ! Decline of root water uptake above threshold [0..1.0 cm3/mg, R] 
+  SALTMAX = 3.0              ! Threshold salt concentration in soil water  [0..100 mg/cm3, R]
+  SALTSLOPE = 0.1            ! Decline of root water uptake above threshold [0..1.0 cm3/mg, R]
 
 * If SWSALINITY = 2, specify:
   SALTHEAD = 624.0           ! Conversion factor salt concentration (mg/cm3) into osmotic head (cm) [0..1000 cm/(mg/cm3), R]
@@ -304,7 +304,7 @@
 **********************************************************************************
 
 **********************************************************************************
-* Part 14: interception                                            
+* Part 14: interception
 
 * For agricultural crops apply interception concept of Von Hoyningen-Hune and Braden
 * Switch for rainfall interception method:
@@ -334,14 +334,14 @@
 **********************************************************************************
 * Part 1: General
 
-  SCHEDULE = 0               ! Switch for application irrigation scheduling [Y=1, N=0] 
+  SCHEDULE = 0               ! Switch for application irrigation scheduling [Y=1, N=0]
 
 * If SCHEDULE = 1, specify:
   STARTIRR = 30 3            ! Specify day and month at which irrigation scheduling starts [DD MM]
   ENDIRR = 31 12             ! Specify day and month at which irrigation scheduling stops [DD MM]
   CIRRS = 0.0                ! Solute concentration of irrigation water [0..100 mg/cm3, R]
 
-* Switch for type of irrigation method: 
+* Switch for type of irrigation method:
   ISUAS = 1                  ! 0 = Sprinkling irrigation
                              ! 1 = Surface irrigation
 
@@ -366,7 +366,7 @@
      2.0  0.95
 * End of table
 
-* Depletion of Readily Available Water (TCS = 2) 
+* Depletion of Readily Available Water (TCS = 2)
 * Specify minimum fraction of readily available water RAW [0..1 -, R] as function of crop development stage
  DVS_TC2   RAW
      0.0  0.95
@@ -434,7 +434,7 @@
                              ! 2 = Fixed Irrigation Depth
 
 * If TCS = 2, 3, 4, 6, 7 or 8, specify pressure head at field capacity
-  PHFIELDCAPACITY = -100.0   ! Soil water pressure head at field capacity [-1000..0 cm, R] 
+  PHFIELDCAPACITY = -100.0   ! Soil water pressure head at field capacity [-1000..0 cm, R]
 
 * Specify amount of under (-) or over (+) irrigation DI [-100..100 mm, R] as function of crop development stage [0..2, R]:
  DVS_DC1    DI
