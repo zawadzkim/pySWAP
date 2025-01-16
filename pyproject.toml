@@ -1,19 +1,14 @@
-[tool.poetry]
+[project]
 name = "pyswap"
 version = "0.1.5"
 description = "Python wrapper for SWAP hydrological model."
-authors = ["Mateusz <zawadzkimat@outlook.com>"]
+authors = [{name = "Mateusz", email = "zawadzkimat@outlook.com"}]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/zawadzkim/pyswap"
 documentation = "https://zawadzkim.github.io/pyswap/"
-packages = [
-  {include = "pyswap"},
-  {include = "py.typed"}
-]
-
-[tool.poetry.scripts]
-pyswap= "pyswap.core.cli.cli:app"
+pyswap = "pyswap.core.cli.cli:app"
+dynamic = ["version", "dependencies", "requires-python"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -49,6 +44,11 @@ mkdocs-autorefs = "^1.0.1"
 mkdocstrings-python = "^1.10.3"
 mkdocs-jupyter = "^0.25.0"
 
+[tool.poetry]
+packages = [
+  {include = "pyswap"},
+  {include = "py.typed"}
+]
 
 [build-system]
 requires = ["poetry-core"]
