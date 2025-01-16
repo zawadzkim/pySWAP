@@ -38,10 +38,6 @@ Thumbs.db
 /docs/build
 /docs/source
 *.bat
-Makefile
-CD_Erika/
-RD_Erika/
-2. opeil/
 .data
 .examples
 *.h5
