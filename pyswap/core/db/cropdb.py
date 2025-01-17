@@ -11,10 +11,12 @@ Classes:
 
 from pathlib import Path
 from pprint import pprint
-from pyswap.libs import crop_params
-from pyswap.core.io.io_yaml import load_yaml
-from pydantic import BaseModel, computed_field
+
 import pandera as pa
+from pydantic import BaseModel, computed_field
+
+from pyswap.core.io.io_yaml import load_yaml
+from pyswap.libs import crop_params
 
 
 class WOFOSTCropFile(BaseModel):

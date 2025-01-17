@@ -50,7 +50,5 @@ def water_content(
 
     plt.xticks(rotation=45)
 
-    format_months = lambda x, p: pivot_table.columns[int(x)].strftime("%Y-%m")    
-    plt.gca().xaxis.set_major_formatter(
-        plt.FuncFormatter(format_months)
-    )
+    format_months = lambda x, p: pivot_table.columns[int(x)].strftime("%Y-%m")
+    plt.gca().xaxis.set_major_formatter(plt.FuncFormatter(format_months))

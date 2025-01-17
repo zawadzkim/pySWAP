@@ -1,4 +1,4 @@
-from pyswap import testcase, HDF5
+from pyswap import HDF5, testcase
 
 
 def test_database():

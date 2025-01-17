@@ -1,9 +1,8 @@
-from pyswap.core.basemodel import BaseTableModel
-from pyswap.core.valueranges import DVSRANGE, UNITRANGE, YEARRANGE
-
-
 import pandera as pa
 from pandera.typing import Series
+
+from pyswap.core.basemodel import BaseTableModel
+from pyswap.core.valueranges import DVSRANGE, UNITRANGE, YEARRANGE
 
 __all__ = [
     "RDTB",

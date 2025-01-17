@@ -1,15 +1,9 @@
 # %%
 from datetime import date as dt
-import pyswap as ps
-import pyswap.components.boundary
-import pyswap.components.crop
-import pyswap.components.drainage
-import pyswap.components.meteorology
-import pyswap.components.soilwater
-import pyswap.components.tables
-from pyswap.core.db import WOFOSTCropDB
 
+import pyswap as psp
 from pyswap import testcase
+from pyswap.core.db import WOFOSTCropDB
 
 # %%
 
@@ -17,19 +11,19 @@ from pyswap import testcase
 def _make_hupselbrook():
     # %% Basic settings of the model
 
-    ml = ps.Model()
+    ml = psp.Model()
 
-    meta = ps.Metadata(
+    meta = psp.Metadata(
         author="John Doe",
         institution="University of Somewhere",
         email="john.doe@somewhere.com",
-        project="pySWAP test - hupselbrook",
+        project="psp test - hupselbrook",
         swap_ver="4.2",
     )
 
     ml.metadata = meta
 
-    simset = ps.GeneralSettings(
+    simset = psp.components.simsettings.GeneralSettings(
         tstart="2002-01-01",
         tend="2004-12-31",
         extensions=["vap", "blc", "sba", "inc", "csv"],
@@ -59,13 +53,13 @@ def _make_hupselbrook():
 
     # %% Meteorology section
 
-    meteo_location = ps.Location(lat=52.0, lon=21.0, alt=10.0)
+    meteo_location = psp.gis.Location(lat=52.0, lon=21.0, alt=10.0)
 
-    meteo_data = pyswap.components.meteorology.MetFile(
+    meteo_data = psp.components.meteorology.MetFile(
         metfil="283.met", content=testcase.load_met("hupselbrook")
     )
 
-    meteo = pyswap.components.meteorology.Meteorology(
+    meteo = psp.components.meteorology.Meteorology(
         meteo_location=meteo_location,
         swetr=0,
         metfile=meteo_data,
@@ -80,33 +74,35 @@ def _make_hupselbrook():
 
     # %% Creating the .crp file for maize (fixed crop)
 
-    maize_prep = ps.Preparation(swprep=0, swsow=0, swgerm=0, dvsend=3.0, swharv=0)
+    maize_prep = psp.components.crop.Preparation(
+        swprep=0, swsow=0, swgerm=0, dvsend=3.0, swharv=0
+    )
 
-    scheduled_irrigation = ps.ScheduledIrrigation(schedule=0)
+    scheduled_irrigation = psp.components.irrigation.ScheduledIrrigation(schedule=0)
 
     DVS = [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
 
-    maize_gctb = pyswap.components.tables.GCTB.create({
+    maize_gctb = psp.components.crop.GCTB.create({
         "DVS": DVS,
         "LAI": [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20],
     })
 
-    maize_chtb = ps.CHTB.create({
+    maize_chtb = psp.components.crop.CHTB.create({
         "DVS": DVS,
         "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
     })
 
-    maize_rdtb = pyswap.components.tables.RDTB.create({
+    maize_rdtb = psp.components.crop.RDTB.create({
         "DVS": [0.0, 0.3, 0.5, 0.7, 1.0, 2.0],
         "RD": [5.0, 20.0, 50.0, 80.0, 90.0, 100.0],
     })
 
-    maize_rdctb = pyswap.components.tables.RDCTB.create({
+    maize_rdctb = psp.components.crop.RDCTB.create({
         "RRD": [0.0, 1.0],
         "RDENS": [1.0, 0.0],
     })
 
-    maize_cropdev_settings = ps.CropDevelopmentSettingsFixed(
+    maize_cropdev_settings = psp.components.crop.CropDevelopmentSettingsFixed(
         idev=1,
         lcc=168,
         kdif=0.6,
@@ -123,7 +119,7 @@ def _make_hupselbrook():
         rdctb=maize_rdctb,
     )
 
-    maize_ox_stress = ps.OxygenStress(
+    maize_ox_stress = psp.components.crop.OxygenStress(
         swoxygen=1,
         swwrtnonox=0,
         aeratecrit=0.5,
@@ -132,7 +128,7 @@ def _make_hupselbrook():
         hlim2l=-30.0,
     )
 
-    maize_dr_stress = ps.DroughtStress(
+    maize_dr_stress = psp.components.crop.DroughtStress(
         swdrought=1,
         hlim3h=-325.0,
         hlim3l=-600.0,
@@ -142,9 +138,9 @@ def _make_hupselbrook():
     )
 
     # serves both, Fixed crop and WOFOST
-    maize_interception = ps.Interception(swinter=1, cofab=0.25)
+    maize_interception = psp.components.crop.Interception(swinter=1, cofab=0.25)
 
-    crpmaize = ps.CropFile(
+    crpmaize = psp.components.crop.CropFile(
         name="maizes",
         prep=maize_prep,
         scheduledirrigation=scheduled_irrigation,
@@ -156,7 +152,7 @@ def _make_hupselbrook():
 
     # %% Creating .crp file for potato (WOFOST)
 
-    potato_prep = pyswap.components.crop.Preparation(
+    potato_prep = psp.components.crop.Preparation(
         swprep=0,
         swsow=0,
         swgerm=2,
@@ -171,7 +167,7 @@ def _make_hupselbrook():
         swharv=0,
     )
 
-    potato_chtb = ps.CHTB.create({
+    potato_chtb = psp.components.crop.CHTB.create({
         "DVS": [0.0, 1.0, 2.0],
         "CH": [
             1.0,
@@ -180,7 +176,7 @@ def _make_hupselbrook():
         ],
     })
 
-    potato_rdctb = pyswap.components.tables.RDCTB.create({
+    potato_rdctb = psp.components.crop.RDCTB.create({
         "RRD": [0.0, 1.0],
         "RDENS": [1.0, 0.0],
     })
@@ -190,7 +186,7 @@ def _make_hupselbrook():
     potato = db.load_crop_file("potato")
     potato_params = potato.get_variety("Potato_701")
 
-    potato_cropdev_settings = pyswap.components.crop.CropDevelopmentSettingsWOFOST(
+    potato_cropdev_settings = psp.components.crop.CropDevelopmentSettingsWOFOST(
         wofost_variety=potato_params,
         swcf=2,
         dvs_ch=potato_chtb,
@@ -210,7 +206,7 @@ def _make_hupselbrook():
 
     potato_cropdev_settings.update_from_wofost()
 
-    potato_ox_stress = pyswap.components.crop.OxygenStress(
+    potato_ox_stress = psp.components.crop.OxygenStress(
         swoxygen=1,
         swwrtnonox=1,
         aeratecrit=0.5,
@@ -221,7 +217,7 @@ def _make_hupselbrook():
         root_radiuso2=0.00015,
     )
 
-    potato_dr_stress = pyswap.components.crop.DroughtStress(
+    potato_dr_stress = psp.components.crop.DroughtStress(
         swdrought=1,
         hlim3h=-300.0,
         hlim3l=-500.0,
@@ -230,7 +226,7 @@ def _make_hupselbrook():
         adcrl=0.1,
     )
 
-    crppotato = pyswap.components.crop.CropFile(
+    crppotato = psp.components.crop.CropFile(
         name="potatod",
         prep=potato_prep,
         cropdev_settings=potato_cropdev_settings,
@@ -242,65 +238,71 @@ def _make_hupselbrook():
     )
 
     # %% Grass crp file
-    grass_chtb = ps.CHTB_GRASS.create({
+    grass_chtb = psp.components.crop.CHTB_GRASS.create({
         "DNR": [0.0, 180.0, 366.0],
         "CH": [12.0, 12.0, 12.0],
     })
 
-    grass_slatb = ps.SLATB_GRASS.create({
+    grass_slatb = psp.components.crop.SLATB_GRASS.create({
         "DNR": [1.00, 80.00, 300.00, 366.00],
         "SLA": [0.0015, 0.0015, 0.0020, 0.0020],
     })
 
-    amaxtb_grass = ps.AMAXTB_GRASS.create({
+    amaxtb_grass = psp.components.crop.AMAXTB_GRASS.create({
         "DNR": [1.00, 95.00, 200.00, 275.00, 366.00],
         "AMAX": [40.00, 40.00, 35.00, 25.00, 25.00],
     })
 
-    grass_tmpftb = ps.TMPFTB.create({
+    grass_tmpftb = psp.components.crop.TMPFTB.create({
         "TAVD": [0.00, 5.00, 15.00, 25.00, 40.00],
         "TMPF": [0.00, 0.70, 1.00, 1.00, 0.00],
     })
-    grass_tmnftb = ps.TMNFTB.create({"TMNR": [0.0, 4.0], "TMNF": [0.0, 1.0]})
+    grass_tmnftb = psp.components.crop.TMNFTB.create({
+        "TMNR": [0.0, 4.0],
+        "TMNF": [0.0, 1.0],
+    })
 
-    grass_rfsetb = ps.RFSETB_GRASS.create({
+    grass_rfsetb = psp.components.crop.RFSETB_GRASS.create({
         "DNR": [1.00, 366.00],
         "RFSE": [1.0000, 1.0000],
     })
 
-    grass_frtb = ps.FRTB_GRASS.create({
+    grass_frtb = psp.components.crop.FRTB_GRASS.create({
         "DNR": [1.00, 366.00],
         "FR": [0.3000, 0.3000],
     })
 
-    grass_fltb = ps.FLTB_GRASS.create({
+    grass_fltb = psp.components.crop.FLTB_GRASS.create({
         "DNR": [1.00, 366.00],
         "FL": [0.6000, 0.6000],
     })
 
-    grass_fstb = ps.FSTB_GRASS.create({
+    grass_fstb = psp.components.crop.FSTB_GRASS.create({
         "DNR": [1.00, 366.00],
         "FS": [0.4000, 0.4000],
     })
 
-    grass_rdrrtb = ps.RDRRTB_GRASS.create({
+    grass_rdrrtb = psp.components.crop.RDRRTB_GRASS.create({
         "DNR": [1.0, 180.0, 366.0],
         "RDRR": [0.0, 0.02, 0.02],
     })
 
-    grass_rdrstb = ps.RDRSTB_GRASS.create({
+    grass_rdrstb = psp.components.crop.RDRSTB_GRASS.create({
         "DNR": [1.0, 180.0, 366.0],
         "RDRS": [0.0, 0.02, 0.02],
     })
 
-    grass_rlwtb = ps.RLWTB.create({"RW": [300.00, 2500.00], "RL": [20.0, 40.0]})
+    grass_rlwtb = psp.components.crop.RLWTB.create({
+        "RW": [300.00, 2500.00],
+        "RL": [20.0, 40.0],
+    })
 
-    grass_rdctb = pyswap.components.tables.RDCTB.create({
+    grass_rdctb = psp.components.crop.RDCTB.create({
         "RRD": [0.0, 1.0],
         "RDENS": [1.0, 0.0],
     })
 
-    grass_settings = ps.CropDevelopmentSettingsGrass(
+    grass_settings = psp.components.crop.CropDevelopmentSettingsGrass(
         swcf=2,
         dvs_ch=grass_chtb,
         albedo=0.23,
@@ -342,11 +344,11 @@ def _make_hupselbrook():
         rdctb=grass_rdctb,
     )
 
-    grass_ox_stress = pyswap.components.crop.OxygenStress(
+    grass_ox_stress = psp.components.crop.OxygenStress(
         swoxygen=1, hlim1=0.0, hlim2u=1.0, hlim2l=-1.0, swwrtnonox=0
     )
 
-    grass_drought_stress = pyswap.components.crop.DroughtStress(
+    grass_drought_stress = psp.components.crop.DroughtStress(
         swdrought=1,
         swjarvis=4,
         alphcrit=0.7,
@@ -357,23 +359,23 @@ def _make_hupselbrook():
         adcrl=0.1,
     )
 
-    grass_salt_stress = pyswap.components.crop.SaltStress(swsalinity=0)
+    grass_salt_stress = psp.components.crop.SaltStress(swsalinity=0)
 
-    grass_interception = pyswap.components.crop.Interception(swinter=1, cofab=0.25)
+    grass_interception = psp.components.crop.Interception(swinter=1, cofab=0.25)
 
-    grass_co2 = pyswap.components.crop.CO2Correction(swco2=0)
+    grass_co2 = psp.components.crop.CO2Correction(swco2=0)
 
-    grass_dmmowtb = ps.DMMOWTB.create({
+    grass_dmmowtb = psp.components.crop.DMMOWTB.create({
         "DNR": [120.0, 152.0, 182.0, 213.0, 366.0],
         "DMMOW": [4700.0, 3700.0, 3200.0, 2700.0, 2700.0],
     })
 
-    grass_dmmowdelay = ps.DMMOWDELAY.create({
+    grass_dmmowdelay = psp.components.crop.DMMOWDELAY.create({
         "DMMOWDELAY": [0.0, 2000.0, 4000.0],
         "DAYDELAY": [2, 3, 4],
     })
 
-    grass_management = pyswap.components.crop.GrasslandManagement(
+    grass_management = psp.components.crop.GrasslandManagement(
         seqgrazmow=[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
         swharvest=1,
         swdmmow=2,
@@ -386,9 +388,9 @@ def _make_hupselbrook():
         relmf=0.90,
     )
 
-    grass_irrigation = ps.ScheduledIrrigation(schedule=0)
+    grass_irrigation = psp.components.irrigation.ScheduledIrrigation(schedule=0)
 
-    crpgrass = ps.CropFile(
+    crpgrass = psp.components.crop.CropFile(
         name="grassd",
         cropdev_settings=grass_settings,
         oxygenstress=grass_ox_stress,
@@ -402,14 +404,14 @@ def _make_hupselbrook():
 
     # %% Creating the main Crop object
 
-    croprotation = ps.CROPROTATION.create({
+    croprotation = psp.components.crop.CROPROTATION.create({
         "CROPSTART": [dt(2002, 5, 1), dt(2003, 5, 10), dt(2004, 1, 1)],
         "CROPEND": [dt(2002, 10, 15), dt(2003, 9, 29), dt(2004, 12, 31)],
         "CROPFIL": ["'maizes'", "'potatod'", "'grassd'"],
         "CROPTYPE": [1, 2, 3],
     })
 
-    crop = ps.Crop(
+    crop = psp.components.crop.Crop(
         swcrop=1,
         rds=200.0,
         croprotation=croprotation,
@@ -420,14 +422,14 @@ def _make_hupselbrook():
 
     # %% irrigation setup
 
-    irrig_events = pyswap.components.tables.IRRIGATION.create({
+    irrig_events = psp.components.irrigation.IRRIGATION.create({
         "IRDATE": ["2002-01-05"],
         "IRDEPTH": [5.0],
         "IRCONC": [1000.0],
         "IRTYPE": [1],
     })
 
-    fixed_irrigation = ps.FixedIrrigation(
+    fixed_irrigation = psp.components.irrigation.FixedIrrigation(
         swirfix=1, swirgfil=0, irrigevents=irrig_events
     )
 
@@ -435,12 +437,12 @@ def _make_hupselbrook():
 
     # %% Soil moisture setup
 
-    soilmoisture = ps.SoilMoisture(swinco=2, gwli=-75.0)
+    soilmoisture = psp.components.soilwater.SoilMoisture(swinco=2, gwli=-75.0)
     ml.soilmoisture = soilmoisture
 
     # %% surface flow settings
 
-    surfaceflow = ps.SurfaceFlow(
+    surfaceflow = psp.components.soilwater.SurfaceFlow(
         swpondmx=0, pondmx=0.2, rsro=0.5, rsroexp=1.0, swrunon=0
     )
 
@@ -448,7 +450,7 @@ def _make_hupselbrook():
 
     # %% evaporation settings
 
-    evaporation = ps.Evaporation(
+    evaporation = psp.components.soilwater.Evaporation(
         cfevappond=1.25, swcfbs=0, rsoil=30.0, swredu=1, cofredbl=0.35, rsigni=0.5
     )
 
@@ -456,7 +458,7 @@ def _make_hupselbrook():
 
     # %% setting soil profile
 
-    soil_profile = pyswap.components.tables.SOILPROFILE.create({
+    soil_profile = psp.components.soilwater.SOILPROFILE.create({
         "ISUBLAY": [1, 2, 3, 4],
         "ISOILLAY": [1, 1, 2, 2],
         "HSUBLAY": [10.0, 20.0, 30.0, 140.0],
@@ -464,7 +466,7 @@ def _make_hupselbrook():
         "NCOMP": [10, 4, 6, 14],
     })
 
-    soil_hydraulic_functions = pyswap.components.tables.SOILHYDRFUNC.create({
+    soil_hydraulic_functions = psp.components.soilwater.SOILHYDRFUNC.create({
         "ORES": [0.01, 0.02],
         "OSAT": [0.42, 0.38],
         "ALFA": [0.0276, 0.0213],
@@ -477,7 +479,7 @@ def _make_hupselbrook():
         "BDENS": [1315.0, 1315.0],
     })
 
-    soilprofile = ps.SoilProfile(
+    soilprofile = psp.components.soilwater.SoilProfile(
         swsophy=0,
         soilprofile=soil_profile,
         swhyst=0,
@@ -490,11 +492,11 @@ def _make_hupselbrook():
 
     # %% drainage settings
 
-    dra_settings = pyswap.components.drainage.DraSettings(
+    dra_settings = psp.components.drainage.DraSettings(
         dramet=2, swdivd=1, cofani=[1.0, 1.0], swdislay=0
     )
 
-    dra_formula = ps.DrainageFormula(
+    dra_formula = psp.components.drainage.DrainageFormula(
         lm2=11.0,
         shape=0.8,
         wetper=30.0,
@@ -505,17 +507,17 @@ def _make_hupselbrook():
         khtop=25.0,
     )
 
-    dra_file = ps.DraFile(
+    dra_file = psp.components.drainage.DraFile(
         drfil="swap", general=dra_settings, drainageformula=dra_formula
     )
 
-    lateral_drainage = ps.Drainage(swdra=1, drafile=dra_file)
+    lateral_drainage = psp.components.drainage.Drainage(swdra=1, drafile=dra_file)
 
     ml.lateraldrainage = lateral_drainage
 
     # %% bottom boundary
 
-    bottom_boundary = ps.BottomBoundary(swbbcfile=0, swbotb=6)
+    bottom_boundary = psp.components.boundary.BottomBoundary(swbbcfile=0, swbotb=6)
 
     ml.bottomboundary = bottom_boundary
 

@@ -12,14 +12,14 @@ Classes:
     Drainage: The lateral drainage settings of .swp file.
 """
 
-from typing import Literal
+from typing import Literal as _Literal
 
-from pydantic import Field, PrivateAttr
+from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
 
-from pyswap.core.fields import FloatList, ObjectList, String, Table, File, Subsection
-from pyswap.core.valueranges import UNITRANGE
-from pyswap.core.mixins import YAMLValidatorMixin, FileMixin, SerializableMixin
-from pyswap.core.basemodel import PySWAPBaseModel
+from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
+from pyswap.core.fields import File as _File, FloatList as _FloatList, ObjectList as _ObjectList, String as _String, Subsection as _Subsection, Table as _Table
+from pyswap.core.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
 
 __all__ = [
     "DraSettings",
@@ -32,7 +32,7 @@ __all__ = [
 ]
 
 
-class DraSettings(PySWAPBaseModel, SerializableMixin):
+class DraSettings(_PySWAPBaseModel, _SerializableMixin):
     """General section of the .dra file.
 
     Attributes:
@@ -55,13 +55,13 @@ class DraSettings(PySWAPBaseModel, SerializableMixin):
             * 2 - Adjusment based on factor of top of model discharge
     """
 
-    dramet: Literal[1, 2, 3]
-    swdivd: Literal[1, 2]
-    cofani: FloatList | None
-    swdislay: Literal[0, 1, 2, 3, "-"]
+    dramet: _Literal[1, 2, 3]
+    swdivd: _Literal[1, 2]
+    cofani: _FloatList | None
+    swdislay: _Literal[0, 1, 2, 3, "-"]
 
 
-class DrainageFluxTable(PySWAPBaseModel, SerializableMixin):
+class DrainageFluxTable(_PySWAPBaseModel, _SerializableMixin):
     """Settings for the case when dramet is 1 in .dra file.
 
     Attributes:
@@ -69,11 +69,11 @@ class DrainageFluxTable(PySWAPBaseModel, SerializableMixin):
         table_qdrntb (Table): Table of drainage flux - groundwater level.
     """
 
-    lm1: float = Field(ge=1.0, le=1000.0)
-    qdrntb: Table
+    lm1: float = _Field(ge=1.0, le=1000.0)
+    qdrntb: _Table
 
 
-class DrainageFormula(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class DrainageFormula(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Settings for the case when dramet is 2 in .dra file.
 
     Attributes:
@@ -105,22 +105,22 @@ class DrainageFormula(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         geofac (Optional[float]): Geometric factor of Ernst.
     """
 
-    lm2: float = Field(ge=1.0, le=1000.0)
-    shape: float = Field(**UNITRANGE)
-    wetper: float = Field(ge=0.0, le=1000.0)
-    zbotdr: float = Field(ge=-1000.0, le=0.0)
-    entres: float = Field(ge=0.0, le=1000.0)
-    ipos: Literal[1, 2, 3, 4, 5]
-    basegw: float = Field(ge=-1.0e4, le=0.0)
-    khtop: float = Field(ge=0.0, le=1000.0)
-    khbot: float | None = Field(default=None, ge=0.0, le=1000.0)
-    zintf: float | None = Field(default=None, ge=-1.0e4, le=0.0)
-    kvtop: float | None = Field(default=None, ge=0.0, le=1000.0)
-    kvbot: float | None = Field(default=None, ge=0.0, le=1000.0)
-    geofac: float | None = Field(default=None, ge=0.0, le=100.0)
+    lm2: float = _Field(ge=1.0, le=1000.0)
+    shape: float = _Field(**_UNITRANGE)
+    wetper: float = _Field(ge=0.0, le=1000.0)
+    zbotdr: float = _Field(ge=-1000.0, le=0.0)
+    entres: float = _Field(ge=0.0, le=1000.0)
+    ipos: _Literal[1, 2, 3, 4, 5]
+    basegw: float = _Field(ge=-1.0e4, le=0.0)
+    khtop: float = _Field(ge=0.0, le=1000.0)
+    khbot: float | None = _Field(default=None, ge=0.0, le=1000.0)
+    zintf: float | None = _Field(default=None, ge=-1.0e4, le=0.0)
+    kvtop: float | None = _Field(default=None, ge=0.0, le=1000.0)
+    kvbot: float | None = _Field(default=None, ge=0.0, le=1000.0)
+    geofac: float | None = _Field(default=None, ge=0.0, le=100.0)
 
 
-class DrainageInfRes(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class DrainageInfRes(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Settings for the case when dramet is 3 in .dra file.
 
     Attributes:
@@ -134,15 +134,15 @@ class DrainageInfRes(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         list_levelfluxes (ObjectList): List of level fluxes.
     """
 
-    nrlevs: int = Field(ge=1, le=5)
-    swintfl: Literal[0, 1]
-    cofintflb: float | None = Field(default=None, ge=0.01, le=10.0)
-    expintflb: float | None = Field(default=None, ge=0.1, le=1.0)
-    swtopnrsrf: Literal[0, 1] | None = None
-    levelfluxes: ObjectList | None = None
+    nrlevs: int = _Field(ge=1, le=5)
+    swintfl: _Literal[0, 1]
+    cofintflb: float | None = _Field(default=None, ge=0.01, le=10.0)
+    expintflb: float | None = _Field(default=None, ge=0.1, le=1.0)
+    swtopnrsrf: _Literal[0, 1] | None = None
+    levelfluxes: _ObjectList | None = None
 
 
-class Flux(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class Flux(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Fluxes between drainage levels in .dra file.
 
     !!! note
@@ -167,14 +167,14 @@ class Flux(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
             according to the level number.
     """
 
-    level_number: int = Field(exclude=True, ge=1, le=5)
-    drares: float = Field(ge=10.0, le=1.0e5)
-    infres: float = Field(ge=10.0, le=1.0e5)
-    swallo: Literal[1, 2, 3]
-    l: float | None = Field(ge=1.0, le=1.0e5)
-    zbotdr: float = Field(ge=-1000.0, le=0.0)
-    swdtyp: Literal[1, 2]
-    table_datowltb: Table
+    level_number: int = _Field(exclude=True, ge=1, le=5)
+    drares: float = _Field(ge=10.0, le=1.0e5)
+    infres: float = _Field(ge=10.0, le=1.0e5)
+    swallo: _Literal[1, 2, 3]
+    l: float | None = _Field(ge=1.0, le=1.0e5)
+    zbotdr: float = _Field(ge=-1000.0, le=0.0)
+    swdtyp: _Literal[1, 2]
+    table_datowltb: _Table
 
     def model_dump(self, **kwargs):
         d = super().model_dump(**kwargs)
@@ -189,7 +189,7 @@ class Flux(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         return d
 
 
-class DraFile(PySWAPBaseModel, FileMixin, SerializableMixin):
+class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     """Drainage file (.dra) settings.
 
     Attributes:
@@ -200,16 +200,16 @@ class DraFile(PySWAPBaseModel, FileMixin, SerializableMixin):
         drainageinfres (Optional[Any]): Drainage infiltration resistance.
     """
 
-    _extension = PrivateAttr("dra")
+    _extension = _PrivateAttr("dra")
 
-    drfil: String
-    general: Subsection | None = None
-    fluxtable: Subsection | None = None
-    drainageformula: Subsection | None = None
-    drainageinfres: Subsection | None = None
+    drfil: _String
+    general: _Subsection | None = None
+    fluxtable: _Subsection | None = None
+    drainageformula: _Subsection | None = None
+    drainageinfres: _Subsection | None = None
 
 
-class Drainage(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class Drainage(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """The lateral drainage settings inside .swp file.
 
     Attributes:
@@ -222,8 +222,8 @@ class Drainage(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         drafile (Optional[Any]): Content of the drainage file.
     """
 
-    swdra: Literal[0, 1, 2] | None = None
-    drafile: File | None = Field(default=None)
+    swdra: _Literal[0, 1, 2] | None = None
+    drafile: _File | None = _Field(default=None)
 
     @property
     def dra(self):

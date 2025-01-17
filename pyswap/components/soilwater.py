@@ -1,21 +1,28 @@
-from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.fields import String, Table, Decimal2f, Decimal3f
-from pyswap.core.valueranges import UNITRANGE
-from pyswap.core.mixins import YAMLValidatorMixin, SerializableMixin
-from pyswap.components.tables import (
-    SOILPROFILE,
-    SOILHYDRFUNC,
-    INIPRESSUREHEAD,
-    MXPONDTB,
+from typing import Literal as _Literal
+
+from pydantic import (
+    Field as _Field,
+    PrivateAttr as _PrivateAttr,
 )
 
-from typing import Literal
-from pydantic import Field, PrivateAttr
+from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
+from pyswap.core.fields import (
+    Decimal2f as _Decimal2f,
+    Decimal3f as _Decimal3f,
+    String as _String,
+    Table as _Table,
+)
+from pyswap.core.mixins import (
+    SerializableMixin as _SerializableMixin,
+    YAMLValidatorMixin as _YAMLValidatorMixin,
+)
+from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
+
 
 __all__ = ["Evaporation", "SnowAndFrost", "SoilMoisture", "SoilProfile", "SurfaceFlow"]
 
 
-class Evaporation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class Evaporation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Evaporation settings.
 
     Attributes:
@@ -34,17 +41,17 @@ class Evaporation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         cofredbo (Optional[Decimal2f]): Soil evaporation coefficient of Boesten/Stroosnijder [0..1].
     """
 
-    swcfbs: Literal[0, 1] | None = None
-    swredu: Literal[0, 1, 2] | None = None
-    cfevappond: Decimal2f | None = Field(default=None, ge=0, le=3)
-    cfbs: Decimal2f | None = Field(default=None, ge=0.5, le=1.5)
-    rsoil: Decimal2f | None = Field(default=None, ge=0, le=1000.0)
-    cofredbl: Decimal2f | None = Field(default=None, **UNITRANGE)
-    rsigni: Decimal2f | None = Field(default=None, ge=0, le=100)
-    cofredbo: Decimal2f | None = Field(default=None, **UNITRANGE)
+    swcfbs: _Literal[0, 1] | None = None
+    swredu: _Literal[0, 1, 2] | None = None
+    cfevappond: _Decimal2f | None = _Field(default=None, ge=0, le=3)
+    cfbs: _Decimal2f | None = _Field(default=None, ge=0.5, le=1.5)
+    rsoil: _Decimal2f | None = _Field(default=None, ge=0, le=1000.0)
+    cofredbl: _Decimal2f | None = _Field(default=None, **_UNITRANGE)
+    rsigni: _Decimal2f | None = _Field(default=None, ge=0, le=100)
+    cofredbo: _Decimal2f | None = _Field(default=None, **_UNITRANGE)
 
 
-class SnowAndFrost(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class SnowAndFrost(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Snow and frost settings for the model.
 
     Attributes:
@@ -63,16 +70,16 @@ class SnowAndFrost(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
             of water fluxes ends [-10.0..5.0 oC].
     """
 
-    swsnow: Literal[0, 1] | None = None
-    swfrost: Literal[0, 1] | None = None
-    snowinco: Decimal2f | None = Field(default=None, ge=0, le=1000)
-    teprrain: Decimal2f | None = Field(default=None, ge=0, le=10)
-    teprsnow: Decimal2f | None = Field(default=None, ge=-10, le=0)
-    tfroststa: Decimal2f | None = Field(default=None, ge=-10, le=5)
-    tfrostend: Decimal2f | None = Field(default=None, ge=-10, le=5)
+    swsnow: _Literal[0, 1] | None = None
+    swfrost: _Literal[0, 1] | None = None
+    snowinco: _Decimal2f | None = _Field(default=None, ge=0, le=1000)
+    teprrain: _Decimal2f | None = _Field(default=None, ge=0, le=10)
+    teprsnow: _Decimal2f | None = _Field(default=None, ge=-10, le=0)
+    tfroststa: _Decimal2f | None = _Field(default=None, ge=-10, le=5)
+    tfrostend: _Decimal2f | None = _Field(default=None, ge=-10, le=5)
 
 
-class SoilMoisture(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class SoilMoisture(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Soil moisture content and water balance.
 
     Attributes:
@@ -91,13 +98,13 @@ class SoilMoisture(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
             initial values.
     """
 
-    swinco: Literal[1, 2, 3] | None = None
-    head_soildepth: Table | None = None
-    gwli: Decimal2f | None = Field(default=None, ge=-10000, le=100)
-    inifil: String | None = None
+    swinco: _Literal[1, 2, 3] | None = None
+    head_soildepth: _Table | None = None
+    gwli: _Decimal2f | None = _Field(default=None, ge=-10000, le=100)
+    inifil: _String | None = None
 
 
-class SoilProfile(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class SoilProfile(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Vertical discretization of soil profile, soil hydraulic functions and
         hysteresis of soil water retention.
 
@@ -127,18 +134,18 @@ class SoilProfile(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
             soil hydraulic functions
     """
 
-    _validation: bool = PrivateAttr(default=False)
+    _validation: bool = _PrivateAttr(default=False)
 
-    swsophy: Literal[0, 1] | None = None
-    swhyst: Literal[0, 1, 2] | None = None
-    swmacro: Literal[0, 1] | None = None
-    filenamesophy: String | None = None
-    tau: Decimal2f | None = Field(default=None, ge=0, le=1000)
-    soilprofile: Table | None = None
-    soilhydrfunc: Table | None = None
+    swsophy: _Literal[0, 1] | None = None
+    swhyst: _Literal[0, 1, 2] | None = None
+    swmacro: _Literal[0, 1] | None = None
+    filenamesophy: _String | None = None
+    tau: _Decimal2f | None = _Field(default=None, ge=0, le=1000)
+    soilprofile: _Table | None = None
+    soilhydrfunc: _Table | None = None
 
 
-class SurfaceFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class SurfaceFlow(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Surface flow settings (ponding, runoff and runon).
 
     Attributes:
@@ -160,14 +167,10 @@ class SurfaceFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         pondmxtb (Optional[Table]): Minimum thickness for runoff as a function of time.
     """
 
-    swpondmx: Literal[0, 1] | None = None
-    swrunon: Literal[0, 1] | None = None
-    rsro: Decimal3f | None = Field(default=None, ge=0.001, le=1.0)
-    rsroexp: Decimal2f | None = Field(default=None, ge=0.01, le=10.0)
-    pondmx: Decimal2f | None = Field(default=None, ge=0, le=1000)
-    rufil: String | None = None
-    pondmxtb: Table | None = None
-
-
-soilwater_tables = ["INIPRESSUREHEAD", "MXPONDTB", "SOILPROFILE", "SOILHYDRFUNC"]
-__all__.extend(soilwater_tables)
+    swpondmx: _Literal[0, 1] | None = None
+    swrunon: _Literal[0, 1] | None = None
+    rsro: _Decimal3f | None = _Field(default=None, ge=0.001, le=1.0)
+    rsroexp: _Decimal2f | None = _Field(default=None, ge=0.01, le=10.0)
+    pondmx: _Decimal2f | None = _Field(default=None, ge=0, le=1000)
+    rufil: _String | None = None
+    pondmxtb: _Table | None = None

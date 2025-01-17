@@ -5,21 +5,34 @@ Classes:
     BottomBoundary: Bottom boundary settings.
 """
 
-from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.fields import String, Table, Decimal2f
-from pyswap.core.valueranges import UNITRANGE, YEARRANGE
-from pyswap.core.mixins import YAMLValidatorMixin, FileMixin, SerializableMixin
+from pathlib import Path as _Path
+from typing import Literal as _Literal
+
+from pydantic import (
+    Field as _Field,
+    PrivateAttr as _PrivateAttr,
+)
+
+from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
+from pyswap.core.fields import (
+    Decimal2f as _Decimal2f,
+    String as _String,
+    Table as _Table,
+)
+from pyswap.core.mixins import (
+    FileMixin as _FileMixin,
+    SerializableMixin as _SerializableMixin,
+    YAMLValidatorMixin as _YAMLValidatorMixin,
+)
+from pyswap.core.valueranges import (
+    UNITRANGE as _UNITRANGE,
+    YEARRANGE as _YEARRANGE,
+)
 
 
-from pydantic import Field, PrivateAttr
-
-from typing import Literal
-from pathlib import Path
-
-__all__ = ["BottomBoundary"]
-
-
-class BottomBoundary(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, FileMixin):
+class BottomBoundary(
+    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _FileMixin
+):
     """Bottom boundary settings.
 
     Technically in SWAP boundary conditions can be specified either inside the
@@ -111,36 +124,35 @@ class BottomBoundary(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, Fil
             pressure head.
     """
 
-    _extension = PrivateAttr(default="bbc")
+    _extension = _PrivateAttr(default="bbc")
 
-    swbbcfile: Literal[0, 1] | None = None
-    bbcfil: String | None = None
-    swbotb: Literal[1, 2, 3, 4, 5, 6, 7, 8] | None = None
-    sw2: Literal[1, 2] | None = None
-    sw3: Literal[1, 2] | None = None
-    sw4: Literal[0, 1] | None = None
-    swbotb3resvert: Literal[0, 1] | None = None
-    swbotb3impl: Literal[0, 1] | None = None
-    swqhbot: Literal[1, 2] | None = None
-    sinave: Decimal2f | None = Field(ge=-10.0, le=10.0, default=None)
-    sinamp: Decimal2f | None = Field(ge=-10.0, le=10.0, default=None)
-    sinmax: Decimal2f | None = Field(**YEARRANGE, default=None)
-    shape: Decimal2f | None = Field(**UNITRANGE, default=None)
-    hdrain: Decimal2f | None = Field(ge=-10000.0, le=0.0, default=None)
-    rimlay: Decimal2f | None = Field(ge=0, le=100000.0, default=None)
-    aqave: Decimal2f | None = Field(ge=-10000, le=1000, default=None)
-    aqamp: Decimal2f | None = Field(ge=0, le=1000.0, default=None)
-    aqtmax: Decimal2f | None = Field(**YEARRANGE, default=None)
-    aqper: Decimal2f | None = Field(**YEARRANGE, default=None)
-    cofqha: Decimal2f | None = Field(ge=-100.0, le=100.0, default=None)
-    cofqhb: Decimal2f | None = Field(ge=-1.0, le=1.0, default=None)
-    cofqhc: Decimal2f | None = Field(ge=-10.0, le=10.0, default=None)
-    gwlevel: Table | None = None
-    qbot: Table | None = None
-    haquif: Table | None = None
-    qbot4: Table | None = None
-    qtab: Table | None = None
-    hbot5: Table | None = None
+    swbbcfile: _Literal[0, 1] | None = None
+    bbcfil: _String | None = None
+    swbotb: _Literal[1, 2, 3, 4, 5, 6, 7, 8] | None = None
+    sw2: _Literal[1, 2] | None = None
+    sw4: _Literal[0, 1] | None = None
+    swbotb3resvert: _Literal[0, 1] | None = None
+    swbotb3impl: _Literal[0, 1] | None = None
+    swqhbot: _Literal[1, 2] | None = None
+    sinave: _Decimal2f | None = _Field(ge=-10.0, le=10.0, default=None)
+    sinamp: _Decimal2f | None = _Field(ge=-10.0, le=10.0, default=None)
+    sinmax: _Decimal2f | None = _Field(**_YEARRANGE, default=None)
+    shape: _Decimal2f | None = _Field(**_UNITRANGE, default=None)
+    hdrain: _Decimal2f | None = _Field(ge=-10000.0, le=0.0, default=None)
+    rimlay: _Decimal2f | None = _Field(ge=0, le=100000.0, default=None)
+    aqave: _Decimal2f | None = _Field(ge=-10000, le=1000, default=None)
+    aqamp: _Decimal2f | None = _Field(ge=0, le=1000.0, default=None)
+    aqtmax: _Decimal2f | None = _Field(**_YEARRANGE, default=None)
+    aqper: _Decimal2f | None = _Field(**_YEARRANGE, default=None)
+    cofqha: _Decimal2f | None = _Field(ge=-100.0, le=100.0, default=None)
+    cofqhb: _Decimal2f | None = _Field(ge=-1.0, le=1.0, default=None)
+    cofqhc: _Decimal2f | None = _Field(ge=-10.0, le=10.0, default=None)
+    gwlevel: _Table | None = None
+    qbot: _Table | None = None
+    haquif: _Table | None = None
+    qbot4: _Table | None = None
+    qtab: _Table | None = None
+    hbot5: _Table | None = None
 
     def model_string(self, **kwargs) -> str:
         """Override model_string method to handle the swbbcfile attribute.
@@ -161,7 +173,7 @@ class BottomBoundary(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, Fil
         else:
             return super().model_string()
 
-    def write_bbc(self, path: Path):
+    def write_bbc(self, path: _Path):
         """Write bottom boundary conditions to a .bbc file.
 
         This method is only available when the swbbcfile attribute is set to 1.

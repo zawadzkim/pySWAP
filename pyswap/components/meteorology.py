@@ -11,24 +11,23 @@ Functions:
     load_from_knmi: Load meteorological data from KNMI API.
 """
 
-from knmi import get_day_data_dataframe, get_hour_data_dataframe
-from datetime import datetime as dt
-from pandas import read_csv
-from pyswap.core.fields import CSVTable, String, Table, File, Decimal2f
-from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.valueranges import UNITRANGE
-from pyswap.core.mixins import FileMixin, YAMLValidatorMixin, SerializableMixin
-from pyswap.gis import Location
-from pyswap.components.tables import SHORTINTERVALMETEODATA, DETAILEDRAINFALL, RAINFLUX
+from datetime import datetime as _datetime
+from typing import Literal as _Literal
 
-from pydantic import Field, PrivateAttr
+from knmi import get_day_data_dataframe as _get_day_data_dataframe, get_hour_data_dataframe as _get_hour_data_dataframe
+from pandas import read_csv as _read_csv
+from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
 
-from typing import Literal
+from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
+from pyswap.core.fields import CSVTable as _CSVTable, Decimal2f as _Decimal2f, File as _File, String as _String, Table as _Table
+from pyswap.core.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
+from pyswap.gis import Location as _Location
 
 __all__ = ["MetFile", "Meteorology", "load_from_csv", "load_from_knmi"]
 
 
-class MetFile(PySWAPBaseModel, FileMixin, SerializableMixin):
+class MetFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     """Meteorological data for the .met file.
 
     This object is created by functions fetching or loading meteorological data
@@ -41,13 +40,13 @@ class MetFile(PySWAPBaseModel, FileMixin, SerializableMixin):
     """
 
     # None, because the extension has to be added to metfil
-    _extension: bool = PrivateAttr(default=None)
+    _extension: bool = _PrivateAttr(default=None)
 
-    metfil: String
-    content: CSVTable | None = Field(default=None, exclude=True)
+    metfil: _String
+    content: _CSVTable | None = _Field(default=None, exclude=True)
 
 
-class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class Meteorology(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Meteorological settings of the simulation.
 
     !!! note
@@ -113,23 +112,23 @@ class Meteorology(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         write_met: Writes the .met file.
     """
 
-    _validation: bool = PrivateAttr(default=False)
+    _validation: bool = _PrivateAttr(default=False)
 
-    lat: Decimal2f | None = Field(default=None, ge=-90, le=90)
-    meteo_location: Location | None = Field(default=None, exclude=True)
-    swetr: Literal[0, 1] | None = None
-    swdivide: Literal[0, 1] | None = None
-    swrain: Literal[0, 1, 2, 3] | None = 0
-    swetsine: Literal[0, 1] = 0
-    metfile: File | None = Field(default=None, repr=False)
-    alt: Decimal2f | None = Field(default=None, ge=-400.0, le=3000.0)
-    altw: Decimal2f = Field(default=None, ge=0.0, le=99.0)
-    angstroma: Decimal2f = Field(default=None, **UNITRANGE)
-    angstromb: Decimal2f = Field(default=None, **UNITRANGE)
-    swmetdetail: Literal[0, 1] | None = None
-    table_rainflux: Table | None = None
-    rainfil: String | None = None
-    nmetdetail: int | None = Field(default=None, ge=1, le=96)
+    lat: _Decimal2f | None = _Field(default=None, ge=-90, le=90)
+    meteo_location: _Location | None = _Field(default=None, exclude=True)
+    swetr: _Literal[0, 1] | None = None
+    swdivide: _Literal[0, 1] | None = None
+    swrain: _Literal[0, 1, 2, 3] | None = 0
+    swetsine: _Literal[0, 1] = 0
+    metfile: _File | None = _Field(default=None, repr=False)
+    alt: _Decimal2f | None = _Field(default=None, ge=-400.0, le=3000.0)
+    altw: _Decimal2f = _Field(default=None, ge=0.0, le=99.0)
+    angstroma: _Decimal2f = _Field(default=None, **_UNITRANGE)
+    angstromb: _Decimal2f = _Field(default=None, **_UNITRANGE)
+    swmetdetail: _Literal[0, 1] | None = None
+    table_rainflux: _Table | None = None
+    rainfil: _String | None = None
+    nmetdetail: int | None = _Field(default=None, ge=1, le=96)
 
     @property
     def met(self):
@@ -173,16 +172,16 @@ def load_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
         MetFile object.
     """
 
-    return MetFile(metfil=metfil, content=read_csv(csv_path, **kwargs))
+    return MetFile(metfil=metfil, content=_read_csv(csv_path, **kwargs))
 
 
 def load_from_knmi(
     metfil: str,
     stations: str | list,
     variables: str | list = ["TEMP", "PRCP", "Q", "UG", "FG", "UX", "UN"],
-    start: str | dt = "20000101",
-    end: str | dt = "20200101",
-    frequency: Literal["day", "hour"] = "day",
+    start: str | _datetime = "20000101",
+    end: str | _datetime = "20200101",
+    frequency: _Literal["day", "hour"] = "day",
     inseason: bool = False,
 ) -> MetFile:
     """Retrieves the meteorological data from KNMI API using knmi-py and
@@ -206,7 +205,7 @@ def load_from_knmi(
     if isinstance(variables, str):
         variables = [variables]
 
-    get_func = get_day_data_dataframe if frequency == "day" else get_hour_data_dataframe
+    get_func = _get_day_data_dataframe if frequency == "day" else _get_hour_data_dataframe
 
     df = get_func(
         stations=stations, start=start, end=end, variables=variables, inseason=inseason

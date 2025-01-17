@@ -17,7 +17,6 @@ Testing module.
 """
 
 import pandas as pd
-import pytest
 
 from pyswap import testcase
 

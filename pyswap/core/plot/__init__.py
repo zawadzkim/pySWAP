@@ -9,5 +9,7 @@ Modules:
     watercontent: Functions for plotting water content data as heat map.
 """
 
-from .evapotranspiration import *
-from .watercontent import *
+from pyswap.core.plot.evapotranspiration import evapotranspiration
+from pyswap.core.plot.watercontent import water_content
+
+__all__ = ["evapotranspiration", "water_content"]

@@ -7,12 +7,13 @@ as a function.
 """
 
 # %% imports
-import time
-from pyswap.core.io.io_ascii import open_ascii
-from pyswap import testcase, Metadata
 import platform
+import time
+
+from pyswap import Metadata, testcase
 from pyswap.components import GeneralSettings
-from pyswap.core.io.old_swap import (
+from pyswap.core.io.io_ascii import open_ascii
+from pyswap.core.importets import (
     load_swp,
 )
 

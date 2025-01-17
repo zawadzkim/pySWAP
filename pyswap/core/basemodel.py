@@ -18,12 +18,12 @@ Classes:
 
 from __future__ import annotations
 
+from typing import Any
+
 import pandas as pd
 import pandera as pa
 from pandera.typing import DataFrame
-from pydantic import BaseModel, ConfigDict, PrivateAttr
-from pydantic import field_validator
-from typing import Any
+from pydantic import BaseModel, ConfigDict, PrivateAttr, field_validator
 
 
 class PySWAPBaseModel(BaseModel):

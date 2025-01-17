@@ -10,9 +10,9 @@ import pyswap.components.meteorology
 import pyswap.components.soilwater
 import pyswap.components.tables
 import pyswap.components.transport
+from pyswap import testcase
 
 from .load_dataset import IS_WINDOWS
-from pyswap import testcase
 
 
 def _make_grassgrowth():
@@ -369,7 +369,7 @@ def _make_grassgrowth():
 
     bbc_file = pyswap.components.boundary.BBCFile(swbotb=1, gwlevel=table_gwlevel)
 
-    bottom_boundary = pyswap.components.boundary.BottomBoundary(
+    bottom_boundary = pyswap.components.boundary.boundary.BottomBoundary(
         swbbcfile=1, bbcfile=bbc_file, bbcfil="swap"
     )
 

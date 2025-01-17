@@ -8,11 +8,11 @@ Variables:
     VALIDATIONRULES: Validation rules for the package as dictionary.
 """
 
+import platform
 from importlib import resources
 from importlib.abc import Traversable
-import platform
-from pyswap.core.io.io_yaml import load_yaml
 
+from pyswap.core.io.io_yaml import load_yaml
 
 IS_WINDOWS = platform.system() == "Windows"
 """Whether the system is Windows."""

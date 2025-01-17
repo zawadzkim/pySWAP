@@ -1,7 +1,6 @@
 from pandas import DataFrame
 
 import pyswap as ps
-import pyswap.components.boundary
 import pyswap.components.crop
 import pyswap.components.drainage
 import pyswap.components.meteorology
@@ -517,7 +516,7 @@ def _make_oxygenstress():
             -46.70,
         ],
     })
-    bottom_boundary = pyswap.components.boundary.BottomBoundary(
+    bottom_boundary = pyswap.components.boundary.boundary.BottomBoundary(
         swbbcfile=0,
         swbotb=3,
         swbotb3resvert=0,

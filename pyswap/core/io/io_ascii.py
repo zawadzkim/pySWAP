@@ -5,8 +5,9 @@ Functions:
     save_ascii: Save a string to an ASCII file.
 """
 
-import chardet
 from pathlib import Path
+
+import chardet
 
 
 def open_ascii(file_path: Path) -> str:

@@ -17,16 +17,15 @@ Classes:
         pySWAP.
 """
 
-from typing import Self, get_origin, get_args, Literal, Any
 from pathlib import Path
-from typing_extensions import Union
+from typing import Any, Literal, Self, Union, get_args, get_origin
 
-from pydantic import model_validator, model_serializer
+from pydantic import model_serializer, model_validator
 from pydantic.fields import FieldInfo
 
+from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.defaults import VALIDATIONRULES
 from pyswap.log import logging
-from pyswap.core.basemodel import PySWAPBaseModel
 
 logger = logging.getLogger(__name__)
 

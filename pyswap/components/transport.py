@@ -1,17 +1,17 @@
-import pandera as pa
-from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.fields import String, Table, Decimal2f
-from pyswap.core.valueranges import YEARRANGE
-from pyswap.core.mixins import SerializableMixin, YAMLValidatorMixin
+from typing import Literal as _Literal
+
+from pydantic import Field as _Field
+
+from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
+from pyswap.core.fields import Decimal2f as _Decimal2f, String as _String, Table as _Table
+from pyswap.core.mixins import SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.core.valueranges import YEARRANGE as _YEARRANGE
 from pyswap.components.tables import SOILTEXTURES, INITSOILTEMP
 
-from typing import Literal
-from pydantic import Field
-
-__all__ = ["HeatFlow", "SoluteTransport"]
+__all__ = ["HeatFlow", "SoluteTransport", "SOILTEXTURES", "INITSOILTEMP"]
 
 
-class HeatFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class HeatFlow(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Heat flow settings for SWAP simulation.
 
     Attributes:
@@ -35,21 +35,21 @@ class HeatFlow(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         bbctsoil (Optional[Table]): Bottom boundary temperature TBOT [-50..50 oC, R] as function of date DATET [date]
     """
 
-    swhea: Literal[0, 1] | None = None
-    swcalt: Literal[1, 2] | None = None
-    tampli: Decimal2f | None = Field(None, ge=0, le=50)
-    tmean: Decimal2f | None = Field(None, ge=-10, le=30)
-    timref: Decimal2f | None = Field(None, **YEARRANGE)
-    ddamp: Decimal2f | None = Field(None, ge=1, le=500)
-    swtopbhea: Literal[1, 2] | None = None
-    tsoilfile: String | None = None
-    swbotbhea: Literal[1, 2] | None = None
-    soiltextures: Table | None = None
-    initsoil: Table | None = None
-    bbctsoil: Table | None = None
+    swhea: _Literal[0, 1] | None = None
+    swcalt: _Literal[1, 2] | None = None
+    tampli: _Decimal2f | None = _Field(None, ge=0, le=50)
+    tmean: _Decimal2f | None = _Field(None, ge=-10, le=30)
+    timref: _Decimal2f | None = _Field(None, **_YEARRANGE)
+    ddamp: _Decimal2f | None = _Field(None, ge=1, le=500)
+    swtopbhea: _Literal[1, 2] | None = None
+    tsoilfile: _String | None = None
+    swbotbhea: _Literal[1, 2] | None = None
+    soiltextures: _Table | None = None
+    initsoil: _Table | None = None
+    bbctsoil: _Table | None = None
 
 
-class SoluteTransport(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class SoluteTransport(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Solute transport settings.
 
     Attributes:
@@ -79,30 +79,27 @@ class SoluteTransport(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         miscellaneous (Optional[Table]): Table for miscellaneous parameters as function of soil depth.
     """
 
-    swsolu: Literal[0, 1] | None = None
-    cpre: Decimal2f | None = Field(None, ge=0, le=100)
-    cdrain: Decimal2f | None = Field(None, ge=0, le=100)
-    swbotbc: Literal[0, 1, 2] | None = None
-    cseep: Decimal2f | None = Field(None, ge=0, le=100)
-    ddif: Decimal2f | None = Field(None, ge=0, le=10)
-    tscf: Decimal2f | None = Field(None, ge=0, le=10)
-    swsp: Literal[0, 1] | None = None
-    frexp: Decimal2f | None = Field(None, ge=0, le=10)
-    cref: Decimal2f | None = Field(None, ge=0, le=1000)
-    swdc: Literal[0, 1] | None = None
-    gampar: Decimal2f | None = Field(None, ge=0, le=0.5)
-    rtheta: Decimal2f | None = Field(None, ge=0, le=0.4)
-    bexp: Decimal2f | None = Field(None, ge=0, le=2)
-    swbr: Literal[0, 1] | None = None
-    daquif: Decimal2f | None = Field(None, ge=0, le=10000)
-    poros: Decimal2f | None = Field(None, ge=0, le=0.6)
-    kfsat: Decimal2f | None = Field(None, ge=0, le=100)
-    decsat: Decimal2f | None = Field(None, ge=0, le=10)
-    cdraini: Decimal2f | None = Field(None, ge=0, le=100)
-    cseeparrtb: Table | None = None
-    inissoil: Table | None = None
-    misc: Table | None = None
+    swsolu: _Literal[0, 1] | None = None
+    cpre: _Decimal2f | None = _Field(None, ge=0, le=100)
+    cdrain: _Decimal2f | None = _Field(None, ge=0, le=100)
+    swbotbc: _Literal[0, 1, 2] | None = None
+    cseep: _Decimal2f | None = _Field(None, ge=0, le=100)
+    ddif: _Decimal2f | None = _Field(None, ge=0, le=10)
+    tscf: _Decimal2f | None = _Field(None, ge=0, le=10)
+    swsp: _Literal[0, 1] | None = None
+    frexp: _Decimal2f | None = _Field(None, ge=0, le=10)
+    cref: _Decimal2f | None = _Field(None, ge=0, le=1000)
+    swdc: _Literal[0, 1] | None = None
+    gampar: _Decimal2f | None = _Field(None, ge=0, le=0.5)
+    rtheta: _Decimal2f | None = _Field(None, ge=0, le=0.4)
+    bexp: _Decimal2f | None = _Field(None, ge=0, le=2)
+    swbr: _Literal[0, 1] | None = None
+    daquif: _Decimal2f | None = _Field(None, ge=0, le=10000)
+    poros: _Decimal2f | None = _Field(None, ge=0, le=0.6)
+    kfsat: _Decimal2f | None = _Field(None, ge=0, le=100)
+    decsat: _Decimal2f | None = _Field(None, ge=0, le=10)
+    cdraini: _Decimal2f | None = _Field(None, ge=0, le=100)
+    cseeparrtb: _Table | None = None
+    inissoil: _Table | None = None
+    misc: _Table | None = None
 
-
-transport_tables = ["SOILTEXTURES", "INITSOILTEMP"]
-__all__.extend(transport_tables)

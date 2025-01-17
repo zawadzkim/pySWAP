@@ -72,21 +72,19 @@ from decimal import Decimal
 from typing import Annotated
 
 from pandas import DataFrame
+from pydantic import AfterValidator, Field
 from pydantic.functional_serializers import PlainSerializer
-from pydantic import AfterValidator
-from pydantic import Field
 
-from pyswap.core.parsers import parse_day_month, parse_string_list, parse_quoted_string
+from pyswap.core.basemodel import PySWAPBaseModel
+from pyswap.core.parsers import parse_day_month, parse_quoted_string, parse_string_list
 from pyswap.core.serializers import (
     serialize_arrays,
     serialize_csv_table,
+    serialize_day_month,
     serialize_decimal,
     serialize_object_list,
     serialize_table,
-    serialize_day_month,
 )
-
-from pyswap.core.basemodel import PySWAPBaseModel
 
 __all__ = [
     "Table",

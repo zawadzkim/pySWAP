@@ -4,20 +4,20 @@ Similar to the .dra or .swp files, the .crp file is a configuration file for the
 The classes in this module represent distincs sections of the .crp file. The main class is the
 `CropFile` class which holds the settings for the crop simulation.
 
-SWAP has three modes for crop simulations which users define in the CROPROTATION table in the .swp file:
+SWAP has three modes for crop simulations which users define in the CROPROTATION _table in the .swp file:
 
-    * 1 - simple crop settings
-    * 2 - detailed, WOFOST general settings
-    * 3 - dynamic grass growth model
+    * 1 - simple crop settings - use CropDevelopmentSettingsFixed
+    * 2 - detailed, WOFOST general settings - use CropDevelopmentSettingsWOFOST
+    * 3 - dynamic grass growth model - use CropDevelopmentSettingsGrass
 
 For each choice, the .crp file will look different. Therefore, multiple classes
 are defined in this module to deal with thos different settings.
 
 Classes:
     CropFile: Class for the .crp file.
-    CropDevelopmentSettings: Class for the crop development settings.
     CropDevelopmentSettingsWOFOST: Class for the crop development settings in WOFOST.
     CropDevelopmentSettingsFixed: Class for the fixed crop development settings.
+    CropDevelopmentSettingsGrass: Class for the grass crop development settings.
     OxygenStress: Class for the oxygen stress settings.
     DroughtStress: Class for the drought stress settings.
     SaltStress: Class for the salt stress settings.
@@ -28,29 +28,41 @@ Classes:
     Preparation: Class for the preparation settings.
 """
 
-from typing import Literal
+from typing import Literal as _Literal
 
-from pydantic import Field, PrivateAttr
+from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
 
-from pyswap.core.fields import Arrays, DateList, IntList, Table, Subsection, Decimal2f
-from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.mixins import (
-    SerializableMixin,
-    YAMLValidatorMixin,
-    FileMixin,
-    WOFOSTUpdateMixin,
+from pyswap.components.irrigation import ScheduledIrrigation as _ScheduledIrrigation
+from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
+from pyswap.core.db.cropdb import CropVariety as _CropVariety
+from pyswap.core.fields import (
+    Arrays as _Arrays,
+    DateList as _DateList,
+    Decimal2f as _Decimal2f,
+    IntList as _IntList,
+    Subsection as _Subsection,
+    Table as _Table,
 )
-from pyswap.core.fields import Table
-from pyswap.core.valueranges import UNITRANGE, YEARRANGE
-from pyswap.components.irrigation import ScheduledIrrigation
-from pyswap.core.db.cropdb import CropVariety
+from pyswap.core.mixins import (
+    FileMixin as _FileMixin,
+    SerializableMixin as _SerializableMixin,
+    WOFOSTUpdateMixin as _WOFOSTUpdateMixin,
+    YAMLValidatorMixin as _YAMLValidatorMixin,
+)
+from pyswap.core.valueranges import UNITRANGE as _UNITRANGE, YEARRANGE as _YEARRANGE
+from pyswap.components.tables import (RDTB, RDCTB, GCTB, CHTB, KYTB,
+                                      MRFTB,WRTB,CROPROTATION,DTSMTB,SLATB, 
+                                      AMAXTB, TMPFTB, TMNFTB, RFSETB, FRTB, FLTB, 
+                                      FSTB, FOTB, RDRRTB, RDRSTB, DMGRZTB, LSDATB,
+                                      LSDBTB, RLWTB, DMMOWTB, DMMOWDELAY, CHTB_GRASS, SLATB_GRASS,
+                                      AMAXTB_GRASS, RFSETB_GRASS, FRTB_GRASS, FLTB_GRASS, FSTB_GRASS,
+                                      RDRRTB_GRASS, RDRSTB_GRASS,)
 
 __all__ = [
-    "CropDevelopmentSettings",
     "CropDevelopmentSettingsWOFOST",
     "CropDevelopmentSettingsFixed",
-    "OxygenStress",
     "CropDevelopmentSettingsGrass",
+    "OxygenStress",
     "DroughtStress",
     "SaltStress",
     "CompensateRWUStress",
@@ -59,11 +71,46 @@ __all__ = [
     "Preparation",
     "CropFile",
     "Crop",
+    "RDTB",
+    "RDCTB",
+    "GCTB",
+    "CHTB",
+    "KYTB",
+    "MRFTB",
+    "WRTB",
+    "CROPROTATION",
+    "DTSMTB",
+    "SLATB",
+    "AMAXTB",
+    "TMPFTB",
+    "TMNFTB",
+    "RFSETB",
+    "FRTB",
+    "FLTB",
+    "FSTB",
+    "FOTB",
+    "RDRRTB",
+    "RDRSTB",
+    "DMGRZTB",
+    "LSDATB",
+    "LSDBTB",
+    "RLWTB",
+    "DMMOWTB",
+    "DMMOWDELAY",
+    "CHTB_GRASS",
+    "SLATB_GRASS",
+    "AMAXTB_GRASS",
+    "RFSETB_GRASS",
+    "FRTB_GRASS",
+    "FLTB_GRASS",
+    "FSTB_GRASS",
+    "RDRRTB_GRASS",
+    "RDRSTB_GRASS",
 ]
 
 
-class CropDevelopmentSettings(
-    PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, WOFOSTUpdateMixin
+class _CropDevelopmentSettings(
+    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _WOFOSTUpdateMixin
 ):
     """Crop development settings.
 
@@ -83,8 +130,8 @@ class CropDevelopmentSettings(
             * 1 - Crop factor
             * 2 - Crop height
 
-        table_dvs_cf (Optional[Table]): Table with crop factors as a function of development stage
-        table_dvs_ch (Optional[Table]): Table with crop height as a function of development stage
+        _table_dvs_cf (Optional[_Table]): _Table with crop factors as a function of development stage
+        _table_dvs_ch (Optional[_Table]): _Table with crop height as a function of development stage
         albedo (Optional[float]): Crop reflection coefficient
         rsc (Optional[float]): Minimum canopy resistance
         rsw (Optional[float]): Canopy resistance of intercepted water
@@ -99,7 +146,7 @@ class CropDevelopmentSettings(
             * 2 - Root growth depends on maximum daily increase
             * 3 - Root growth depends on available root biomass
 
-        rdtb (Optional[Arrays]): Rooting Depth as a function of development stage
+        rdtb (Optional _Arrays]): Rooting Depth as a function of development stage
         rdi (float): Initial rooting depth
         rri (float): Maximum daily increase in rooting depth
         rdc (float): Maximum rooting depth of particular crop
@@ -108,63 +155,63 @@ class CropDevelopmentSettings(
             * 0 - Rooting depth increase is related to availability assimilates for roots
             * 1 - Rooting depth increase is related to relative dry matter increase
 
-        rlwtb (Optional[Arrays]): rooting depth as function of root weight
+        rlwtb (Optional _Arrays]): rooting depth as function of root weight
         wrtmax (float): Maximum root weight
         swrdc (Literal[0, 1]): Switch for calculation of relative root density
-        rdctb (Arrays): root density as function of relative rooting depth
+        rdctb  _Arrays): root density as function of relative rooting depth
     """
 
-    wofost_variety: CropVariety | None = Field(default=None, exclude=True)
+    wofost_variety: _CropVariety | None = _Field(default=None, exclude=True)
 
-    swcf: Literal[1, 2]
-    dvs_cf: Table | None = None
-    dvs_ch: Table | None = None
-    albedo: Decimal2f | None = Field(default=None, **UNITRANGE)
-    rsc: Decimal2f | None = Field(default=None, ge=0.0, le=1.0e6)
-    rsw: Decimal2f | None = Field(default=None, ge=0.0, le=1.0e6)
-    tsum1: Decimal2f | None = Field(
+    swcf: _Literal[1, 2]
+    dvs_cf: _Table | None = None
+    dvs_ch: _Table | None = None
+    albedo: _Decimal2f | None = _Field(default=None, **_UNITRANGE)
+    rsc: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
+    rsw: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
+    tsum1: _Decimal2f | None = _Field(
         serialization_alias="tsumea", default=None, ge=0.0, le=1.0e4
     )
-    tsum2: Decimal2f | None = Field(
+    tsum2: _Decimal2f | None = _Field(
         serialization_alias="tsumam", default=None, ge=0.0, le=1.0e4
     )
-    tbase: Decimal2f | None = Field(default=None, ge=-10.0, le=30.0)
-    kdif: Decimal2f | None = Field(default=None, ge=0.0, le=2.0)
-    kdir: Decimal2f | None = Field(default=None, ge=0.0, le=2.0)
-    swrd: Literal[1, 2, 3] | None = None
-    rdtb: Arrays | None = None
-    rdi: Decimal2f | None = Field(default=None, ge=0.0, le=1000.0)
-    rri: Decimal2f | None = Field(default=None, ge=0.0, le=100.0)
-    rdc: Decimal2f | None = Field(default=None, ge=0.0, le=1000.0)
-    swdmi2rd: Literal[0, 1] | None = None
-    rlwtb: Arrays | None = None
-    wrtmax: Decimal2f | None = Field(default=None, ge=0.0, le=1.0e5)
-    swrdc: Literal[0, 1] = 0
-    rdctb: Arrays
+    tbase: _Decimal2f | None = _Field(default=None, ge=-10.0, le=30.0)
+    kdif: _Decimal2f | None = _Field(default=None, ge=0.0, le=2.0)
+    kdir: _Decimal2f | None = _Field(default=None, ge=0.0, le=2.0)
+    swrd: _Literal[1, 2, 3] | None = None
+    rdtb: _Arrays | None = None
+    rdi: _Decimal2f | None = _Field(default=None, ge=0.0, le=1000.0)
+    rri: _Decimal2f | None = _Field(default=None, ge=0.0, le=100.0)
+    rdc: _Decimal2f | None = _Field(default=None, ge=0.0, le=1000.0)
+    swdmi2rd: _Literal[0, 1] | None = None
+    rlwtb: _Arrays | None = None
+    wrtmax: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e5)
+    swrdc: _Literal[0, 1] = 0
+    rdctb: _Arrays
 
 
-class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
+class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
     """Additional settings as defined for the WOFOST model.
 
     idsl (Literal[0, 1, 2]): Switch for crop development.
-    dtsmtb (Arrays): List increase in temperature sum as function of daily average temperature.
+    dtsmtb  _Arrays): List increase in temperature sum as function of daily average temperature.
     dlo (Optional[float]): Optimum day length for crop development.
     dlc (Optional[float]): Minimum day length.
     vernsat (Optional[float]): Saturated vernalisation requirement.
     vernbase (Optional[float]): Base vernalisation requirement.
     verndvs (Optional[float]): Critical development stage after which the effect of vernalisation is halted.
-    verntb (Optional[Arrays]): Table with rate of vernalisation as function of average air temperature.
+    verntb (Optional _Arrays]): _Table with rate of vernalisation as function of average air temperature.
     tdwi (float): Initial total crop dry weight.
     laiem (float): Leaf area index at emergence.
     rgrlai (float): Maximum relative increase in LAI.
     spa (float): Specific pod area.
     ssa (float): Specific stem area.
     span (float): Life span under leaves under optimum conditions.
-    slatb (Arrays): List specific leaf area as function of crop development stage.
+    slatb  _Arrays): List specific leaf area as function of crop development stage.
     eff (float): Light use efficiency for real leaf.
-    amaxtb (Arrays): List maximum CO2 assimilation rate as function of development stage.
-    tmpftb (Arrays): List reduction factor of AMAX as function of average day temperature.
-    tmnftb (Arrays): List reduction factor of AMAX as function of minimum day temperature.
+    amaxtb  _Arrays): List maximum CO2 assimilation rate as function of development stage.
+    tmpftb  _Arrays): List reduction factor of AMAX as function of average day temperature.
+    tmnftb  _Arrays): List reduction factor of AMAX as function of minimum day temperature.
     cvo (float): Efficiency of conversion into storage organs.
     cvl (float): Efficiency of conversion into leaves.
     cvr (float): Efficiency of conversion into roots.
@@ -174,55 +221,55 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
     rmo (float): Maintenance respiration rate of storage organs.
     rmr (float): Maintenance respiration rate of roots.
     rms (float): Maintenance respiration rate of stems.
-    rfsetb (Arrays): List reduction factor of senescence as function of development stage.
-    frtb (Arrays): List fraction of total dry matter increase partitioned to the roots as function of development stage.
-    fltb (Arrays): List fraction of total above ground dry matter increase partitioned to the leaves as function of development stage.
-    fstb (Arrays): List fraction of total above ground dry matter increase partitioned to the stems as function of development stage.
-    fotb (Arrays): List fraction of total above ground dry matter increase partitioned to the storage organs as function of development stage.
+    rfsetb  _Arrays): List reduction factor of senescence as function of development stage.
+    frtb  _Arrays): List fraction of total dry matter increase partitioned to the roots as function of development stage.
+    fltb  _Arrays): List fraction of total above ground dry matter increase partitioned to the leaves as function of development stage.
+    fstb  _Arrays): List fraction of total above ground dry matter increase partitioned to the stems as function of development stage.
+    fotb  _Arrays): List fraction of total above ground dry matter increase partitioned to the storage organs as function of development stage.
     perdl (float): Maximum relative death rate of leaves due to water stress.
-    rdrrtb (Arrays): List relative death rates of roots as function of development stage.
-    rdrstb (Arrays): List relative death rates of stems as function of development stage.
+    rdrrtb  _Arrays): List relative death rates of roots as function of development stage.
+    rdrstb  _Arrays): List relative death rates of stems as function of development stage.
     """
 
-    idsl: Literal[0, 1, 2] | None = None
-    dtsmtb: Arrays | None = None
-    dlo: float | None = Field(default=None, ge=0.0, le=24.0)
-    dlc: float | None = Field(default=None, ge=0.0, le=24.0)
-    vernsat: float | None = Field(default=None, ge=0.0, le=100.0)
-    vernbase: float | None = Field(default=None, ge=0.0, le=100.0)
-    verndvs: float | None = Field(default=None, ge=0.0, le=0.3)
-    verntb: Arrays | None = None
-    tdwi: float | None = Field(default=None, ge=0.0, le=10_000)
-    laiem: float | None = Field(default=None, ge=0.0, le=10)
-    rgrlai: float | None = Field(default=None, **UNITRANGE)
-    spa: float | None = Field(**UNITRANGE, default=None)
-    ssa: float | None = Field(default=None, **UNITRANGE)
-    span: float | None = Field(default=None, **YEARRANGE)
-    slatb: Arrays | None = None
-    eff: float | None = Field(default=None, ge=0.0, le=10.0)
-    amaxtb: Arrays | None = None
-    tmpftb: Arrays | None = None
-    tmnftb: Arrays | None = None
-    cvo: float | None = Field(default=None, **UNITRANGE)
-    cvl: float | None = Field(default=None, **UNITRANGE)
-    cvr: float | None = Field(default=None, **UNITRANGE)
-    cvs: float | None = Field(default=None, **UNITRANGE)
-    q10: float | None = Field(default=None, ge=0.0, le=5.0)
-    rml: float | None = Field(default=None, **UNITRANGE)
-    rmo: float | None | None = Field(**UNITRANGE, default=None)
-    rmr: float | None = Field(default=None, **UNITRANGE)
-    rms: float | None = Field(default=None, **UNITRANGE)
-    rfsetb: Arrays | None = None
-    frtb: Arrays | None = None
-    fltb: Arrays | None = None
-    fstb: Arrays | None = None
-    fotb: Arrays | None = None
-    perdl: float | None = Field(default=None, ge=0.0, le=3.0)
-    rdrrtb: Arrays | None = None
-    rdrstb: Arrays | None = None
+    idsl: _Literal[0, 1, 2] | None = None
+    dtsmtb: _Arrays | None = None
+    dlo: float | None = _Field(default=None, ge=0.0, le=24.0)
+    dlc: float | None = _Field(default=None, ge=0.0, le=24.0)
+    vernsat: float | None = _Field(default=None, ge=0.0, le=100.0)
+    vernbase: float | None = _Field(default=None, ge=0.0, le=100.0)
+    verndvs: float | None = _Field(default=None, ge=0.0, le=0.3)
+    verntb: _Arrays | None = None
+    tdwi: float | None = _Field(default=None, ge=0.0, le=10_000)
+    laiem: float | None = _Field(default=None, ge=0.0, le=10)
+    rgrlai: float | None = _Field(default=None, **_UNITRANGE)
+    spa: float | None = _Field(**_UNITRANGE, default=None)
+    ssa: float | None = _Field(default=None, **_UNITRANGE)
+    span: float | None = _Field(default=None, **_YEARRANGE)
+    slatb: _Arrays | None = None
+    eff: float | None = _Field(default=None, ge=0.0, le=10.0)
+    amaxtb: _Arrays | None = None
+    tmpftb: _Arrays | None = None
+    tmnftb: _Arrays | None = None
+    cvo: float | None = _Field(default=None, **_UNITRANGE)
+    cvl: float | None = _Field(default=None, **_UNITRANGE)
+    cvr: float | None = _Field(default=None, **_UNITRANGE)
+    cvs: float | None = _Field(default=None, **_UNITRANGE)
+    q10: float | None = _Field(default=None, ge=0.0, le=5.0)
+    rml: float | None = _Field(default=None, **_UNITRANGE)
+    rmo: float | None | None = _Field(**_UNITRANGE, default=None)
+    rmr: float | None = _Field(default=None, **_UNITRANGE)
+    rms: float | None = _Field(default=None, **_UNITRANGE)
+    rfsetb: _Arrays | None = None
+    frtb: _Arrays | None = None
+    fltb: _Arrays | None = None
+    fstb: _Arrays | None = None
+    fotb: _Arrays | None = None
+    perdl: float | None = _Field(default=None, ge=0.0, le=3.0)
+    rdrrtb: _Arrays | None = None
+    rdrstb: _Arrays | None = None
 
 
-class CropDevelopmentSettingsFixed(CropDevelopmentSettings):
+class CropDevelopmentSettingsFixed(_CropDevelopmentSettings):
     """Fixed crop development settings (Additionaly to CropDevelopmentSettings).
 
     Attributes:
@@ -237,14 +284,14 @@ class CropDevelopmentSettingsFixed(CropDevelopmentSettings):
             * 1 - LAI
             * 2 - SCF
 
-        gctb (Arrays): Soil Cover Fraction as a function of development stage
+        gctb  _Arrays): Soil Cover Fraction as a function of development stage
     """
 
-    idev: Literal[1, 2]
-    lcc: int | None = Field(default=None, **YEARRANGE)
-    swgc: Literal[1, 2]
-    gctb: Arrays
-    kytb: Arrays | None = None
+    idev: _Literal[1, 2]
+    lcc: int | None = _Field(default=None, **_YEARRANGE)
+    swgc: _Literal[1, 2]
+    gctb: _Arrays
+    kytb: _Arrays | None = None
 
 
 class CropDevelopmentSettingsGrass(CropDevelopmentSettingsWOFOST):
@@ -262,13 +309,13 @@ class CropDevelopmentSettingsGrass(CropDevelopmentSettingsWOFOST):
         tsumtime (Optional[float]): Lower threshold temperature for ageing of leaves [-10..30 degree C, R]
     """
 
-    swtsum: Literal[0, 1, 2]
+    swtsum: _Literal[0, 1, 2]
     tsumtemp: float | None = None
     tsumdepth: float | None = None
     tsumtime: float | None = None
 
 
-class OxygenStress(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class OxygenStress(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Oxygen stress settings for .crp file.
 
     Attributes:
@@ -304,38 +351,38 @@ class OxygenStress(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         q10_root (Optional[float]): Relative increase in root respiration at temperature increase of 10 oC
         f_senes (Optional[float]): Reduction factor for senescence, used for maintenance respiration
         c_mroot (Optional[float]): Maintenance coefficient of root
-        table_max_resp_factor (Optional[Table]): Ratio root total respiration / maintenance respiration as a function of development stage
-        table_dvs_w_root_ss (Optional[Table]): List dry weight of roots at soil surface as a function of development stage
+        _table_max_resp_factor (Optional[_Table]): Ratio root total respiration / maintenance respiration as a function of development stage
+        _table_dvs_w_root_ss (Optional[_Table]): List dry weight of roots at soil surface as a function of development stage
 
     TODO: Find a way to validate the parameters that are required when the
     croptype=1 and swoxygen=2 (currently I cannot access the croptype parameter)
     >> move it to the Model class validation at the end, when all the params are available
     """
 
-    swoxygen: Literal[0, 1, 2]
-    swwrtnonox: Literal[0, 1]
-    swoxygentype: Literal[1, 2] | None = None
-    aeratecrit: float | None = Field(default=None, ge=0.0001, le=1.0)
-    hlim1: float | None = Field(default=None, ge=-100.0, le=100.0)
-    hlim2u: float | None = Field(default=None, ge=-1000.0, le=100.0)
-    hlim2l: float | None = Field(default=None, ge=-1000.0, le=100.0)
-    q10_microbial: float | None = Field(default=None, ge=1.0, le=4.0)
-    specific_resp_humus: float | None = Field(default=None, **UNITRANGE)
-    srl: float | None = Field(default=None, ge=0.0, le=1.0e10)
-    swrootradius: Literal[1, 2] | None = None
-    dry_mat_cont_roots: float | None = Field(default=None, **UNITRANGE)
-    air_filled_root_por: float | None = Field(default=None, **UNITRANGE)
-    spec_weight_root_tissue: float | None = Field(default=None, ge=0.0, le=1.0e5)
-    var_a: float | None = Field(default=None, **UNITRANGE)
-    root_radiuso2: float | None = Field(default=None, ge=1.0e-6, le=0.1)
-    q10_root: float | None = Field(default=None, ge=1.0, le=4.0)
-    f_senes: float | None = Field(default=None, **UNITRANGE)
-    c_mroot: float | None = Field(default=None, **UNITRANGE)
-    mrftb: Arrays | None = None
-    wrtb: Arrays | None = None
+    swoxygen: _Literal[0, 1, 2]
+    swwrtnonox: _Literal[0, 1]
+    swoxygentype: _Literal[1, 2] | None = None
+    aeratecrit: float | None = _Field(default=None, ge=0.0001, le=1.0)
+    hlim1: float | None = _Field(default=None, ge=-100.0, le=100.0)
+    hlim2u: float | None = _Field(default=None, ge=-1000.0, le=100.0)
+    hlim2l: float | None = _Field(default=None, ge=-1000.0, le=100.0)
+    q10_microbial: float | None = _Field(default=None, ge=1.0, le=4.0)
+    specific_resp_humus: float | None = _Field(default=None, **_UNITRANGE)
+    srl: float | None = _Field(default=None, ge=0.0, le=1.0e10)
+    swrootradius: _Literal[1, 2] | None = None
+    dry_mat_cont_roots: float | None = _Field(default=None, **_UNITRANGE)
+    air_filled_root_por: float | None = _Field(default=None, **_UNITRANGE)
+    spec_weight_root_tissue: float | None = _Field(default=None, ge=0.0, le=1.0e5)
+    var_a: float | None = _Field(default=None, **_UNITRANGE)
+    root_radiuso2: float | None = _Field(default=None, ge=1.0e-6, le=0.1)
+    q10_root: float | None = _Field(default=None, ge=1.0, le=4.0)
+    f_senes: float | None = _Field(default=None, **_UNITRANGE)
+    c_mroot: float | None = _Field(default=None, **_UNITRANGE)
+    mrftb: _Arrays | None = None
+    wrtb: _Arrays | None = None
 
 
-class DroughtStress(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class DroughtStress(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Drought stress settings for .crp file.
 
     Attributes:
@@ -364,28 +411,28 @@ class DroughtStress(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         taccur (Optional[float]): Maximum absolute difference between simulated and calculated potential transpiration rate
     """
 
-    swdrought: Literal[1, 2]
-    swjarvis: Literal[0, 1, 2, 3, 4] | None = None
-    alphcrit: float | None = Field(default=None, ge=0.2, le=1.0)
-    hlim3h: float | None = Field(default=None, ge=-1.0e4, le=100.0)
-    hlim3l: float | None = Field(default=None, ge=-1.0e4, le=100.0)
-    hlim4: float | None = Field(default=None, ge=-1.6e4, le=100.0)
-    adcrh: float | None = Field(default=None, ge=0.0, le=5.0)
-    adcrl: float | None = Field(default=None, ge=0.0, le=5.0)
-    wiltpoint: float | None = Field(default=None, ge=-1.0e8, le=-1.0e2)
-    kstem: float | None = Field(default=None, ge=1.0e-10, le=10.0)
-    rxylem: float | None = Field(default=None, ge=1.0e-4, le=1.0)
-    rootradius: float | None = Field(default=None, ge=1.0e-4, le=1.0)
-    kroot: float | None = Field(default=None, ge=1.0e-10, le=1.0e10)
-    rootcoefa: float | None = Field(default=None, **UNITRANGE)
-    swhydrlift: Literal[0, 1] | None = None
-    rooteff: float | None = Field(default=None, **UNITRANGE)
-    stephr: float | None = Field(default=None, ge=0.0, le=10.0)
-    criterhr: float | None = Field(default=None, ge=0.0, le=10.0)
-    taccur: float | None = Field(default=None, ge=1.0e-5, le=1.0e-2)
+    swdrought: _Literal[1, 2]
+    swjarvis: _Literal[0, 1, 2, 3, 4] | None = None
+    alphcrit: float | None = _Field(default=None, ge=0.2, le=1.0)
+    hlim3h: float | None = _Field(default=None, ge=-1.0e4, le=100.0)
+    hlim3l: float | None = _Field(default=None, ge=-1.0e4, le=100.0)
+    hlim4: float | None = _Field(default=None, ge=-1.6e4, le=100.0)
+    adcrh: float | None = _Field(default=None, ge=0.0, le=5.0)
+    adcrl: float | None = _Field(default=None, ge=0.0, le=5.0)
+    wiltpoint: float | None = _Field(default=None, ge=-1.0e8, le=-1.0e2)
+    kstem: float | None = _Field(default=None, ge=1.0e-10, le=10.0)
+    rxylem: float | None = _Field(default=None, ge=1.0e-4, le=1.0)
+    rootradius: float | None = _Field(default=None, ge=1.0e-4, le=1.0)
+    kroot: float | None = _Field(default=None, ge=1.0e-10, le=1.0e10)
+    rootcoefa: float | None = _Field(default=None, **_UNITRANGE)
+    swhydrlift: _Literal[0, 1] | None = None
+    rooteff: float | None = _Field(default=None, **_UNITRANGE)
+    stephr: float | None = _Field(default=None, ge=0.0, le=10.0)
+    criterhr: float | None = _Field(default=None, ge=0.0, le=10.0)
+    taccur: float | None = _Field(default=None, ge=1.0e-5, le=1.0e-2)
 
 
-class SaltStress(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class SaltStress(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Salt stress settings for .crp file.
 
     Attributes:
@@ -400,13 +447,13 @@ class SaltStress(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         salthead (Optional[float]): Conversion factor salt concentration (mg/cm3) into osmotic head (cm)
     """
 
-    swsalinity: Literal[0, 1, 2]
-    saltmax: float | None = Field(default=None, ge=0.0, le=100.0)
-    saltslope: float | None = Field(default=None, **UNITRANGE)
-    salthead: float | None = Field(default=None, ge=0.0, le=1000.0)
+    swsalinity: _Literal[0, 1, 2]
+    saltmax: float | None = _Field(default=None, ge=0.0, le=100.0)
+    saltslope: float | None = _Field(default=None, **_UNITRANGE)
+    salthead: float | None = _Field(default=None, ge=0.0, le=1000.0)
 
 
-class CompensateRWUStress(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class CompensateRWUStress(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Compensate root water uptake stress settings for .crp file.
 
     Attributes:
@@ -428,13 +475,13 @@ class CompensateRWUStress(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin
         dcritrtz (Optional[float]): Threshold of rootzone thickness after which compensation occurs
     """
 
-    swcompensate: Literal[0, 1, 2]
-    swstressor: Literal[1, 2, 3, 4, 5] | None = None
-    alphacrit: float | None = Field(default=None, ge=0.2, le=1.0)
-    dcritrtz: float | None = Field(default=None, ge=0.02, le=100.0)
+    swcompensate: _Literal[0, 1, 2]
+    swstressor: _Literal[1, 2, 3, 4, 5] | None = None
+    alphacrit: float | None = _Field(default=None, ge=0.2, le=1.0)
+    dcritrtz: float | None = _Field(default=None, ge=0.02, le=100.0)
 
 
-class Interception(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class Interception(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Interception settings for .crp file.
 
     Attributes:
@@ -445,7 +492,7 @@ class Interception(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
             * 2 - Trees and forests (Gash)
 
         cofab (Optional[float]): Interception coefficient, corresponding to maximum interception amount
-        table_intertb (Optional[Table]): table with the following columns as a function of time T:
+        _table_intertb (Optional[_Table]): _table with the following columns as a function of time T:
 
             * PFREE - Free throughfall coefficient
             * PSTEM - Stemflow coefficient
@@ -454,13 +501,13 @@ class Interception(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
             * AVEVAP = Average evaporation intensity during rainfall from a wet canopy
     """
 
-    swinter: Literal[0, 1, 2]
-    cofab: float | None = Field(default=None, **UNITRANGE)
-    intertb: Table | None = None
+    swinter: _Literal[0, 1, 2]
+    cofab: float | None = _Field(default=None, **_UNITRANGE)
+    intertb: _Table | None = None
 
 
 class CO2Correction(
-    PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin, WOFOSTUpdateMixin
+    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _WOFOSTUpdateMixin
 ):
     """CO2 correction settings for WOFOST-type .crp file.
 
@@ -471,22 +518,22 @@ class CO2Correction(
             * 1 - CO2 assimilation correction
 
         atmofil (Optional[str]): alternative filename for atmosphere.co2
-        co2amaxtb (Optional[Arrays]): Correction of photosynthesis as a function of atmospheric CO2 concentration
-        co2efftb (Optional[Arrays]): orrection of radiation use efficiency as a function of atmospheric CO2 concentration
-        co2tratb (Optional[Arrays]): Correction of transpiration as a function of atmospheric CO2 concentration
+        co2amaxtb (Optional _Arrays]): Correction of photosynthesis as a function of atmospheric CO2 concentration
+        co2efftb (Optional _Arrays]): orrection of radiation use efficiency as a function of atmospheric CO2 concentration
+        co2tratb (Optional _Arrays]): Correction of transpiration as a function of atmospheric CO2 concentration
     """
 
-    _validation: bool = PrivateAttr(default=False)
-    wofost_variety: CropVariety | None = Field(default=None, exclude=True)
+    _validation: bool = _PrivateAttr(default=False)
+    wofost_variety: _CropVariety | None = _Field(default=None, exclude=True)
 
-    swco2: Literal[0, 1]
+    swco2: _Literal[0, 1]
     atmofil: str | None = None
-    co2amaxtb: Arrays | None = None
-    co2efftb: Arrays | None = None
-    co2tratb: Arrays | None = None
+    co2amaxtb: _Arrays | None = None
+    co2efftb: _Arrays | None = None
+    co2tratb: _Arrays | None = None
 
 
-class Preparation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class Preparation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Preparation, sowing and germination settings for .crp file.
 
     Attributes:
@@ -521,33 +568,33 @@ class Preparation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         agerm (Optional[float]): A-coefficient Eq. 24/25 Feddes & Van Wijk
     """
 
-    swprep: Literal[0, 1]
-    swsow: Literal[0, 1]
-    swgerm: Literal[0, 1, 2]
-    swharv: Literal[0, 1]
-    dvsend: float | None = Field(default=None, ge=0.0, le=3.0)
-    zprep: float | None = Field(default=None, ge=-100.0, le=0.0)
-    hprep: float | None = Field(default=None, ge=-200.0, le=0.0)
-    maxprepdelay: int | None = Field(default=None, ge=1, le=366)
-    zsow: float | None = Field(default=None, ge=-100.0, le=0.0)
-    hsow: float | None = Field(default=None, ge=-200.0, le=0.0)
-    ztempsow: float | None = Field(default=None, ge=-100.0, le=0.0)
-    tempsow: float | None = Field(default=None, ge=0.0, le=30.0)
-    maxsowdelay: int | None = Field(default=None, ge=1, le=366)
-    tsumemeopt: float | None = Field(default=None, ge=0.0, le=1000.0)
-    tbasem: float | None = Field(default=None, ge=0.0, le=1000.0)
-    teffmx: float | None = Field(default=None, ge=0.0, le=1000.0)
-    hdrygerm: float | None = Field(default=None, ge=-1000.0, le=1000.0)
-    hwetgerm: float | None = Field(default=None, ge=-100.0, le=1000.0)
-    zgerm: float | None = Field(default=None, ge=-100.0, le=1000.0)
-    agerm: float | None = Field(default=None, ge=0.0, le=1000.0)
+    swprep: _Literal[0, 1]
+    swsow: _Literal[0, 1]
+    swgerm: _Literal[0, 1, 2]
+    swharv: _Literal[0, 1]
+    dvsend: float | None = _Field(default=None, ge=0.0, le=3.0)
+    zprep: float | None = _Field(default=None, ge=-100.0, le=0.0)
+    hprep: float | None = _Field(default=None, ge=-200.0, le=0.0)
+    maxprepdelay: int | None = _Field(default=None, ge=1, le=366)
+    zsow: float | None = _Field(default=None, ge=-100.0, le=0.0)
+    hsow: float | None = _Field(default=None, ge=-200.0, le=0.0)
+    ztempsow: float | None = _Field(default=None, ge=-100.0, le=0.0)
+    tempsow: float | None = _Field(default=None, ge=0.0, le=30.0)
+    maxsowdelay: int | None = _Field(default=None, ge=1, le=366)
+    tsumemeopt: float | None = _Field(default=None, ge=0.0, le=1000.0)
+    tbasem: float | None = _Field(default=None, ge=0.0, le=1000.0)
+    teffmx: float | None = _Field(default=None, ge=0.0, le=1000.0)
+    hdrygerm: float | None = _Field(default=None, ge=-1000.0, le=1000.0)
+    hwetgerm: float | None = _Field(default=None, ge=-100.0, le=1000.0)
+    zgerm: float | None = _Field(default=None, ge=-100.0, le=1000.0)
+    agerm: float | None = _Field(default=None, ge=0.0, le=1000.0)
 
 
-class GrasslandManagement(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class GrasslandManagement(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Settings specific to the dynamic grass growth module.
 
     Attributes:
-        seqgrazmow (IntList): sequence of periods with different practices within calender year. Available options:
+        seqgrazmow (_IntList): sequence of periods with different practices within calender year. Available options:
 
             * 1 - Grazing
             * 2 - Mowing
@@ -558,13 +605,13 @@ class GrasslandManagement(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin
             * 1 - Use dry matter threshold
             * 2 - Use fixed dates
 
-        dateharvest Optional[(DateList)]: harvest dates (maximum 999)
+        dateharvest Optional[(_DateList)]: harvest dates (maximum 999)
         swdmgrz Optional[(Literal[1, 2])]: Switch for dry matter threshold to trigger harvest by grazing
 
             * 1 - Use fixed threshold
             * 2 - Use flexible threshold
 
-        dmgrazing Optional[(Arrays)]: Minimum dry matter amount for cattle to enter the field [0..1d6 kg DM/ha, R]
+        dmgrazing Optional[ _Arrays)]: Minimum dry matter amount for cattle to enter the field [0..1d6 kg DM/ha, R]
         dmgrztb Optional[(int)]: List threshold of above ground dry matter [0..1d6 kg DM/ha, R] to trigger grazing as function of daynumber [1..366 d, R]
         maxdaygrz Optional[(int)]: Maximum growing period after harvest [1..366 -, I]
         swlossgrz Optional[(Literal[0, 1])]: Switch for losses due to insufficient pressure head during grazing
@@ -574,8 +621,8 @@ class GrasslandManagement(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin
 
         tagprest Optional[(float)]: Minimum amount of above ground DM after grazing [0..1d6 kg DM/ha, R]
         dewrest Optional[(float)]: Remaining yield above ground after dewooling event [0..1d6 kg DM/ha, R]
-        table_lsda (Optional[Table]): Actual livestock density of each grazing period
-        table_lsdb (Optional[Table]): Relation between livestock density, number of grazing days and dry matter uptake
+        _table_lsda (Optional[_Table]): Actual livestock density of each grazing period
+        _table_lsdb (Optional[_Table]): Relation between livestock density, number of grazing days and dry matter uptake
         swdmmow Optional[(int)]: Switch for dry matter threshold to trigger harvest by mowing
 
             * 1 - Use fixed threshold
@@ -592,7 +639,7 @@ class GrasslandManagement(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin
             * 1 - Losses due to treading
 
         mowrest Optional[(float)]: Remaining yield above ground after mowing event [0..1d6 kg DM/ha, R]
-        table_dmmowdelay Optional[(Optional[Table])]: Relation between dry matter harvest [0..1d6 kg/ha, R] and days of delay in regrowth [0..366 d, I] after mowing
+        _table_dmmowdelay Optional[(Optional[_Table])]: Relation between dry matter harvest [0..1d6 kg/ha, R] and days of delay in regrowth [0..366 d, I] after mowing
         swpotrelmf (int): Switch for calculation of potential yield
 
             * 1 - theoretical potential yield
@@ -601,32 +648,32 @@ class GrasslandManagement(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin
         relmf (float): Relative management factor to reduce theoretical potential yield to attainable yield [0..1 -, R]
     """
 
-    seqgrazmow: IntList | None = None
-    swharvest: Literal[1, 2] | None = None
-    dateharvest: DateList | None = None
-    swdmgrz: Literal[1, 2] | None = None
-    dmgrazing: Arrays | None = None
-    dmgrztb: Arrays | None = None
+    seqgrazmow: _IntList | None = None
+    swharvest: _Literal[1, 2] | None = None
+    dateharvest: _DateList | None = None
+    swdmgrz: _Literal[1, 2] | None = None
+    dmgrazing: _Arrays | None = None
+    dmgrztb: _Arrays | None = None
     maxdaygrz: int | None = None
-    swlossgrz: Literal[0, 1] | None = None
+    swlossgrz: _Literal[0, 1] | None = None
     tagprest: float | None = None
     dewrest: float | None = None
-    lsda: Table | None = None
-    lsdb: Table | None = None
+    lsda: _Table | None = None
+    lsdb: _Table | None = None
     swdmmow: int | None = None
     dmharvest: float | None = None
     daylastharvest: int | None = None
     dmlastharvest: float | None = None
-    dmmowtb: Arrays | None = None
+    dmmowtb: _Arrays | None = None
     maxdaymow: int | None = None
     swlossmow: int | None = None
     mowrest: float | None = None
-    dmmowdelay: Table | None = None
+    dmmowdelay: _Table | None = None
     swpotrelmf: int | None = None
     relmf: float | None = None
 
 
-class CropFile(PySWAPBaseModel, FileMixin, SerializableMixin):
+class CropFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     """Main class for the .crp file.
 
     This class collects all the settings for the crop file. Currently the types of the
@@ -648,20 +695,20 @@ class CropFile(PySWAPBaseModel, FileMixin, SerializableMixin):
         grassland_management (Optional[GrasslandManagement]): Grassland management settings
     """
 
-    _extension: bool = PrivateAttr(default="crp")
+    _extension: bool = _PrivateAttr(default="crp")
 
-    name: str = Field(exclude=True)
+    name: str = _Field(exclude=True)
     path: str | None = None
-    prep: Subsection | None = None
-    cropdev_settings: Subsection | None = None
-    oxygenstress: Subsection | None = None
-    droughtstress: Subsection | None = None
-    saltstress: Subsection | None = SaltStress(swsalinity=0)
-    compensaterwu: Subsection | None = CompensateRWUStress(swcompensate=0)
-    interception: Subsection | None = None
-    scheduledirrigation: Subsection | None = ScheduledIrrigation(schedule=0)
-    grasslandmanagement: Subsection | None = None
-    co2correction: Subsection | None = None
+    prep: _Subsection | None = None
+    cropdev_settings: _Subsection | None = None
+    oxygenstress: _Subsection | None = None
+    droughtstress: _Subsection | None = None
+    saltstress: _Subsection | None = SaltStress(swsalinity=0)
+    compensaterwu: _Subsection | None = CompensateRWUStress(swcompensate=0)
+    interception: _Subsection | None = None
+    scheduledirrigation: _Subsection | None = _ScheduledIrrigation(schedule=0)
+    grasslandmanagement: _Subsection | None = None
+    co2correction: _Subsection | None = None
 
     @property
     def crp(self) -> str:
@@ -669,7 +716,7 @@ class CropFile(PySWAPBaseModel, FileMixin, SerializableMixin):
         return self.model_string()
 
 
-class Crop(PySWAPBaseModel, SerializableMixin, FileMixin, YAMLValidatorMixin):
+class Crop(_PySWAPBaseModel, _SerializableMixin, _FileMixin, _YAMLValidatorMixin):
     """Crop settings of the simulation.
 
     Attributes:
@@ -679,25 +726,18 @@ class Crop(PySWAPBaseModel, SerializableMixin, FileMixin, YAMLValidatorMixin):
             * 1 - Simulate crop.
 
         rds (Optional[float]): Rooting depth of the crop [cm].
-        table_croprotation (Optional[Table]): Table with crop rotation data.
+        _table_croprotation (Optional[_Table]): _Table with crop rotation data.
         cropfiles (Optional[List[CropFile]]): List of crop files.
 
     Methods:
         write_crop: Write the crop files.
     """
 
-    swcrop: Literal[0, 1, None] = None
-    rds: float | None = Field(default=None, ge=1, le=5000)
-    croprotation: Table | None = None
-    cropfiles: dict[str, CropFile] = Field(default_factory=dict, exclude=True)
+    swcrop: _Literal[0, 1, None] = None
+    rds: float | None = _Field(default=None, ge=1, le=5000)
+    croprotation: _Table | None = None
+    cropfiles: dict[str, CropFile] = _Field(default_factory=dict, exclude=True)
 
     def write_crop(self, path: str):
         for name, cropfile in self.cropfiles.items():
             cropfile.save_file(string=cropfile.crp, fname=name, path=path)
-
-
-# ------------------------------------------ Crop tables ------------------------------------------#
-from pyswap.components.tables import *
-from pyswap.components.tables import __all__ as crop_tables
-
-__all__.extend(crop_tables)

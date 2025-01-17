@@ -1,8 +1,7 @@
 # %%
+import pyswap
 import pyswap.components.tables
 from pyswap.core.db import WOFOSTCropDB
-import pyswap
-
 
 db = WOFOSTCropDB()
 db.croptypes

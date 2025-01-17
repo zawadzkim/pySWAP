@@ -26,8 +26,6 @@ from importlib.abc import Traversable
 libs: Traversable = resources.files(__name__)
 """Libs module directory."""
 
-testcase: Traversable = resources.files() 
-
 swap_linux: Traversable = libs / "swap420-linux" / "swap420"
 """The directory of the SWAP420 Linux executable."""
 

@@ -17,10 +17,11 @@ Serializers in this module:
 
 """
 
+from datetime import date
+
 from pandas import DataFrame, DatetimeIndex
 
 from pyswap.core.basemodel import PySWAPBaseModel
-from datetime import date
 
 
 def serialize_table(table: DataFrame) -> str:

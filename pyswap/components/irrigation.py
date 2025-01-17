@@ -9,21 +9,20 @@ Functions:
     irg_from_csv: Load the irrigation file from a CSV file.
 """
 
-from typing import Literal
+from typing import Literal as _Literal
 
-from pandas import DataFrame, read_csv
-from pydantic import Field
+from pandas import DataFrame as _DataFrame, read_csv as _read_csv
+from pydantic import Field as _Field
 
-from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.mixins import FileMixin, YAMLValidatorMixin, SerializableMixin
-from pyswap.core.fields import DayMonth, Table, String
-from pyswap.core.valueranges import YEARRANGE
-
+from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
+from pyswap.core.fields import DayMonth as _DayMonth, String as _String, Table as _Table
+from pyswap.core.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.core.valueranges import YEARRANGE as _YEARRANGE
 
 __all__ = ["IrgFile", "FixedIrrigation", "ScheduledIrrigation"]
 
 
-class IrgFile(PySWAPBaseModel, FileMixin):
+class IrgFile(_PySWAPBaseModel, _FileMixin):
     """The irrigation file.
 
     Attributes:
@@ -31,11 +30,11 @@ class IrgFile(PySWAPBaseModel, FileMixin):
         content (DataFrame): The content of the irrigation file.
     """
 
-    irgfil: String
-    content: DataFrame = Field(exclude=True)
+    irgfil: _String
+    content: _DataFrame = _Field(exclude=True)
 
 
-class FixedIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class FixedIrrigation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Fixed irrigation settings in the .swp file.
 
     Attributes:
@@ -46,10 +45,10 @@ class FixedIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         irrigationdata (Optional[IrrigationFile]):
     """
 
-    swirfix: Literal[0, 1] | None = None
-    swirgfil: Literal[0, 1] | None = None
-    irrigevents: Table | None = None
-    irgfile: IrgFile | None = Field(default=None, repr=False)
+    swirfix: _Literal[0, 1] | None = None
+    swirgfil: _Literal[0, 1] | None = None
+    irrigevents: _Table | None = None
+    irgfile: IrgFile | None = _Field(default=None, repr=False)
 
     def write_irg(self, path) -> str:
         self.irgfile.save_file(
@@ -60,7 +59,7 @@ class FixedIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
         )
 
 
-class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin):
+class ScheduledIrrigation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Irrigation scheduling settings in the .crp file.
 
     Attributes:
@@ -103,31 +102,31 @@ class ScheduledIrrigation(PySWAPBaseModel, SerializableMixin, YAMLValidatorMixin
         dvs_tc5 (Optional[Table]):
     """
 
-    schedule: Literal[0, 1] | None = None
-    startirr: DayMonth | None = None
-    endirr: DayMonth | None = None
-    cirrs: float | None = Field(default=None, ge=0.0, le=100.0)
-    isuas: Literal[0, 1] | None = None
-    tcs: Literal[1, 2, 3, 4, 6, 7, 8] | None = None
+    schedule: _Literal[0, 1] | None = None
+    startirr: _DayMonth | None = None
+    endirr: _DayMonth | None = None
+    cirrs: float | None = _Field(default=None, ge=0.0, le=100.0)
+    isuas: _Literal[0, 1] | None = None
+    tcs: _Literal[1, 2, 3, 4, 6, 7, 8] | None = None
 
-    phfieldcapacity: float | None = Field(default=None, ge=-1000.0, le=0.0)
-    irgthreshold: float | None = Field(default=None, ge=0.0, le=20.0)
-    dcrit: float | None = Field(default=None, ge=-100.0, le=0.0)
-    swcirrthres: Literal[0, 1] | None = None
-    cirrthres: float | None = Field(default=None, ge=0.0, le=100.0)
-    perirrsurp: float | None = Field(default=None, ge=0.0, le=100.0)
-    tcsfix: Literal[0, 1] | None = None
-    irgdayfix: int | None = Field(default=None, **YEARRANGE)
-    dcs: Literal[0, 1] | None = None
-    dcslim: Literal[0, 1] | None = None
-    irgdepmin: float | None = Field(default=None, ge=0.0, le=100.0)
-    irgdepmax: float | None = Field(default=None, ge=0.0, le=1.0e7)
-    tc1tb: Table | None = None
-    tc2tb: Table | None = None
-    tc3tb: Table | None = None
-    tc4tb: Table | None = None
-    tc7tb: Table | None = None
-    tc8tb: Table | None = None
+    phfieldcapacity: float | None = _Field(default=None, ge=-1000.0, le=0.0)
+    irgthreshold: float | None = _Field(default=None, ge=0.0, le=20.0)
+    dcrit: float | None = _Field(default=None, ge=-100.0, le=0.0)
+    swcirrthres: _Literal[0, 1] | None = None
+    cirrthres: float | None = _Field(default=None, ge=0.0, le=100.0)
+    perirrsurp: float | None = _Field(default=None, ge=0.0, le=100.0)
+    tcsfix: _Literal[0, 1] | None = None
+    irgdayfix: int | None = _Field(default=None, **_YEARRANGE)
+    dcs: _Literal[0, 1] | None = None
+    dcslim: _Literal[0, 1] | None = None
+    irgdepmin: float | None = _Field(default=None, ge=0.0, le=100.0)
+    irgdepmax: float | None = _Field(default=None, ge=0.0, le=1.0e7)
+    tc1tb: _Table | None = None
+    tc2tb: _Table | None = None
+    tc3tb: _Table | None = None
+    tc4tb: _Table | None = None
+    tc7tb: _Table | None = None
+    tc8tb: _Table | None = None
 
 
 def irg_from_csv(irgfil: str, path: str) -> IrgFile:
@@ -140,8 +139,4 @@ def irg_from_csv(irgfil: str, path: str) -> IrgFile:
     Returns:
         IrgFile: The irrigation file.
     """
-    return IrgFile(content=read_csv(path), irgfil=irgfil)
-
-
-irrigation_tables = []
-__all__.extend(irrigation_tables)
+    return IrgFile(content=_read_csv(path), irgfil=irgfil)

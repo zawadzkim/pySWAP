@@ -25,23 +25,24 @@ from pathlib import Path
 from typing import Literal
 
 from pandas import DataFrame, read_csv, to_datetime
-from pydantic import Field, model_validator, PrivateAttr
+from pydantic import Field, PrivateAttr, model_validator
 
 from pyswap.components.irrigation import FixedIrrigation
 from pyswap.components.simsettings import RichardsSettings
 from pyswap.components.soilwater import (
     SnowAndFrost,
 )
-from pyswap.core.io.io_ascii import open_ascii
 from pyswap.components.transport import HeatFlow, SoluteTransport
-from pyswap.core.defaults import IS_WINDOWS
 from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.mixins import SerializableMixin, FileMixin
+from pyswap.core.defaults import IS_WINDOWS
+from pyswap.core.fields import Subsection
+from pyswap.core.io.io_ascii import open_ascii
+from pyswap.core.mixins import FileMixin, SerializableMixin
 from pyswap.libs import swap_linux, swap_windows
 from pyswap.model.result import Result
-from pyswap.core.fields import Subsection
 
 logger = logging.getLogger(__name__)
+
 __all__ = ["Model"]
 
 
