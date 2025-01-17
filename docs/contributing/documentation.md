@@ -1,4 +1,4 @@
-# Documentation is __critical__
+# Documentation is **critical**
 
 Documentation is one of the most important part of the codebase; afterall, why bother writing and publishing software if no one else but the author knows how to use it.
 
@@ -21,9 +21,11 @@ In this documentation I also placed a lot of information I thought was important
 That is mostly taken from the sample files provided with SWAP version 4.2.
 
 ## API reference
+
 Contributing to the API reference can take a bit more skill. Over all throughout the project we use Google style documentation. Each component is documented with docstrings.
 
 ### Module documentation
+
 At the top of each module, there is a docstring which describes what that particular module does and what elements are defined in it. Here is an example:
 
 ```Python
@@ -44,6 +46,7 @@ Functions:
 By reading this, we immediatelly know what can we import from this module. This also works in your code editor; when you do `from pyswap import irrigation` and you hoover over the `irrigation`, you will see that docstring in a popup window.
 
 ### Classes and functions
+
 Docstrings are defined directly under the class or function definition. They follow the standard Google pattern like so:
 
 ```Python
@@ -69,9 +72,11 @@ class Irrigation:
 There are a few twists, though.
 
 #### Describe switch options
+
 To make sure the switch options are displayed as a list, you have to add a new line before and after, write the list in 1 tab indentation and start each line with `*`.
 
 ### Other reusable elements
+
 For instance if tyou define a new type of field, the docstring for that goes directly under the definition of the varialbe like so:
 
 ```Python

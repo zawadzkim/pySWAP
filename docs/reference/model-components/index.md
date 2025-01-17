@@ -1,5 +1,5 @@
 # What are Components
 
 ::: pyswap.components
-    options:
-        members: false
+options:
+members: false

@@ -1,7 +1,9 @@
 # Base models
+
 ::: pyswap.core.basemodel
 
 # Mixins
+
 ::: pyswap.core.mixins
 
 # Validation and serialization
@@ -16,6 +18,3 @@
 # CLI
 
 ::: pyswap.core.cli
-
-
-

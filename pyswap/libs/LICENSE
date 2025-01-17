@@ -1,8 +1,8 @@
 Official releases of SWAP come with the following license.
 
 
-SWAP version 4 is free software and is distributed under the 
-terms of the GNU GENERAL PUBLIC LICENSE Version 2, June 1991. 
+SWAP version 4 is free software and is distributed under the
+terms of the GNU GENERAL PUBLIC LICENSE Version 2, June 1991.
 (see also WWW at http://www.gnu.org/copyleft/gpl.html)
 
 A small number of files (TTUTIL427.LIB) are distributed under the
@@ -14,8 +14,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Public License for more details.
 
-You should have received a copy of the GNU Public License along 
+You should have received a copy of the GNU Public License along
 with this program; if not, write to the Free Software Foundation,
 Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 or see WWW at http://www.gnu.org/.
-
