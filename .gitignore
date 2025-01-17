@@ -34,6 +34,9 @@ env2/
 .DS_Store
 Thumbs.db
 
+# mkdocs site
+site
+
 *.egg-info
 /docs/build
 /docs/source
