@@ -43,6 +43,7 @@ mkdocs-include-markdown-plugin = "^6.2.0"
 mkdocs-autorefs = "^1.0.1"
 mkdocstrings-python = "^1.10.3"
 mkdocs-jupyter = "^0.25.0"
+mkdocs-awesome-pages-plugin = "^2.10.1"
 
 [tool.poetry]
 packages = [

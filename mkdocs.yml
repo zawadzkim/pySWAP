@@ -46,6 +46,9 @@ plugins:
   - autorefs
   - blog
   - include-markdown
+  - awesome-pages
+  - mkdocs-jupyter:
+      # execute: true
   - mkdocstrings:
       handlers:
         python:
