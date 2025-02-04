@@ -1,1 +1,0 @@
-::: pyswap.components.boundary

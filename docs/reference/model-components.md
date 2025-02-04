@@ -5,6 +5,7 @@ all the components that can be used to build a SWAP model.
 
 ## General settings
 
+::: pyswap.components.metadata
 ::: pyswap.components.simsettings
 
 ## Meteorological settings
@@ -38,12 +39,6 @@ all the components that can be used to build a SWAP model.
 ## Transport
 
 ::: pyswap.components.transport
-
-# pySWAP Model
-
-::: pyswap.model.metadata
-::: pyswap.model.model
-::: pyswap.model.result
 
 # Database
 
