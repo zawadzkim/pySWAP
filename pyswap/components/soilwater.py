@@ -17,9 +17,10 @@ from pyswap.core.mixins import (
     YAMLValidatorMixin as _YAMLValidatorMixin,
 )
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
+from pyswap.components.tables import SOILPROFILE, SOILHYDRFUNC
 
 
-__all__ = ["Evaporation", "SnowAndFrost", "SoilMoisture", "SoilProfile", "SurfaceFlow"]
+__all__ = ["Evaporation", "SnowAndFrost", "SoilMoisture", "SoilProfile", "SurfaceFlow", "SOILPROFILE", "SOILHYDRFUNC"]
 
 
 class Evaporation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):

@@ -163,9 +163,12 @@ class _CropDevelopmentSettings(
 
     wofost_variety: _CropVariety | None = _Field(default=None, exclude=True)
 
-    swcf: _Literal[1, 2]
+    swcf: _Literal[1, 2] | None = None
     dvs_cf: _Table | None = None
     dvs_ch: _Table | None = None
+    chtb: _Table | None = None
+    cftb: _Table | None = None
+    cfchtb: _Table | None = None
     albedo: _Decimal2f | None = _Field(default=None, **_UNITRANGE)
     rsc: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
     rsw: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
@@ -186,8 +189,8 @@ class _CropDevelopmentSettings(
     swdmi2rd: _Literal[0, 1] | None = None
     rlwtb: _Arrays | None = None
     wrtmax: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e5)
-    swrdc: _Literal[0, 1] = 0
-    rdctb: _Arrays
+    swrdc: _Literal[0, 1] | None = None
+    rdctb: _Arrays | None = None
 
 
 class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
@@ -287,10 +290,10 @@ class CropDevelopmentSettingsFixed(_CropDevelopmentSettings):
         gctb  _Arrays): Soil Cover Fraction as a function of development stage
     """
 
-    idev: _Literal[1, 2]
+    idev: _Literal[1, 2] | None = None
     lcc: int | None = _Field(default=None, **_YEARRANGE)
-    swgc: _Literal[1, 2]
-    gctb: _Arrays
+    swgc: _Literal[1, 2] | None = None
+    gctb: _Arrays | None = None
     kytb: _Arrays | None = None
 
 
@@ -309,7 +312,7 @@ class CropDevelopmentSettingsGrass(CropDevelopmentSettingsWOFOST):
         tsumtime (Optional[float]): Lower threshold temperature for ageing of leaves [-10..30 degree C, R]
     """
 
-    swtsum: _Literal[0, 1, 2]
+    swtsum: _Literal[0, 1, 2] | None = None
     tsumtemp: float | None = None
     tsumdepth: float | None = None
     tsumtime: float | None = None
@@ -359,8 +362,8 @@ class OxygenStress(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     >> move it to the Model class validation at the end, when all the params are available
     """
 
-    swoxygen: _Literal[0, 1, 2]
-    swwrtnonox: _Literal[0, 1]
+    swoxygen: _Literal[0, 1, 2] | None = None
+    swwrtnonox: _Literal[0, 1] | None = None
     swoxygentype: _Literal[1, 2] | None = None
     aeratecrit: float | None = _Field(default=None, ge=0.0001, le=1.0)
     hlim1: float | None = _Field(default=None, ge=-100.0, le=100.0)
@@ -411,7 +414,7 @@ class DroughtStress(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
         taccur (Optional[float]): Maximum absolute difference between simulated and calculated potential transpiration rate
     """
 
-    swdrought: _Literal[1, 2]
+    swdrought: _Literal[1, 2] | None = None
     swjarvis: _Literal[0, 1, 2, 3, 4] | None = None
     alphcrit: float | None = _Field(default=None, ge=0.2, le=1.0)
     hlim3h: float | None = _Field(default=None, ge=-1.0e4, le=100.0)
@@ -447,7 +450,7 @@ class SaltStress(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
         salthead (Optional[float]): Conversion factor salt concentration (mg/cm3) into osmotic head (cm)
     """
 
-    swsalinity: _Literal[0, 1, 2]
+    swsalinity: _Literal[0, 1, 2] | None = None
     saltmax: float | None = _Field(default=None, ge=0.0, le=100.0)
     saltslope: float | None = _Field(default=None, **_UNITRANGE)
     salthead: float | None = _Field(default=None, ge=0.0, le=1000.0)
@@ -475,7 +478,7 @@ class CompensateRWUStress(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMi
         dcritrtz (Optional[float]): Threshold of rootzone thickness after which compensation occurs
     """
 
-    swcompensate: _Literal[0, 1, 2]
+    swcompensate: _Literal[0, 1, 2] | None = None
     swstressor: _Literal[1, 2, 3, 4, 5] | None = None
     alphacrit: float | None = _Field(default=None, ge=0.2, le=1.0)
     dcritrtz: float | None = _Field(default=None, ge=0.02, le=100.0)
@@ -501,7 +504,7 @@ class Interception(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
             * AVEVAP = Average evaporation intensity during rainfall from a wet canopy
     """
 
-    swinter: _Literal[0, 1, 2]
+    swinter: _Literal[0, 1, 2] | None = None
     cofab: float | None = _Field(default=None, **_UNITRANGE)
     intertb: _Table | None = None
 
@@ -526,7 +529,7 @@ class CO2Correction(
     _validation: bool = _PrivateAttr(default=False)
     wofost_variety: _CropVariety | None = _Field(default=None, exclude=True)
 
-    swco2: _Literal[0, 1]
+    swco2: _Literal[0, 1] | None = None
     atmofil: str | None = None
     co2amaxtb: _Arrays | None = None
     co2efftb: _Arrays | None = None
@@ -568,10 +571,10 @@ class Preparation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
         agerm (Optional[float]): A-coefficient Eq. 24/25 Feddes & Van Wijk
     """
 
-    swprep: _Literal[0, 1]
-    swsow: _Literal[0, 1]
-    swgerm: _Literal[0, 1, 2]
-    swharv: _Literal[0, 1]
+    swprep: _Literal[0, 1] | None = None
+    swsow: _Literal[0, 1] | None = None
+    swgerm: _Literal[0, 1, 2] | None = None
+    swharv: _Literal[0, 1] | None = None
     dvsend: float | None = _Field(default=None, ge=0.0, le=3.0)
     zprep: float | None = _Field(default=None, ge=-100.0, le=0.0)
     hprep: float | None = _Field(default=None, ge=-200.0, le=0.0)
@@ -652,25 +655,25 @@ class GrasslandManagement(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMi
     swharvest: _Literal[1, 2] | None = None
     dateharvest: _DateList | None = None
     swdmgrz: _Literal[1, 2] | None = None
-    dmgrazing: _Arrays | None = None
+    dmgrazing: _Decimal2f | None = None
     dmgrztb: _Arrays | None = None
     maxdaygrz: int | None = None
     swlossgrz: _Literal[0, 1] | None = None
-    tagprest: float | None = None
-    dewrest: float | None = None
+    tagprest: _Decimal2f | None = None
+    dewrest: _Decimal2f | None = None
     lsda: _Table | None = None
     lsdb: _Table | None = None
     swdmmow: int | None = None
-    dmharvest: float | None = None
+    dmharvest: _Decimal2f | None = None
     daylastharvest: int | None = None
-    dmlastharvest: float | None = None
+    dmlastharvest: _Decimal2f | None = None
     dmmowtb: _Arrays | None = None
     maxdaymow: int | None = None
     swlossmow: int | None = None
-    mowrest: float | None = None
+    mowrest: _Decimal2f | None = None
     dmmowdelay: _Table | None = None
     swpotrelmf: int | None = None
-    relmf: float | None = None
+    relmf: _Decimal2f | None = None
 
 
 class CropFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):

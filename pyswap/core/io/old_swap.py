@@ -101,7 +101,7 @@ def parse_ascii_file(file_content) -> tuple[dict, dict]:
         elif is_empty_tag(line):
             key = line[:-1].strip()
             table = parse_table(lines, i + 1, key)
-            pairs.update(table)
+            tables.update(table)
             i += len(list(table.values())[0]) + 1  # Skip the tag data
 
         elif is_table(line):
@@ -140,12 +140,22 @@ def create_schema_object(data_dict):
         matching_schema = None
 
         for schema_columns, schema in schema_dict.items():
+            # print("Schema", schema, "has these cols:", schema_columns)
+
             if frozenset(schema_columns) == columns_set:
+                cols = key
                 matching_schema = schema
                 break
+            # if the tuple len is 1, it means that it's a tag. Then match the tag with the schema name
+            # This will not work, because key in this case is just a string, not a schema object I am looking for. I need to find a way
+            # to match the key by the name of the schema object instead of by columns.
+            if len(key) == 1:
+                cols = value
+                matching_schema = key[0]
+                break
 
-        if matching_schema:
-            df = pd.DataFrame(value, columns=key)
+        if matching_schema: # is not None,
+            df = pd.DataFrame(value, columns=cols)
             try:
                 schema_object = matching_schema.validate(df)
                 schema_objects[matching_schema.__name__.lower()] = schema_object

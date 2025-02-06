@@ -221,7 +221,8 @@ BottomBoundaryBase:
     2:
       - qtab
 
-DrainageFormula:
+
+DraFile:
   ipos:
     3:
       - khbot
@@ -237,8 +238,7 @@ DrainageFormula:
       - kvtop
       - kvbot
       - geofac
-
-DrainageInfRes:
+      
   swintfl:
     1:
       - cofintflb
@@ -249,12 +249,12 @@ Flux:
     1:
       - l
 
-# Drainage:
-#   swdra:
-#     1:
-#       - drafile
-#     2:
-#       - drafile
+Drainage:
+  swdra:
+    1:
+      - drafile
+    2:
+      - drafile
 
 HeatFlow:
   swhea:

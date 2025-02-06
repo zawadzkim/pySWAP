@@ -4,10 +4,11 @@ This is a prototype subpackage for potential enhancement of pyswap's
 functionality. CLI tools can be very helpful in automating some tasks, like
 loading databases or classic SWAP models.
 
-!!! note:
+!!! note
 
     At the moment only creating project structure was prototyped. More
     functionality will be added in the future if users express such need.
+
 
 Example:
 
@@ -15,6 +16,7 @@ Example:
     pyswap init --notebook  # creates the project structure with a template .ipynb file.
     pyswap init --script  # creates the project structure with a .py file.
     ```
+
 After running the script, you will see the following folder created:
 
 ```cmd

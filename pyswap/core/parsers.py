@@ -21,7 +21,26 @@ def parse_string_list(value: str):
         return value
     if isinstance(value, str):
         return value.strip("'").split(",")
+    
+def parse_float_list(value: str):
+    """Convert a SWAP string list to a list of strings."""
+    if isinstance(value, list):
+        return value
+    if isinstance(value, str):
+        return value.strip("'").split(" ")
+    
+def parse_int_list(value: str):
+    """Convert a SWAP string list to a list of strings."""
+    if isinstance(value, list):
+        return value
+    if isinstance(value, str):
+        return value.strip("'").split(" ")
 
+def parse_decimal(value: str):
+    """remove fortan style decimal point."""
+    if isinstance(value, str):
+        value = value.lower().replace("d", "e")
+    return float(value)
 
 def parse_quoted_string(value: str):
     """Make sure to remove unnecessary quotes from source."""

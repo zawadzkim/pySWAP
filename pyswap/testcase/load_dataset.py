@@ -13,6 +13,10 @@ RESOURCES: dict[str, Path] = {
     "hupselbrook": {
         "met": Path(BASE_PATH, "1-hupselbrook/283.csv"),
         "swp": Path(BASE_PATH, "1-hupselbrook/swap.swp"),
+        "dra": Path(BASE_PATH, "1-hupselbrook/swap.dra"),
+        "maizes": Path(BASE_PATH, "1-hupselbrook/maizes.crp"),
+        "potatod": Path(BASE_PATH, "1-hupselbrook/potatod.crp"),
+        "grassd": Path(BASE_PATH, "1-hupselbrook/grassd.crp"),
     },
     "grassgrowth": {
         "met": Path(BASE_PATH, "2-grassgrowth/260.csv"),
@@ -27,11 +31,12 @@ RESOURCES: dict[str, Path] = {
 def view_resources(testcase: str) -> dict:
     return RESOURCES[testcase]
 
+def get_path(testcase: str, fextension: str) -> Path:
+    return RESOURCES[testcase].get(fextension)
 
 def load_met(testcase: str, **kwargs) -> pd.DataFrame:
     path = RESOURCES[testcase].get("met")
     return pd.read_csv(path, **kwargs)
-
 
 def load_observations(testcase: str, **kwargs) -> pd.DataFrame:
     path = RESOURCES[testcase].get("observations")

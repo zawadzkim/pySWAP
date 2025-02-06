@@ -41,7 +41,9 @@ class BottomBoundary(
 
     Attributes:
         swbbcfile (Optional[Literal[0, 1]]): Specify boundary conditions in
-            current file (0) or in a separate .bbc file (1).
+            current file (0) or in a separate .bbc file (1). The preferred is to
+            define the boundary conditions in the .swp file. bbcfil might become
+            deprecated in the future.
 
         swbotb (Optional[Literal[1, 2, 3, 4, 5, 6, 7, 8]]): Switch for type of
             bottom boundary.

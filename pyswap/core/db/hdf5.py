@@ -96,9 +96,10 @@ class HDF5(BaseModel):
             try:
                 pickle_data = pickle.dumps(data)
                 group.create_dataset(name, data=np.void(pickle_data))
+                logger.info(f"Saved {name} to {group.name}")
             except ValueError:
                 logger.warning(
-                    f"Cannot create dataset {name}. It may already exist. Skipping creation."
+                    f"Cannot create dataset {name} in {group.name}. It may already exist. Skipping creation."
                 )
 
         with h5py.File(self.filename, "a") as f:
@@ -135,7 +136,7 @@ class HDF5(BaseModel):
         model: str | None = None,
         load_results: bool = False,
         mode: Literal["python", "json", "yaml"] = "python",
-    ) -> dict:
+    ) -> dict[str, tuple[Model, Result | None]]:
         """Load a single model or all models within a specific project.
 
         Parameters:
@@ -183,3 +184,29 @@ class HDF5(BaseModel):
 
         self.models.update(loaded_models)
         return loaded_models
+
+    def delete(self, project: str, model: str | None = None):
+        """Delete a single model or all models within a specific project.
+
+        !!! warning
+
+            Use this method only for small deletions, as for now it does not
+            perform repacking of the HDF5 file (the objects are deleted but the
+            disk space is not freed). For large deletions, consider creating a
+            new HDF5 file and saving only the models you want to keep.
+
+        Parameters:
+            project (str): The project name.
+            model (str): The model name.
+        """
+        with h5py.File(self.filename, "a") as f:
+            if model is None:
+                try:
+                    del f[project]
+                except KeyError:
+                    logger.warning(f"Project {project} does not exist.")
+            else:
+                try:
+                    del f[project][model]
+                except KeyError:
+                    logger.warning(f"Model {model} does not exist in project {project}.")

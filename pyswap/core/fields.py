@@ -72,11 +72,11 @@ from decimal import Decimal
 from typing import Annotated
 
 from pandas import DataFrame
-from pydantic import AfterValidator, Field
+from pydantic import AfterValidator, BeforeValidator, Field
 from pydantic.functional_serializers import PlainSerializer
 
 from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.parsers import parse_day_month, parse_quoted_string, parse_string_list
+from pyswap.core.parsers import parse_day_month, parse_quoted_string, parse_string_list, parse_float_list, parse_int_list, parse_decimal
 from pyswap.core.serializers import (
     serialize_arrays,
     serialize_csv_table,
@@ -140,7 +140,8 @@ StringList = Annotated[
 """Serialize list of strings to a string with elements separated by commas."""
 
 FloatList = Annotated[
-    list[float],
+    list[float] | str,
+    AfterValidator(parse_float_list),
     PlainSerializer(
         lambda x: " ".join([f"{Decimal(f):.2f}" for f in x]),
         return_type=str,
@@ -150,7 +151,8 @@ FloatList = Annotated[
 """Serialize list of floats to a string with elements separated by spaces."""
 
 IntList = Annotated[
-    list[int],
+    list[int] | str,
+    AfterValidator(parse_int_list),
     PlainSerializer(
         lambda x: " ".join([str(f) for f in x]), return_type=str, when_used="json"
     ),
@@ -195,7 +197,8 @@ Subsection = Annotated[
 """Serialize a nested PySWAPBaseModel to a string."""
 
 Decimal2f = Annotated[
-    float,
+    float | str,
+    BeforeValidator(parse_decimal),
     PlainSerializer(serialize_decimal(precision=2), return_type=str, when_used="json"),
 ]
 """Serialize float to a string with 2 decimal places."""

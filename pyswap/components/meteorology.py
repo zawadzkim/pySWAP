@@ -24,7 +24,7 @@ from pyswap.core.mixins import FileMixin as _FileMixin, SerializableMixin as _Se
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
 from pyswap.gis import Location as _Location
 
-__all__ = ["MetFile", "Meteorology", "load_from_csv", "load_from_knmi"]
+__all__ = ["MetFile", "Meteorology", "metfile_from_csv", "metfile_from_knmi"]
 
 
 class MetFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
@@ -160,7 +160,7 @@ class Meteorology(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
         self.metfile.save_file(string=self.met, fname=self.metfile.metfil, path=path)
 
 
-def load_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
+def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
     """Method for loading meteorological data from a CSV file.
 
     Parameters:
@@ -175,7 +175,7 @@ def load_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
     return MetFile(metfil=metfil, content=_read_csv(csv_path, **kwargs))
 
 
-def load_from_knmi(
+def metfile_from_knmi(
     metfil: str,
     stations: str | list,
     variables: str | list = ["TEMP", "PRCP", "Q", "UG", "FG", "UX", "UN"],

@@ -45,32 +45,32 @@ class Result(BaseModel):
         arbitrary_types_allowed=True, validate_assignment=True, extra="forbid"
     )
 
-    @computed_field(return_type=dict)
+    @computed_field(return_type=dict, repr=False)
     def ascii(self) -> dict:
         """Return all outputs in ASCII format."""
         return {k: v for k, v in self.output.items() if not k.endswith("csv")}
 
-    @computed_field(return_type=DataFrame)
+    @computed_field(return_type=DataFrame, repr=False)
     def csv(self) -> DataFrame:
         """Return the output in CSV format."""
         return self.output.get("csv", None)
 
-    @computed_field(return_type=DataFrame)
+    @computed_field(return_type=DataFrame, repr=False)
     def csv_tz(self) -> DataFrame:
         """Return the output in CSV format with depth."""
         return self.output.get("csv_tz", None)
 
-    @computed_field(return_type=str)
+    @computed_field(return_type=str, repr=False)
     def iteration_stats(self) -> str:
-        """Return the part the iteration statistics from the log."""
-        return re.search(r".*(Iteration statistics\s*.*)$", self.log, re.DOTALL)[1]
+        """Print the part the iteration statistics from the log."""
+        print(re.search(r".*(Iteration statistics\s*.*)$", self.log, re.DOTALL)[1])
 
-    @computed_field(return_type=str)
+    @computed_field(return_type=str, repr=False)
     def blc_summary(self) -> str:
-        """Return the .blc file if it exists."""
-        return self.output.get("blc", None)
+        """Print the .blc file if it exists."""
+        print(self.output.get("blc", None))
 
-    @computed_field(return_type=DataFrame)
+    @computed_field(return_type=DataFrame, repr=False)
     def yearly_summary(self) -> DataFrame:
         """Return yearly sums of all output variables."""
         return self.csv.resample("YE").sum()

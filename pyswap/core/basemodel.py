@@ -33,7 +33,7 @@ class PySWAPBaseModel(BaseModel):
             __setattr__: Overriden method to silently ignore assignment of frozen
                 fields.
             update: Update the model with new values from a dictionary.
-    d"""
+    """
 
     _validation = PrivateAttr(default=False)
     model_config = ConfigDict(
@@ -55,7 +55,8 @@ class PySWAPBaseModel(BaseModel):
             return
         super().__setattr__(name, value)
 
-    def update(self, new: dict, inplace: bool = False):
+
+    def update(self, new: dict, inplace: bool = False, no_validate: bool = False):
         """Update the model with new values.
 
         Given dictionary of values is first filtered to include only the fields
@@ -69,10 +70,19 @@ class PySWAPBaseModel(BaseModel):
 
         filtered = {k: v for k, v in new.items() if k in self.model_fields}
 
-        updated_model = self.model_validate(self.model_dump() | filtered)
+        # updated_model = self.model_validate(self.model_dump() | filtered)
+        updated_model = self.model_validate(dict(self) | filtered)
+
 
         if not inplace:
-            updated_model._validation = True
+            # added this for the case when the user loads a model from the
+            # classic ASCII files. Then the .update() method is used, but not
+            # all the attributes will be available immediatelly. Full validation
+            # will still be performed upon model run.
+            if no_validate:
+                updated_model._validation = False
+            else:
+                updated_model._validation = True
             updated_model.validate_with_yaml() if hasattr(
                 updated_model, "validate_with_yaml"
             ) else None
@@ -81,8 +91,10 @@ class PySWAPBaseModel(BaseModel):
         else:
             for field, value in updated_model:
                 setattr(self, field, value)
-
-            self._validation = True
+            if no_validate:
+                updated_model._validation = False
+            else:
+                updated_model._validation = True
             self.validate_with_yaml() if hasattr(
                 updated_model, "validate_with_yaml"
             ) else None
@@ -95,9 +107,10 @@ class PySWAPBaseModel(BaseModel):
         """Convert switch values to integers.
 
         This method was necessary to ensure that loading models from ASCII files
-        would work.
+        would work. It could be improved to include literals that do not start
+        with "sw" as well.
         """
-        if info.field_name.startswith("sw") and info.field_name != "swap_ver" and value:
+        if (info.field_name.startswith("sw") or info.field_name in ["dramet", "ipos", "idev", "idsl"]) and info.field_name != "swap_ver" and value:
             try:
                 return int(value)
             except ValueError:

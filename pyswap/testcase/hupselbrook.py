@@ -13,7 +13,7 @@ def _make_hupselbrook():
 
     ml = psp.Model()
 
-    meta = psp.Metadata(
+    meta = psp.components.Metadata(
         author="John Doe",
         institution="University of Somewhere",
         email="john.doe@somewhere.com",
@@ -422,7 +422,7 @@ def _make_hupselbrook():
 
     # %% irrigation setup
 
-    irrig_events = psp.components.irrigation.IRRIGATION.create({
+    irrig_events = psp.components.irrigation.IRRIGEVENTS.create({
         "IRDATE": ["2002-01-05"],
         "IRDEPTH": [5.0],
         "IRCONC": [1000.0],
@@ -497,7 +497,7 @@ def _make_hupselbrook():
         lm2=11.0, shape=0.8, wetper=30.0, zbotdr=-80.0, 
         entres=20.0, ipos=2, basegw=-200.0, khtop=25.0,
     )
-    drainage = psp.components.drainage.Drainage(swdra=1, drfil="swap", drafile=dra)
+    drainage = psp.components.drainage.Drainage(swdra=1, drafile=dra)
 
     ml.lateraldrainage = drainage
 

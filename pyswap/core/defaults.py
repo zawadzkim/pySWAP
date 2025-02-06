@@ -25,3 +25,9 @@ root: Traversable = resources.files("pyswap")
 
 validation_rules: Traversable = root / "core" / "validation.yaml"
 VALIDATIONRULES = load_yaml(validation_rules)
+
+FNAME_IN: str = "swap"
+"""Generic name for the SWAP input files."""
+
+FNAME_OUT: str = "result"
+"""Generic name for the SWAP output files."""

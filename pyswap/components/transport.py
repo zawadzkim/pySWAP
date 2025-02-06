@@ -45,7 +45,7 @@ class HeatFlow(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     tsoilfile: _String | None = None
     swbotbhea: _Literal[1, 2] | None = None
     soiltextures: _Table | None = None
-    initsoil: _Table | None = None
+    initsoiltemp: _Table | None = None
     bbctsoil: _Table | None = None
 
 

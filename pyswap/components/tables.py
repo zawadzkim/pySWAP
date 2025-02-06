@@ -1,3 +1,5 @@
+from typing import Literal
+
 import pandera as pa
 from pandera.typing import Series
 
@@ -94,6 +96,40 @@ class CHTB(BaseTableModel):
     DVS: Series[float] = pa.Field(**DVSRANGE)
     CH: Series[float] = pa.Field(ge=0.0, le=1.0e4)
 
+class CFTB(BaseTableModel):
+    """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
+
+    Attributes:
+        DVS (Series[float]): Development stage of the crop.
+        CF (Series[float]): Crop factor.
+    """
+
+    DVS: Series[float] = pa.Field(**DVSRANGE)
+    CF: Series[float]
+
+class CFCHTB(BaseTableModel):
+    DVS: Series[float] = pa.Field(**DVSRANGE)
+    CF: Series[float]
+    CH: Series[float]
+
+class INTERTB(BaseTableModel):
+    """Interception parameters for closed forest canopies (SWINTER=2).
+
+    Attributes:
+        T (Series[int]): Time [0..366 d, R].
+        PFREE (Series[float]): Free throughfall coefficient [0..1 -, R].
+        PSTEM (Series[float]): Stem flow coefficient [0..1 -, R].
+        SCANOPY (Series[float]): Storage capacity of canopy [0..10 cm, R].
+        AVPREC (Series[float]): Average rainfall intensity [0..100 cm/d, R].
+        AVEVAP (Series[float]): Average evaporation intensity during rainfall from a wet canopy [0..10 cm/d, R].
+    """
+
+    T: Series[float] = pa.Field(ge=0, le=366)
+    PFREE: Series[float] = pa.Field(ge=0.0, le=1.0)
+    PSTEM: Series[float] = pa.Field(ge=0.0, le=1.0)
+    SCANOPY: Series[float] = pa.Field(ge=0.0, le=10.0)
+    AVPREC: Series[float] = pa.Field(ge=0.0, le=100.0)
+    AVEVAP: Series[float] = pa.Field(ge=0.0, le=10.0)
 
 class KYTB(BaseTableModel):
     """Yield response factor [0..5 -, R], as function of dev. stage [0..2 -, R]
@@ -334,7 +370,7 @@ class LSDBTB(BaseTableModel):
         LOSSGRAZING (Series[float]): Dry matter loss during grazing due to droppings and treading [0.0..1000.0 kg/ha, R] (kg/ha DM)
     """
 
-    LSDB: Series[float] = pa.Field(ge=0.0, le=1000.0)
+    LSDb: Series[float] = pa.Field(ge=0.0, le=1000.0)
     DAYSGRAZING: Series[float] = pa.Field(**YEARRANGE)
     UPTGRAZING: Series[float] = pa.Field(ge=0.0, le=1000.0)
     LOSSGRAZING: Series[float] = pa.Field(ge=0.0, le=1000.0)
@@ -391,6 +427,19 @@ class CHTB_GRASS(BaseTableModel):
 
     DNR: Series[float] = pa.Field(**YEARRANGE)
     CH: Series[float] = pa.Field(ge=0.0, le=1.0e4)
+
+class CHCFTB(BaseTableModel):
+    """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
+
+    Attributes:
+        DNR (Series[float]): day number.
+        CH (Series[float]): Crop height of the crop.
+        CF (Series[float]): Crop factor
+    """
+
+    DNR: Series[float] = pa.Field(**YEARRANGE)
+    CH: Series[float]
+    CF: Series[float]
 
 
 class SLATB_GRASS(BaseTableModel):
@@ -489,7 +538,7 @@ class RDRSTB_GRASS(BaseTableModel):
     RDRS: Series[float] = pa.Field(ge=0.0)
 
 
-class IRRIGATION(BaseTableModel):
+class IRRIGEVENTS(BaseTableModel):
     """information for each fixed irrigation event.
 
     Attributes:
@@ -504,7 +553,7 @@ class IRRIGATION(BaseTableModel):
     """
 
     IRDATE: Series[pa.DateTime]  # type: ignore
-    IRDEPTH: Series[float] = pa.Field(ge=0.0, le=1000.0)
+    IRDEPTH: Series[float] | None = pa.Field(default=None, ge=0.0, le=1000.0)
     IRCONC: Series[float] = pa.Field(ge=0.0, le=1000.0)
     IRTYPE: Series[int] = pa.Field(ge=0, le=1)
 
@@ -512,43 +561,51 @@ class IRRIGATION(BaseTableModel):
 class TC1TB(BaseTableModel):
     """tc1tb option table"""
 
-    DVS_TC1: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    TREL: Series[float] = pa.Field(ge=0.0, le=1.0, default=[0.95, 0.95])
+    DVS_TC1: Series[float] = pa.Field(ge=0.0, le=2.0)
+    TREL: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
 class TC2TB(BaseTableModel):
     """tc2tb option table"""
 
-    DVS_TC2: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    RAW: Series[float] = pa.Field(ge=0.0, le=1.0, default=[0.95, 0.95])
+    DVS_TC2: Series[float] = pa.Field(ge=0.0, le=2.0)
+    RAW: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
 class TC3TB(BaseTableModel):
     """tc3tb option table"""
 
-    DVS_TC3: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    TAW: Series[float] = pa.Field(ge=0.0, le=1.0, default=[0.50, 0.50])
+    DVS_TC3: Series[float] = pa.Field(ge=0.0, le=2.0)
+    TAW: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
 class TC4TB(BaseTableModel):
     """tc4tb option table"""
 
-    DVS_TC4: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    DWA: Series[float] = pa.Field(ge=0.0, le=500.0, default=[0.40, 0.40])
+    DVS_TC4: Series[float] = pa.Field(ge=0.0, le=2.0)
+    DWA: Series[float] = pa.Field(ge=0.0, le=500.0)
 
 
 class TC7TB(BaseTableModel):
     """tc7tb option table"""
 
-    DVS_TC5: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    HCRI: Series[float] = pa.Field(ge=-1000.0, le=-100.0, default=[-1000.0, -1000.0])
+    DVS_TC7: Series[float] = pa.Field(ge=0.0, le=2.0)
+    HCRI: Series[float] = pa.Field(ge=-1000.0, le=-100.0)
 
 
 class TC8TB(BaseTableModel):
     """tc8tb option table"""
 
-    DVS_TC8: Series[float] = pa.Field(ge=0.0, le=2.0, default=[0.0, 2.0])
-    TCRI: Series[float] = pa.Field(ge=-1000.0, le=-100.0, default=[-1000.0, -1000.0])
+    DVS_TC8: Series[float] = pa.Field(ge=0.0, le=2.0)
+    TCRI: Series[float] = pa.Field(ge=0.0, le=1.0)
+
+class DC1TB(BaseTableModel):
+    DVS_DC1: Series[float]
+    DI: Series[float]
+
+class DC2TB(BaseTableModel):
+    DVS_DC2: Series[float]
+    FID: Series[float]
 
 
 # %% ++++++++++++++++++++++++++++ METEO TABLES ++++++++++++++++++++++++++++
@@ -822,7 +879,7 @@ class CSEEPARR(BaseTableModel):
     CSEEPARR: Series[float]
 
 
-class CML(BaseTableModel):
+class INISSOIL(BaseTableModel):
     """Table for capillary rise.
 
     Attributes:
@@ -846,3 +903,158 @@ class MISC(BaseTableModel):
     KF: Series[float]
     DECPOT: Series[float]
     FDEPTH: Series[float]
+
+
+# %% ++++++++++++++++++++++++++++ DRAINAGE TABLES ++++++++++++++++++++++++++++
+
+class DRNTB(BaseTableModel):
+    """Drainage characteristics table.
+
+    Attributes:
+        LEV (Series[int]): Drainage level [1..5, I].
+        SWDTYP (Series[int]): Type of drainage medium: 1 = drain tube, 2 = open channel.
+        L (Series[float]): Drain spacing [1..100000 m, R].
+        ZBOTDRE (Series[float]): Level of drainage medium bottom [-10000..0 cm, R].
+        GWLINF (Series[float]): Groundwater level influence [-10000..200 cm, R].
+        RDRAIN (Series[float]): Drainage resistance [10..1d5 d, R].
+        RINFI (Series[float]): Infiltration resistance [0..1d5 d, R].
+        RENTRY (Series[float]): Entry resistance [0..1000 d, R].
+        REXIT (Series[float]): Exit resistance [0..1000 d, R].
+        WIDTHR (Series[float]): Width of the drainage medium [0..1000 cm, R].
+        TALUDR (Series[float]): Talud of the drainage medium [0..1000 cm, R].
+    """
+
+    LEV: Series[int] = pa.Field(ge=1, le=5)
+    SWDTYP: Series[Literal[0, 1]]
+    L: Series[float] = pa.Field(ge=1.0, le=100000.0)
+    ZBOTDRE: Series[float]
+    GWLINF: Series[float] = pa.Field(ge=-1000.0, le=0.0)
+    RDRAIN: Series[float] = pa.Field(ge=1.0, le=100000.0)
+    RINFI: Series[float] = pa.Field(ge=1.0, le=100000.0)
+    RENTRY: Series[float] = pa.Field(ge=0.0, le=100.0)
+    REXIT: Series[float] = pa.Field(ge=0.0, le=100.0)
+    WIDTHR: Series[float] = pa.Field(ge=0.0, le=10000.0)
+    TALUDR: Series[float] = pa.Field(ge=0.01, le=5.0)
+
+
+class DRAINAGELEVELTOPPARAMS(BaseTableModel):
+    """Drainage level top parameters table.
+
+    I couldn't find the description of this table. It occurs in the swa.dra file
+    of the Hupselbrook example, but not in the templates.
+
+    Attributes:
+        SWTOPDISLAY (Series[Literal[0, 1]]): Switch for each drainage level to distribute drainage flux vertically with a given position of the top of the model discharge layers [Y=1, N=0]
+        ZTOPDISLAY (Series[float]): Array with depth of top of model discharge layer for each drain level [-10000.0..0.0, cm, R]
+        FTOPDISLAY (Series[float]): Array with factor of top of model discharge layer for each drain level [0.0..1.0, -, R]
+    """
+    SWTOPDISLAY: Series[Literal[0, 1]]
+    ZTOPDISLAY: Series[float] = pa.Field(ge=-10000.0, le=0.0)
+    FTOPDISLAY: Series[float] = pa.Field(ge=0.0, le=1.0)
+
+
+class DATOWLTB1(BaseTableModel):
+    """Table for drainage water level.
+
+    Attributes:
+        DATOWL1 (Series[pa.DateTime]): Date of the drainage water level.
+        WLEVEL (Series[float]): Drainage water level.
+    """
+
+    DATOWL1: Series[pa.DateTime]  # type: ignore
+    LEVEL1: Series[float]
+
+class DATOWLTB2(BaseTableModel):
+    """Table for drainage water level.
+
+    Attributes:
+        DATOWL2 (Series[pa.DateTime]): Date of the drainage water level.
+        LEVEL2 (Series[float]): Drainage water level.
+    """
+
+    DATOWL2: Series[pa.DateTime]  # type: ignore
+    LEVEL2: Series[float]
+
+class DATOWLTB3(BaseTableModel):
+    """Table for drainage water level.
+
+    Attributes:
+        DATOWL3 (Series[pa.DateTime]): Date of the drainage water level.
+        LEVEL3 (Series[float]): Drainage water level.
+    """
+
+    DATOWL3: Series[pa.DateTime]  # type: ignore
+    LEVEL3: Series[float]
+
+class DATOWLTB4(BaseTableModel):
+    """Table for drainage water level.
+
+    Attributes:
+        DATOWL4 (Series[pa.DateTime]): Date of the drainage water level.
+        LEVEL4 (Series[float]): Drainage water level.
+    """
+
+    DATOWL4: Series[pa.DateTime]  # type: ignore
+    LEVEL4: Series[float]
+
+class DATOWLTB5(BaseTableModel):
+    """Table for drainage water level.
+
+    Attributes:
+        DATOWL5 (Series[pa.DateTime]): Date of the drainage water level.
+        LEVEL5 (Series[float]): Drainage water level.
+    """
+
+    DATOWL5: Series[pa.DateTime]  # type: ignore
+    LEVEL5: Series[float]
+
+class SECWATLVL(BaseTableModel):
+    DATE2: Series[pa.DateTime] # type: ignore
+    WLS: Series[float]
+
+class MANSECWATLVL(BaseTableModel):
+    IMPER_4B: Series[float]
+    IMPEND: Series[pa.DateTime] # type: ignore
+    SWMAN: Series[float]
+    WSCAP: Series[float]
+    WLDIP: Series[float]
+    INTWL: Series[float]
+
+
+
+class QWEIR(BaseTableModel):
+    IMPER_4C: Series[float]
+    HBWEIR: Series[float]
+    ALPHAW: Series[float]
+    BETAW: Series[float]
+
+class QWEIRTB(BaseTableModel):
+    IMPER_4D: Series[float]
+    IMPTAB: Series[float]
+    HTAB: Series[float]
+    QTAB: Series[float]
+
+class PRIWATLVL(BaseTableModel):
+    DATE1: Series[pa.DateTime] # type: ignore
+    WLP: Series[float]
+
+class QDRNTB(BaseTableModel):
+    QDRAIN: Series[float]
+    GWL: Series[float]
+
+# %% ++++++++++++++++++++++++++++ GENERAL SETTINGS TABLES ++++++++++++++++++++++++++++
+class OUTDATIN:
+    """OUTDATIN table
+
+    Attributes:
+        OUTDAT: Series[str]: Name of the output file.
+    """
+    OUTDATIN: Series[pa.DateTime] # type: ignore
+    
+class OUTDAT:
+    """OUTDAT table
+
+    Attributes:
+        OUTDAT: Series[str]: Name of the output file.
+    """
+    OUTDAT: Series[pa.DateTime] # type: ignore

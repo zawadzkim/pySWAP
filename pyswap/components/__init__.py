@@ -7,5 +7,6 @@ convert the data to the format required by the SWAP model.
 """
 
 from pyswap.components import boundary, crop, drainage, irrigation, meteorology, simsettings, soilwater, transport
+from pyswap.components.metadata import Metadata
 
-__all__ = ["boundary", "crop", "drainage", "irrigation", "meteorology", "simsettings", "soilwater", "transport"]
+__all__ = ["boundary", "crop", "drainage", "irrigation", "meteorology", "simsettings", "soilwater", "transport", "metadata", "Metadata"]

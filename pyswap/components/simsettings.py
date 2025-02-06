@@ -13,6 +13,7 @@ from typing import ClassVar as _ClassVar, Literal as _Literal
 from pydantic import ConfigDict as _ConfigDict, Field as _Field, model_validator as _model_validator
 
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
+from pyswap.core.defaults import FNAME_OUT as _FNAME_OUT
 from pyswap.core.defaults import BASE_PATH as _BASE_PATH
 from pyswap.core.fields import Arrays as _Arrays, DateList as _DateList, DayMonth as _DayMonth, String as _String, StringList as _StringList
 from pyswap.core.mixins import SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
@@ -49,7 +50,7 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         outdatin (Optional[DateList]): list of specific dates
         datefix (Optional[DayMonth]): fixed date for output
         outdat (Optional[DateList]): specify all output dates
-        outfil (str): Generic file name of output files
+        outfil (str): Generic file name of output files. Immutable attribute.
         swheader (Literal[0, 1]): Print header at the start of each
             balance period
         extensions (list): list of file extensions SWAP should return.
@@ -111,11 +112,11 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
     period: int | None = _Field(default=None, **_YEARRANGE)
     swres: _Literal[0, 1] | None = None
     swodat: _Literal[0, 1] | None = None
-    outdatin: _DateList | None = None
+    outdatin: _Arrays | None = None
     datefix: _DayMonth | None = None
-    outdat: _DateList | None = None
+    outdat: _Arrays | None = None
 
-    outfil: _String = "result"
+    outfil: _String = _Field(default=_FNAME_OUT, frozen=True)
     swheader: _Literal[0, 1] = 0
 
     inlist_csv: _StringList | None = None

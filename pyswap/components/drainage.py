@@ -3,10 +3,6 @@
 Settings for the lateral drainage of the .swp file, including the .dra file settings.
 
 Classes:
-    DraSettings: General section of the .dra file.
-    DrainageFluxTable: Settings for the case when dramet is 1 in .dra file.
-    DrainageFormula: Settings for the case when dramet is 2 in .dra file.
-    DrainageInfRes: Settings for the case when dramet is 3 in .dra file.
     Flux: Fluxes between drainage levels in .dra file.
     DraFile: Drainage file (.dra) settings.
     Drainage: The lateral drainage settings of .swp file.
@@ -17,7 +13,8 @@ from typing import Literal as _Literal
 from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
 
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
-from pyswap.core.fields import File as _File, FloatList as _FloatList, ObjectList as _ObjectList, String as _String, Table as _Table
+from pyswap.core.defaults import FNAME_IN as _FNAME_IN
+from pyswap.core.fields import File as _File, FloatList as _FloatList, Subsection as _Subsection, String as _String, Table as _Table
 from pyswap.core.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
 
@@ -32,10 +29,11 @@ class Flux(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
 
     !!! note
 
-        Flux object should be created for each level of drainage.
+        This was rewritten to be a single class instead of a list of classe.
+        Simplicity over DRY. Anyway, the prefered way to set this up would be
+        through the table from the extended section I guess.
 
     Attributes:
-        level_number (int): Number of the level.
         drares (float): Drainage resistance.
         infres (float): Infiltration resistance.
         swallo (Literal[1, 2]): Switch to allow drainage from this level.
@@ -51,51 +49,46 @@ class Flux(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
             according to the level number.
     """
 
-    level_number: int = _Field(exclude=True, ge=1, le=5)
-    drares: float = _Field(ge=10.0, le=1.0e5)
-    infres: float = _Field(ge=10.0, le=1.0e5)
-    swallo: _Literal[1, 2, 3]
-    l: float | None = _Field(ge=1.0, le=1.0e5)
-    zbotdr: float = _Field(ge=-1000.0, le=0.0)
-    swdtyp: _Literal[1, 2]
-    datowltb: _Table
+    drares1: float = _Field(ge=10.0, le=1.0e5)
+    infres1: float = _Field(ge=10.0, le=1.0e5)
+    swallo1: _Literal[1, 2, 3]
+    l1: float | None = _Field(ge=1.0, le=1.0e5)
+    zbotdr1: float = _Field(ge=-1000.0, le=0.0)
+    swdtyp1: _Literal[1, 2]
+    datowltb1: _Table
+    # level 2
+    drares2: float = _Field(ge=10.0, le=1.0e5)
+    infres2: float = _Field(ge=10.0, le=1.0e5)
+    swallo2: _Literal[1, 2, 3]
+    l2: float | None = _Field(ge=1.0, le=1.0e5)
+    zbotdr2: float = _Field(ge=-1000.0, le=0.0)
+    swdtyp2: _Literal[1, 2]
+    datowltb2: _Table
+    # level 3
+    drares3: float = _Field(ge=10.0, le=1.0e5)
+    infres3: float = _Field(ge=10.0, le=1.0e5)
+    swallo3: _Literal[1, 2, 3]
+    l3: float | None = _Field(ge=1.0, le=1.0e5)
+    zbotdr3: float = _Field(ge=-1000.0, le=0.0)
+    swdtyp3: _Literal[1, 2]
+    datowltb3: _Table
+    # level 4
+    drares4: float = _Field(ge=10.0, le=1.0e5)
+    infres4: float = _Field(ge=10.0, le=1.0e5)
+    swallo4: _Literal[1, 2, 3]
+    l4: float | None = _Field(ge=1.0, le=1.0e5)
+    zbotdr4: float = _Field(ge=-1000.0, le=0.0)
+    swdtyp4: _Literal[1, 2]
+    datowltb4: _Table
+    # level 5
+    drares5: float = _Field(ge=10.0, le=1.0e5)
+    infres5: float = _Field(ge=10.0, le=1.0e5)
+    swallo5: _Literal[1, 2, 3]
+    l5: float | None = _Field(ge=1.0, le=1.0e5)
+    zbotdr5: float = _Field(ge=-1000.0, le=0.0)
+    swdtyp5: _Literal[1, 2]
+    datowltb5: _Table
 
-    def model_dump(self, **kwargs):
-        d = super().model_dump(**kwargs)
-
-        # If level_number is set, modify the key names.
-        if self.level_number is not None:
-            new_d = {}
-            suffix = str(self.level_number)
-            for key, value in d.items():
-                new_d[key + suffix] = value
-            return new_d
-        return d
-
-
-class Drainage(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
-    """The lateral drainage settings inside .swp file.
-
-    Attributes:
-        swdra (Literal[0, 1, 2]): Switch for lateral drainage.
-
-            * 0 - No drainage.
-            * 1 - Simulate with a basic drainage routine.
-            * 2 - Simulate with surface water management.
-
-        drafile (Optional[Any]): Content of the drainage file.
-    """
-
-    swdra: _Literal[0, 1, 2] | None = None
-    drafile: _File | None = _Field(default=None)
-
-    @property
-    def dra(self):
-        return self.model_string()
-
-    def write_dra(self, path: str) -> None:
-        self.drafile.save_file(string=self.dra, fname=self.drafile.drfil, path=path)
-        return None
 
 class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     """Content of the drainage file (.dra).
@@ -116,8 +109,8 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
             upper boundary of model discharge layer.
 
             * 0 - No adjustment
-            * 1 - Adjusment based on depth of top of model discharge
-            * 2 - Adjusment based on factor of top of model discharge
+            * 1 - Adjustment based on depth of top of model discharge
+            * 2 - Adjustment based on factor of top of model discharge
         lm1 (float): Drain spacing
         table_qdrntb (Table): Table of drainage flux - groundwater level.
         lm1: float = _Field(ge=1.0, le=1000.0)
@@ -155,7 +148,19 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
         expintflb (float): Exponent for interflow relation.
         swtopnrsrf (Literal[0, 1]): Switch to enable adjustment of
             model discharge layer.
-        list_levelfluxes (ObjectList): List of level fluxes.
+        fluxes (Subsection): List of level fluxes.
+        altcu (float): Altitude of the control unit relative to reference level.
+        nrsrf (int): Number of subsurface drainage levels.
+        swnrsrf (Literal[0, 1, 2]): Switch to introduce rapid subsurface drainage.
+        rsurfdeep (Optional[float]): Maximum resistance of rapid subsurface drainage.
+        rsurfshallow (Optional[float]): Minimum resistance of rapid subsurface drainage.
+        swsrf (Literal[1, 2, 3]): Switch for interaction with surface water system.
+        swsec (Optional[Literal[1, 2]]): Option for surface water level of secondary system.
+        wlact (Optional[float]): Initial surface water level.
+        osswlm (Optional[float]): Criterium for warning about oscillation.
+        nmper (Optional[int]): Number of management periods.
+        swqhr (Optional[Literal[1, 2]]): Switch for type of discharge relationship.
+        sofcu (Optional[float]): Size of the control unit.
     """
     
     _extension = _PrivateAttr("dra")
@@ -165,34 +170,58 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     cofani: _FloatList | None = None
     swdislay: _Literal[0, 1, 2, 3, "-"] | None = None
     # Drainage flux table
-    lm1: float = _Field(default=None, ge=1.0, le=1000.0)
+    lm1: float | None = _Field(default=None, ge=1.0, le=1000.0)
     qdrntb: _Table | None = None
     # Drainage formula
-    lm2: float = _Field(default=None, ge=1.0, le=1000.0)
-    shape: float = _Field(default=None, **_UNITRANGE)
-    wetper: float = _Field(default=None, ge=0.0, le=1000.0)
-    zbotdr: float = _Field(default=None, ge=-1000.0, le=0.0)
-    entres: float = _Field(default=None, ge=0.0, le=1000.0)
+    lm2: float | None = _Field(default=None, ge=1.0, le=1000.0)
+    shape: float | None = _Field(default=None, **_UNITRANGE)
+    wetper: float | None = _Field(default=None, ge=0.0, le=1000.0)
+    zbotdr: float | None = _Field(default=None, ge=-1000.0, le=0.0)
+    entres: float | None = _Field(default=None, ge=0.0, le=1000.0)
     ipos: _Literal[1, 2, 3, 4, 5] | None = None
-    basegw: float = _Field(default=None, ge=-1.0e4, le=0.0)
-    khtop: float = _Field(default=None, ge=0.0, le=1000.0)
+    basegw: float | None = _Field(default=None, ge=-1.0e4, le=0.0)
+    khtop: float | None = _Field(default=None, ge=0.0, le=1000.0)
     khbot: float | None = _Field(default=None, ge=0.0, le=1000.0)
     zintf: float | None = _Field(default=None, ge=-1.0e4, le=0.0)
     kvtop: float | None = _Field(default=None, ge=0.0, le=1000.0)
     kvbot: float | None = _Field(default=None, ge=0.0, le=1000.0)
     geofac: float | None = _Field(default=None, ge=0.0, le=100.0)
     # Drainage infiltration resistance
-    nrlevs: int = _Field(default=None, ge=1, le=5)
+    nrlevs: int | None = _Field(default=None, ge=1, le=5)
     swintfl: _Literal[0, 1] | None = None
     cofintflb: float | None = _Field(default=None, ge=0.01, le=10.0)
     expintflb: float | None = _Field(default=None, ge=0.1, le=1.0)
     swtopnrsrf: _Literal[0, 1] | None = None
-    levelfluxes: _ObjectList | None = None
+    fluxes: _Subsection | None = None
+    # Extended section
+    altcu: float | None = _Field(default=None, ge=-300000.0, le=300000.0)
+    drntb: _Table | None = None
+    nrsrf: int | None = _Field(default=None, ge=1, le=5)
+    swnrsrf: _Literal[0, 1, 2] | None = None
+    rsurfdeep: float | None = _Field(default=None, ge=0.001, le=1000.0)
+    rsurfshallow: float | None = _Field(default=None, ge=0.001, le=1000.0)
+    cofintfl: float | None = _Field(default=None, ge=0.01, le=10.0)
+    expintfl: float | None = _Field(default=None, ge=0.01, le=10.0)
+    swtopnrsrf: _Literal[0, 1] | None = None
+    swsrf: _Literal[1, 2, 3] | None = None
+    swsec: _Literal[1, 2] | None = None
+    secwatlvl: _Table | None = None
+    wlact: float | None = _Field(default=None, ge=-300000.0, le=300000.0)
+    osswlm: float | None = _Field(default=None, ge=0.0, le=10.0)
+    nmper: int | None = _Field(default=None, ge=1, le=3660)
+    swqhr: _Literal[1, 2] | None = None
+    sofcu: float | None = _Field(default=None, ge=0.1, le=100000.0)
+    mansecwatlvl: _Table | None = None
+    drainageleveltopparams: _Table | None = None
+    qweir: _Table | None = None
+    qweirtb: _Table | None = None
+    priwatlvl: _Table | None = None
 
     @property
     def dra(self):
         return self.model_string()
     
+
 class Drainage(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """The lateral drainage settings inside .swp file.
 
@@ -203,11 +232,12 @@ class Drainage(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
             * 1 - Simulate with a basic drainage routine.
             * 2 - Simulate with surface water management.
         
-        drfil (str): Name of the file.
+        drfil (str): Name of the file. This attribute is frozen, there is no
+            need to change it.
         drafile (Optional[Any]): Content of the drainage file.
     """
     swdra: _Literal[0, 1, 2] | None = None
-    drfil: _String | None = None
+    drfil: _String | None = _Field(default=_FNAME_IN, frozen=True)
     drafile: _File | None = _Field(default=None, exclude=True)
 
     def write_dra(self, path: str) -> None:

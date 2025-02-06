@@ -8,12 +8,11 @@ Modules:
     metadata: Model metadata.
 """
 
-from pyswap.model.metadata import Metadata
-from pyswap.model.model import Model
+from pyswap.model.model import Model, run_parallel
 from pyswap.model.result import Result
 
 __all__ = [
     "Metadata",
     "Model",
-    "Result",
+    "run_parallel"
 ]
