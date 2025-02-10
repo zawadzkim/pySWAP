@@ -33,15 +33,6 @@ __all__ = [
     "RLWTB",
     "DMMOWTB",
     "DMMOWDELAY",
-    "CHTB_GRASS",
-    "SLATB_GRASS",
-    "AMAXTB_GRASS",
-    "RFSETB_GRASS",
-    "FRTB_GRASS",
-    "FLTB_GRASS",
-    "FSTB_GRASS",
-    "RDRRTB_GRASS",
-    "RDRSTB_GRASS",
     "SHORTINTERVALMETEODATA",
 ]
 
@@ -86,17 +77,6 @@ class GCTB(BaseTableModel):
     LAI: Series[float] = pa.Field(ge=0.0, le=12.0)
 
 
-class CHTB(BaseTableModel):
-    """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
-
-    Attributes:
-        DVS (Series[float]): Development stage of the crop.
-        CH (Series[float]): Crop height of the crop.
-    """
-
-    DVS: Series[float] = pa.Field(**DVSRANGE)
-    CH: Series[float] = pa.Field(ge=0.0, le=1.0e4)
-
 class CFTB(BaseTableModel):
     """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
 
@@ -105,13 +85,11 @@ class CFTB(BaseTableModel):
         CF (Series[float]): Crop factor.
     """
 
-    DVS: Series[float] = pa.Field(**DVSRANGE)
-    CF: Series[float]
+    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
+    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
+    CH: Optional[Series[float]]
+    CF: Optional[Series[float]]
 
-class CFCHTB(BaseTableModel):
-    DVS: Series[float] = pa.Field(**DVSRANGE)
-    CF: Series[float]
-    CH: Series[float]
 
 class INTERTB(BaseTableModel):
     """Interception parameters for closed forest canopies (SWINTER=2).
@@ -424,127 +402,6 @@ class DMMOWDELAY(BaseTableModel):
 
     DMMOWDELAY: Series[float] = pa.Field(ge=0.0, le=1.0e6)
     DAYDELAY: Series[int] = pa.Field(**YEARRANGE)
-
-
-class CHTB_GRASS(BaseTableModel):
-    """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
-
-    Attributes:
-        DNR (Series[float]): day number.
-        CH (Series[float]): Crop height of the crop.
-    """
-
-    DNR: Series[float] = pa.Field(**YEARRANGE)
-    CH: Series[float] = pa.Field(ge=0.0, le=1.0e4)
-
-class CHCFTB(BaseTableModel):
-    """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
-
-    Attributes:
-        DNR (Series[float]): day number.
-        CH (Series[float]): Crop height of the crop.
-        CF (Series[float]): Crop factor
-    """
-
-    DNR: Series[float] = pa.Field(**YEARRANGE)
-    CH: Series[float]
-    CF: Series[float]
-
-
-class SLATB_GRASS(BaseTableModel):
-    """leaf area [0..1 ha/kg, R] as function of crop development stage [0..2 -, R]
-
-    Attributes:
-        DNR (Series[float]): Day number.
-        SLA (Series[float]): Leaf area.
-    """
-
-    DNR: Series[float] = pa.Field(**YEARRANGE)
-    SLA: Series[float] = pa.Field(ge=0.0, le=1.0)
-
-
-class AMAXTB_GRASS(BaseTableModel):
-    """maximum CO2 assimilation rate [0..100 kg/ha/hr, R] as function of development stage [0..2 -, R]
-
-    Attributes:
-        DNR (Series[float]): Day number.
-        AMAX (Series[float]): Maximum CO2 assimilation rate.
-    """
-
-    DNR: Series[float] = pa.Field(**YEARRANGE)
-    AMAX: Series[float] = pa.Field(ge=0.0, le=100.0)
-
-
-class RFSETB_GRASS(BaseTableModel):
-    """reduction factor of senescence [-, R] as function of development stage [0..2 -, R]
-
-    Attributes:
-        DNR (Series[float]): Day number.
-        RFSE (Series[float]): Reduction factor of senescence.
-    """
-
-    DNR: Series[float] = pa.Field(**YEARRANGE)
-    RFSE: Series[float] = pa.Field(**UNITRANGE)
-
-
-class FRTB_GRASS(BaseTableModel):
-    """fraction of total dry matter increase partitioned to the roots [kg/kg, R]
-
-    Attributes:
-        DNR (Series[float]): Day number.
-        FR (Series[float]): Fraction of total dry matter increase partitioned to the roots.
-    """
-
-    DNR: Series[float] = pa.Field(**YEARRANGE)
-    FR: Series[float] = pa.Field(**UNITRANGE)
-
-
-class FLTB_GRASS(BaseTableModel):
-    """fraction of total above ground dry matter increase partitioned to the leaves [kg/kg, R]
-
-    Attributes:
-        DNR (Series[float]): Day number.
-        FL (Series[float]): Fraction of total above ground dry matter increase partitioned to the leaves.
-    """
-
-    DNR: Series[float] = pa.Field(**YEARRANGE)
-    FL: Series[float] = pa.Field(**UNITRANGE)
-
-
-class FSTB_GRASS(BaseTableModel):
-    """fraction of total above ground dry matter increase partitioned to the stems [kg/kg, R]
-
-    Attributes:
-        DNR (Series[float]): Day number.
-        FS (Series[float]): Fraction of total above ground dry matter increase partitioned to the stems.
-    """
-
-    DNR: Series[float] = pa.Field(**YEARRANGE)
-    FS: Series[float] = pa.Field(**UNITRANGE)
-
-
-class RDRRTB_GRASS(BaseTableModel):
-    """relative death rates of roots [kg/kg/d] as function of development stage [0..2 -, R]
-
-    Attributes:
-        DNR (Series[float]): Day number.
-        RDRR (Series[float]): Relative death rates of roots.
-    """
-
-    DNR: Series[float] = pa.Field(**YEARRANGE)
-    RDRR: Series[float] = pa.Field(ge=0.0)
-
-
-class RDRSTB_GRASS(BaseTableModel):
-    """relative death rates of stems [kg/kg/d] as function of development stage [0..2 -, R]
-
-    Attributes:
-        DNR (Series[float]): Day number.
-        RDRS (Series[float]): Relative death rates of stems.
-    """
-
-    DNR: Series[float] = pa.Field(**YEARRANGE)
-    RDRS: Series[float] = pa.Field(ge=0.0)
 
 
 class IRRIGEVENTS(BaseTableModel):

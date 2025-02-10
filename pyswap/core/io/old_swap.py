@@ -31,13 +31,14 @@ def remove_comments(text: str) -> str:
 
     return text.strip()
 
-
 def parse_ascii_file(file_content) -> dict[str, dict]:
     """Parse an ASCII file in SWAP format.
 
     !!! note "Assumptions"
         - key-value pairs are lines with a single `=` character
-        - tables are lines with multiple values separated by whitespace
+        - tables are lines in which columns are split by spaces
+        - empty tags are lines that end with an `=` character, followed by
+            table-like data in the following lines.
         - tables are followed by an empty line or a line that is not
           a part of another table.
 
@@ -120,25 +121,41 @@ def parse_ascii_file(file_content) -> dict[str, dict]:
 
     return pairs, arrays, tables
 
-def member_conditions(member) -> bool:
-    """Check if a member is a class and not a subclass of pd.Series or BaseTableModel."""
+def is_dataframe_schema(member) -> bool:
+    """Check if a member is a class and not a subclass of pd.Series or BaseTableModel.
+    
+    Parameters:
+        member (Any): A member to check.
+    """
     cond = (inspect.isclass(member) and 
             not issubclass(member, pd.Series) and 
             member is not BaseTableModel)
     return cond
 
-def tables_columns_dict() -> list[dict]:
+def get_schemas_with_columns() -> list[dict]:
     """Create a list of dictionaries with table names, classes and columns names."""
-    members = inspect.getmembers(tables, member_conditions)
+    members = inspect.getmembers(tables, is_dataframe_schema)
     members_with_columns = [{"name": v[0], "class": v[1], "cols": tuple(v[1].to_schema().columns.keys())} for v in members]
     return members_with_columns
 
 def match_schema_by_columns(data_columns: tuple, schema_columns: tuple) -> bool:
-    """Check if data columns are a subset of schema columns."""
+    """Check if data columns are a subset of schema columns.
+    
+    Parameters:
+        data_columns (tuple): A tuple of column names from the data parsed from
+            ascii files.
+        schema_columns (tuple): A tuple of column names from the schema.
+    """
     return frozenset(data_columns).issubset(frozenset(schema_columns["cols"]))
 
-def create_schema(schema: BaseTableModel, columns: list, data: list) -> BaseTableModel:
-    """Create a schema object from a list of data."""
+def create_schema_object(schema: BaseTableModel, columns: list, data: list) -> BaseTableModel:
+    """Create a schema object from a list of data.
+    
+    Parameters:
+        schema (BaseTableModel): A schema class to validate the data.
+        columns (list): A list of column names.
+        data (list): A list of data to validate.
+    """
     df = pd.DataFrame(data, columns=columns)
     try:
         schema_object = schema.validate(df)
@@ -147,7 +164,7 @@ def create_schema(schema: BaseTableModel, columns: list, data: list) -> BaseTabl
         print(f"Validation error for {schema.__name__}: {e!s}")
 
 def create_table_objects(data_dict: dict) -> dict:
-    """Create table objects by matching the columns with the schema objects.
+    """Create table objects.
     
     Parameters:
         data_dict (dict): A dictionary with table names as keys (tuple of column names to match).
@@ -155,7 +172,7 @@ def create_table_objects(data_dict: dict) -> dict:
     Returns:
         dict: A dictionary with table names as keys and validated schema objects as values.
     """
-    schemas = tables_columns_dict()
+    schemas = get_schemas_with_columns()
     table_objects = {}
 
     for key, value in data_dict.items():
@@ -164,14 +181,22 @@ def create_table_objects(data_dict: dict) -> dict:
 
         for schema in schemas:
             if match_schema_by_columns(key, schema):
-                table_objects[schema["name"].lower()] = create_schema(schema["class"], key, value)
+                table_objects[schema["name"].lower()] = create_schema_object(schema["class"], key, value)
                 break
 
     return table_objects
 
 def create_array_objects(data_dict: dict, grass_crp: bool = False) -> dict:
-    """Create array objects by matching the name of the array (position 0 in the tuple)"""
-    schemas = tables_columns_dict()
+    """Create array objects by matching the name of the array (position 0 in the tuple)
+    
+    Parameters:
+        data_dict (dict): A dictionary with array names as keys (tuple of column names to match).
+        grass_crp (bool): Whether the array is a grass crop. This parameter is used to remove
+            the DVS column from the set of columns if the array is a grass crop. Otherwise the
+            DNR column is removed. This is because the grass module relies on the day number
+            instead of development stage.
+    """
+    schemas = get_schemas_with_columns()
     array_objects = {}
 
     for key, value in data_dict.items():
@@ -189,7 +214,7 @@ def create_array_objects(data_dict: dict, grass_crp: bool = False) -> dict:
                 else:
                     schema["cols"] = tuple(col for col in schema["cols"] if col.upper() != "DNR")
 
-                array_objects[schema["name"].lower()] = create_schema(schema["class"], schema["cols"], value)
+                array_objects[schema["name"].lower()] = create_schema_object(schema["class"], schema["cols"], value)
                 break
 
     return array_objects

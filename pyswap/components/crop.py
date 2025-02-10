@@ -50,13 +50,11 @@ from pyswap.core.mixins import (
     YAMLValidatorMixin as _YAMLValidatorMixin,
 )
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE, YEARRANGE as _YEARRANGE
-from pyswap.components.tables import (RDTB, RDCTB, GCTB, CHTB, KYTB,
+from pyswap.components.tables import (RDTB, RDCTB, GCTB, CFTB, KYTB,
                                       MRFTB,WRTB,CROPROTATION,DTSMTB,SLATB, 
                                       AMAXTB, TMPFTB, TMNFTB, RFSETB, FRTB, FLTB, 
                                       FSTB, FOTB, RDRRTB, RDRSTB, DMGRZTB, LSDATB,
-                                      LSDBTB, RLWTB, DMMOWTB, DMMOWDELAY, CHTB_GRASS, SLATB_GRASS,
-                                      AMAXTB_GRASS, RFSETB_GRASS, FRTB_GRASS, FLTB_GRASS, FSTB_GRASS,
-                                      RDRRTB_GRASS, RDRSTB_GRASS,)
+                                      LSDBTB, RLWTB, DMMOWTB, DMMOWDELAY)
 
 __all__ = [
     "CropDevelopmentSettingsWOFOST",
@@ -74,7 +72,7 @@ __all__ = [
     "RDTB",
     "RDCTB",
     "GCTB",
-    "CHTB",
+    "CFTB",
     "KYTB",
     "MRFTB",
     "WRTB",
@@ -97,15 +95,6 @@ __all__ = [
     "RLWTB",
     "DMMOWTB",
     "DMMOWDELAY",
-    "CHTB_GRASS",
-    "SLATB_GRASS",
-    "AMAXTB_GRASS",
-    "RFSETB_GRASS",
-    "FRTB_GRASS",
-    "FLTB_GRASS",
-    "FSTB_GRASS",
-    "RDRRTB_GRASS",
-    "RDRSTB_GRASS",
 ]
 
 
@@ -162,18 +151,14 @@ class _CropDevelopmentSettings(
     """
 
     # add in model config that additional attributes are allowed
-    model_config = _ConfigDict(
-        extra="allow"
-    )
+    # model_config = _ConfigDict(
+    #     extra="allow"
+    # )
 
     wofost_variety: Any | None = _Field(default=None, exclude=True)
 
     swcf: _Literal[1, 2] | None = None
-    dvs_cf: _Table | None = None
-    dvs_ch: _Table | None = None
-    chtb: _Table | None = None
     cftb: _Table | None = None
-    cfchtb: _Table | None = None
     albedo: _Decimal2f | None = _Field(default=None, **_UNITRANGE)
     rsc: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
     rsw: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)

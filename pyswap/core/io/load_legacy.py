@@ -71,7 +71,7 @@ metfile = metfile_from_csv("hupselbrook.met", testcase.load_dataset.RESOURCES["h
 ml.meteorology.metfile = metfile
 ml.generalsettings.swerror = 1
 
-ml.run()
+result = ml.run()
 # %%
 import inspect
 import pandas as pd

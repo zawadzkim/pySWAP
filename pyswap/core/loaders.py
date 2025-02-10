@@ -13,7 +13,7 @@ from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.io.io_ascii import open_ascii
 from pyswap.core.io.old_swap import create_table_objects, create_array_objects, parse_ascii_file, remove_comments
 from pyswap.model import Model
-from pyswap.core.defaults import EXTENSIONS
+from pyswap.core.defaults import EXTENSION_SWITCHES
 
 from typing import Literal as _Literal
 import re
@@ -47,10 +47,12 @@ def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
     # from the main dictionary and then create the extension list. The names
     # have to be handled properly.
     params = _parse_ascii_file(path)
-    EXTENSIONS = [f"sw{ext}" for ext in EXTENSIONS]
-    extension_switches = {key: params.pop(key) for key in EXTENSIONS if key in params}
-    extension_list = [key.replace("sw", "") for key in EXTENSIONS if key in params]
-    
+    # from among the parameters parsed from the ascii file, pop the switches
+    extension_switches = {key: params.pop(key) for key in EXTENSION_SWITCHES if key in params}
+    # create the extension list with only those switches that are = 1. get rid of the "sw" prefix
+    print(extension_switches)
+    extension_list = [key[2:] for key, value in extension_switches.items() if int(value) == 1]
+    print(extension_list)
     # model definition
     model_setup = {
         "generalsettings": GeneralSettings(extensions=extension_list),
