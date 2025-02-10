@@ -87,7 +87,7 @@ def _make_hupselbrook():
         "LAI": [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20],
     })
 
-    maize_chtb = psp.components.crop.CHTB.create({
+    maize_chtb = psp.components.crop.CFTB.create({
         "DVS": DVS,
         "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
     })
@@ -167,7 +167,7 @@ def _make_hupselbrook():
         swharv=0,
     )
 
-    potato_chtb = psp.components.crop.CHTB.create({
+    potato_chtb = psp.components.crop.CFTB.create({
         "DVS": [0.0, 1.0, 2.0],
         "CH": [
             1.0,

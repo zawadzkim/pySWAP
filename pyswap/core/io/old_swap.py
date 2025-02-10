@@ -200,20 +200,19 @@ def create_array_objects(data_dict: dict, grass_crp: bool = False) -> dict:
     array_objects = {}
 
     for key, value in data_dict.items():
-        if not isinstance(key, tuple):
-            continue
 
         for schema in schemas:
-            if key[0].lower() == schema["name"].lower():
+            data_item_name = key[0].lower() if isinstance(key, tuple) else key.lower()
+            if data_item_name == schema["name"].lower():
                 # if the array is a grass crop, remove DVS column from the set.
                 # Otherwise remocve DNR column. This is done to still provide
                 # data validation and sustain the idea of matching the schema
                 # with the parameter by schema name.
+                print("Handling: ", schema["name"], "with columns: ", schema["cols"])
                 if grass_crp:
                     schema["cols"] = tuple(col for col in schema["cols"] if col.upper() != "DVS")
                 else:
                     schema["cols"] = tuple(col for col in schema["cols"] if col.upper() != "DNR")
-
                 array_objects[schema["name"].lower()] = create_schema_object(schema["class"], schema["cols"], value)
                 break
 
