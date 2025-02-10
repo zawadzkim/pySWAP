@@ -8,6 +8,7 @@ as a function.
 
 # %% imports
 import time
+from pathlib import Path
 
 from pyswap import testcase
 from pyswap.components import Metadata
@@ -18,7 +19,10 @@ from pyswap.core.loaders import (
     load_dra,
     load_crp
 )
+from pyswap.core.io.old_swap import remove_comments, parse_ascii_file, create_table_objects, create_array_objects
 
+
+# %% test old loading approach
 start_time = time.time()
 
 hupsel_swp_path = testcase.load_dataset.RESOURCES["hupselbrook"]["swp"]
@@ -48,7 +52,9 @@ dra = load_dra(hupsel_dra_path)
 # %%
 
 maizes = load_crp(testcase.load_dataset.RESOURCES["hupselbrook"]["maizes"], "fixed", "maizes")
+
 potatod = load_crp(testcase.load_dataset.RESOURCES["hupselbrook"]["potatod"], "wofost", "potatod")
+
 grassd = load_crp(testcase.load_dataset.RESOURCES["hupselbrook"]["grassd"], "grass", "grassd")
 # %%
 
@@ -63,6 +69,32 @@ ml.meteorology
 metfile = metfile_from_csv("hupselbrook.met", testcase.load_dataset.RESOURCES["hupselbrook"]["met"])
 # %%
 ml.meteorology.metfile = metfile
+ml.generalsettings.swerror = 1
+
+ml.run()
+# %%
+import inspect
+import pandas as pd
+from pyswap.components import tables
+from pyswap.core.basemodel import BaseTableModel
+
+def member_conditions(member):
+    cond = (inspect.isclass(member) and 
+            not issubclass(member, pd.Series) and 
+            member is not BaseTableModel)
+    return cond
+
+members = inspect.getmembers(tables, member_conditions)
+
+members_with_columns = [{"name": v[0], "class": v[1], "cols": tuple(v[1].to_schema().columns.keys())} for v in members]
+# %% Checking creation of the extensions
+from pyswap.components.simsettings import GeneralSettings
+
+gs = GeneralSettings()
+extens = ["csv", "csv_tz", "wba"]
+
+gs.extensions = extens
+
+print(gs.model_string())
 
 # %%
-ml.run()

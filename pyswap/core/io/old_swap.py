@@ -5,7 +5,7 @@ import pandas as pd
 import pandera as pa
 
 import pyswap.components.tables as tables
-
+from pyswap.core.basemodel import BaseTableModel
 
 def remove_comments(text: str) -> str:
     """Remove comments from a SWAP input file.
@@ -32,7 +32,7 @@ def remove_comments(text: str) -> str:
     return text.strip()
 
 
-def parse_ascii_file(file_content) -> tuple[dict, dict]:
+def parse_ascii_file(file_content) -> dict[str, dict]:
     """Parse an ASCII file in SWAP format.
 
     !!! note "Assumptions"
@@ -40,9 +40,17 @@ def parse_ascii_file(file_content) -> tuple[dict, dict]:
         - tables are lines with multiple values separated by whitespace
         - tables are followed by an empty line or a line that is not
           a part of another table.
+
+    Parameters:
+        file_content (str): The content of the ASCII file.
+
+    Returns:
+        dict: A dictionary with key-value pairs, arrays and tables
+            (in the exact order).
     """
     lines = file_content.splitlines()
     pairs = {}
+    arrays = {}
     tables = {}
 
     def is_key_value(line):
@@ -100,9 +108,9 @@ def parse_ascii_file(file_content) -> tuple[dict, dict]:
 
         elif is_empty_tag(line):
             key = line[:-1].strip()
-            table = parse_table(lines, i + 1, key)
-            tables.update(table)
-            i += len(list(table.values())[0]) + 1  # Skip the tag data
+            array = parse_table(lines, i + 1, key)
+            arrays.update(array)
+            i += len(list(array.values())[0]) + 1  # Skip the tag data
 
         elif is_table(line):
             table = parse_table(lines, i + 1, line)
@@ -110,60 +118,79 @@ def parse_ascii_file(file_content) -> tuple[dict, dict]:
             i += len(list(table.values())[0]) + 1  # Skip the table rows
         i += 1  # Move to the next line
 
-    return pairs, tables
+    return pairs, arrays, tables
 
+def member_conditions(member) -> bool:
+    """Check if a member is a class and not a subclass of pd.Series or BaseTableModel."""
+    cond = (inspect.isclass(member) and 
+            not issubclass(member, pd.Series) and 
+            member is not BaseTableModel)
+    return cond
 
-def create_schema_dict():
-    """Create a dictionary of all classes from the tables module."""
-    schema_dict = {}
-    for _, obj in inspect.getmembers(tables):
-        if (
-            inspect.isclass(obj)
-            and issubclass(obj, pa.SchemaModel)
-            and obj != pa.SchemaModel
-        ):
-            schema_fields = tuple(obj.to_schema().columns.keys())
-            schema_dict[schema_fields] = obj
-    return schema_dict
+def tables_columns_dict() -> list[dict]:
+    """Create a list of dictionaries with table names, classes and columns names."""
+    members = inspect.getmembers(tables, member_conditions)
+    members_with_columns = [{"name": v[0], "class": v[1], "cols": tuple(v[1].to_schema().columns.keys())} for v in members]
+    return members_with_columns
 
+def match_schema_by_columns(data_columns: tuple, schema_columns: tuple) -> bool:
+    """Check if data columns are a subset of schema columns."""
+    return frozenset(data_columns).issubset(frozenset(schema_columns["cols"]))
 
-def create_schema_object(data_dict):
-    schema_objects = {}
-    schema_dict = create_schema_dict()
+def create_schema(schema: BaseTableModel, columns: list, data: list) -> BaseTableModel:
+    """Create a schema object from a list of data."""
+    df = pd.DataFrame(data, columns=columns)
+    try:
+        schema_object = schema.validate(df)
+        return schema_object
+    except pa.errors.SchemaError as e:
+        print(f"Validation error for {schema.__name__}: {e!s}")
+
+def create_table_objects(data_dict: dict) -> dict:
+    """Create table objects by matching the columns with the schema objects.
+    
+    Parameters:
+        data_dict (dict): A dictionary with table names as keys (tuple of column names to match).
+
+    Returns:
+        dict: A dictionary with table names as keys and validated schema objects as values.
+    """
+    schemas = tables_columns_dict()
+    table_objects = {}
 
     for key, value in data_dict.items():
         if not isinstance(key, tuple):
             continue
 
-        # Use frozenset to ignore order of columns
-        columns_set = frozenset(key)
-        matching_schema = None
-
-        for schema_columns, schema in schema_dict.items():
-            # print("Schema", schema, "has these cols:", schema_columns)
-
-            if frozenset(schema_columns) == columns_set:
-                cols = key
-                matching_schema = schema
-                break
-            # if the tuple len is 1, it means that it's a tag. Then match the tag with the schema name
-            # This will not work, because key in this case is just a string, not a schema object I am looking for. I need to find a way
-            # to match the key by the name of the schema object instead of by columns.
-            if len(key) == 1:
-                cols = value
-                matching_schema = key[0]
+        for schema in schemas:
+            if match_schema_by_columns(key, schema):
+                table_objects[schema["name"].lower()] = create_schema(schema["class"], key, value)
                 break
 
-        if matching_schema: # is not None,
-            df = pd.DataFrame(value, columns=cols)
-            try:
-                schema_object = matching_schema.validate(df)
-                schema_objects[matching_schema.__name__.lower()] = schema_object
-            except pa.errors.SchemaError as e:
-                print(f"Validation error for {matching_schema.__name__}: {e!s}")
-        else:
-            print(f"No matching schema found for columns: {key}")
+    return table_objects
 
-    return schema_objects
+def create_array_objects(data_dict: dict, grass_crp: bool = False) -> dict:
+    """Create array objects by matching the name of the array (position 0 in the tuple)"""
+    schemas = tables_columns_dict()
+    array_objects = {}
 
+    for key, value in data_dict.items():
+        if not isinstance(key, tuple):
+            continue
+
+        for schema in schemas:
+            if key[0].lower() == schema["name"].lower():
+                # if the array is a grass crop, remove DVS column from the set.
+                # Otherwise remocve DNR column. This is done to still provide
+                # data validation and sustain the idea of matching the schema
+                # with the parameter by schema name.
+                if grass_crp:
+                    schema["cols"] = tuple(col for col in schema["cols"] if col.upper() != "DVS")
+                else:
+                    schema["cols"] = tuple(col for col in schema["cols"] if col.upper() != "DNR")
+
+                array_objects[schema["name"].lower()] = create_schema(schema["class"], schema["cols"], value)
+                break
+
+    return array_objects
 

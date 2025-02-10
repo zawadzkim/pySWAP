@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional
 
 import pandera as pa
 from pandera.typing import Series
@@ -56,7 +56,8 @@ class RDTB(BaseTableModel):
         RD (Series[float]): Rooting depth of the crop.
     """
 
-    DVS: Series[float] = pa.Field(**DVSRANGE)
+    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
+    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
     RD: Series[float] = pa.Field(ge=0.0, le=100.0)
 
 
@@ -208,7 +209,8 @@ class SLATB(BaseTableModel):
         SLA (Series[float]): Leaf area.
     """
 
-    DVS: Series[float] = pa.Field(**DVSRANGE)
+    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
+    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
     SLA: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
@@ -220,7 +222,8 @@ class AMAXTB(BaseTableModel):
         AMAX (Series[float]): Maximum CO2 assimilation rate.
     """
 
-    DVS: Series[float] = pa.Field(**DVSRANGE)
+    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
+    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
     AMAX: Series[float] = pa.Field(ge=0.0, le=100.0)
 
 
@@ -256,7 +259,8 @@ class RFSETB(BaseTableModel):
         RFSE (Series[float]): Reduction factor of senescence.
     """
 
-    DVS: Series[float] = pa.Field(**DVSRANGE)
+    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
+    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
     RFSE: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
@@ -268,7 +272,8 @@ class FRTB(BaseTableModel):
         FR (Series[float]): Fraction of total dry matter increase partitioned to the roots.
     """
 
-    DVS: Series[float] = pa.Field(**DVSRANGE)
+    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
+    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
     FR: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
@@ -280,7 +285,8 @@ class FLTB(BaseTableModel):
         FL (Series[float]): Fraction of total above ground dry matter increase partitioned to the leaves.
     """
 
-    DVS: Series[float] = pa.Field(**DVSRANGE)
+    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
+    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
     FL: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
@@ -292,7 +298,8 @@ class FSTB(BaseTableModel):
         FS (Series[float]): Fraction of total above ground dry matter increase partitioned to the stems.
     """
 
-    DVS: Series[float] = pa.Field(**DVSRANGE)
+    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
+    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
     FS: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
@@ -316,7 +323,8 @@ class RDRRTB(BaseTableModel):
         RDRR (Series[float]): Relative death rates of roots.
     """
 
-    DVS: Series[float] = pa.Field(**DVSRANGE)
+    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
+    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
     RDRR: Series[float] = pa.Field(ge=0.0)
 
 
@@ -328,7 +336,8 @@ class RDRSTB(BaseTableModel):
         RDRS (Series[float]): Relative death rates of stems.
     """
 
-    DVS: Series[float] = pa.Field(**DVSRANGE)
+    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
+    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
     RDRS: Series[float] = pa.Field(ge=0.0)
 
 
@@ -1043,7 +1052,7 @@ class QDRNTB(BaseTableModel):
     GWL: Series[float]
 
 # %% ++++++++++++++++++++++++++++ GENERAL SETTINGS TABLES ++++++++++++++++++++++++++++
-class OUTDATIN:
+class OUTDATIN(BaseTableModel):
     """OUTDATIN table
 
     Attributes:
@@ -1051,7 +1060,7 @@ class OUTDATIN:
     """
     OUTDATIN: Series[pa.DateTime] # type: ignore
     
-class OUTDAT:
+class OUTDAT(BaseTableModel):
     """OUTDAT table
 
     Attributes:

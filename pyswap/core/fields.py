@@ -69,7 +69,7 @@ Fields in this module:
 
 from datetime import date
 from decimal import Decimal
-from typing import Annotated
+from typing import Annotated, TypeVar
 
 from pandas import DataFrame
 from pydantic import AfterValidator, BeforeValidator, Field
@@ -189,8 +189,10 @@ File = Annotated[
 ]
 """Serialize PySWAPBaseModel to a string."""
 
+T = TypeVar("T", bound=PySWAPBaseModel)
+
 Subsection = Annotated[
-    PySWAPBaseModel,
+    T,
     PlainSerializer(lambda x: x.model_string(), return_type=str),
     Field(json_schema_extra={"is_annotated_exception_type": True}),
 ]

@@ -3,13 +3,6 @@ from pathlib import Path
 from pandas import DataFrame, read_csv
 
 import pyswap as ps
-import pyswap.components.boundary
-import pyswap.components.crop
-import pyswap.components.drainage
-import pyswap.components.meteorology
-import pyswap.components.soilwater
-import pyswap.components.tables
-import pyswap.components.transport
 from pyswap import testcase
 
 from .load_dataset import IS_WINDOWS
@@ -41,11 +34,11 @@ def _make_grassgrowth():
 
     # %% Meteorology section
 
-    meteo_data = pyswap.components.meteorology.MetFile(
+    meteo_data = ps.components.meteorology.MetFile(
         metfil="260.met", content=testcase.load_met("grassgrowth")
     )
 
-    meteo = pyswap.components.meteorology.Meteorology(
+    meteo = ps.components.meteorology.Meteorology(
         lat=51.0,
         swetr=0,
         metfile=meteo_data,
@@ -114,7 +107,7 @@ def _make_grassgrowth():
         "RDRS": [0.0, 0.02, 0.02],
     })
 
-    grass_rdctb = pyswap.components.tables.RDCTB.create({
+    grass_rdctb = ps.components.tables.RDCTB.create({
         "RRD": [0.0, 1.0],
         "RDENS": [1.0, 0.0],
     })
@@ -162,7 +155,7 @@ def _make_grassgrowth():
         rdctb=grass_rdctb,
     )
 
-    grass_ox_stress = pyswap.components.crop.OxygenStress(
+    grass_ox_stress = ps.components.crop.OxygenStress(
         swoxygen=1,
         hlim1=0.0,
         hlim2u=1.0,
@@ -171,15 +164,15 @@ def _make_grassgrowth():
         aeratecrit=0.7,
     )
 
-    grass_drought_stress = pyswap.components.crop.DroughtStress(
+    grass_drought_stress = ps.components.crop.DroughtStress(
         swdrought=1, hlim3h=-200.0, hlim3l=-800.0, hlim4=-8000.0, adcrh=0.5, adcrl=0.1
     )
 
-    grass_salt_stress = pyswap.components.crop.SaltStress(swsalinity=0)
+    grass_salt_stress = ps.components.crop.SaltStress(swsalinity=0)
 
-    grass_interception = pyswap.components.crop.Interception(swinter=1, cofab=0.25)
+    grass_interception = ps.components.crop.Interception(swinter=1, cofab=0.25)
 
-    grass_co2 = pyswap.components.crop.CO2Correction(swco2=0)
+    grass_co2 = ps.components.crop.CO2Correction(swco2=0)
 
     grass_dmmowtb = ps.components.crop.DMMOWTB.create({
         "DNR": [120.0, 152.0, 182.0, 213.0, 366.0],
@@ -224,7 +217,7 @@ def _make_grassgrowth():
         "1984-11-07",
     ]
 
-    grass_management = pyswap.components.crop.GrasslandManagement(
+    grass_management = ps.components.crop.GrasslandManagement(
         seqgrazmow=[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
         swharvest=2,
         dateharvest=dateharvest,
@@ -238,7 +231,7 @@ def _make_grassgrowth():
         relmf=0.90,
     )
 
-    grass_irrigation = ps.ScheduledIrrigation(schedule=0)
+    grass_irrigation = ps.components.irrigation.ScheduledIrrigation(schedule=0)
 
     crpgrass = ps.components.crop.CropFile(
         name="grassd",
@@ -282,30 +275,30 @@ def _make_grassgrowth():
 
     # %% Soil moisture setup
 
-    soilmoisture = pyswap.components.soilwater.SoilMoisture(swinco=2, gwli=-75.0)
+    soilmoisture = ps.components.soilwater.SoilMoisture(swinco=2, gwli=-75.0)
 
     # %% surface flow settings
 
-    surfaceflow = pyswap.components.soilwater.SurfaceFlow(
+    surfaceflow = ps.components.soilwater.SurfaceFlow(
         swpondmx=0, pondmx=0.2, rsro=0.5, rsroexp=1.0, swrunon=0
     )
 
     # %% evaporation settings
 
-    evaporation = pyswap.components.soilwater.Evaporation(
+    evaporation = ps.components.soilwater.Evaporation(
         cfevappond=1.25, swcfbs=0, rsoil=600.0, swredu=1, cofredbl=0.35, rsigni=0.5
     )
 
     # %% setting soil profile
 
-    soil_profile = pyswap.components.tables.SOILPROFILE.create({
+    soil_profile = ps.components.tables.SOILPROFILE.create({
         "ISUBLAY": [1, 2, 3, 4, 5, 6, 7, 8, 9],
         "ISOILLAY": [1, 1, 2, 3, 3, 4, 4, 5, 5],
         "HSUBLAY": [5.0, 10.0, 10.0, 5.0, 20.0, 50.0, 20.0, 100.0, 120.0],
         "HCOMP": [1.0, 2.5, 5.0, 5.0, 10.0, 10.0, 20.0, 20.0, 40.0],
         "NCOMP": [5, 4, 2, 1, 2, 5, 1, 5, 3],
     })
-    soil_hydraulic_functions = pyswap.components.tables.SOILHYDRFUNC.create({
+    soil_hydraulic_functions = ps.components.tables.SOILHYDRFUNC.create({
         "ORES": [0.02, 0.02, 0.02, 0.01, 0.01],
         "OSAT": [0.40, 0.40, 0.40, 0.36, 0.36],
         "ALFA": [0.0227, 0.0227, 0.0227, 0.0216, 0.0216],
@@ -317,7 +310,7 @@ def _make_grassgrowth():
         "BDENS": [1300.0, 1300.0, 1300.0, 1300.0, 1300.0],
     })
 
-    soilprofile = pyswap.components.soilwater.SoilProfile(
+    soilprofile = ps.components.soilwater.SoilProfile(
         swsophy=0,
         soilprofile=soil_profile,
         swhyst=0,
@@ -326,7 +319,7 @@ def _make_grassgrowth():
     )
     # %% drainage settings
 
-    dra_settings = pyswap.components.drainage.DraSettings(
+    dra_settings = ps.components.drainage.DraSettings(
         dramet=3, swdivd=1, cofani=[1.0, 1.0, 1.0, 1.0, 1.0], swdislay=0
     )
 
@@ -335,7 +328,7 @@ def _make_grassgrowth():
         "LEVEL1": [-60.0, -60.0],
     })
 
-    flux1 = pyswap.components.drainage.Flux(
+    flux1 = ps.components.drainage.Flux(
         level_number=1,
         drares=750.0,
         infres=2000.0,
@@ -346,15 +339,15 @@ def _make_grassgrowth():
         table_datowltb=flux_table,
     )
 
-    drainageinfiltrationres = pyswap.components.drainage.DrainageInfRes(
+    drainageinfiltrationres = ps.components.drainage.DrainageInfRes(
         nrlevs=1, swintfl=0, levelfluxes=[flux1]
     )
 
-    dra_file = pyswap.components.drainage.DraFile(
+    dra_file = ps.components.drainage.DraFile(
         drfil="swap", general=dra_settings, drainageinfres=drainageinfiltrationres
     )
 
-    lateral_drainage = ps.Drainage(swdra=1, drafile=dra_file)
+    lateral_drainage = ps.components.drainage.Drainage(swdra=1, drafile=dra_file)
 
     # %% bottom boundary
 
@@ -367,15 +360,15 @@ def _make_grassgrowth():
     else:
         table_gwlevel = read_csv(gwleveltable_path, lineterminator="\n")
 
-    bbc_file = pyswap.components.boundary.BBCFile(swbotb=1, gwlevel=table_gwlevel)
+    bbc_file = ps.components.boundary.BBCFile(swbotb=1, gwlevel=table_gwlevel)
 
-    bottom_boundary = pyswap.components.boundary.boundary.BottomBoundary(
+    bottom_boundary = ps.components.boundary.BottomBoundary(
         swbbcfile=1, bbcfile=bbc_file, bbcfil="swap"
     )
 
     # %% heatflow
 
-    soil_texture = pyswap.components.tables.SOILTEXTURES.create({
+    soil_texture = ps.components.tables.SOILTEXTURES.create({
         "PSAND": [0.68, 0.68, 0.77, 0.86, 0.88],
         "PSILT": [0.27, 0.28, 0.19, 0.08, 0.09],
         "PCLAY": [0.05, 0.04, 0.04, 0.06, 0.03],
@@ -387,7 +380,7 @@ def _make_grassgrowth():
         "TSOIL": [15.0, 12.0, 10.0, 9.0],
     })
 
-    heat_flow = pyswap.components.transport.HeatFlow(
+    heat_flow = ps.components.transport.HeatFlow(
         swhea=1,
         swcalt=2,
         swtopbhea=1,

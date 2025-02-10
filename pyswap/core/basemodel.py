@@ -25,6 +25,8 @@ import pandera as pa
 from pandera.typing import DataFrame
 from pydantic import BaseModel, ConfigDict, PrivateAttr, field_validator
 
+from pyswap.core.defaults import ADDITIONAL_SWITCHES
+
 
 class PySWAPBaseModel(BaseModel):
     """Base class for pySWAP models.
@@ -37,7 +39,8 @@ class PySWAPBaseModel(BaseModel):
 
     _validation = PrivateAttr(default=False)
     model_config = ConfigDict(
-        arbitrary_types_allowed=True, validate_assignment=True, extra="forbid"
+        arbitrary_types_allowed=True, validate_assignment=True, extra="ignore",
+        populate_by_name=True
     )
 
     def __setattr__(self, name, value):
@@ -68,10 +71,11 @@ class PySWAPBaseModel(BaseModel):
             inplace (bool): If True, update the model in place.
         """
 
-        filtered = {k: v for k, v in new.items() if k in self.model_fields}
+        # filtered = {k: v for k, v in new.items() if k in self.model_fields}
 
-        # updated_model = self.model_validate(self.model_dump() | filtered)
-        updated_model = self.model_validate(dict(self) | filtered)
+        # updated_model = self.model_validate(dict(self) | filtered)
+        updated_model = self.model_validate(dict(self) | new)
+
 
 
         if not inplace:
@@ -110,7 +114,7 @@ class PySWAPBaseModel(BaseModel):
         would work. It could be improved to include literals that do not start
         with "sw" as well.
         """
-        if (info.field_name.startswith("sw") or info.field_name in ["dramet", "ipos", "idev", "idsl"]) and info.field_name != "swap_ver" and value:
+        if (info.field_name.startswith("sw") or info.field_name in ADDITIONAL_SWITCHES) and info.field_name != "swap_ver" and value:
             try:
                 return int(value)
             except ValueError:

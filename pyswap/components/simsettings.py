@@ -13,15 +13,36 @@ from typing import ClassVar as _ClassVar, Literal as _Literal
 from pydantic import ConfigDict as _ConfigDict, Field as _Field, model_validator as _model_validator
 
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
-from pyswap.core.defaults import FNAME_OUT as _FNAME_OUT
+from pyswap.core.defaults import FNAME_OUT as _FNAME_OUT, EXTENSIONS as _EXTENSIONS
 from pyswap.core.defaults import BASE_PATH as _BASE_PATH
-from pyswap.core.fields import Arrays as _Arrays, DateList as _DateList, DayMonth as _DayMonth, String as _String, StringList as _StringList
+from pyswap.core.fields import Arrays as _Arrays, DateList as _DateList, DayMonth as _DayMonth, String as _String, StringList as _StringList, Subsection as _Subsection, FloatList as _FloatList, IntList as _IntList
 from pyswap.core.mixins import SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE, YEARRANGE as _YEARRANGE
 
 __all__ = ["GeneralSettings", "RichardsSettings"]
 
 logger = _logging.getLogger(__name__)
+
+class _ExtensionMixin(_PySWAPBaseModel, _SerializableMixin):
+    """Handle creation of the switches through direct assignment and list."""
+
+    swwba: _Literal[1, 0] | None = _Field(default=None, validation_alias="wba") 
+    swend: _Literal[1, 0] | None = _Field(default=None, validation_alias="end") 
+    swvap: _Literal[1, 0] | None = _Field(default=None, validation_alias="vap") 
+    swbal: _Literal[1, 0] | None = _Field(default=None, validation_alias="bal") 
+    swblc: _Literal[1, 0] | None = _Field(default=None, validation_alias="blc") 
+    swsba: _Literal[1, 0] | None = _Field(default=None, validation_alias="sba") 
+    swate: _Literal[1, 0] | None = _Field(default=None, validation_alias="ate") 
+    swbma: _Literal[1, 0] | None = _Field(default=None, validation_alias="bma") 
+    swdrf: _Literal[1, 0] | None = _Field(default=None, validation_alias="drf") 
+    swswb: _Literal[1, 0] | None = _Field(default=None, validation_alias="swb") 
+    swini: _Literal[1, 0] | None = _Field(default=None, validation_alias="ini") 
+    swinc: _Literal[1, 0] | None = _Field(default=None, validation_alias="inc") 
+    swcrp: _Literal[1, 0] | None = _Field(default=None, validation_alias="crp") 
+    swstr: _Literal[1, 0] | None = _Field(default=None, validation_alias="str") 
+    swirg: _Literal[1, 0] | None = _Field(default=None, validation_alias="irg") 
+    swcsv: _Literal[1, 0] | None = _Field(default=None, validation_alias="csv") 
+    swcsv_tz: _Literal[1, 0] | None = _Field(default=None, validation_alias="csv_tz") 
 
 
 class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
@@ -71,30 +92,11 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
     """
 
     model_config = _ConfigDict(
-        extra="allow", validate_assignment=True, use_enum_values=True
+        validate_assignment=True, use_enum_values=True, extra="ignore"
     )
-
-    _all_extensions: _ClassVar[list[str]] = [
-        "wba",
-        "end",
-        "vap",
-        "bal",
-        "blc",
-        "sba",
-        "ate",
-        "bma",
-        "drf",
-        "swb",
-        "ini",
-        "inc",
-        "crp",
-        "str",
-        "irg",
-        "csv",
-        "csv_tz",
-    ]
-
+    _all_extensions: _ClassVar[list[str]] = _EXTENSIONS
     extensions: list[str] = _Field(default_factory=list, exclude=True)
+    exts: _Subsection[_ExtensionMixin] | None = None
 
     pathwork: _String = _Field(default=_BASE_PATH, frozen=True)
     pathatm: _String = _Field(default=_BASE_PATH, frozen=True)
@@ -135,59 +137,9 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         ]
         if invalid_extensions:
             raise ValueError(f"Invalid extensions: {invalid_extensions}")
-        return self
-
-    def model_post_init(self, __context=None):
-        for ext in self._all_extensions:
-            switch_name = f"sw{ext}"
-            setattr(self, switch_name, 1 if ext in self.extensions else 0)
-
-    def add_extension(self, extension: str, inlist: list = None):
-        """Add a new extension to the list and trigger updates.
-
-        Parameters:
-            extension (str): Extension to add to the list.
-            inlist (list): List of variables for the extension. Applicable when
-                extension is 'csv' or 'csv_tz'.
-        """
-        if extension not in self._all_extensions:
-            raise ValueError(f"Invalid extension: {extension}")
-
-        if extension == "csv":
-            if not any([self.inlist_csv, inlist]):
-                raise ValueError(f"Missing 'inlist_csv' for extension '{extension}'")
-            if inlist:
-                self.inlist_csv = inlist
-
-        elif extension == "csv_tz":
-            if not any([self.inlist_csv_tz, inlist]):
-                raise ValueError(f"Missing 'inlist_csv_tz' for extension '{extension}'")
-            if inlist:
-                self.inlist_csv_tz = inlist
-
-        if extension not in self.extensions:
-            self.extensions.append(extension)
-            self.model_post_init(None)
-            self.model_validate(self)
-        else:
-            logger.warning(f"Extension '{extension}' is already in the list.")
-        return self
-
-    def remove_extension(self, extension: str):
-        """
-        Remove an extension from the list and trigger updates.
-        """
-        if extension not in self.extensions:
-            raise ValueError(f"Extension '{extension}' is not in the list.")
-        self.extensions.remove(extension)
-
-        if extension == "csv":
-            self.inlist_csv = None
-        elif extension == "csv_tz":
-            self.inlist_csv_tz = None
-
-        self.model_post_init(None)
-        self.model_validate(self)
+        
+        # Create the _ExtensionMixin object without triggering validation
+        object.__setattr__(self, 'exts', _ExtensionMixin(**{ext: 1 if ext in self.extensions else 0 for ext in self._all_extensions}))
         return self
 
 

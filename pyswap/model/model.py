@@ -23,17 +23,28 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Literal, Callable
+from typing import Literal
 
 from pandas import DataFrame, read_csv, to_datetime
 from pydantic import Field, PrivateAttr, model_validator
-
 from pyswap.components.irrigation import FixedIrrigation
+from pyswap.components.meteorology import Meteorology
+
+from pyswap.components.simsettings import GeneralSettings, RichardsSettings
+
 from pyswap.components.simsettings import RichardsSettings
 from pyswap.components.soilwater import (
+    SurfaceFlow,
+    SoilMoisture,
+    Evaporation,
+    SoilProfile,
     SnowAndFrost,
 )
+from pyswap.components.drainage import Drainage
+from pyswap.components.boundary import BottomBoundary
 from pyswap.components.transport import HeatFlow, SoluteTransport
+from pyswap.components.metadata import Metadata
+# from pyswap.components.crop import Crop
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.defaults import IS_WINDOWS
 from pyswap.core.fields import Subsection
@@ -361,22 +372,22 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     _validate_on_run: bool = PrivateAttr(default=False)
     _extension = "swp"
 
-    metadata: Subsection | None = Field(default=None, repr=False)
+    metadata: Subsection[Metadata] | None = Field(default=None, repr=False)
     version: str = Field(exclude=True, default="base")
-    generalsettings: Subsection | None = Field(default=None, repr=False)
-    meteorology: Subsection | None = Field(default=None, repr=False)
+    generalsettings: Subsection[GeneralSettings] | None = Field(default=None, repr=False)
+    meteorology: Subsection[Meteorology] | None = Field(default=None, repr=False)
     crop: Subsection | None = Field(default=None, repr=False)
-    fixedirrigation: Subsection | None = Field(default=FixedIrrigation(swirfix=0), repr=False)
-    soilmoisture: Subsection | None = Field(default=None, repr=False)
-    surfaceflow: Subsection | None = Field(default=None, repr=False)
-    evaporation: Subsection | None = Field(default=None, repr=False)
-    soilprofile: Subsection | None = Field(default=None, repr=False)
-    snowandfrost: Subsection | None = Field(default=SnowAndFrost(swsnow=0, swfrost=0), repr=False)
-    richards: Subsection | None = Field(default=RichardsSettings(swkmean=1, swkimpl=0), repr=False)
-    lateraldrainage: Subsection | None = Field(default=None, repr=False)
-    bottomboundary: Subsection | None = Field(default=None, repr=False)
-    heatflow: Subsection | None = Field(default=HeatFlow(swhea=0), repr=False)
-    solutetransport: Subsection | None = Field(default=SoluteTransport(swsolu=0), repr=False)
+    fixedirrigation: Subsection[FixedIrrigation] | None = Field(default=FixedIrrigation(swirfix=0), repr=False)
+    soilmoisture: Subsection[SoilMoisture] | None = Field(default=None, repr=False)
+    surfaceflow: Subsection[SurfaceFlow] | None = Field(default=None, repr=False)
+    evaporation: Subsection[Evaporation] | None = Field(default=None, repr=False)
+    soilprofile: Subsection[SoilProfile] | None = Field(default=None, repr=False)
+    snowandfrost: Subsection[SnowAndFrost] | None = Field(default=SnowAndFrost(swsnow=0, swfrost=0), repr=False)
+    richards: Subsection[RichardsSettings] | None = Field(default=RichardsSettings(swkmean=1, swkimpl=0), repr=False)
+    lateraldrainage: Subsection[Drainage] | None = Field(default=None, repr=False)
+    bottomboundary: Subsection[BottomBoundary] | None = Field(default=None, repr=False)
+    heatflow: Subsection[HeatFlow] | None = Field(default=HeatFlow(swhea=0), repr=False)
+    solutetransport: Subsection[SoluteTransport] | None = Field(default=SoluteTransport(swsolu=0), repr=False)
 
     @property
     def swp(self):

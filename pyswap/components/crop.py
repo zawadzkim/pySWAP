@@ -28,9 +28,9 @@ Classes:
     Preparation: Class for the preparation settings.
 """
 
-from typing import Literal as _Literal
+from typing import Literal as _Literal, Any
 
-from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
+from pydantic import Field as _Field, PrivateAttr as _PrivateAttr, ConfigDict as _ConfigDict
 
 from pyswap.components.irrigation import ScheduledIrrigation as _ScheduledIrrigation
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
@@ -161,7 +161,12 @@ class _CropDevelopmentSettings(
         rdctb  _Arrays): root density as function of relative rooting depth
     """
 
-    wofost_variety: _CropVariety | None = _Field(default=None, exclude=True)
+    # add in model config that additional attributes are allowed
+    model_config = _ConfigDict(
+        extra="allow"
+    )
+
+    wofost_variety: Any | None = _Field(default=None, exclude=True)
 
     swcf: _Literal[1, 2] | None = None
     dvs_cf: _Table | None = None
@@ -173,10 +178,10 @@ class _CropDevelopmentSettings(
     rsc: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
     rsw: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
     tsum1: _Decimal2f | None = _Field(
-        serialization_alias="tsumea", default=None, ge=0.0, le=1.0e4
+        alias="tsumea", default=None, ge=0.0, le=1.0e4
     )
     tsum2: _Decimal2f | None = _Field(
-        serialization_alias="tsumam", default=None, ge=0.0, le=1.0e4
+        alias="tsumam", default=None, ge=0.0, le=1.0e4
     )
     tbase: _Decimal2f | None = _Field(default=None, ge=-10.0, le=30.0)
     kdif: _Decimal2f | None = _Field(default=None, ge=0.0, le=2.0)
@@ -571,7 +576,7 @@ class Preparation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
         agerm (Optional[float]): A-coefficient Eq. 24/25 Feddes & Van Wijk
     """
 
-    swprep: _Literal[0, 1] | None = None
+    swprep: _Literal[0, 1] | None = _Field(default=None)
     swsow: _Literal[0, 1] | None = None
     swgerm: _Literal[0, 1, 2] | None = None
     swharv: _Literal[0, 1] | None = None
@@ -702,16 +707,16 @@ class CropFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
 
     name: str = _Field(exclude=True)
     path: str | None = None
-    prep: _Subsection | None = None
-    cropdev_settings: _Subsection | None = None
-    oxygenstress: _Subsection | None = None
-    droughtstress: _Subsection | None = None
-    saltstress: _Subsection | None = SaltStress(swsalinity=0)
-    compensaterwu: _Subsection | None = CompensateRWUStress(swcompensate=0)
-    interception: _Subsection | None = None
-    scheduledirrigation: _Subsection | None = _ScheduledIrrigation(schedule=0)
-    grasslandmanagement: _Subsection | None = None
-    co2correction: _Subsection | None = None
+    prep: _Subsection[Preparation] | None = None
+    cropdev_settings: _Subsection[CropDevelopmentSettingsFixed | CropDevelopmentSettingsWOFOST | CropDevelopmentSettingsGrass] | None = None
+    oxygenstress: _Subsection[OxygenStress] | None = None
+    droughtstress: _Subsection[DroughtStress] | None = None
+    saltstress: _Subsection[SaltStress] | None = SaltStress(swsalinity=0)
+    compensaterwu: _Subsection[CompensateRWUStress] | None = CompensateRWUStress(swcompensate=0)
+    interception: _Subsection[Interception] | None = None
+    scheduledirrigation: _Subsection[_ScheduledIrrigation] | None = _ScheduledIrrigation(schedule=0)
+    grasslandmanagement: _Subsection[GrasslandManagement] | None = None
+    co2correction: _Subsection[CO2Correction] | None = None
 
     @property
     def crp(self) -> str:

@@ -31,3 +31,22 @@ FNAME_IN: str = "swap"
 
 FNAME_OUT: str = "result"
 """Generic name for the SWAP output files."""
+
+ADDITIONAL_SWITCHES: list[str] = [
+    "schedule",
+    "isuas",
+    "tcs",
+    "tcsfix",
+    "dcs",
+    "dcslim",
+    "dramet",
+    "ipos",
+    "idev",
+    "idsl",
+]
+
+EXTENSIONS: list[str] = [
+    "wba", "end", "vap", "bal", "blc", "sba", "ate",
+    "bma", "drf", "swb", "ini", "inc", "crp", "str",
+    "irg", "csv", "csv_tz",
+]
