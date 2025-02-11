@@ -38,6 +38,14 @@ __all__ = [
 
 # %% ++++++++++++++++++++++++++++ CROP TABLES ++++++++++++++++++++++++++++
 
+class DATEHARVEST(BaseTableModel):
+    """Date of harvest
+
+    Attributes:
+        DATEHARVEST (Series[pa.DateTime]): Date of harvest.
+    """
+
+    DATEHARVEST: Series[pa.DateTime]  # type: ignore
 
 class RDTB(BaseTableModel):
     """Rooting Depth [0..1000 cm, R], as a function of development stage [0..2 -, R].
@@ -649,7 +657,7 @@ class INITSOILTEMP(BaseTableModel):
 
 
 # %% ++++++++++++++++++++++++++++ BOUNDARY TABLES ++++++++++++++++++++++++++++
-class GWLEVELS(BaseTableModel):
+class GWLEVEL(BaseTableModel):
     """Table for groundwater levels.
 
     Attributes:
@@ -885,8 +893,6 @@ class MANSECWATLVL(BaseTableModel):
     WSCAP: Series[float]
     WLDIP: Series[float]
     INTWL: Series[float]
-
-
 
 class QWEIR(BaseTableModel):
     IMPER_4C: Series[float]

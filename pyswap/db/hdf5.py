@@ -16,7 +16,8 @@ import h5py
 import numpy as np
 from pydantic import BaseModel, Field, computed_field
 
-from pyswap.model import Model, Result
+from pyswap.model.model import Model
+from pyswap.model.result import Result
 
 logger = logging.getLogger(__name__)
 

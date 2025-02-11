@@ -208,7 +208,7 @@ def create_array_objects(data_dict: dict, grass_crp: bool = False) -> dict:
                 # Otherwise remocve DNR column. This is done to still provide
                 # data validation and sustain the idea of matching the schema
                 # with the parameter by schema name.
-                print("Handling: ", schema["name"], "with columns: ", schema["cols"])
+
                 if grass_crp:
                     schema["cols"] = tuple(col for col in schema["cols"] if col.upper() != "DVS")
                 else:

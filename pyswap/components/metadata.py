@@ -7,7 +7,7 @@ Classes:
 
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.fields import String
-from pyswap.core.mixins import SerializableMixin
+from pyswap.utils.mixins import SerializableMixin
 
 
 from pydantic import Field

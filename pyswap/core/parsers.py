@@ -60,3 +60,4 @@ def parse_day_month(value: str | date) -> date:
         except (ValueError, TypeError):
             raise ValueError("Invalid day-month format. Expected 'DD MM'")
     raise ValueError("Invalid type. Expected date or string 'DD MM'")
+

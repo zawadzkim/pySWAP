@@ -189,10 +189,10 @@ File = Annotated[
 ]
 """Serialize PySWAPBaseModel to a string."""
 
-T = TypeVar("T", bound=PySWAPBaseModel)
+SubsectionTypeVar = TypeVar("T", bound=PySWAPBaseModel)
 
 Subsection = Annotated[
-    T,
+    SubsectionTypeVar,
     PlainSerializer(lambda x: x.model_string(), return_type=str),
     Field(json_schema_extra={"is_annotated_exception_type": True}),
 ]

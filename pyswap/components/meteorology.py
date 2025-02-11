@@ -20,7 +20,7 @@ from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
 
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.fields import CSVTable as _CSVTable, Decimal2f as _Decimal2f, File as _File, String as _String, Table as _Table
-from pyswap.core.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.utils.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
 from pyswap.gis import Location as _Location
 

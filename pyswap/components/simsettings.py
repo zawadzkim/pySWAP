@@ -16,7 +16,7 @@ from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.defaults import FNAME_OUT as _FNAME_OUT, EXTENSIONS as _EXTENSIONS
 from pyswap.core.defaults import BASE_PATH as _BASE_PATH
 from pyswap.core.fields import Arrays as _Arrays, DateList as _DateList, DayMonth as _DayMonth, String as _String, StringList as _StringList, Subsection as _Subsection, FloatList as _FloatList, IntList as _IntList
-from pyswap.core.mixins import SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.utils.mixins import SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE, YEARRANGE as _YEARRANGE
 
 __all__ = ["GeneralSettings", "RichardsSettings"]

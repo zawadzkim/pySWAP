@@ -19,7 +19,7 @@ from pyswap.core.fields import (
     String as _String,
     Table as _Table,
 )
-from pyswap.core.mixins import (
+from pyswap.utils.mixins import (
     FileMixin as _FileMixin,
     SerializableMixin as _SerializableMixin,
     YAMLValidatorMixin as _YAMLValidatorMixin,

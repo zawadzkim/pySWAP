@@ -34,16 +34,16 @@ from pydantic import Field as _Field, PrivateAttr as _PrivateAttr, ConfigDict as
 
 from pyswap.components.irrigation import ScheduledIrrigation as _ScheduledIrrigation
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
-from pyswap.core.db.cropdb import CropVariety as _CropVariety
+from pyswap.db.cropdb import CropVariety as _CropVariety
 from pyswap.core.fields import (
     Arrays as _Arrays,
-    DateList as _DateList,
     Decimal2f as _Decimal2f,
     IntList as _IntList,
     Subsection as _Subsection,
     Table as _Table,
 )
-from pyswap.core.mixins import (
+
+from pyswap.utils.mixins import (
     FileMixin as _FileMixin,
     SerializableMixin as _SerializableMixin,
     WOFOSTUpdateMixin as _WOFOSTUpdateMixin,
@@ -643,7 +643,7 @@ class GrasslandManagement(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMi
 
     seqgrazmow: _IntList | None = None
     swharvest: _Literal[1, 2] | None = None
-    dateharvest: _DateList | None = None
+    dateharvest: _Arrays | None = None
     swdmgrz: _Literal[1, 2] | None = None
     dmgrazing: _Decimal2f | None = None
     dmgrztb: _Arrays | None = None

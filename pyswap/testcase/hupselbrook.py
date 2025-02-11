@@ -3,7 +3,7 @@ from datetime import date as dt
 
 import pyswap as psp
 from pyswap import testcase
-from pyswap.core.db import WOFOSTCropDB
+from pyswap.db import WOFOSTCropDB
 
 # %%
 
@@ -87,7 +87,7 @@ def _make_hupselbrook():
         "LAI": [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20],
     })
 
-    maize_chtb = psp.components.crop.CFTB.create({
+    maize_cftb = psp.components.crop.CFTB.create({
         "DVS": DVS,
         "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
     })
@@ -110,7 +110,7 @@ def _make_hupselbrook():
         swgc=1,
         gctb=maize_gctb,
         swcf=2,
-        dvs_ch=maize_chtb,
+        cftb=maize_cftb,
         albedo=0.23,
         rsc=61.0,
         rsw=0.0,
@@ -189,7 +189,8 @@ def _make_hupselbrook():
     potato_cropdev_settings = psp.components.crop.CropDevelopmentSettingsWOFOST(
         wofost_variety=potato_params,
         swcf=2,
-        dvs_ch=potato_chtb,
+        cftb=potato_chtb,
+        idsl=0,
         albedo=0.19,
         laiem=0.0589,
         ssa=0.0,
@@ -238,17 +239,17 @@ def _make_hupselbrook():
     )
 
     # %% Grass crp file
-    grass_chtb = psp.components.crop.CHTB_GRASS.create({
+    grass_cftb = psp.components.crop.CFTB.create({
         "DNR": [0.0, 180.0, 366.0],
         "CH": [12.0, 12.0, 12.0],
     })
 
-    grass_slatb = psp.components.crop.SLATB_GRASS.create({
+    grass_slatb = psp.components.crop.SLATB.create({
         "DNR": [1.00, 80.00, 300.00, 366.00],
         "SLA": [0.0015, 0.0015, 0.0020, 0.0020],
     })
 
-    amaxtb_grass = psp.components.crop.AMAXTB_GRASS.create({
+    grass_amaxtb = psp.components.crop.AMAXTB.create({
         "DNR": [1.00, 95.00, 200.00, 275.00, 366.00],
         "AMAX": [40.00, 40.00, 35.00, 25.00, 25.00],
     })
@@ -262,32 +263,32 @@ def _make_hupselbrook():
         "TMNF": [0.0, 1.0],
     })
 
-    grass_rfsetb = psp.components.crop.RFSETB_GRASS.create({
+    grass_rfsetb = psp.components.crop.RFSETB.create({
         "DNR": [1.00, 366.00],
         "RFSE": [1.0000, 1.0000],
     })
 
-    grass_frtb = psp.components.crop.FRTB_GRASS.create({
+    grass_frtb = psp.components.crop.FRTB.create({
         "DNR": [1.00, 366.00],
         "FR": [0.3000, 0.3000],
     })
 
-    grass_fltb = psp.components.crop.FLTB_GRASS.create({
+    grass_fltb = psp.components.crop.FLTB.create({
         "DNR": [1.00, 366.00],
         "FL": [0.6000, 0.6000],
     })
 
-    grass_fstb = psp.components.crop.FSTB_GRASS.create({
+    grass_fstb = psp.components.crop.FSTB.create({
         "DNR": [1.00, 366.00],
         "FS": [0.4000, 0.4000],
     })
 
-    grass_rdrrtb = psp.components.crop.RDRRTB_GRASS.create({
+    grass_rdrrtb = psp.components.crop.RDRRTB.create({
         "DNR": [1.0, 180.0, 366.0],
         "RDRR": [0.0, 0.02, 0.02],
     })
 
-    grass_rdrstb = psp.components.crop.RDRSTB_GRASS.create({
+    grass_rdrstb = psp.components.crop.RDRSTB.create({
         "DNR": [1.0, 180.0, 366.0],
         "RDRS": [0.0, 0.02, 0.02],
     })
@@ -304,7 +305,7 @@ def _make_hupselbrook():
 
     grass_settings = psp.components.crop.CropDevelopmentSettingsGrass(
         swcf=2,
-        dvs_ch=grass_chtb,
+        cftb=grass_cftb,
         albedo=0.23,
         rsc=100.0,
         rsw=0.0,
@@ -319,7 +320,7 @@ def _make_hupselbrook():
         kdif=0.60,
         kdir=0.75,
         eff=0.50,
-        amaxtb=amaxtb_grass,
+        amaxtb=grass_amaxtb,
         tmpftb=grass_tmpftb,
         tmnftb=grass_tmnftb,
         cvl=0.6850,

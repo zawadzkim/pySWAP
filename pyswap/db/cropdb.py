@@ -4,24 +4,35 @@ From the classes here, only the WOFOSTCropDB is directly accessed by the user,
 however, the final usable object will be the CropVariety.
 
 Classes:
-    WOFOSTCropDB: Class for managing crop parameters files.
-    WOFOSTCropFile: Class for managing the content of a single WOFOST crop parameters file.
-    CropVariety: Wrapping the variety in a separate class to make it easier to access.
+    WOFOSTCropFile: Manage a single WOFOST crop file content.
+    CropVariety: Manage crop variety parameters.
+    WOFOSTCropDB: Manage a single WOFOST crop file content.
 """
-# %% definitions
 from pathlib import Path
 from pprint import pprint
 
-import pandera as pa
 from pydantic import BaseModel, computed_field
 
 from pyswap.core.io.io_yaml import load_yaml
-from pyswap.core.io.old_swap import create_array_objects
 from pyswap.libs import crop_params
 
 
 class WOFOSTCropFile(BaseModel):
-    """Class for managing the content of a single WOFOST crop parameters file"""
+    """Manage a single WOFOST crop file content.
+    
+    Attributes:
+        yaml_content: The entire content of the YAML file.
+
+    Properties:
+        metadata: Metadata of the crop file.
+        ecotypes: List of eco-types.
+        genericc3: Generic settings for C3 crop types.
+        genericc4: Generic settings for C4 crop types.
+        varieties: List of available varieties.
+
+    Methods:
+        get_variety: Get the parameters of a specific variety.
+    """
 
     yaml_content: dict
 
@@ -57,10 +68,10 @@ class WOFOSTCropFile(BaseModel):
 
 
 class CropVariety(BaseModel):
-    """Wrapping the variety in a separate class to make it easier to access.
+    """Manage crop variety parameters.
 
     Attributes:
-        variety: The entire variety dictionary from the YAML file (incl. metadata).
+        variety: Parameters for crop variety from the YAML file (with metadata).
 
     Properties:
         parameters: Bare parameters of the variety (all metadata removed).
@@ -72,7 +83,7 @@ class CropVariety(BaseModel):
     @computed_field(return_type=dict)
     def parameters(self):
         params = {
-            k: v[0]
+            k.lower(): v[0]
             for k, v in self.variety.items()
             if k != "Metadata" and v[0] != -99.0
         }
@@ -84,20 +95,20 @@ class CropVariety(BaseModel):
     
     @staticmethod
     def _format_tables(table: dict) -> dict[str, list[list]]:
-        """Format tables from YAML to a dictionary with two lists.
+        """pre-format tables from YAML to a list of lists.
 
-        In the YAML file, the tables seem to be formatted
+        In the YAML file, the tables are seem to be formatted
         in a way where the odd elements in the lists are one
         column and the even elements are the other. This method
         converts this format to a dictionary with two lists.
         """
-        # formatted = {k: [v[::2], v[1::2]] if isinstance(v, list) else v for k, v in table.items()}
+
         formatted = {
             k: [list(row) for row in zip(v[::2], v[1::2])]
             if isinstance(v, list) else v
             for k, v in table.items()
         }
-        print(formatted)
+
         return formatted
 
 
@@ -129,7 +140,7 @@ class WOFOSTCropDB(BaseModel):
         """Print the list of available files"""
         pprint(load_yaml(crop_params / "crops.yaml")["available_crops"])
 
-    def load_crop_file(self, crop: str):
+    def load_crop_file(self, crop: str) -> WOFOSTCropFile:
         """Load a specific crop file and return the content as a dictionary"""
         path = (
             self.libdir / f"{crop}"
@@ -139,69 +150,4 @@ class WOFOSTCropDB(BaseModel):
         return WOFOSTCropFile(yaml_content=load_yaml(path))
 
 
-# %% usage
-db = WOFOSTCropDB()
-barley = db.load_crop_file("barley")
-spring_barley = barley.get_variety("Spring_barley_301")
-objects = create_array_objects(spring_barley.parameters)
-
-print(objects)
-
-# %% pause
-    # def format_data(self):
-    #     variety = self.parameters
-    #     formatted = {}
-    # @staticmethod
-    # def get_table_class(class_name: str):
-    #     """Get the schema class of a table.
-
-    #     In pySWAP tables are validated with Pandera DataFrameModel. Each table
-    #     required by SWAP has its own schema class. This method returns the
-    #     schema class of a table based on its name.
-
-    #     Parameters:
-    #         class_name: Name of the table class. Meant to be automatically
-    #             generated from the key in the YAML file.
-
-    #     Returns:
-    #         class_: The schema class of the table if it exists, otherwise None.
-    #     """
-    #     import importlib
-
-    #     module = importlib.import_module("pyswap.components.crop")
-    #     if hasattr(module, class_name):
-    #         class_ = getattr(module, class_name)
-    #         return class_ if issubclass(class_, pa.DataFrameModel) else None
-    #     else:
-    #         None
-
-    # def format_tables(self):
-    #     variety = self.parameters
-    #     for k, v in variety.items():
-    #         table_class = self.get_table_class(k)
-    #         if table_class:
-    #             cols = list(table_class.__annotations__.keys())
-    #             if isinstance(v, list):
-    #                 variety[k] = table_class.create(
-    #                     self._format_tables(v), columns=cols
-    #                 )
-    #     return {k.lower(): v for k, v in variety.items()}
-
-    # @staticmethod
-    # def _format_tables(table: list) -> dict:
-    #     """Format tables from YAML to a dictionary with two lists.
-
-    #     In the YAML file, the tables seem to be formatted
-    #     in a way where the odd elements in the lists are one
-    #     column and the even elements are the other. This method
-    #     converts this format to a dictionary with two lists.
-    #     """
-    #     return {"col1": table[::2], "col2": table[1::2]}
-
-# %% resume
-
-
-
 __all__ = ["WOFOSTCropDB"]
-
-# %%

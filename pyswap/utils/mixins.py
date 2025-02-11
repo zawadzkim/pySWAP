@@ -23,7 +23,6 @@ from typing import Any, Literal, Self, Union, get_args, get_origin
 from pydantic import model_serializer, model_validator
 from pydantic.fields import FieldInfo
 
-from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.defaults import VALIDATIONRULES
 from pyswap.log import logging
 
@@ -195,22 +194,34 @@ class YAMLValidatorMixin:
 
     Initially, pySWAP had model serializers on each model component class which
     had a number of assertions to validate the parameters (i.e., require
-    parameters rlwtb and wrtmax if swrd = 3). This create quite a lot of chaos
-    in the code, and since none of it was used by inspection tools, it was
-    decided to move the validation to a separate mixin class using rules defined
-    in a YAML file.
+    parameters rlwtb and wrtmax if swrd = 3). This created chaos
+    in the code, and since none of it was used by inspection tools anyways, it
+    was decided to leave the validation logic in the code and move the rules to
+    a separate YAML file.
 
     Methods:
-        validate_parameters: Validates parameters against required rules.
-        validate_with_yaml: Validates parameters using external YAML rules.
-        validate_switch_options: Validates switch options against allowed values.
+        validate_parameters: Validate parameters against required rules.
+        validate_with_yaml: Pydantic validator executing validation logic.
     """
 
     @staticmethod
     def validate_parameters(
         switch_name: str, switch_value: str, params: dict, rules: dict
     ):
-        """Validates parameters against required rules.
+        """Validate parameters against required rules.
+
+        This method reads the rules for the model from the YAML file and checks
+        if the required parameters are present. If not, it raises a ValueError.
+
+        ```yaml
+        SaltStress: # <--- Model name
+            swsalinity:  # <--- Switch name (switch_name)
+                1:  # <--- Switch value (switch_value)
+                - saltmax  # <---| Required parameters
+                - saltslope  # <--|
+                2:
+                - salthead
+        ```
 
         Parameters:
             switch_name (str): The name of the switch (e.g., 'swcf').
@@ -238,13 +249,13 @@ class YAMLValidatorMixin:
 
     @model_validator(mode="after")
     def validate_with_yaml(self) -> Self:
-        """Validates parameters using rules from yaml file.
+        """Pydantic validator executing validation logic.
 
-        All model validators are run when the model is created. This method
-        makes sure that YAML validation is postponed until all the parameters
-        are set by the users. This is important, because in newest releases of
-        pyswap it is possible to update model components with parameters from
-        external sources (e.g., WOFOST variety settings).
+        All validators defined on a model run on model instantiation. This
+        method makes sure that YAML validation is postponed until the
+        _validation parameter (required on all classes inheriting this mixin) is
+        set to True. This state is done when all the required parameters are
+        presumed to be set, e.g., when the user tries to run the model.
         """
 
         if not self._validation:
@@ -270,11 +281,13 @@ class WOFOSTUpdateMixin:
     WOFOST crop database.
     """
 
-    def update_from_wofost(self: PySWAPBaseModel):
-        """Update the model with the WOFOST variety settings.
-
-        This method overrides the default `update()` method to facilitate the
-        use of wofost_variety parameter set on some of the model components.
-        """
-        new = self.wofost_variety.format_tables()
+    def update_from_wofost(self) -> None:
+        """Update the model with the WOFOST variety settings."""
+        from pyswap.utils.old_swap import create_array_objects
+        # parameters attribute returns a dictionary with the key-value pairs and
+        # tables as list of lists. Before updating, the tables should be
+        # created.
+        variety_params = self.wofost_variety.parameters
+        new_arrays = create_array_objects(variety_params)
+        new = variety_params | new_arrays
         self.update(new, inplace=True)

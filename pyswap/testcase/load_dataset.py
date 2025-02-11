@@ -20,6 +20,10 @@ RESOURCES: dict[str, Path] = {
     },
     "grassgrowth": {
         "met": Path(BASE_PATH, "2-grassgrowth/260.csv"),
+        "grassd": Path(BASE_PATH, "2-grassgrowth/grassd.crp"),
+        "bbc": Path(BASE_PATH, "2-grassgrowth/swap.bbc"),
+        "dra": Path(BASE_PATH, "2-grassgrowth/swap.dra"),
+        "swp": Path(BASE_PATH, "2-grassgrowth/swap.swp"),
         "gwlevels": Path(BASE_PATH, "2-grassgrowth/gwlevels.csv"),
         "observations": Path(BASE_PATH, "2-grassgrowth/yield.csv"),
     },

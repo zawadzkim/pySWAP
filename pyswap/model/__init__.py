@@ -14,5 +14,6 @@ from pyswap.model.result import Result
 __all__ = [
     "Metadata",
     "Model",
+    "Result",
     "run_parallel"
 ]

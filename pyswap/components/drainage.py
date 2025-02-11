@@ -15,7 +15,7 @@ from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.defaults import FNAME_IN as _FNAME_IN
 from pyswap.core.fields import File as _File, FloatList as _FloatList, Subsection as _Subsection, String as _String, Table as _Table
-from pyswap.core.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.utils.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
 
 __all__ = [
@@ -49,45 +49,45 @@ class Flux(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
             according to the level number.
     """
 
-    drares1: float = _Field(ge=10.0, le=1.0e5)
-    infres1: float = _Field(ge=10.0, le=1.0e5)
-    swallo1: _Literal[1, 2, 3]
-    l1: float | None = _Field(ge=1.0, le=1.0e5)
-    zbotdr1: float = _Field(ge=-1000.0, le=0.0)
-    swdtyp1: _Literal[1, 2]
-    datowltb1: _Table
+    drares1: float | None = _Field(default=None, ge=10.0, le=1.0e5)
+    infres1: float | None = _Field(default=None, ge=10.0, le=1.0e5)
+    swallo1: _Literal[1, 2, 3] | None = None
+    l1: float | None = _Field(default=None, ge=1.0, le=1.0e5)
+    zbotdr1: float = _Field(default=None, ge=-1000.0, le=0.0)
+    swdtyp1: _Literal[1, 2] | None = None
+    datowltb1: _Table | None = None
     # level 2
-    drares2: float = _Field(ge=10.0, le=1.0e5)
-    infres2: float = _Field(ge=10.0, le=1.0e5)
-    swallo2: _Literal[1, 2, 3]
-    l2: float | None = _Field(ge=1.0, le=1.0e5)
-    zbotdr2: float = _Field(ge=-1000.0, le=0.0)
-    swdtyp2: _Literal[1, 2]
-    datowltb2: _Table
+    drares2: float | None = _Field(default=None, ge=10.0, le=1.0e5)
+    infres2: float | None = _Field(default=None, ge=10.0, le=1.0e5)
+    swallo2: _Literal[1, 2, 3] | None = None
+    l2: float | None = _Field(default=None, ge=1.0, le=1.0e5)
+    zbotdr2: float | None = _Field(default=None, ge=-1000.0, le=0.0)
+    swdtyp2: _Literal[1, 2] | None = None
+    datowltb2: _Table | None = None
     # level 3
-    drares3: float = _Field(ge=10.0, le=1.0e5)
-    infres3: float = _Field(ge=10.0, le=1.0e5)
-    swallo3: _Literal[1, 2, 3]
-    l3: float | None = _Field(ge=1.0, le=1.0e5)
-    zbotdr3: float = _Field(ge=-1000.0, le=0.0)
-    swdtyp3: _Literal[1, 2]
-    datowltb3: _Table
+    drares3: float | None = _Field(default=None, ge=10.0, le=1.0e5)
+    infres3: float | None = _Field(default=None, ge=10.0, le=1.0e5)
+    swallo3: _Literal[1, 2, 3] | None = None
+    l3: float | None = _Field(default=None, ge=1.0, le=1.0e5)
+    zbotdr3: float | None = _Field(default=None, ge=-1000.0, le=0.0)
+    swdtyp3: _Literal[1, 2] | None = None
+    datowltb3: _Table | None = None
     # level 4
-    drares4: float = _Field(ge=10.0, le=1.0e5)
-    infres4: float = _Field(ge=10.0, le=1.0e5)
-    swallo4: _Literal[1, 2, 3]
-    l4: float | None = _Field(ge=1.0, le=1.0e5)
-    zbotdr4: float = _Field(ge=-1000.0, le=0.0)
-    swdtyp4: _Literal[1, 2]
-    datowltb4: _Table
+    drares4: float | None = _Field(default=None, ge=10.0, le=1.0e5)
+    infres4: float | None = _Field(default=None, ge=10.0, le=1.0e5)
+    swallo4: _Literal[1, 2, 3] | None = None
+    l4: float | None = _Field(default=None, ge=1.0, le=1.0e5)
+    zbotdr4: float | None = _Field(default=None, ge=-1000.0, le=0.0)
+    swdtyp4: _Literal[1, 2] | None = None
+    datowltb4: _Table | None = None
     # level 5
-    drares5: float = _Field(ge=10.0, le=1.0e5)
-    infres5: float = _Field(ge=10.0, le=1.0e5)
-    swallo5: _Literal[1, 2, 3]
-    l5: float | None = _Field(ge=1.0, le=1.0e5)
-    zbotdr5: float = _Field(ge=-1000.0, le=0.0)
-    swdtyp5: _Literal[1, 2]
-    datowltb5: _Table
+    drares5: float | None = _Field(default=None, ge=10.0, le=1.0e5)
+    infres5: float | None = _Field(default=None, ge=10.0, le=1.0e5)
+    swallo5: _Literal[1, 2, 3] | None = None
+    l5: float | None = _Field(default=None, ge=1.0, le=1.0e5)
+    zbotdr5: float | None = _Field(default=None, ge=-1000.0, le=0.0)
+    swdtyp5: _Literal[1, 2] | None = None
+    datowltb5: _Table | None = None
 
 
 class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):

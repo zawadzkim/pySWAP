@@ -17,7 +17,7 @@ from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.defaults import FNAME_IN as _FNAME_IN
 from pyswap.core.fields import DayMonth as _DayMonth, String as _String, Table as _Table
-from pyswap.core.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.utils.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
 from pyswap.core.valueranges import YEARRANGE as _YEARRANGE
 from pyswap.components.tables import IRRIGEVENTS
 

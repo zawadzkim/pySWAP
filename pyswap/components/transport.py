@@ -4,7 +4,7 @@ from pydantic import Field as _Field
 
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.fields import Decimal2f as _Decimal2f, String as _String, Table as _Table
-from pyswap.core.mixins import SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.utils.mixins import SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
 from pyswap.core.valueranges import YEARRANGE as _YEARRANGE
 from pyswap.components.tables import SOILTEXTURES, INITSOILTEMP
 

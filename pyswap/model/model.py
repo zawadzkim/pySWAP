@@ -44,12 +44,12 @@ from pyswap.components.drainage import Drainage
 from pyswap.components.boundary import BottomBoundary
 from pyswap.components.transport import HeatFlow, SoluteTransport
 from pyswap.components.metadata import Metadata
-# from pyswap.components.crop import Crop
+from pyswap.components.crop import Crop
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.defaults import IS_WINDOWS
 from pyswap.core.fields import Subsection
 from pyswap.core.io.io_ascii import open_ascii
-from pyswap.core.mixins import FileMixin, SerializableMixin
+from pyswap.utils.mixins import FileMixin, SerializableMixin
 from pyswap.libs import swap_linux, swap_windows
 from pyswap.model.result import Result
 
@@ -376,7 +376,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     version: str = Field(exclude=True, default="base")
     generalsettings: Subsection[GeneralSettings] | None = Field(default=None, repr=False)
     meteorology: Subsection[Meteorology] | None = Field(default=None, repr=False)
-    crop: Subsection | None = Field(default=None, repr=False)
+    crop: Subsection[Crop] | None = Field(default=None, repr=False)
     fixedirrigation: Subsection[FixedIrrigation] | None = Field(default=FixedIrrigation(swirfix=0), repr=False)
     soilmoisture: Subsection[SoilMoisture] | None = Field(default=None, repr=False)
     surfaceflow: Subsection[SurfaceFlow] | None = Field(default=None, repr=False)

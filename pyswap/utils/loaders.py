@@ -50,9 +50,9 @@ def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
     # from among the parameters parsed from the ascii file, pop the switches
     extension_switches = {key: params.pop(key) for key in EXTENSION_SWITCHES if key in params}
     # create the extension list with only those switches that are = 1. get rid of the "sw" prefix
-    print(extension_switches)
+
     extension_list = [key[2:] for key, value in extension_switches.items() if int(value) == 1]
-    print(extension_list)
+
     # model definition
     model_setup = {
         "generalsettings": GeneralSettings(extensions=extension_list),
@@ -125,3 +125,20 @@ def load_crp(path: Path, type: _Literal["fixed", "wofost", "grass"], name: str):
     crp = CropFile(**cropfile_setup)
 
     return crp
+
+def load_bbc(path: Path, bottomboundary: BottomBoundary | None = None):
+    """Load the bottom boundary conditions from a .bbc file.
+    
+    Bottom boundary conditions are stored in the same class. Therefore this
+    function can either return a new instance of the class or update an existing
+    one.
+    """
+    params = _parse_ascii_file(path)
+
+    if bottomboundary is None:
+        bottomboundary = BottomBoundary()
+
+    botbound = bottomboundary.update(params)
+    
+    return botbound
+    
