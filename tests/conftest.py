@@ -2,6 +2,8 @@
 import pytest
 
 from pyswap.core.basemodel import PySWAPBaseModel
+from pyswap.utils.mixins import SerializableMixin
+from pyswap.core.fields import Table, Table, Arrays, DayMonth, StringList, FloatList, IntList, DateList, ObjectList, String, Subsection, Decimal2f, Decimal3f, Decimal4f
 
 
 @pytest.fixture(scope="module")
@@ -38,11 +40,19 @@ def sample_file(tmp_path_factory):
 
 
 @pytest.fixture()
-def simple_model():
-    class SimpleModel(PySWAPBaseModel):
-        attr1: str
-        attr2: int
-        table_data: str
+def simple_serializable_model():
+    class SimpleModel(PySWAPBaseModel, SerializableMixin):
+        table: Table
+        arrays: Arrays
+        daymonth: DayMonth
+        stringlist: StringList
+        floatlist: FloatList
+        intlist: IntList
+        datelist: DateList
+        string: String
+        decimal2f: Decimal2f
+        decimal3f: Decimal3f
+        decimal4f: Decimal4f
 
     return SimpleModel
 

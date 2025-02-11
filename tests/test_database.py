@@ -1,4 +1,5 @@
-from pyswap import HDF5, testcase
+from pyswap.db import HDF5
+from pyswap import testcase
 
 
 def test_database():
@@ -20,5 +21,5 @@ def test_database():
     f.save_model(model=model2, result=result2, overwrite_datasets=True)
 
     # Load from HDF5
-    assert f.list_projects == ["pySWAP test - hupselbrook"]
-    assert f.list_models["pySWAP test - hupselbrook"] == ["base", "v2"]
+    assert f.list_projects == ["psp test - hupselbrook"]
+    assert f.list_models["psp test - hupselbrook"] == ["base", "v2"]
