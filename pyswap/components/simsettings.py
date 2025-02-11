@@ -15,7 +15,7 @@ from pydantic import ConfigDict as _ConfigDict, Field as _Field, model_validator
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.defaults import FNAME_OUT as _FNAME_OUT, EXTENSIONS as _EXTENSIONS
 from pyswap.core.defaults import BASE_PATH as _BASE_PATH
-from pyswap.core.fields import Arrays as _Arrays, DateList as _DateList, DayMonth as _DayMonth, String as _String, StringList as _StringList, Subsection as _Subsection, FloatList as _FloatList, IntList as _IntList
+from pyswap.core.fields import Arrays as _Arrays, DayMonth as _DayMonth, String as _String, StringList as _StringList, Subsection as _Subsection, FloatList as _FloatList, IntList as _IntList
 from pyswap.utils.mixins import SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE, YEARRANGE as _YEARRANGE
 
@@ -23,26 +23,28 @@ __all__ = ["GeneralSettings", "RichardsSettings"]
 
 logger = _logging.getLogger(__name__)
 
+
 class _ExtensionMixin(_PySWAPBaseModel, _SerializableMixin):
     """Handle creation of the switches through direct assignment and list."""
 
-    swwba: _Literal[1, 0] | None = _Field(default=None, validation_alias="wba") 
-    swend: _Literal[1, 0] | None = _Field(default=None, validation_alias="end") 
-    swvap: _Literal[1, 0] | None = _Field(default=None, validation_alias="vap") 
-    swbal: _Literal[1, 0] | None = _Field(default=None, validation_alias="bal") 
-    swblc: _Literal[1, 0] | None = _Field(default=None, validation_alias="blc") 
-    swsba: _Literal[1, 0] | None = _Field(default=None, validation_alias="sba") 
-    swate: _Literal[1, 0] | None = _Field(default=None, validation_alias="ate") 
-    swbma: _Literal[1, 0] | None = _Field(default=None, validation_alias="bma") 
-    swdrf: _Literal[1, 0] | None = _Field(default=None, validation_alias="drf") 
-    swswb: _Literal[1, 0] | None = _Field(default=None, validation_alias="swb") 
-    swini: _Literal[1, 0] | None = _Field(default=None, validation_alias="ini") 
-    swinc: _Literal[1, 0] | None = _Field(default=None, validation_alias="inc") 
-    swcrp: _Literal[1, 0] | None = _Field(default=None, validation_alias="crp") 
-    swstr: _Literal[1, 0] | None = _Field(default=None, validation_alias="str") 
-    swirg: _Literal[1, 0] | None = _Field(default=None, validation_alias="irg") 
-    swcsv: _Literal[1, 0] | None = _Field(default=None, validation_alias="csv") 
-    swcsv_tz: _Literal[1, 0] | None = _Field(default=None, validation_alias="csv_tz") 
+    swwba: _Literal[1, 0] | None = _Field(default=None, validation_alias="wba")
+    swend: _Literal[1, 0] | None = _Field(default=None, validation_alias="end")
+    swvap: _Literal[1, 0] | None = _Field(default=None, validation_alias="vap")
+    swbal: _Literal[1, 0] | None = _Field(default=None, validation_alias="bal")
+    swblc: _Literal[1, 0] | None = _Field(default=None, validation_alias="blc")
+    swsba: _Literal[1, 0] | None = _Field(default=None, validation_alias="sba")
+    swate: _Literal[1, 0] | None = _Field(default=None, validation_alias="ate")
+    swbma: _Literal[1, 0] | None = _Field(default=None, validation_alias="bma")
+    swdrf: _Literal[1, 0] | None = _Field(default=None, validation_alias="drf")
+    swswb: _Literal[1, 0] | None = _Field(default=None, validation_alias="swb")
+    swini: _Literal[1, 0] | None = _Field(default=None, validation_alias="ini")
+    swinc: _Literal[1, 0] | None = _Field(default=None, validation_alias="inc")
+    swcrp: _Literal[1, 0] | None = _Field(default=None, validation_alias="crp")
+    swstr: _Literal[1, 0] | None = _Field(default=None, validation_alias="str")
+    swirg: _Literal[1, 0] | None = _Field(default=None, validation_alias="irg")
+    swcsv: _Literal[1, 0] | None = _Field(default=None, validation_alias="csv")
+    swcsv_tz: _Literal[1, 0] | None = _Field(
+        default=None, validation_alias="csv_tz")
 
 
 class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
@@ -137,9 +139,10 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         ]
         if invalid_extensions:
             raise ValueError(f"Invalid extensions: {invalid_extensions}")
-        
+
         # Create the _ExtensionMixin object without triggering validation
-        object.__setattr__(self, 'exts', _ExtensionMixin(**{ext: 1 if ext in self.extensions else 0 for ext in self._all_extensions}))
+        object.__setattr__(self, 'exts', _ExtensionMixin(
+            **{ext: 1 if ext in self.extensions else 0 for ext in self._all_extensions}))
         return self
 
 

@@ -1,4 +1,3 @@
-# conftest.py
 import pytest
 
 from pyswap.core.basemodel import PySWAPBaseModel
