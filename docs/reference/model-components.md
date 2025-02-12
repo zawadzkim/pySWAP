@@ -18,7 +18,7 @@ all the components that can be used to build a SWAP model.
 
 ### Crop database
 
-::: pyswap.core.db.cropdb
+::: pyswap.db.cropdb
 
 ## Irrigation
 

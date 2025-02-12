@@ -4,7 +4,7 @@
 
 # Mixins
 
-::: pyswap.core.mixins
+::: pyswap.utils.mixins
 
 # Validation and serialization
 

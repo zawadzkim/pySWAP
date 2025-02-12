@@ -2,7 +2,7 @@
 
 ## HDF5
 
-::: pyswap.core.db.hdf5
+::: pyswap.db.hdf5
 
 ## KNMI
 
