@@ -229,7 +229,10 @@ def metfile_from_knmi(
             "S",
             "O",
             "Y",
- "UG", "FG", "UX", "UN"
+            "UG",
+            "FG",
+            "UX",
+            "UN",
         ]
     ],
     start: str | _datetime = "20000101",

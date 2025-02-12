@@ -1,5 +1,5 @@
 # mypy: disable-error-code="no-any-unimported"
-# This error was due to lack of stubs for shapely. 
+# This error was due to lack of stubs for shapely.
 """Location class and related functionality.
 
 Classes:

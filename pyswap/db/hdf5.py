@@ -249,10 +249,10 @@ class HDF5(BaseModel):
         try:
             # Load pickled input data
             pickle_in = group[name]["input"][()].tobytes()
-            model: "Model" = pickle.loads(pickle_in)
+            model: Model = pickle.loads(pickle_in)
 
             # Optionally load pickled output data
-            result: "Result" = None
+            result: Result = None
 
             if load_results and "output" in group[name]:
                 pickle_out = group[name]["output"][()].tobytes()

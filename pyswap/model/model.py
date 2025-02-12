@@ -475,7 +475,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
 
     def validate(self):
         """Execute the model validation when `run()` is called.
-        
+
         This method should probably be refactored. It seems to shadow some
         validation method from Pydantic.
         """
@@ -505,7 +505,9 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
 
         logger.info(f"Model files written to {path}")
 
-    def run(self, path: str | Path | None = None, silence_warnings: bool = False) -> Result:
+    def run(
+        self, path: str | Path | None = None, silence_warnings: bool = False
+    ) -> Result:
         """Run the model using ModelRunner."""
         self.validate()
         path = Path.cwd() if path is None else path

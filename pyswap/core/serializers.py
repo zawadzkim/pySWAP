@@ -21,8 +21,6 @@ from datetime import date
 
 from pandas import DataFrame, DatetimeIndex
 
-from pyswap.core.basemodel import PySWAPBaseModel
-
 
 def serialize_table(table: DataFrame) -> str:
     """Convert the DataFrame to a string.
