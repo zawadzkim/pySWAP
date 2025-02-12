@@ -10,14 +10,15 @@ Classes:
 
 import logging
 import pickle
-from typing import Literal
+from typing import TYPE_CHECKING, Literal, Union
 
 import h5py
 import numpy as np
 from pydantic import BaseModel, Field, computed_field
 
-from pyswap.model.model import Model
-from pyswap.model.result import Result
+if TYPE_CHECKING:
+    from pyswap.model.model import Model
+    from pyswap.model.result import Result
 
 logger = logging.getLogger(__name__)
 
