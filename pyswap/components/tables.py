@@ -1,4 +1,6 @@
-from typing import Literal, Optional
+# pyright: reportInvalidTypeForm=false
+
+from typing import Literal
 
 import pandera as pa
 from pandera.typing import Series
@@ -10,7 +12,7 @@ __all__ = [
     "RDTB",
     "RDCTB",
     "GCTB",
-    "CHTB",
+    "CFTB",
     "KYTB",
     "MRFTB",
     "WRTB",
@@ -38,6 +40,7 @@ __all__ = [
 
 # %% ++++++++++++++++++++++++++++ CROP TABLES ++++++++++++++++++++++++++++
 
+
 class DATEHARVEST(BaseTableModel):
     """Date of harvest
 
@@ -45,7 +48,8 @@ class DATEHARVEST(BaseTableModel):
         DATEHARVEST (Series[pa.DateTime]): Date of harvest.
     """
 
-    DATEHARVEST: Series[pa.DateTime]  # type: ignore
+    DATEHARVEST: Series[pa.DateTime]
+
 
 class RDTB(BaseTableModel):
     """Rooting Depth [0..1000 cm, R], as a function of development stage [0..2 -, R].
@@ -55,8 +59,8 @@ class RDTB(BaseTableModel):
         RD (Series[float]): Rooting depth of the crop.
     """
 
-    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
-    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     RD: Series[float] = pa.Field(ge=0.0, le=100.0)
 
 
@@ -93,10 +97,10 @@ class CFTB(BaseTableModel):
         CF (Series[float]): Crop factor.
     """
 
-    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
-    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
-    CH: Optional[Series[float]]
-    CF: Optional[Series[float]]
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
+    CH: Series[float] | None
+    CF: Series[float] | None
 
 
 class INTERTB(BaseTableModel):
@@ -117,6 +121,7 @@ class INTERTB(BaseTableModel):
     SCANOPY: Series[float] = pa.Field(ge=0.0, le=10.0)
     AVPREC: Series[float] = pa.Field(ge=0.0, le=100.0)
     AVEVAP: Series[float] = pa.Field(ge=0.0, le=10.0)
+
 
 class KYTB(BaseTableModel):
     """Yield response factor [0..5 -, R], as function of dev. stage [0..2 -, R]
@@ -168,8 +173,8 @@ class CROPROTATION(BaseTableModel):
             * 3 - detailed, WOFOST grass
     """
 
-    CROPSTART: Series[pa.DateTime]  # type: ignore
-    CROPEND: Series[pa.DateTime]  # type: ignore
+    CROPSTART: Series[pa.DateTime]
+    CROPEND: Series[pa.DateTime]
     CROPFIL: Series[str]
     CROPTYPE: Series[int] = pa.Field(ge=1, le=3)
 
@@ -195,8 +200,8 @@ class SLATB(BaseTableModel):
         SLA (Series[float]): Leaf area.
     """
 
-    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
-    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     SLA: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
@@ -208,8 +213,8 @@ class AMAXTB(BaseTableModel):
         AMAX (Series[float]): Maximum CO2 assimilation rate.
     """
 
-    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
-    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     AMAX: Series[float] = pa.Field(ge=0.0, le=100.0)
 
 
@@ -245,8 +250,8 @@ class RFSETB(BaseTableModel):
         RFSE (Series[float]): Reduction factor of senescence.
     """
 
-    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
-    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     RFSE: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
@@ -258,8 +263,8 @@ class FRTB(BaseTableModel):
         FR (Series[float]): Fraction of total dry matter increase partitioned to the roots.
     """
 
-    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
-    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     FR: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
@@ -271,8 +276,8 @@ class FLTB(BaseTableModel):
         FL (Series[float]): Fraction of total above ground dry matter increase partitioned to the leaves.
     """
 
-    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
-    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     FL: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
@@ -284,8 +289,8 @@ class FSTB(BaseTableModel):
         FS (Series[float]): Fraction of total above ground dry matter increase partitioned to the stems.
     """
 
-    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
-    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     FS: Series[float] = pa.Field(ge=0.0, le=1.0)
 
 
@@ -309,8 +314,8 @@ class RDRRTB(BaseTableModel):
         RDRR (Series[float]): Relative death rates of roots.
     """
 
-    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
-    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     RDRR: Series[float] = pa.Field(ge=0.0)
 
 
@@ -322,8 +327,8 @@ class RDRSTB(BaseTableModel):
         RDRS (Series[float]): Relative death rates of stems.
     """
 
-    DVS: Optional[Series[float]] = pa.Field(**DVSRANGE)
-    DNR: Optional[Series[float]] = pa.Field(**YEARRANGE)
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     RDRS: Series[float] = pa.Field(ge=0.0)
 
 
@@ -426,7 +431,7 @@ class IRRIGEVENTS(BaseTableModel):
 
     """
 
-    IRDATE: Series[pa.DateTime]  # type: ignore
+    IRDATE: Series[pa.DateTime]
     IRDEPTH: Series[float] | None = pa.Field(default=None, ge=0.0, le=1000.0)
     IRCONC: Series[float] = pa.Field(ge=0.0, le=1000.0)
     IRTYPE: Series[int] = pa.Field(ge=0, le=1)
@@ -473,9 +478,11 @@ class TC8TB(BaseTableModel):
     DVS_TC8: Series[float] = pa.Field(ge=0.0, le=2.0)
     TCRI: Series[float] = pa.Field(ge=0.0, le=1.0)
 
+
 class DC1TB(BaseTableModel):
     DVS_DC1: Series[float]
     DI: Series[float]
+
 
 class DC2TB(BaseTableModel):
     DVS_DC2: Series[float]
@@ -517,7 +524,7 @@ class DAILYMETEODATA(BaseTableModel):
 
 
 class SHORTINTERVALMETEODATA(BaseTableModel):
-    Date: Series[pa.DateTime]  # type: ignore
+    Date: Series[pa.DateTime]
     Record: Series[int] = pa.Field(ge=1, le=10)
     Rad: Series[float]
     Temp: Series[float]
@@ -572,7 +579,7 @@ class MXPONDTB(BaseTableModel):
         PONDMXTB: Series[float]: Minimum thickness for runoff.
     """
 
-    DATEPMX: Series[pa.DateTime]  # type: ignore
+    DATEPMX: Series[pa.DateTime]
     PONDMXTB: Series[float]
 
 
@@ -665,7 +672,7 @@ class GWLEVEL(BaseTableModel):
         GWLEVEL (Series[float]): Groundwater level.
     """
 
-    DATE1: Series[pa.DateTime]  # type: ignore
+    DATE1: Series[pa.DateTime]
     GWLEVEL: Series[float]
 
 
@@ -677,7 +684,7 @@ class QBOT2(BaseTableModel):
         QBOT2 (Series[float]): Bottom boundary flow.
     """
 
-    DATE2: Series[pa.DateTime]  # type: ignore
+    DATE2: Series[pa.DateTime]
     QBOT2: Series[float]
 
 
@@ -689,7 +696,7 @@ class HAQUIF(BaseTableModel):
         HAQUIF (Series[float]): Aquifer thickness.
     """
 
-    DATE3: Series[pa.DateTime]  # type: ignore
+    DATE3: Series[pa.DateTime]
     HAQUIF: Series[float]
 
 
@@ -701,7 +708,7 @@ class QBOT4(BaseTableModel):
         QBOT4 (Series[float]): Bottom boundary flow.
     """
 
-    DATE4: Series[pa.DateTime]  # type: ignore
+    DATE4: Series[pa.DateTime]
     QBOT4: Series[float]
 
 
@@ -713,7 +720,7 @@ class QTAB(BaseTableModel):
         HTABLE (Series[float]): Height of the water table.
     """
 
-    HTAB: Series[float]  # type: ignore
+    HTAB: Series[float]
     QTAB: Series[float]
 
 
@@ -725,7 +732,7 @@ class HBOT5(BaseTableModel):
         HBOT5 (Series[float]): Bottom compartment pressure head.
     """
 
-    DATE5: Series[pa.DateTime]  # type: ignore
+    DATE5: Series[pa.DateTime]
     HBOT5: Series[float]
 
 
@@ -737,7 +744,7 @@ class DATET(BaseTableModel):
         TIME (Series[float]): Time.
     """
 
-    DATET: Series[pa.DateTime]  # type: ignore
+    DATET: Series[pa.DateTime]
     TBOT: Series[float]
 
 
@@ -749,7 +756,7 @@ class CSEEPARR(BaseTableModel):
         CSEEPARR (Series[float]): Seepage.
     """
 
-    DATEC: Series[pa.DateTime]  # type: ignore
+    DATEC: Series[pa.DateTime]
     CSEEPARR: Series[float]
 
 
@@ -761,7 +768,7 @@ class INISSOIL(BaseTableModel):
         CML (Series[float]): Capillary rise.
     """
 
-    ZC: Series[float]  # type: ignore
+    ZC: Series[float]
     CML: Series[float]
 
 
@@ -780,6 +787,7 @@ class MISC(BaseTableModel):
 
 
 # %% ++++++++++++++++++++++++++++ DRAINAGE TABLES ++++++++++++++++++++++++++++
+
 
 class DRNTB(BaseTableModel):
     """Drainage characteristics table.
@@ -822,6 +830,7 @@ class DRAINAGELEVELTOPPARAMS(BaseTableModel):
         ZTOPDISLAY (Series[float]): Array with depth of top of model discharge layer for each drain level [-10000.0..0.0, cm, R]
         FTOPDISLAY (Series[float]): Array with factor of top of model discharge layer for each drain level [0.0..1.0, -, R]
     """
+
     SWTOPDISLAY: Series[Literal[0, 1]]
     ZTOPDISLAY: Series[float] = pa.Field(ge=-10000.0, le=0.0)
     FTOPDISLAY: Series[float] = pa.Field(ge=0.0, le=1.0)
@@ -835,8 +844,9 @@ class DATOWLTB1(BaseTableModel):
         WLEVEL (Series[float]): Drainage water level.
     """
 
-    DATOWL1: Series[pa.DateTime]  # type: ignore
+    DATOWL1: Series[pa.DateTime]
     LEVEL1: Series[float]
+
 
 class DATOWLTB2(BaseTableModel):
     """Table for drainage water level.
@@ -846,8 +856,9 @@ class DATOWLTB2(BaseTableModel):
         LEVEL2 (Series[float]): Drainage water level.
     """
 
-    DATOWL2: Series[pa.DateTime]  # type: ignore
+    DATOWL2: Series[pa.DateTime]
     LEVEL2: Series[float]
+
 
 class DATOWLTB3(BaseTableModel):
     """Table for drainage water level.
@@ -857,8 +868,9 @@ class DATOWLTB3(BaseTableModel):
         LEVEL3 (Series[float]): Drainage water level.
     """
 
-    DATOWL3: Series[pa.DateTime]  # type: ignore
+    DATOWL3: Series[pa.DateTime]
     LEVEL3: Series[float]
+
 
 class DATOWLTB4(BaseTableModel):
     """Table for drainage water level.
@@ -868,8 +880,9 @@ class DATOWLTB4(BaseTableModel):
         LEVEL4 (Series[float]): Drainage water level.
     """
 
-    DATOWL4: Series[pa.DateTime]  # type: ignore
+    DATOWL4: Series[pa.DateTime]
     LEVEL4: Series[float]
+
 
 class DATOWLTB5(BaseTableModel):
     """Table for drainage water level.
@@ -879,20 +892,23 @@ class DATOWLTB5(BaseTableModel):
         LEVEL5 (Series[float]): Drainage water level.
     """
 
-    DATOWL5: Series[pa.DateTime]  # type: ignore
+    DATOWL5: Series[pa.DateTime]
     LEVEL5: Series[float]
 
+
 class SECWATLVL(BaseTableModel):
-    DATE2: Series[pa.DateTime] # type: ignore
+    DATE2: Series[pa.DateTime]
     WLS: Series[float]
+
 
 class MANSECWATLVL(BaseTableModel):
     IMPER_4B: Series[float]
-    IMPEND: Series[pa.DateTime] # type: ignore
+    IMPEND: Series[pa.DateTime]
     SWMAN: Series[float]
     WSCAP: Series[float]
     WLDIP: Series[float]
     INTWL: Series[float]
+
 
 class QWEIR(BaseTableModel):
     IMPER_4C: Series[float]
@@ -900,19 +916,23 @@ class QWEIR(BaseTableModel):
     ALPHAW: Series[float]
     BETAW: Series[float]
 
+
 class QWEIRTB(BaseTableModel):
     IMPER_4D: Series[float]
     IMPTAB: Series[float]
     HTAB: Series[float]
     QTAB: Series[float]
 
+
 class PRIWATLVL(BaseTableModel):
-    DATE1: Series[pa.DateTime] # type: ignore
+    DATE1: Series[pa.DateTime]
     WLP: Series[float]
+
 
 class QDRNTB(BaseTableModel):
     QDRAIN: Series[float]
     GWL: Series[float]
+
 
 # %% ++++++++++++++++++++++++++++ GENERAL SETTINGS TABLES ++++++++++++++++++++++++++++
 class OUTDATIN(BaseTableModel):
@@ -921,12 +941,15 @@ class OUTDATIN(BaseTableModel):
     Attributes:
         OUTDAT: Series[str]: Name of the output file.
     """
-    OUTDATIN: Series[pa.DateTime] # type: ignore
-    
+
+    OUTDATIN: Series[pa.DateTime]
+
+
 class OUTDAT(BaseTableModel):
     """OUTDAT table
 
     Attributes:
         OUTDAT: Series[str]: Name of the output file.
     """
-    OUTDAT: Series[pa.DateTime] # type: ignore
+
+    OUTDAT: Series[pa.DateTime]

@@ -3,6 +3,11 @@ test-hupsel: ## Install the poetry environment and install the pre-commit hooks
 	@echo "Testing Hupselbrook example"
 	@poetry run pytest tests/test_cases.py::test_hupselbrook_model
 
+.PHONY: test-grass
+test-grass: ## Install the poetry environment and install the pre-commit hooks
+	@echo "Running grass growth example"
+	@poetry run pytest tests/test_cases.py::test_grassgrowth
+
 .PHONY: testcheck
 testcheck: ## Run code quality tools in test configuration
 	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry check --lock"
@@ -10,7 +15,7 @@ testcheck: ## Run code quality tools in test configuration
 	@echo "🚀 Linting code: Running pre-commit"
 	@poetry run pre-commit run -a 2>&1 | tee .logs/log_ruff_raw.md
 	@echo "🚀 Static type checking: Running mypy"
-	@poetry run mypy gensor --config-file mypy.dev.ini 2>&1 | tee .logs/log_mypy_raw.md
+	@poetry run mypy pyswap --config-file mypy.dev.ini 2>&1 | tee .logs/log_mypy_raw.md
 	@echo "🚀 Checking for obsolete dependencies: Running deptry"
 	@poetry run deptry . 2>&1 | tee .logs/log_deptry_raw.md
 

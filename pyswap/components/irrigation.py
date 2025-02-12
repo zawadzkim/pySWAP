@@ -1,3 +1,6 @@
+# mypy: disable-error-code="call-overload, misc, override"
+# - override was raised on model_string, because the methods do not share the
+#   same signature. This was not a proirity to fix.
 """Irrigation settings for the SWAP simuluation.
 
 Classes:
@@ -9,23 +12,35 @@ Functions:
     irg_from_csv: Load the irrigation file from a CSV file.
 """
 
-from typing import Literal as _Literal
 from pathlib import Path as _Path
+from typing import Literal as _Literal
 
-from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
+from pydantic import (
+    Field as _Field,
+    PrivateAttr as _PrivateAttr,
+)
 
+from pyswap.components.tables import IRRIGEVENTS
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.defaults import FNAME_IN as _FNAME_IN
-from pyswap.core.fields import DayMonth as _DayMonth, String as _String, Table as _Table
-from pyswap.utils.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.core.fields import (
+    DayMonth as _DayMonth,
+    String as _String,
+    Table as _Table,
+)
 from pyswap.core.valueranges import YEARRANGE as _YEARRANGE
-from pyswap.components.tables import IRRIGEVENTS
+from pyswap.utils.mixins import (
+    FileMixin as _FileMixin,
+    SerializableMixin as _SerializableMixin,
+    YAMLValidatorMixin as _YAMLValidatorMixin,
+)
 
 __all__ = ["FixedIrrigation", "ScheduledIrrigation", "IRRIGEVENTS"]
 
 
-
-class FixedIrrigation(_PySWAPBaseModel, _SerializableMixin, _FileMixin, _YAMLValidatorMixin):
+class FixedIrrigation(
+    _PySWAPBaseModel, _SerializableMixin, _FileMixin, _YAMLValidatorMixin
+):
     """Fixed irrigation settings in the .swp file.
 
     Attributes:
@@ -34,6 +49,7 @@ class FixedIrrigation(_PySWAPBaseModel, _SerializableMixin, _FileMixin, _YAMLVal
         irrigevents (Optional[Table]):
         irgfil (Optional[str]):
     """
+
     _extension = _PrivateAttr(default="irg")
 
     swirfix: _Literal[0, 1] | None = None
@@ -43,7 +59,7 @@ class FixedIrrigation(_PySWAPBaseModel, _SerializableMixin, _FileMixin, _YAMLVal
 
     def model_string(self, **kwargs) -> str:
         """Override the model_string to handle optional file generation.
-        
+
         Return the full section if swirgfil is set to 1, otherwise, irrigevents
         is excluded from the string and saved in a separate .irg file.
         """
@@ -51,7 +67,7 @@ class FixedIrrigation(_PySWAPBaseModel, _SerializableMixin, _FileMixin, _YAMLVal
             return super().model_string(exclude={"irrigevents"}, **kwargs)
         else:
             return super().model_string()
-        
+
     @property
     def irg(self):
         return super().model_string(include={"irrigevents"})
@@ -66,9 +82,8 @@ class FixedIrrigation(_PySWAPBaseModel, _SerializableMixin, _FileMixin, _YAMLVal
                 saved.
         """
         if self.swirgfil != 1:
-            raise ValueError(
-                "Irrigation data are not set to be written to a .irg file."
-            )
+            msg = "Irrigation data are not set to be written to a .irg file."
+            raise ValueError(msg)
 
         self.save_file(string=self.irg, fname=self.irgfil, path=path)
 
@@ -143,4 +158,3 @@ class ScheduledIrrigation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMi
     tc8tb: _Table | None = None
     dc1tb: _Table | None = None
     dc2tb: _Table | None = None
-

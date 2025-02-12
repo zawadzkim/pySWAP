@@ -9,7 +9,7 @@ IS_WINDOWS = platform.system() == "Windows"
 
 BASE_PATH: Path = Path(__file__).parent.joinpath("./data")
 
-RESOURCES: dict[str, Path] = {
+RESOURCES: dict[str, dict[str, Path]] = {
     "hupselbrook": {
         "met": Path(BASE_PATH, "1-hupselbrook/283.csv"),
         "swp": Path(BASE_PATH, "1-hupselbrook/swap.swp"),
@@ -35,12 +35,15 @@ RESOURCES: dict[str, Path] = {
 def view_resources(testcase: str) -> dict:
     return RESOURCES[testcase]
 
+
 def get_path(testcase: str, fextension: str) -> Path:
     return RESOURCES[testcase].get(fextension)
+
 
 def load_met(testcase: str, **kwargs) -> pd.DataFrame:
     path = RESOURCES[testcase].get("met")
     return pd.read_csv(path, **kwargs)
+
 
 def load_observations(testcase: str, **kwargs) -> pd.DataFrame:
     path = RESOURCES[testcase].get("observations")

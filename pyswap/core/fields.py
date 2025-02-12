@@ -76,13 +76,19 @@ from pydantic import AfterValidator, BeforeValidator, Field
 from pydantic.functional_serializers import PlainSerializer
 
 from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.parsers import parse_day_month, parse_quoted_string, parse_string_list, parse_float_list, parse_int_list, parse_decimal
+from pyswap.core.parsers import (
+    parse_day_month,
+    parse_decimal,
+    parse_float_list,
+    parse_int_list,
+    parse_quoted_string,
+    parse_string_list,
+)
 from pyswap.core.serializers import (
     serialize_arrays,
     serialize_csv_table,
     serialize_day_month,
     serialize_decimal,
-    serialize_object_list,
     serialize_table,
 )
 
@@ -95,8 +101,6 @@ __all__ = [
     "FloatList",
     "IntList",
     "DateList",
-    "Switch",
-    "ObjectList",
     "String",
     "File",
     "Subsection",
@@ -169,12 +173,6 @@ DateList = Annotated[
 ]
 """Serialize list of date objects to a string with elements separated by newlines."""
 
-ObjectList = Annotated[
-    list,
-    PlainSerializer(serialize_object_list, return_type=str, when_used="json"),
-]
-"""Serialize list of objects to a string with elements separated by newlines."""
-
 String = Annotated[
     str,
     PlainSerializer(lambda x: f"'{x}'", return_type=str),
@@ -189,7 +187,7 @@ File = Annotated[
 ]
 """Serialize PySWAPBaseModel to a string."""
 
-SubsectionTypeVar = TypeVar("T", bound=PySWAPBaseModel)
+SubsectionTypeVar = TypeVar("SubsectionTypeVar", bound=PySWAPBaseModel)
 
 Subsection = Annotated[
     SubsectionTypeVar,

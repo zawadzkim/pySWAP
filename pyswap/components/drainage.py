@@ -1,3 +1,5 @@
+# mypy: disable-error-code="call-overload, misc"
+
 """Lateral drainage settings
 
 Settings for the lateral drainage of the .swp file, including the .dra file settings.
@@ -10,19 +12,33 @@ Classes:
 
 from typing import Literal as _Literal
 
-from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
+from pydantic import (
+    Field as _Field,
+    PrivateAttr as _PrivateAttr,
+)
 
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.defaults import FNAME_IN as _FNAME_IN
-from pyswap.core.fields import File as _File, FloatList as _FloatList, Subsection as _Subsection, String as _String, Table as _Table
-from pyswap.utils.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.core.fields import (
+    File as _File,
+    FloatList as _FloatList,
+    String as _String,
+    Subsection as _Subsection,
+    Table as _Table,
+)
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
+from pyswap.utils.mixins import (
+    FileMixin as _FileMixin,
+    SerializableMixin as _SerializableMixin,
+    YAMLValidatorMixin as _YAMLValidatorMixin,
+)
 
 __all__ = [
     "Flux",
     "DraFile",
     "Drainage",
 ]
+
 
 class Flux(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Fluxes between drainage levels in .dra file.
@@ -162,7 +178,7 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
         swqhr (Optional[Literal[1, 2]]): Switch for type of discharge relationship.
         sofcu (Optional[float]): Size of the control unit.
     """
-    
+
     _extension = _PrivateAttr("dra")
     # General
     dramet: _Literal[1, 2, 3] | None = None
@@ -202,7 +218,6 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     rsurfshallow: float | None = _Field(default=None, ge=0.001, le=1000.0)
     cofintfl: float | None = _Field(default=None, ge=0.01, le=10.0)
     expintfl: float | None = _Field(default=None, ge=0.01, le=10.0)
-    swtopnrsrf: _Literal[0, 1] | None = None
     swsrf: _Literal[1, 2, 3] | None = None
     swsec: _Literal[1, 2] | None = None
     secwatlvl: _Table | None = None
@@ -220,7 +235,7 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     @property
     def dra(self):
         return self.model_string()
-    
+
 
 class Drainage(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """The lateral drainage settings inside .swp file.
@@ -231,11 +246,12 @@ class Drainage(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
             * 0 - No drainage.
             * 1 - Simulate with a basic drainage routine.
             * 2 - Simulate with surface water management.
-        
+
         drfil (str): Name of the file. This attribute is frozen, there is no
             need to change it.
         drafile (Optional[Any]): Content of the drainage file.
     """
+
     swdra: _Literal[0, 1, 2] | None = None
     drfil: _String | None = _Field(default=_FNAME_IN, frozen=True)
     drafile: _File | None = _Field(default=None, exclude=True)
@@ -243,4 +259,3 @@ class Drainage(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     def write_dra(self, path: str) -> None:
         self.drafile.save_file(string=self.drafile.dra, fname=self.drfil, path=path)
         return None
-    

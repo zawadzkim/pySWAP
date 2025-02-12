@@ -1,6 +1,5 @@
 # Makefile
 
-
 Make file is particularily useful when a certain workflow, for example for testing code or docs has to be repeatadly executed. It allows you to define a set of tasks that can be run with simple commands, e.g., `make <some-command-name>`. In this project, the Makefile provides several useful options:
 
 - **test-hupsel**: Installs the poetry environment and pre-commit hooks, then runs a specific test case.

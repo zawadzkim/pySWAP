@@ -1,2 +1,2 @@
 def _make_surfacewater():
-    raise NotImplementedError
+    raise NotImplementedError("This function is not implemented yet.")

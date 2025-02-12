@@ -36,6 +36,9 @@ mypy = "^1.11.0"
 nbstripout = "^0.7.1"
 pre-commit = "^3.8.0"
 ruff = "^0.7.4"
+types-pyyaml = "^6.0.12.20241230"
+pandas-stubs = "^2.2.3.241126"
+h5py-stubs = "^0.1.1"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "^9.5.27"

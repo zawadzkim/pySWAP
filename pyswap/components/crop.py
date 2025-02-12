@@ -1,3 +1,6 @@
+# mypy: disable-error-code="call-overload, misc, type-arg"
+# The type-arg here causes problems with passing the actual type to the alias
+# Subsection. This however helps to type hinting, so it has to stay that way.
 """Crop settings and crop files for SWAP model.
 
 Similar to the .dra or .swp files, the .crp file is a configuration file for the SWAP model.
@@ -28,13 +31,46 @@ Classes:
     Preparation: Class for the preparation settings.
 """
 
-from typing import Literal as _Literal, Any
+from typing import (
+    Any,
+    Literal as _Literal,
+)
 
-from pydantic import Field as _Field, PrivateAttr as _PrivateAttr, ConfigDict as _ConfigDict
+from pydantic import (
+    Field as _Field,
+    PrivateAttr as _PrivateAttr,
+)
 
 from pyswap.components.irrigation import ScheduledIrrigation as _ScheduledIrrigation
+from pyswap.components.tables import (
+    AMAXTB,
+    CFTB,
+    CROPROTATION,
+    DMGRZTB,
+    DMMOWDELAY,
+    DMMOWTB,
+    DTSMTB,
+    FLTB,
+    FOTB,
+    FRTB,
+    FSTB,
+    GCTB,
+    KYTB,
+    LSDATB,
+    LSDBTB,
+    MRFTB,
+    RDCTB,
+    RDRRTB,
+    RDRSTB,
+    RDTB,
+    RFSETB,
+    RLWTB,
+    SLATB,
+    TMNFTB,
+    TMPFTB,
+    WRTB,
+)
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
-from pyswap.db.cropdb import CropVariety as _CropVariety
 from pyswap.core.fields import (
     Arrays as _Arrays,
     Decimal2f as _Decimal2f,
@@ -42,19 +78,17 @@ from pyswap.core.fields import (
     Subsection as _Subsection,
     Table as _Table,
 )
-
+from pyswap.core.valueranges import (
+    UNITRANGE as _UNITRANGE,
+    YEARRANGE as _YEARRANGE,
+)
+from pyswap.db.cropdb import CropVariety as _CropVariety
 from pyswap.utils.mixins import (
     FileMixin as _FileMixin,
     SerializableMixin as _SerializableMixin,
     WOFOSTUpdateMixin as _WOFOSTUpdateMixin,
     YAMLValidatorMixin as _YAMLValidatorMixin,
 )
-from pyswap.core.valueranges import UNITRANGE as _UNITRANGE, YEARRANGE as _YEARRANGE
-from pyswap.components.tables import (RDTB, RDCTB, GCTB, CFTB, KYTB,
-                                      MRFTB,WRTB,CROPROTATION,DTSMTB,SLATB, 
-                                      AMAXTB, TMPFTB, TMNFTB, RFSETB, FRTB, FLTB, 
-                                      FSTB, FOTB, RDRRTB, RDRSTB, DMGRZTB, LSDATB,
-                                      LSDBTB, RLWTB, DMMOWTB, DMMOWDELAY)
 
 __all__ = [
     "CropDevelopmentSettingsWOFOST",
@@ -162,12 +196,8 @@ class _CropDevelopmentSettings(
     albedo: _Decimal2f | None = _Field(default=None, **_UNITRANGE)
     rsc: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
     rsw: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
-    tsum1: _Decimal2f | None = _Field(
-        alias="tsumea", default=None, ge=0.0, le=1.0e4
-    )
-    tsum2: _Decimal2f | None = _Field(
-        alias="tsumam", default=None, ge=0.0, le=1.0e4
-    )
+    tsum1: _Decimal2f | None = _Field(alias="tsumea", default=None, ge=0.0, le=1.0e4)
+    tsum2: _Decimal2f | None = _Field(alias="tsumam", default=None, ge=0.0, le=1.0e4)
     tbase: _Decimal2f | None = _Field(default=None, ge=-10.0, le=30.0)
     kdif: _Decimal2f | None = _Field(default=None, ge=0.0, le=2.0)
     kdir: _Decimal2f | None = _Field(default=None, ge=0.0, le=2.0)
@@ -693,13 +723,24 @@ class CropFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     name: str = _Field(exclude=True)
     path: str | None = None
     prep: _Subsection[Preparation] | None = None
-    cropdev_settings: _Subsection[CropDevelopmentSettingsFixed | CropDevelopmentSettingsWOFOST | CropDevelopmentSettingsGrass] | None = None
+    cropdev_settings: (
+        _Subsection[
+            CropDevelopmentSettingsFixed
+            | CropDevelopmentSettingsWOFOST
+            | CropDevelopmentSettingsGrass
+        ]
+        | None
+    ) = None
     oxygenstress: _Subsection[OxygenStress] | None = None
     droughtstress: _Subsection[DroughtStress] | None = None
     saltstress: _Subsection[SaltStress] | None = SaltStress(swsalinity=0)
-    compensaterwu: _Subsection[CompensateRWUStress] | None = CompensateRWUStress(swcompensate=0)
+    compensaterwu: _Subsection[CompensateRWUStress] | None = CompensateRWUStress(
+        swcompensate=0
+    )
     interception: _Subsection[Interception] | None = None
-    scheduledirrigation: _Subsection[_ScheduledIrrigation] | None = _ScheduledIrrigation(schedule=0)
+    scheduledirrigation: _Subsection[_ScheduledIrrigation] | None = (
+        _ScheduledIrrigation(schedule=0)
+    )
     grasslandmanagement: _Subsection[GrasslandManagement] | None = None
     co2correction: _Subsection[CO2Correction] | None = None
 

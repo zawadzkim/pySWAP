@@ -1,3 +1,11 @@
+# ruff: noqa: S301, TRY300
+# mypy: disable-error-code="operator, index"
+# operator and index errors were showing up in the _load_pickled method. This
+# should be observed and fixed in the future if needed.
+
+# Perhaps in the next versions, we can implement methods to handle pickes more
+# safely. For now, it's not a high priority.
+# Error TRY300 also seemed a bit too strict for this case.
 """Interacting with HDF5 files.
 
 HDF5 database is meant to store pySWAP models and results in a structured way.
@@ -52,7 +60,7 @@ class HDF5(BaseModel):
         """List all the models in the HDF5 file."""
         with h5py.File(self.filename, "r") as f:
             # Use the visititems method to traverse the file structure
-            models = {project: list(f[project].keys()) for project in f.keys()}
+            models = {project: list(f[project].keys()) for project in f}
         return models
 
     @staticmethod
@@ -62,75 +70,49 @@ class HDF5(BaseModel):
 
     def save_model(
         self,
-        model: Model,
-        result: Result | None = None,
+        model: "Model",
+        result: Union["Result", None] = None,
         overwrite_datasets: bool = False,
         overwrite_project: bool = False,
         mode: Literal["python", "json", "yaml"] = "python",
     ):
-        """Sava a model and its results to an HDF5 file.
-
-        Each model in its metadata attribute stores the project name. That is used as the name for the main group. If that name already exists,
-        a new group is not created. Then the check is made if the version of the model already exists. If it does, the group is not created.
+        """
+        Save a model and its results to an HDF5 file.
 
         Parameters:
             model (Model): The model to be saved.
-            result (Result): The result to be saved.
-            overwrite_datasets (bool): If True, overwrite the datasets if they already exist.
-            overwrite_project (bool): If True, overwrite the project if it already exists.
-            mode (str): The mode in which to save the data. Options are 'python', 'json', and 'yaml'.
+            result (Result, optional): The result to be saved.
+            overwrite_datasets (bool): If True, overwrite datasets if they exist.
+            overwrite_project (bool): If True, overwrite the project if it exists.
+            mode (Literal["python", "json", "yaml"]): The format in which to save the data.
+                Only 'python' is currently supported.
+
+        Raises:
+            NotImplementedError: If 'json' or 'yaml' modes are selected.
         """
-
-        def _overwrite_datasets(group):
-            for key in list(group.keys()):
-                try:
-                    del group[key]
-                except KeyError:
-                    pass
-
-        def _overwrite_project(f, project_name):
-            try:
-                del f[project_name]
-            except KeyError:
-                pass
-
-        def _save_pickled(group, name, data):
-            try:
-                pickle_data = pickle.dumps(data)
-                group.create_dataset(name, data=np.void(pickle_data))
-                logger.info(f"Saved {name} to {group.name}")
-            except ValueError:
-                logger.warning(
-                    f"Cannot create dataset {name} in {group.name}. It may already exist. Skipping creation."
-                )
-
         with h5py.File(self.filename, "a") as f:
+            # Handle project overwriting
             if overwrite_project:
-                _overwrite_project(f, model.metadata.project)
-            # create a project and add attributes
+                self._overwrite_project(f, model.metadata.project)
+
+            # Create or retrieve project group
             project_group = self._get_or_create_group(f, model.metadata.project)
-            project_attrs = model.metadata.__dict__
-            project_attrs = {k: v for k, v in project_attrs.items() if v is not None}
+            self._update_attributes(project_group, model.metadata.__dict__)
 
-            project_group.attrs.update(project_attrs)
-
-            # create a model group with input and output datasets
+            # Create or retrieve model group
             model_group = self._get_or_create_group(project_group, model.version)
 
+            # Handle dataset overwriting
             if overwrite_datasets:
-                _overwrite_datasets(model_group)
+                self._overwrite_datasets(model_group)
 
+            # Save data based on the mode
             if mode == "python":
-                # For the python option there is no need for an additional group
-                _save_pickled(model_group, "input", model)
+                self._save_pickled(model_group, "input", model)
                 if result:
-                    _save_pickled(model_group, "output", result)
-
-            if mode == "json":
-                raise NotImplementedError("JSON mode is not yet implemented")
-
-            if mode == "yaml":
-                raise NotImplementedError("YAML mode is not yet implemented")
+                    self._save_pickled(model_group, "output", result)
+            else:
+                raise NotImplementedError(f"Mode '{mode}' is not yet implemented.")
 
     def load(
         self,
@@ -138,52 +120,54 @@ class HDF5(BaseModel):
         model: str | None = None,
         load_results: bool = False,
         mode: Literal["python", "json", "yaml"] = "python",
-    ) -> dict[str, tuple[Model, Result | None]]:
-        """Load a single model or all models within a specific project.
+    ) -> dict[str, tuple["Model", Union["Result", None]]]:
+        """
+        Load a single model or all models within a specific project.
 
         Parameters:
             project (str): The project name.
-            model (str): The model name.
-            load_results (bool): If True, load the results as well.
-            mode (str): The mode in which to load the data. Options are 'python', 'json', and 'yaml'.
+            model (str, optional): The model name. If None, loads all models in the project.
+            load_results (bool): Whether to load results along with the model.
+            mode (Literal["python", "json", "yaml"]): The format in which to load the data.
+                Only 'python' is currently supported.
+
+        Returns:
+            dict[str, tuple[Model, Union[Result, None]]]: A dictionary of loaded models and their results.
+
+        Raises:
+            NotImplementedError: If 'json' or 'yaml' modes are selected.
         """
-
-        def _load_pickled(
-            group: h5py.Group, name: str, load_results: bool
-        ) -> tuple[Model, Result | None]:
-            pickle_in = group[name]["input"][()].tobytes()
-            pickle_out = (
-                group[name]["output"][()].tobytes()
-                if load_results and "output" in group[name]
-                else None
-            )
-
-            model = pickle.loads(pickle_in)
-            result = pickle.loads(pickle_out) if pickle_out else None
-            return model, result
-
         loaded_models = {}
 
-        all_models = self.list_models[project]
-
         with h5py.File(self.filename, "r") as f:
+            # Validate that the project exists
+            if project not in f:
+                msg = f"Project '{project}' does not exist in the HDF5 file."
+                raise KeyError(msg)
+
+            # Get all models in the project
+            all_models = self.list_models[project]
+
             if mode == "python":
+                # Load all models if no specific model is provided
                 if model is None:
                     for item in all_models:
-                        loaded_models[item] = _load_pickled(
+                        loaded_models[item] = self._load_pickled(
                             group=f[project], name=item, load_results=load_results
                         )
                 else:
-                    loaded_models[model] = _load_pickled(
+                    # Validate that the specific model exists
+                    if model not in all_models:
+                        msg = f"Model '{model}' does not exist in project '{project}'."
+                        raise KeyError(msg)
+                    loaded_models[model] = self._load_pickled(
                         group=f[project], name=model, load_results=load_results
                     )
+            else:
+                msg = f"Mode '{mode}' is not yet implemented."
+                raise NotImplementedError(msg)
 
-            if mode == "json":
-                raise NotImplementedError("JSON mode is not yet implemented")
-
-            if mode == "yaml":
-                raise NotImplementedError("YAML mode is not yet implemented")
-
+        # Update internal models dictionary and return loaded models
         self.models.update(loaded_models)
         return loaded_models
 
@@ -211,4 +195,71 @@ class HDF5(BaseModel):
                 try:
                     del f[project][model]
                 except KeyError:
-                    logger.warning(f"Model {model} does not exist in project {project}.")
+                    logger.warning(
+                        f"Model {model} does not exist in project {project}."
+                    )
+
+    def _overwrite_datasets(self, group):
+        """Delete all datasets within a group."""
+        for key in list(group.keys()):
+            try:
+                del group[key]
+                logger.info(f"Deleted dataset {key} in group {group.name}")
+            except KeyError:
+                logger.warning(f"Failed to delete dataset {key} in group {group.name}")
+
+    def _overwrite_project(self, file, project_name):
+        """Delete a project group from the HDF5 file."""
+        try:
+            del file[project_name]
+            logger.info(f"Deleted project {project_name}")
+        except KeyError:
+            logger.warning(f"Project {project_name} does not exist.")
+
+    def _save_pickled(self, group, name, data):
+        """Save data as a pickled dataset."""
+        try:
+            pickle_data = pickle.dumps(data)
+            group.create_dataset(name, data=np.void(pickle_data))
+            logger.info(f"Saved {name} to {group.name}")
+        except ValueError as e:
+            logger.warning(
+                f"Failed to create dataset {name} in {group.name}. Error: {e}"
+            )
+
+    def _update_attributes(self, group, attributes):
+        """Update attributes of an HDF5 group."""
+        sanitized_attrs = {k: v for k, v in attributes.items() if v is not None}
+        group.attrs.update(sanitized_attrs)
+
+    def _load_pickled(
+        self, group: h5py.Group, name: str, load_results: bool
+    ) -> tuple["Model", Union["Result", None]]:
+        """
+        Load a pickled model and optionally its results from an HDF5 group.
+
+        Parameters:
+            group (h5py.Group): The HDF5 group containing the model data.
+            name (str): The name of the model to load.
+            load_results (bool): Whether to load results along with the model.
+
+        Returns:
+            tuple[Model, Union[Result, None]]: The loaded model and its results (if applicable).
+        """
+        try:
+            # Load pickled input data
+            pickle_in = group[name]["input"][()].tobytes()
+            model: "Model" = pickle.loads(pickle_in)
+
+            # Optionally load pickled output data
+            result: "Result" = None
+
+            if load_results and "output" in group[name]:
+                pickle_out = group[name]["output"][()].tobytes()
+                result = pickle.loads(pickle_out)
+
+            logger.info(f"Loaded model '{name}' from group '{group.name}'.")
+            return model, result
+        except Exception:
+            logger.exception(f"Failed to load model '{name}' from group '{group.name}'")
+            return None, None

@@ -1,5 +1,6 @@
-"""
-General settings for the simulation and settings for the Richards' equation.
+# mypy: disable-error-code="call-overload, misc, override, type-arg"
+
+"""General settings for the simulation and settings for the Richards' equation.
 
 Classes:
     GeneralSettings: General settings of the simulation.
@@ -8,16 +9,38 @@ Classes:
 
 import logging as _logging
 from datetime import date as _date
-from typing import ClassVar as _ClassVar, Literal as _Literal
+from typing import (
+    ClassVar as _ClassVar,
+    Literal as _Literal,
+)
 
-from pydantic import ConfigDict as _ConfigDict, Field as _Field, model_validator as _model_validator
+from pydantic import (
+    ConfigDict as _ConfigDict,
+    Field as _Field,
+    model_validator as _model_validator,
+)
 
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
-from pyswap.core.defaults import FNAME_OUT as _FNAME_OUT, EXTENSIONS as _EXTENSIONS
-from pyswap.core.defaults import BASE_PATH as _BASE_PATH
-from pyswap.core.fields import Arrays as _Arrays, DayMonth as _DayMonth, String as _String, StringList as _StringList, Subsection as _Subsection, FloatList as _FloatList, IntList as _IntList
-from pyswap.utils.mixins import SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
-from pyswap.core.valueranges import UNITRANGE as _UNITRANGE, YEARRANGE as _YEARRANGE
+from pyswap.core.defaults import (
+    BASE_PATH as _BASE_PATH,
+    EXTENSIONS as _EXTENSIONS,
+    FNAME_OUT as _FNAME_OUT,
+)
+from pyswap.core.fields import (
+    Arrays as _Arrays,
+    DayMonth as _DayMonth,
+    String as _String,
+    StringList as _StringList,
+    Subsection as _Subsection,
+)
+from pyswap.core.valueranges import (
+    UNITRANGE as _UNITRANGE,
+    YEARRANGE as _YEARRANGE,
+)
+from pyswap.utils.mixins import (
+    SerializableMixin as _SerializableMixin,
+    YAMLValidatorMixin as _YAMLValidatorMixin,
+)
 
 __all__ = ["GeneralSettings", "RichardsSettings"]
 
@@ -43,8 +66,7 @@ class _ExtensionMixin(_PySWAPBaseModel, _SerializableMixin):
     swstr: _Literal[1, 0] | None = _Field(default=None, validation_alias="str")
     swirg: _Literal[1, 0] | None = _Field(default=None, validation_alias="irg")
     swcsv: _Literal[1, 0] | None = _Field(default=None, validation_alias="csv")
-    swcsv_tz: _Literal[1, 0] | None = _Field(
-        default=None, validation_alias="csv_tz")
+    swcsv_tz: _Literal[1, 0] | None = _Field(default=None, validation_alias="csv_tz")
 
 
 class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
@@ -138,11 +160,17 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
             ext for ext in self.extensions if ext not in self._all_extensions
         ]
         if invalid_extensions:
-            raise ValueError(f"Invalid extensions: {invalid_extensions}")
+            msg = f"Invalid extensions: {', '.join(invalid_extensions)}"
+            raise ValueError(msg)
 
         # Create the _ExtensionMixin object without triggering validation
-        object.__setattr__(self, 'exts', _ExtensionMixin(
-            **{ext: 1 if ext in self.extensions else 0 for ext in self._all_extensions}))
+        object.__setattr__(
+            self,
+            "exts",
+            _ExtensionMixin(**{
+                ext: 1 if ext in self.extensions else 0 for ext in self._all_extensions
+            }),
+        )
         return self
 
 

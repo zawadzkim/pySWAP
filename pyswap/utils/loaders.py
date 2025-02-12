@@ -1,23 +1,46 @@
-from pyswap.components.boundary import BottomBoundary
-from pyswap.components.crop import Crop
-from pyswap.components.drainage import Drainage
-from pyswap.components.irrigation import ScheduledIrrigation, FixedIrrigation
-from pyswap.components.meteorology import Meteorology
-from pyswap.components.simsettings import GeneralSettings, RichardsSettings
-from pyswap.components.soilwater import Evaporation, SnowAndFrost, SoilMoisture, SoilProfile, SurfaceFlow
-from pyswap.components.transport import HeatFlow, SoluteTransport
-from pyswap.components.drainage import Flux, DraFile
-from pyswap.components.crop import CropFile, CropDevelopmentSettingsWOFOST, CropDevelopmentSettingsFixed, CropDevelopmentSettingsGrass, OxygenStress, DroughtStress, SaltStress, CompensateRWUStress, Interception, CO2Correction, Preparation, GrasslandManagement
-
-from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.io.io_ascii import open_ascii
-from pyswap.core.io.old_swap import create_table_objects, create_array_objects, parse_ascii_file, remove_comments
-from pyswap.model import Model
-from pyswap.core.defaults import EXTENSION_SWITCHES
-
-from typing import Literal as _Literal
+# ruff: noqa: SIM210
 import re
 from pathlib import Path
+from typing import Literal as _Literal
+
+from pyswap import Model
+from pyswap.components.boundary import BottomBoundary
+from pyswap.components.crop import (
+    CO2Correction,
+    CompensateRWUStress,
+    Crop,
+    CropDevelopmentSettingsFixed,
+    CropDevelopmentSettingsGrass,
+    CropDevelopmentSettingsWOFOST,
+    CropFile,
+    DroughtStress,
+    GrasslandManagement,
+    Interception,
+    OxygenStress,
+    Preparation,
+    SaltStress,
+)
+from pyswap.components.drainage import DraFile, Drainage, Flux
+from pyswap.components.irrigation import FixedIrrigation, ScheduledIrrigation
+from pyswap.components.meteorology import Meteorology
+from pyswap.components.simsettings import GeneralSettings, RichardsSettings
+from pyswap.components.soilwater import (
+    Evaporation,
+    SnowAndFrost,
+    SoilMoisture,
+    SoilProfile,
+    SurfaceFlow,
+)
+from pyswap.components.transport import HeatFlow, SoluteTransport
+from pyswap.core.basemodel import PySWAPBaseModel
+from pyswap.core.defaults import EXTENSION_SWITCHES
+from pyswap.core.io.io_ascii import open_ascii
+from pyswap.utils.old_swap import (
+    create_array_objects,
+    create_table_objects,
+    parse_ascii_file,
+    remove_comments,
+)
 
 __all__ = ["load_swp"]
 
@@ -34,6 +57,7 @@ def _parse_ascii_file(path: Path, grass_crp: bool = False):
 
     return params
 
+
 def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
     """Load a SWAP model from a .swp file.
 
@@ -48,10 +72,14 @@ def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
     # have to be handled properly.
     params = _parse_ascii_file(path)
     # from among the parameters parsed from the ascii file, pop the switches
-    extension_switches = {key: params.pop(key) for key in EXTENSION_SWITCHES if key in params}
+    extension_switches = {
+        key: params.pop(key) for key in EXTENSION_SWITCHES if key in params
+    }
     # create the extension list with only those switches that are = 1. get rid of the "sw" prefix
 
-    extension_list = [key[2:] for key, value in extension_switches.items() if int(value) == 1]
+    extension_list = [
+        key[2:] for key, value in extension_switches.items() if int(value) == 1
+    ]
 
     # model definition
     model_setup = {
@@ -71,12 +99,13 @@ def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
         "solutetransport": SoluteTransport(),
     }
 
-    for key, value in model_setup.items():
+    for value in model_setup.values():
         value.update(params, inplace=True)
 
     ml = Model(metadata=metadata, **model_setup)
 
     return ml
+
 
 def load_dra(path: Path):
     params = _parse_ascii_file(path)
@@ -91,22 +120,30 @@ def load_dra(path: Path):
         "datowltb",
     ]
 
-    flux_objects = {k: v for k, v in params.items() if any(re.match(f"{prefix}[1-5]$", k) for prefix in flux_objects_startwith)}
+    flux_objects = {
+        k: v
+        for k, v in params.items()
+        if any(re.match(f"{prefix}[1-5]$", k) for prefix in flux_objects_startwith)
+    }
     other_params = {k: v for k, v in params.items() if k not in flux_objects}
-    
+
     flux = Flux(**flux_objects)
     dra = DraFile(**other_params, fluxes=flux)
 
     return dra
 
 
-def load_crp(path: Path, type: _Literal["fixed", "wofost", "grass"], name: str):
-    params = _parse_ascii_file(path, grass_crp=True if type == "grass" else False)
+def load_crp(path: Path, crptype: _Literal["fixed", "wofost", "grass"], name: str):
+    params = _parse_ascii_file(path, grass_crp=True if crptype == "grass" else False)
 
     cropfile_setup = {
         "name": name,
         "prep": Preparation(),
-        "cropdev_settings": CropDevelopmentSettingsFixed() if type == "fixed" else CropDevelopmentSettingsWOFOST() if type == "wofost" else CropDevelopmentSettingsGrass(),
+        "cropdev_settings": CropDevelopmentSettingsFixed()
+        if crptype == "fixed"
+        else CropDevelopmentSettingsWOFOST()
+        if crptype == "wofost"
+        else CropDevelopmentSettingsGrass(),
         "oxygenstress": OxygenStress(),
         "droughtstress": DroughtStress(),
         "saltstress": SaltStress(),
@@ -117,7 +154,7 @@ def load_crp(path: Path, type: _Literal["fixed", "wofost", "grass"], name: str):
         "co2correction": CO2Correction(),
     }
 
-    for key, value in cropfile_setup.items():
+    for value in cropfile_setup.values():
         if isinstance(value, str):
             continue
         value.update(new=params, inplace=True)
@@ -126,9 +163,10 @@ def load_crp(path: Path, type: _Literal["fixed", "wofost", "grass"], name: str):
 
     return crp
 
+
 def load_bbc(path: Path, bottomboundary: BottomBoundary | None = None):
     """Load the bottom boundary conditions from a .bbc file.
-    
+
     Bottom boundary conditions are stored in the same class. Therefore this
     function can either return a new instance of the class or update an existing
     one.
@@ -139,6 +177,5 @@ def load_bbc(path: Path, bottomboundary: BottomBoundary | None = None):
         bottomboundary = BottomBoundary()
 
     botbound = bottomboundary.update(params)
-    
+
     return botbound
-    

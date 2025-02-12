@@ -1,3 +1,6 @@
+# ruff: noqa: S603, S607
+# Those rules are not really useful in this package.
+
 """The cli module is supposed to help in structuring the direcotries of created models and enforce
 best practices in documenting. It creates a modular structure (with __init__.py files) what can be helpful when
 writing scripts. This way, modules from the scripts can be directly imported into the main.py or main.ipynb"""
@@ -35,7 +38,7 @@ def make_script(models_dir, basic_code_to_write_path, basic_code_to_write) -> st
         return print(f"Error creating folder or file: {e}")
 
 
-def make_notebook(models_dir, basic_code_to_write, templates_path, attrs) -> str:
+def make_notebook(models_dir, basic_code_to_write, templates_path, attrs) -> None:
     notebook_template_path = templates_path / "notebook.json"
     notebook_path = models_dir / "main.ipynb"
 
@@ -52,6 +55,8 @@ def make_notebook(models_dir, basic_code_to_write, templates_path, attrs) -> str
     except Exception as e:
         print(f"Error creating Jupyter Notebook: {e}")
 
+    return None
+
 
 def copy_readme(templates_path, project_root):
     template_file = templates_path / "README"
@@ -67,8 +72,14 @@ def create_inits(project_root, models_dir, scripts_dir):
 
 def init_git_repo(project_root):
     try:
-        subprocess.run(["git", "init", str(project_root)], check=True)
-        print("Initialized empty Git repository.")
+        result = subprocess.run(
+            ["git", "init", str(project_root)],
+            shell=False,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        print(result.stdout.strip())
 
         # Create a .gitignore file
         gitignore_path = project_root / ".gitignore"

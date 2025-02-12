@@ -4,13 +4,11 @@ Classes:
     Metadata: Metadata of a SWAP model.
 """
 
+from pydantic import Field
 
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.fields import String
 from pyswap.utils.mixins import SerializableMixin
-
-
-from pydantic import Field
 
 
 class Metadata(PySWAPBaseModel, SerializableMixin):

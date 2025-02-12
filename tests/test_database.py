@@ -1,5 +1,5 @@
-from pyswap.db import HDF5
 from pyswap import testcase
+from pyswap.db import HDF5
 
 
 def test_database():

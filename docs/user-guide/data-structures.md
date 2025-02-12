@@ -4,7 +4,6 @@
 
 The key to a smooth run of a model is pre-emptive validation of all the provided parameters. In pyswap, models (aka. classes, objects) are subclasses of [Pydantic's](https://docs.pydantic.dev/latest/) `BaseModel`. Pydantic is a powerful validation and serialization library ensuring the provided data is of the right type, in the right range, etc. When possible, the input is coerced into the right format, otherwise, exceptions will be raised. For validation and serialization, custom type objects are used. You can consult the types in the [reference documentation](/reference/developer/#validation_and_serialization).
 
-
 ## Tables
 
 For trabular data, both input and output, pyswap relies on pandas DataFrames. Generally pySWAP classes are validated before creation. Variable ranges and types are checked. The same goes for DataFrames, but their validation is a little bit less straighforward. Below you see a class representing the table of initial pressure head as a function of soil depth.

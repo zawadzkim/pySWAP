@@ -1,6 +1,6 @@
-import pyswap as ps
+import pyswap as psp
 
-metadata = ps.Metadata(
+metadata = psp.components.Metadata(
     author="{author}",
     institution="{institution}",
     email="{email}",

@@ -492,16 +492,24 @@ def _make_hupselbrook():
     ml.soilprofile = soilprofile
 
     # %% drainage settings
-    
+
     dra = psp.components.drainage.DraFile(
-        dramet=2, swdivd=1, cofani=[1.0, 1.0], swdislay=0,
-        lm2=11.0, shape=0.8, wetper=30.0, zbotdr=-80.0, 
-        entres=20.0, ipos=2, basegw=-200.0, khtop=25.0,
+        dramet=2,
+        swdivd=1,
+        cofani=[1.0, 1.0],
+        swdislay=0,
+        lm2=11.0,
+        shape=0.8,
+        wetper=30.0,
+        zbotdr=-80.0,
+        entres=20.0,
+        ipos=2,
+        basegw=-200.0,
+        khtop=25.0,
     )
     drainage = psp.components.drainage.Drainage(swdra=1, drafile=dra)
 
     ml.lateraldrainage = drainage
-
 
     # %% bottom boundary
 

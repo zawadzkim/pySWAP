@@ -8,6 +8,7 @@ Classes:
     CropVariety: Manage crop variety parameters.
     WOFOSTCropDB: Manage a single WOFOST crop file content.
 """
+
 from pathlib import Path
 from pprint import pprint
 
@@ -19,7 +20,7 @@ from pyswap.libs import crop_params
 
 class WOFOSTCropFile(BaseModel):
     """Manage a single WOFOST crop file content.
-    
+
     Attributes:
         yaml_content: The entire content of the YAML file.
 
@@ -92,7 +93,7 @@ class CropVariety(BaseModel):
     @computed_field(return_type=dict)
     def metadata(self):
         return self.variety["Metadata"]
-    
+
     @staticmethod
     def _format_tables(table: dict) -> dict[str, list[list]]:
         """pre-format tables from YAML to a list of lists.
@@ -104,8 +105,9 @@ class CropVariety(BaseModel):
         """
 
         formatted = {
-            k: [list(row) for row in zip(v[::2], v[1::2])]
-            if isinstance(v, list) else v
+            k: [list(row) for row in zip(v[::2], v[1::2], strict=False)]
+            if isinstance(v, list)
+            else v
             for k, v in table.items()
         }
 

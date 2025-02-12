@@ -1,3 +1,8 @@
+# mypy: disable-error-code="call-overload, misc, operator"
+# the operator error was raised bacause of Pydantic validators. The current
+# implementation is correct, so it was not the priority to fix.
+
+
 """Meteorology settings and data.
 
 This module contains the classes and functions to handle meteorological settings and data for simulations.
@@ -12,17 +17,35 @@ Functions:
 """
 
 from datetime import datetime as _datetime
-from typing import Literal as _Literal
+from typing import (
+    Literal as _Literal,
+)
 
-from knmi import get_day_data_dataframe as _get_day_data_dataframe, get_hour_data_dataframe as _get_hour_data_dataframe
+from knmi import (
+    get_day_data_dataframe as _get_day_data_dataframe,
+    get_hour_data_dataframe as _get_hour_data_dataframe,
+)
 from pandas import read_csv as _read_csv
-from pydantic import Field as _Field, PrivateAttr as _PrivateAttr
+from pydantic import (
+    Field as _Field,
+    PrivateAttr as _PrivateAttr,
+)
 
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
-from pyswap.core.fields import CSVTable as _CSVTable, Decimal2f as _Decimal2f, File as _File, String as _String, Table as _Table
-from pyswap.utils.mixins import FileMixin as _FileMixin, SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.core.fields import (
+    CSVTable as _CSVTable,
+    Decimal2f as _Decimal2f,
+    File as _File,
+    String as _String,
+    Table as _Table,
+)
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
 from pyswap.gis import Location as _Location
+from pyswap.utils.mixins import (
+    FileMixin as _FileMixin,
+    SerializableMixin as _SerializableMixin,
+    YAMLValidatorMixin as _YAMLValidatorMixin,
+)
 
 __all__ = ["MetFile", "Meteorology", "metfile_from_csv", "metfile_from_knmi"]
 
@@ -112,8 +135,6 @@ class Meteorology(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
         write_met: Writes the .met file.
     """
 
-    _validation: bool = _PrivateAttr(default=False)
-
     lat: _Decimal2f | None = _Field(default=None, ge=-90, le=90)
     meteo_location: _Location | None = _Field(default=None, exclude=True)
     swetr: _Literal[0, 1] | None = None
@@ -178,7 +199,39 @@ def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
 def metfile_from_knmi(
     metfil: str,
     stations: str | list,
-    variables: str | list = ["TEMP", "PRCP", "Q", "UG", "FG", "UX", "UN"],
+    variables: list[
+        _Literal[
+            "WIND",
+            "TEMP",
+            "SUNR",
+            "PRCP",
+            "VICL",
+            "WEER",
+            "DD",
+            "FH",
+            "FF",
+            "FX",
+            "T",
+            "T10N",
+            "TD",
+            "SQ",
+            "Q",
+            "DR",
+            "RH",
+            "P",
+            "VV",
+            "N",
+            "U",
+            "WW",
+            "IX",
+            "M",
+            "R",
+            "S",
+            "O",
+            "Y",
+ "UG", "FG", "UX", "UN"
+        ]
+    ],
     start: str | _datetime = "20000101",
     end: str | _datetime = "20200101",
     frequency: _Literal["day", "hour"] = "day",
@@ -205,7 +258,12 @@ def metfile_from_knmi(
     if isinstance(variables, str):
         variables = [variables]
 
-    get_func = _get_day_data_dataframe if frequency == "day" else _get_hour_data_dataframe
+    if not variables:
+        variables = ["TEMP", "PRCP", "Q", "UG", "FG", "UX", "UN"]
+
+    get_func = (
+        _get_day_data_dataframe if frequency == "day" else _get_hour_data_dataframe
+    )
 
     df = get_func(
         stations=stations, start=start, end=end, variables=variables, inseason=inseason

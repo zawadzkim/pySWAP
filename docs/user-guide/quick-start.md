@@ -6,7 +6,6 @@ If you know a lot already about SWAP and pySWAP, jump straight to the installati
 
 pySWAP can be simply installed through pip. Creation of a separate virtual environment is recommended.
 
-
 ```sh
 pip install pyswap
 ```

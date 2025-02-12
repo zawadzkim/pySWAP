@@ -20,7 +20,7 @@ Classes:
 from pathlib import Path
 from typing import Any, Literal, Self, Union, get_args, get_origin
 
-from pydantic import model_serializer, model_validator
+from pydantic import BaseModel, PrivateAttr, model_serializer, model_validator
 from pydantic.fields import FieldInfo
 
 from pyswap.core.defaults import VALIDATIONRULES
@@ -74,7 +74,7 @@ class FileMixin:
         return None
 
 
-class SerializableMixin:
+class SerializableMixin(BaseModel):
     """Converting a model to a SWAP-formatted string.
 
     This mixin is only inherited by classes that directly serialize to a
@@ -189,7 +189,7 @@ class SerializableMixin:
             return "\n".join(dump)
 
 
-class YAMLValidatorMixin:
+class YAMLValidatorMixin(BaseModel):
     """A mixin class that provides YAML-based validation for models.
 
     Initially, pySWAP had model serializers on each model component class which
@@ -203,6 +203,8 @@ class YAMLValidatorMixin:
         validate_parameters: Validate parameters against required rules.
         validate_with_yaml: Pydantic validator executing validation logic.
     """
+
+    _validation: bool = PrivateAttr(default=False)
 
     @staticmethod
     def validate_parameters(
@@ -243,9 +245,8 @@ class YAMLValidatorMixin:
         ]
 
         if missing_params:
-            raise ValueError(
-                f"The following parameters are required for {switch_name}={switch_value}: {', '.join(missing_params)}"
-            )
+            msg = f"The following parameters are required for {switch_name}={switch_value}: {', '.join(missing_params)}"
+            raise ValueError(msg)
 
     @model_validator(mode="after")
     def validate_with_yaml(self) -> Self:
@@ -263,7 +264,7 @@ class YAMLValidatorMixin:
 
         rules = VALIDATIONRULES.get(self.__class__.__name__, {})
 
-        for switch_name in rules.keys():
+        for switch_name in rules:
             switch_value = getattr(self, switch_name, None)
             if switch_value is not None:  # Only validate if the switch is set
                 self.validate_parameters(
@@ -284,6 +285,7 @@ class WOFOSTUpdateMixin:
     def update_from_wofost(self) -> None:
         """Update the model with the WOFOST variety settings."""
         from pyswap.utils.old_swap import create_array_objects
+
         # parameters attribute returns a dictionary with the key-value pairs and
         # tables as list of lists. Before updating, the tables should be
         # created.

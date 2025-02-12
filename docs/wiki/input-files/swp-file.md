@@ -12,4 +12,3 @@ The `.swp` file is the main configuration file for the SWAP model. It contains e
     ```txt
     {% include "./templates/SWAP.template" %}
     ```
-

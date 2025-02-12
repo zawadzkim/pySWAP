@@ -83,21 +83,6 @@ def serialize_csv_table(table: DataFrame) -> str:
     return table.to_csv(index=False, lineterminator="\n")
 
 
-def serialize_object_list(list: list[PySWAPBaseModel]) -> str:
-    """Serialize a list of objects to a string.
-
-    This is mostly used to convert pyswap.Section objects to a string.
-
-    Arguments:
-        list: The list of objects to be serialized.
-    """
-    string = ""
-    for item in list:
-        string += item.model_string()
-
-    return string
-
-
 def serialize_day_month(value: date) -> str:
     """Serialize a date object to a string with just the day and month.
 

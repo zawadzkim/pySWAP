@@ -1,3 +1,8 @@
+# mypy: disable-error-code="attr-defined"
+# For some reason, the error was raised on the definition of month labels based
+# on pivot table columns (which are dates). Error disabled for now. We will see
+# if any bugs come up.
+
 """
 Functions:
     water_content: Plot water content as heatmap.

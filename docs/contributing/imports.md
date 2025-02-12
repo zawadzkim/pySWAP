@@ -7,6 +7,7 @@ When it comes to imports, there's a balance between keeping them concise and cle
     To ensure clarity and maintainability, we have structured our imports thoughtfully.
 
 ## 1. Components
+
 Individual classes from the components library are not exposed directly at the package level. To access them, use the following approach:
 
 ```python
@@ -18,6 +19,7 @@ simset = psp.components.simsettings.GeneralSettings(...)
 While some modules may contain only one or two classes, others include many tables, which would clutter the hinting.
 
 ## 2. Special modules
+
 Special modules such as `model`, `db`, `io`, `gis`, and `plot` can be accessed directly from the package level:
 
 ```python
@@ -31,6 +33,7 @@ psp.plot_evapotranspiration(...)
 ```
 
 ## 3. Testcase
+
 Testcases can be imported for training and experimentation like this:
 
 ```python
@@ -38,6 +41,7 @@ from pyswap import testcase
 ```
 
 # Third-party and non-reexported imports
+
 To keep third-party imports and other imports that are not meant to be reexported organized, contributors should use aliases with an underscore prefix in modules that users normally call (e.g., `pyswap.components`). This ensures that important imports appear at the top of IDE hints. Here's an example:
 
 ```python
@@ -48,6 +52,7 @@ import matplotlib.pyplot as _plt
 # aliased with an underscore
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 ```
+
 It is not essential in modules from which the important classes are accessible directly from the package level.
 
 !!! note
@@ -60,9 +65,10 @@ It is not essential in modules from which the important classes are accessible d
     ```
 
 # importing style
+
 Ruff linting tool is set to force one line imports, and also wrap aliases, so the preferred style is as follows:
 
-``` Python
+```Python
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
 from pyswap.core.fields import (
     Decimal2f as _Decimal2f,
@@ -72,6 +78,6 @@ from pyswap.core.fields import (
 )
 ```
 
-# use of __all__
+# use of **all**
 
-for consistency, at the top of each module, there should be the __all__ variable defining which objects are meant to be imported with the * wildcard.
+for consistency, at the top of each module, there should be the **all** variable defining which objects are meant to be imported with the \* wildcard.

@@ -1,5 +1,5 @@
 **********************************************************************************
-* Filename: swap.dra                  
+* Filename: swap.dra
 * Contents: SWAP 4 - Input data for basic drainage
 **********************************************************************************
 * Comment area:
@@ -49,7 +49,7 @@
 * Switch, for allowance drainage/infiltration:
   SWALLO1 = 1                ! 1 = Drainage and infiltration are both allowed
                              ! 2 = Drainage is not allowed
-                             ! 3 = Infiltration is not allowed                          
+                             ! 3 = Infiltration is not allowed
 
 * If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
   L1 = 500.0                 ! Drain spacing, [1..100000 m, R]

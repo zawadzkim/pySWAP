@@ -1,3 +1,7 @@
+# mypy: disable-error-code="attr-defined"
+# attr-defined is disabled because it was easier to implement part of the
+# functionality of one mixin in the base class. Could be considered to be
+# fixed later.
 """Base models inherited by all pySWAP models.
 
 A lot of functionality can be abstracted away in the base models. This way, the
@@ -23,7 +27,7 @@ from typing import Any
 import pandas as pd
 import pandera as pa
 from pandera.typing import DataFrame
-from pydantic import BaseModel, ConfigDict, PrivateAttr, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from pyswap.core.defaults import ADDITIONAL_SWITCHES
 
@@ -31,16 +35,17 @@ from pyswap.core.defaults import ADDITIONAL_SWITCHES
 class PySWAPBaseModel(BaseModel):
     """Base class for pySWAP models.
 
-        Methods:
-            __setattr__: Overriden method to silently ignore assignment of frozen
-                fields.
-            update: Update the model with new values from a dictionary.
+    Methods:
+        __setattr__: Overriden method to silently ignore assignment of frozen
+            fields.
+        update: Update the model with new values from a dictionary.
     """
 
-    _validation = PrivateAttr(default=False)
     model_config = ConfigDict(
-        arbitrary_types_allowed=True, validate_assignment=True, extra="ignore",
-        populate_by_name=True
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+        extra="ignore",
+        populate_by_name=True,
     )
 
     def __setattr__(self, name, value):
@@ -58,7 +63,6 @@ class PySWAPBaseModel(BaseModel):
             return
         super().__setattr__(name, value)
 
-
     def update(self, new: dict, inplace: bool = False, no_validate: bool = False):
         """Update the model with new values.
 
@@ -75,8 +79,6 @@ class PySWAPBaseModel(BaseModel):
 
         # updated_model = self.model_validate(dict(self) | filtered)
         updated_model = self.model_validate(dict(self) | new)
-
-
 
         if not inplace:
             # added this for the case when the user loads a model from the
@@ -114,7 +116,11 @@ class PySWAPBaseModel(BaseModel):
         would work. It could be improved to include literals that do not start
         with "sw" as well.
         """
-        if (info.field_name.startswith("sw") or info.field_name in ADDITIONAL_SWITCHES) and info.field_name != "swap_ver" and value:
+        if (
+            (info.field_name.startswith("sw") or info.field_name in ADDITIONAL_SWITCHES)
+            and info.field_name != "swap_ver"
+            and value
+        ):
             try:
                 return int(value)
             except ValueError:

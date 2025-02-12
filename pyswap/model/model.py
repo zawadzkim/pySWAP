@@ -1,3 +1,14 @@
+# ruff: noqa: S603
+# mypy: disable-error-code="override, func-returns-value, call-overload, operator, no-any-return"
+# Override error is related to the validate method, must have somethiong to do
+# with Pydantic.
+# func-returns-value is raised on the model builder, because it does not return
+# anything. This is not a priority to fix.
+# the operator was returned on one of the checks (swdra comparison), which is
+# ok. It is validated prior to reaching that point.
+# no-any-return is raised on the run_parallel function, because it returns a
+# list of results. This is not a priority to fix.
+# securing the subprocess call does not seem like a priority in this project
 """Building, running and parsing the results of a SWAP model run.
 
 When the Model class begun to grow, it was clear that it needed to be refactored
@@ -16,42 +27,40 @@ Classes:
 
 from __future__ import annotations
 
-from multiprocessing import Pool
 import logging
 import os
 import shutil
 import subprocess
 import tempfile
+from multiprocessing import Pool
 from pathlib import Path
 from typing import Literal
 
 from pandas import DataFrame, read_csv, to_datetime
 from pydantic import Field, PrivateAttr, model_validator
-from pyswap.components.irrigation import FixedIrrigation
-from pyswap.components.meteorology import Meteorology
 
-from pyswap.components.simsettings import GeneralSettings, RichardsSettings
-
-from pyswap.components.simsettings import RichardsSettings
-from pyswap.components.soilwater import (
-    SurfaceFlow,
-    SoilMoisture,
-    Evaporation,
-    SoilProfile,
-    SnowAndFrost,
-)
-from pyswap.components.drainage import Drainage
 from pyswap.components.boundary import BottomBoundary
-from pyswap.components.transport import HeatFlow, SoluteTransport
-from pyswap.components.metadata import Metadata
 from pyswap.components.crop import Crop
+from pyswap.components.drainage import Drainage
+from pyswap.components.irrigation import FixedIrrigation
+from pyswap.components.metadata import Metadata
+from pyswap.components.meteorology import Meteorology
+from pyswap.components.simsettings import GeneralSettings, RichardsSettings
+from pyswap.components.soilwater import (
+    Evaporation,
+    SnowAndFrost,
+    SoilMoisture,
+    SoilProfile,
+    SurfaceFlow,
+)
+from pyswap.components.transport import HeatFlow, SoluteTransport
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.defaults import IS_WINDOWS
 from pyswap.core.fields import Subsection
 from pyswap.core.io.io_ascii import open_ascii
-from pyswap.utils.mixins import FileMixin, SerializableMixin
 from pyswap.libs import swap_linux, swap_windows
 from pyswap.model.result import Result
+from pyswap.utils.mixins import FileMixin, SerializableMixin
 
 logger = logging.getLogger(__name__)
 
@@ -179,15 +188,16 @@ class ModelRunner:
             builder = ModelBuilder(self.model, tempdir)
             builder.copy_executable().write_inputs()
 
-            result = self.run_swap(tempdir)
+            stdout = self.run_swap(tempdir)
 
-            if "normal completion" not in result:
-                raise Exception(f"Model run failed. \n {result}")
+            if "normal completion" not in stdout:
+                msg = f"Model run failed. \n {stdout}"
+                raise RuntimeError(msg)
 
-            logger.info(result)
+            logger.info(stdout)
 
             # --- Handle the results ---
-            result = Result()
+            result: Result = Result()
 
             reader = ResultReader(self.model, tempdir)
 
@@ -374,20 +384,30 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
 
     metadata: Subsection[Metadata] | None = Field(default=None, repr=False)
     version: str = Field(exclude=True, default="base")
-    generalsettings: Subsection[GeneralSettings] | None = Field(default=None, repr=False)
+    generalsettings: Subsection[GeneralSettings] | None = Field(
+        default=None, repr=False
+    )
     meteorology: Subsection[Meteorology] | None = Field(default=None, repr=False)
     crop: Subsection[Crop] | None = Field(default=None, repr=False)
-    fixedirrigation: Subsection[FixedIrrigation] | None = Field(default=FixedIrrigation(swirfix=0), repr=False)
+    fixedirrigation: Subsection[FixedIrrigation] | None = Field(
+        default=FixedIrrigation(swirfix=0), repr=False
+    )
     soilmoisture: Subsection[SoilMoisture] | None = Field(default=None, repr=False)
     surfaceflow: Subsection[SurfaceFlow] | None = Field(default=None, repr=False)
     evaporation: Subsection[Evaporation] | None = Field(default=None, repr=False)
     soilprofile: Subsection[SoilProfile] | None = Field(default=None, repr=False)
-    snowandfrost: Subsection[SnowAndFrost] | None = Field(default=SnowAndFrost(swsnow=0, swfrost=0), repr=False)
-    richards: Subsection[RichardsSettings] | None = Field(default=RichardsSettings(swkmean=1, swkimpl=0), repr=False)
+    snowandfrost: Subsection[SnowAndFrost] | None = Field(
+        default=SnowAndFrost(swsnow=0, swfrost=0), repr=False
+    )
+    richards: Subsection[RichardsSettings] | None = Field(
+        default=RichardsSettings(swkmean=1, swkimpl=0), repr=False
+    )
     lateraldrainage: Subsection[Drainage] | None = Field(default=None, repr=False)
     bottomboundary: Subsection[BottomBoundary] | None = Field(default=None, repr=False)
     heatflow: Subsection[HeatFlow] | None = Field(default=HeatFlow(swhea=0), repr=False)
-    solutetransport: Subsection[SoluteTransport] | None = Field(default=SoluteTransport(swsolu=0), repr=False)
+    solutetransport: Subsection[SoluteTransport] | None = Field(
+        default=SoluteTransport(swsolu=0), repr=False
+    )
 
     @property
     def swp(self):
@@ -429,24 +449,23 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         ]
 
         if missing_components:
-            raise ValueError(
-                f"Missing required components: {', '.join(missing_components)}"
-            )
-        
+            msg = f"Missing required components: {', '.join(missing_components)}"
+            raise ValueError(msg)
+
         # validate each component
         for comp in required_components:
             getattr(self, comp)
 
         return self
-    
+
     @model_validator(mode="after")
     def validate_each_component(self):
         """Validate, on run, that all required components are present."""
 
         if not self._validate_on_run:
             return self
-        
-        for comp in self.model_fields.keys():
+
+        for comp in self.model_fields:
             item = getattr(self, comp)
             if hasattr(item, "validate_with_yaml"):
                 item._validation = True
@@ -455,7 +474,11 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         return self
 
     def validate(self):
-        """Execute the model validation when `run()` is called."""
+        """Execute the model validation when `run()` is called.
+        
+        This method should probably be refactored. It seems to shadow some
+        validation method from Pydantic.
+        """
 
         try:
             self._validate_on_run = True
@@ -482,12 +505,11 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
 
         logger.info(f"Model files written to {path}")
 
-    def run(self, path: str | Path | None = None, silence_warnings: bool = False):
+    def run(self, path: str | Path | None = None, silence_warnings: bool = False) -> Result:
         """Run the model using ModelRunner."""
         self.validate()
         path = Path.cwd() if path is None else path
         return ModelRunner(self).run(path, silence_warnings)
-
 
 
 def _run_model_with_params(args) -> Result:
@@ -495,7 +517,13 @@ def _run_model_with_params(args) -> Result:
     model, path, silence_warnings = args
     return model.run(path=path, silence_warnings=silence_warnings)
 
-def run_parallel(mls: list[Model], path: Path | str | None = None, silence_warnings: bool = False, **kwargs) -> list[Result]:
+
+def run_parallel(
+    mls: list[Model],
+    path: Path | str | None = None,
+    silence_warnings: bool = False,
+    **kwargs,
+) -> list[Result]:
     """Run multiple models in parallel.
 
     Parameters:
@@ -508,6 +536,8 @@ def run_parallel(mls: list[Model], path: Path | str | None = None, silence_warni
         list[Result]: List of results from the model runs.
     """
     with Pool(**kwargs) as pool:
-        results = pool.map(_run_model_with_params, [(model, path, silence_warnings) for model in mls])
+        results = pool.map(
+            _run_model_with_params, [(model, path, silence_warnings) for model in mls]
+        )
 
     return results

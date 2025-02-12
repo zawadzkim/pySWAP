@@ -23,7 +23,7 @@ Modules:
         WOFOST (A. de Wit).
 """
 
-from pyswap.db.cropdb import WOFOSTCropDB, CropVariety
+from pyswap.db.cropdb import CropVariety, WOFOSTCropDB
 from pyswap.db.hdf5 import HDF5
 
 __all__ = ["HDF5", "WOFOSTCropDB", "CropVariety"]

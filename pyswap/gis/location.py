@@ -1,3 +1,5 @@
+# mypy: disable-error-code="no-any-unimported"
+# This error was due to lack of stubs for shapely. 
 """Location class and related functionality.
 
 Classes:
@@ -8,7 +10,7 @@ from decimal import Decimal
 
 from pydantic import Field, field_validator
 from pyproj import CRS, Transformer
-from shapely import Point
+from shapely.geometry import Point
 
 from pyswap.core.basemodel import PySWAPBaseModel
 
@@ -46,9 +48,11 @@ class Location(PySWAPBaseModel):
     def validate_crs(cls, v):
         try:
             CRS.from_user_input(v)
+        except Exception:
+            msg = f"Invalid CRS: {v}"
+            raise ValueError(msg) from None
+        else:
             return v
-        except:
-            raise ValueError(f"Invalid CRS: {v}")
 
     def to_crs(self, target_crs: str) -> "Location":
         """Transform the location to a new Coordinate Reference System.
@@ -60,10 +64,7 @@ class Location(PySWAPBaseModel):
             Location: A new Location object with the transformed coordinates.
         """
 
-        try:
-            target_crs_obj = CRS.from_user_input(target_crs)
-        except:
-            raise ValueError(f"Invalid target CRS: {target_crs}")
+        CRS.from_user_input(target_crs)
 
         transformer = Transformer.from_crs(self.crs, target_crs, always_xy=True)
 

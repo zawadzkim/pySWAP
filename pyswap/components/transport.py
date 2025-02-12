@@ -1,12 +1,21 @@
+# mypy: disable-error-code="call-overload, misc, override"
+
 from typing import Literal as _Literal
 
 from pydantic import Field as _Field
 
+from pyswap.components.tables import INITSOILTEMP, SOILTEXTURES
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
-from pyswap.core.fields import Decimal2f as _Decimal2f, String as _String, Table as _Table
-from pyswap.utils.mixins import SerializableMixin as _SerializableMixin, YAMLValidatorMixin as _YAMLValidatorMixin
+from pyswap.core.fields import (
+    Decimal2f as _Decimal2f,
+    String as _String,
+    Table as _Table,
+)
 from pyswap.core.valueranges import YEARRANGE as _YEARRANGE
-from pyswap.components.tables import SOILTEXTURES, INITSOILTEMP
+from pyswap.utils.mixins import (
+    SerializableMixin as _SerializableMixin,
+    YAMLValidatorMixin as _YAMLValidatorMixin,
+)
 
 __all__ = ["HeatFlow", "SoluteTransport", "SOILTEXTURES", "INITSOILTEMP"]
 
@@ -102,4 +111,3 @@ class SoluteTransport(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
     cseeparrtb: _Table | None = None
     inissoil: _Table | None = None
     misc: _Table | None = None
-

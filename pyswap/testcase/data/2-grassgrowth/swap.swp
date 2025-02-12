@@ -29,8 +29,8 @@
   PATHATM = './'             ! Path to folder with weather files [A80]
   PATHCROP = './'            ! Path to folder with crop files [A80]
   PATHDRAIN = './'           ! Path to folder with drainage files [A80]
-  
-* Switch, display progression of simulation run to screen:  
+
+* Switch, display progression of simulation run to screen:
   SWSCRE = 0                 ! 0 = no display to screen
                              ! 1 = display water balance components
                              ! 2 = display daynumber
@@ -50,7 +50,7 @@
 **********************************************************************************
 
 **********************************************************************************
-* Part 3: Output dates 
+* Part 3: Output dates
 
 * Number of output times during a day
   NPRINTDAY = 1              ! Number of output times during a day [1..1440, I]
@@ -91,7 +91,7 @@
   SWBMA = 0                  ! Switch, output file with water fluxes, only for macropore flow [Y=1, N=0]
   SWDRF = 0                  ! Switch, output of drainage fluxes, only for extended drainage [Y=1, N=0]
   SWSWB = 0                  ! Switch, output surface water reservoir, only for extended drainage [Y=1, N=0]
-  SWINI = 0                  ! Switch, output of initial SoilPhysParam and HeatParam [Y=1, N=0]  
+  SWINI = 0                  ! Switch, output of initial SoilPhysParam and HeatParam [Y=1, N=0]
   SWINC = 0                  ! Switch, output of water balance increments [Y=1, N=0]
   SWCRP = 0                  ! Switch, output of simple or detailed crop growth model [Y=1, N=0]
   SWSTR = 0                  ! Switch, output of stress values for wetness, drought, salinity and frost [Y=1, N=0]
@@ -131,7 +131,7 @@
 
 * Details of meteo station:
   LAT = 52.1                 ! Latitude of meteo station [-90..90 degrees, R, North = +]
-  
+
 * Type of weather data for potential evapotranspiration
   SWETR = 0                  ! 0 = Use basic weather data and apply Penman-Monteith equation
                              ! 1 = Use reference evapotranspiration data in combination with crop factors
@@ -167,7 +167,7 @@
 **********************************************************************************
 * Part 1: Crop rotation scheme
 
-* Switch for bare soil or cultivated soil:  
+* Switch for bare soil or cultivated soil:
   SWCROP = 1                 ! 0 = Bare soil
                              ! 1 = Cultivated soil
 
@@ -428,7 +428,7 @@
  -95.0    9.0
 * End of table
 
-* Define top boundary condition: 
+* Define top boundary condition:
   SWTOPBHEA = 1              ! 1 = use air temperature of meteo input file as top boundary
                              ! 2 = use measured top soil temperature as top boundary
 

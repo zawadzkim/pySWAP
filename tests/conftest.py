@@ -1,8 +1,20 @@
 import pytest
 
 from pyswap.core.basemodel import PySWAPBaseModel
+from pyswap.core.fields import (
+    Arrays,
+    DateList,
+    DayMonth,
+    Decimal2f,
+    Decimal3f,
+    Decimal4f,
+    FloatList,
+    IntList,
+    String,
+    StringList,
+    Table,
+)
 from pyswap.utils.mixins import SerializableMixin
-from pyswap.core.fields import Table, Table, Arrays, DayMonth, StringList, FloatList, IntList, DateList, ObjectList, String, Subsection, Decimal2f, Decimal3f, Decimal4f
 
 
 @pytest.fixture(scope="module")

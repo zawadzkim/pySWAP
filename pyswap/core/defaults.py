@@ -46,9 +46,23 @@ ADDITIONAL_SWITCHES: list[str] = [
 ]
 
 EXTENSIONS: list[str] = [
-    "wba", "end", "vap", "bal", "blc", "sba", "ate",
-    "bma", "drf", "swb", "ini", "inc", "crp", "str",
-    "irg", "csv", "csv_tz",
+    "wba",
+    "end",
+    "vap",
+    "bal",
+    "blc",
+    "sba",
+    "ate",
+    "bma",
+    "drf",
+    "swb",
+    "ini",
+    "inc",
+    "crp",
+    "str",
+    "irg",
+    "csv",
+    "csv_tz",
 ]
 
 EXTENSION_SWITCHES: list[str] = [f"sw{ext}" for ext in EXTENSIONS]
