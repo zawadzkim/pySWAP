@@ -17,6 +17,7 @@ from typing import Literal as _Literal
 from pydantic import (
     Field as _Field,
     PrivateAttr as _PrivateAttr,
+    computed_field as _computed_field,
 )
 
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
@@ -162,6 +163,18 @@ class BottomBoundary(
     qtab: _Table | None = None
     hbot5: _Table | None = None
 
+    def bbc(self) -> str:
+        """Return the string representing the bbc file."""
+        return self._model_string(exclude={"swbbcfile", "bbcfil"})
+
+    def _model_string(self, **kwargs) -> str:
+        """Internal method to handle model string generation.
+        
+        This was implemented to avoid pydantic from raising a maximum recursion
+        depth error when calling the model_string method from the super class.
+        """
+        return super().model_string(**kwargs)
+
     def model_string(self, **kwargs) -> str:
         """Override model_string method to handle the swbbcfile attribute.
 
@@ -196,5 +209,4 @@ class BottomBoundary(
             msg = "Bottom boundary conditions are not set to be written to a .bbc file."
             raise ValueError(msg)
 
-        bbc = super().model_string(exclude={"swbbcfile", "bbcfil"})
-        self.save_file(string=bbc, fname=self.bbcfil, path=path)
+        self.save_file(string=self.bbc(), fname=self.bbcfil, path=path)

@@ -96,6 +96,25 @@ class ModelBuilder:
             logger.info("Copying linux executable into temporary directory...")
 
         return self
+    
+    def get_inputs(self) -> dict:
+        """Get the inpup files in a dictionary."""
+        inputs = {}
+
+        inputs["swp"] = self.model.swp
+        if self.model.lateraldrainage.swdra in [1, 2]:
+            inputs["dra"] = self.model.lateraldrainage.drafile.dra
+        if self.model.crop.cropfiles:
+            inputs["crop"] = self.model.crop.cropfiles
+        if self.model.meteorology.metfile:
+            inputs["met"] = self.model.meteorology.met
+        if self.model.fixedirrigation.swirgfil == 1:
+            inputs["irg"] = self.model.fixedirrigation.irg
+        if self.model.bottomboundary.swbbcfile == 1: 
+            inputs["bbc"] = self.model.bottomboundary.bbc
+
+        return inputs
+
 
     def write_inputs(self) -> None:
         """Write the input files to the temporary directory."""
@@ -111,7 +130,7 @@ class ModelBuilder:
             self.model.meteorology.write_met(self.tempdir)
         if self.model.fixedirrigation.swirgfil == 1:
             self.model.fixedirrigation.write_irg(self.tempdir)
-        if self.model.bottomboundary.swbbcfile == 1:
+        if self.model.bottomboundary.swbbcfile == 1: 
             self.model.bottomboundary.write_bbc(self.tempdir)
 
         return self
@@ -494,6 +513,11 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
             path (str | Path): The path to write the file to.
         """
         self.save_file(string=self.swp, path=path, fname="swap")
+
+    def get_inputs(self) -> dict:
+        """Get the input files in a dictionary."""
+        builder = ModelBuilder(model=self, tempdir=Path.cwd())
+        return builder.get_inputs()
 
     def to_classic_swap(self, path: Path) -> None:
         """Prepare all the files for a model run in user's directory."""

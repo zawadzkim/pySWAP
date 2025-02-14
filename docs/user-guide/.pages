@@ -1,5 +1,5 @@
 nav:
     - quick-start.md
-    - main-concepts.md
+    - ascii-vs-classes.md
     - data-structures.md
     - hdf5.md

@@ -25,6 +25,7 @@ theme:
     - search.suggest
     - search.highlight
     - content.tabs.link
+    - content.code.annotate
     - content.code.annotation
     - content.code.copy
   language: en
@@ -44,9 +45,11 @@ theme:
 plugins:
   - search
   - autorefs
-  - blog
   - include-markdown
   - awesome-pages
+  - exclude-search:
+      exclude:
+        - tutorials/
   - mkdocs-jupyter:
       # execute: true
   - mkdocstrings:
@@ -67,6 +70,8 @@ markdown_extensions:
   - md_in_html
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.tabbed: 
+      alternate_style: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.emoji:

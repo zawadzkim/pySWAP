@@ -2,7 +2,7 @@
 
 If you know a lot already about SWAP and pySWAP, jump straight to the installation, running the test case and setting up your own model.
 
-## Installation
+## Install
 
 pySWAP can be simply installed through pip. Creation of a separate virtual environment is recommended.
 
@@ -12,53 +12,25 @@ pip install pyswap
 
 ## Run a test case
 
-To see if everything is working fine, open the Python shell and type:
+After installation, you can test if everthing is OK by running a testcase:
 
 ```py
+pyswap-py3.11vscode ➜ /workspaces/pySWAP (dev) $ python
+Python 3.11.11 (main, Dec  4 2024, 20:36:16) [GCC 10.2.1 20210110] on linux
+Type "help", "copyright", "credits" or "license" for more information.
 >>> from pyswap import testcase
-
->>> hupsel = testcase.get('hupsel')  # retrieves the hupsel model settings
->>> result = hupsel.run(".")  # run the model in the current directory
->>> result.summary_blc  # print the blc summary
+>>> hupselbrook = testcase.get("hupselbrook")
+>>> result = hupselbrook.run()
+Warning from module Readswap : simulation with additonal Ksat value (Ksatexm)
+>>> result.yearly_summary
+             RAIN  IRRIG   INTERC  RUNOFF      EPOT      EACT  DRAINAGE  QBOTTOM         GWL      TPOT      TACT    DSTOR
+DATETIME                                                                                                                 
+2002-12-31  84.18    0.5  3.74188     0.0  33.10679  16.68715  22.11357      0.0 -1107.65824  38.71198  38.17328  3.96418
+2003-12-31  71.98    0.0  2.05788     0.0  35.99241  17.17961  26.44815      0.0 -1154.37603  29.41787  29.21504 -2.92064
+2004-12-31  80.55    0.0  4.91521     0.0  29.89227  17.88916  24.76607      0.0 -1036.76085  32.57266  32.56927  0.41030
 ```
 
-You should get back the formatted string with water balance summary (here given just for one year):
+## Start your project with pyswap CLI tool
 
-```txt
-* Project:       pySWAP test - hupsel brook
-* File content:  detailed overview of water balance components (cm)
-* File name:     ./result.blc
-* Model version: Swap 4.2.0
-* Generated at:  2024-04-17 00:47:13
-
-Period             :  2002-01-01  until  2002-12-31
-Depth soil profile :  200.00 cm
-=================================================+=================================================
-INPUT                                            | OUTPUT
-                   PLANT    SNOW    POND    SOIL |                   PLANT    SNOW    POND    SOIL
-=================================================+=================================================
-Initially Present           0.00    0.00   71.60 | Finally present            0.00    0.00   76.02
-Gross Rainfall     84.03                         |
-Nett Rainfall               0.00   80.29         | Nett Rainfall     80.29
-Gross Irrigation    0.50                         |
-Nett Irrigation                     0.50         | Nett Irrigation    0.50
-                                                 | Interception       3.74
-Snowfall                    0.00                 |
-Snowmelt                            0.00         | Snowmelt                   0.00
-                                                 | Sublimation                0.00
-SSDI                                        0.00 | Plant Transpiration                        0.75
-                                                 | Soil Evaporation                   1.82
-Runon                               0.00         | Runoff                             0.00
-Inundation                          0.00         |
-Infiltr. Soil Surf.                        80.46 | Infiltr. Soil Surf.               80.46
-Exfiltr. Soil Surf.                 1.49         | Exfiltr. Soil Surf.                        1.49
-Infiltr. subsurf.                                | Drainage
-- system 1                                  0.00 | - system 1                                73.79
-Upward seepage                              0.00 | Downward seepage                           0.00
-=================================================+=================================================
-Sum                84.53    0.00   82.28  152.05 | Sum               84.53    0.00   82.28  152.05
-=================================================+=================================================
-Storage Change              0.00    0.00    4.43
-Balance Deviation   0.00    0.00    0.00   -0.00
-===================================================================================================
-```
+## Turn on the exploration mode
+You can play around with the model and result in the terminal, or go to the [tutorial section](/tutorials/) for hands-on exercises or move on to the [next page](/user-guide/ascii-vs-classes/) of the user guide.

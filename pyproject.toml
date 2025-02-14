@@ -10,6 +10,9 @@ documentation = "https://zawadzkim.github.io/pyswap/"
 pyswap = "pyswap.core.cli.cli:app"
 dynamic = ["version", "dependencies", "requires-python"]
 
+[tool.poetry.scripts]
+pyswap = "pyswap.core.cli.cli:app"
+
 [tool.poetry.dependencies]
 python = "^3.11"
 pandas = "^2.2.2"
@@ -47,6 +50,7 @@ mkdocs-autorefs = "^1.0.1"
 mkdocstrings-python = "^1.10.3"
 mkdocs-jupyter = "^0.25.0"
 mkdocs-awesome-pages-plugin = "^2.10.1"
+mkdocs-exclude-search = "^0.6.6"
 
 [tool.poetry]
 packages = [

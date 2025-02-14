@@ -34,3 +34,6 @@ swap_windows: Traversable = libs / "swap420-exe" / "swap420.exe"
 
 crop_params: Traversable = libs / "WOFOST_crop_parameters"
 """The directory of WOFOST crop parameters."""
+
+plotting: Traversable = libs / "plotting"
+"""The directory of plotting resources."""

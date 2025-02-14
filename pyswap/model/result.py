@@ -1,3 +1,6 @@
+# mypy: disable-error-code="no-any-return"
+
+
 """Capturing model results.
 
 After a model is run, the results are stored in a `Result` object. The object
@@ -63,14 +66,20 @@ class Result(BaseModel):
     @computed_field(return_type=str, repr=False)
     def iteration_stats(self) -> str:
         """Print the part the iteration statistics from the log."""
-        print(re.search(r".*(Iteration statistics\s*.*)$", self.log, re.DOTALL)[1])
+        match = re.search(r".*(Iteration statistics\s*.*)$", self.log, re.DOTALL)
+        if match:
+            return match.group(1)
+        return ""
 
     @computed_field(return_type=str, repr=False)
     def blc_summary(self) -> str:
         """Print the .blc file if it exists."""
         print(self.output.get("blc", None))
+        return
 
     @computed_field(return_type=DataFrame, repr=False)
     def yearly_summary(self) -> DataFrame:
         """Return yearly sums of all output variables."""
+        if not isinstance(self.csv, DataFrame):
+            raise ValueError("CSV file not included in output file formats.")
         return self.csv.resample("YE").sum()

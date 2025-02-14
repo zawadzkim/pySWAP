@@ -74,7 +74,7 @@ class HDF5(BaseModel):
         result: Union["Result", None] = None,
         overwrite_datasets: bool = False,
         overwrite_project: bool = False,
-        mode: Literal["python", "json", "yaml"] = "python",
+        mode: Literal["python", "json", "yaml", "plain"] = "python",
     ):
         """
         Save a model and its results to an HDF5 file.
@@ -215,6 +215,11 @@ class HDF5(BaseModel):
             logger.info(f"Deleted project {project_name}")
         except KeyError:
             logger.warning(f"Project {project_name} does not exist.")
+
+    def _save_plain_string(self, group, name, data):
+        """Save data as a plain string dataset."""
+        
+
 
     def _save_pickled(self, group, name, data):
         """Save data as a pickled dataset."""
