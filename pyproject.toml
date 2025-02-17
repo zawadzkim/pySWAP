@@ -56,8 +56,8 @@ mkdocs-exclude-search = "^0.6.6"
 packages = [
   {include = "pyswap"},
   {include = "py.typed"},
-  {include = "pyswap/libs/WOFOST_crop_parameters"}
 ]
+include = ["pyswap/libs/WOFOST_crop_parameters/**"]
 
 [build-system]
 requires = ["poetry-core"]
