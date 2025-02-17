@@ -2,7 +2,7 @@
 
 pyswap is the first comprehensive Python wrapper for the SWAP hydrological model (version 4.2). It allows you to create and interact with these models using Python, including interactive tools like Jupyter notebooks. pyswap integrates HDF5 as stofage for models and a universal exchange file format, facilitating seamless collaboration with R users, who can utilize packages like SWAP Tools to handle SWAP models. Additionally, it integrates with external databases, such as KNMI for Dutch weather data and the WOFOST crop parameter database.
 
-The model variables are based on the original input files from SWAP developers ([preview here](wiki/input-files/1-input-files.md)), the user manual (Kroes et al., 2017), and other documents available on the [SWAP website](https://www.swap.alterra.nl/).
+The model variables are based on the original input files from SWAP developers, the user manual (Kroes et al., 2017), and other documents available on the [SWAP website](https://www.swap.alterra.nl/).
 
 !!! note
 
@@ -49,6 +49,3 @@ The model variables are based on the original input files from SWAP developers (
 </div>
 
 ## SWAP: Soil-Water-Atmosphere-Plant model
-
-
-

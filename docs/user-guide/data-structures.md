@@ -13,7 +13,7 @@ All parameters are grouped into classes representing different components of the
 `pyswap` models (classes or objects) are subclasses of [Pydantic's](https://docs.pydantic.dev/latest/) `BaseModel`. Pydantic is a powerful validation and serialization library that ensures the provided data is of the right type and within the right range. When possible, the input is coerced into the correct format; otherwise, exceptions are raised. Below see an example of a pyswap class definition:
 
 ```py
-class SnowAndFrost(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin): 
+class SnowAndFrost(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Snow and frost settings for the model.
 
     Attributes:
@@ -61,7 +61,6 @@ FloatList = Annotated[
 1. Normally, the input should be a list of floats, but if provided as a string, `parse_float_list` will convert it into a list. This is useful when a formatted string from SWAP input files is passed directly. For details, see [reference](/reference/developer/#pyswap.core.parsers.parse_float_list).
 2. `PlainSerializer` ensures that during serialization (when input variables are written to a file), the list is converted into a properly formatted string representing the floats with two decimal points using a lambda function.
 
-
 Here is another example of a field:
 
 ```py
@@ -75,7 +74,6 @@ Decimal2f = Annotated[
 
 1. [parse_decimal](/reference/developer/#pyswap.core.parsers.parse_decimal) ensures that the string from the input file is actually a float. It removes any Fortran-compatible notation like "d" or "e" to ensure it coerces to a float.
 2. [serialize_decimal](/reference/developer/#pyswap.core.serializers.serialize_decimal) ensures that the float is saved to the input file with two decimal points.
-
 
 ## Tables
 

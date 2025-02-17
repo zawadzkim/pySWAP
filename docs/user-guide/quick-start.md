@@ -24,7 +24,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 Warning from module Readswap : simulation with additonal Ksat value (Ksatexm)
 >>> result.yearly_summary
              RAIN  IRRIG   INTERC  RUNOFF      EPOT      EACT  DRAINAGE  QBOTTOM         GWL      TPOT      TACT    DSTOR
-DATETIME                                                                                                                 
+DATETIME
 2002-12-31  84.18    0.5  3.74188     0.0  33.10679  16.68715  22.11357      0.0 -1107.65824  38.71198  38.17328  3.96418
 2003-12-31  71.98    0.0  2.05788     0.0  35.99241  17.17961  26.44815      0.0 -1154.37603  29.41787  29.21504 -2.92064
 2004-12-31  80.55    0.0  4.91521     0.0  29.89227  17.88916  24.76607      0.0 -1036.76085  32.57266  32.56927  0.41030
@@ -33,4 +33,5 @@ DATETIME
 ## Start your project with pyswap CLI tool
 
 ## Turn on the exploration mode
+
 You can play around with the model and result in the terminal, or go to the [tutorial section](/tutorials/) for hands-on exercises or move on to the [next page](/user-guide/ascii-vs-classes/) of the user guide.

@@ -2,4 +2,6 @@ nav:
     - quick-start.md
     - ascii-vs-classes.md
     - data-structures.md
+    - run-parallel.md
+    - to-classic-swap.md
     - hdf5.md

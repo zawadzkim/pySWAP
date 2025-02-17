@@ -34,13 +34,11 @@ To run the SWAP model, you need to provide various parameters defined in several
     import pyswap as psp
 
     snow = psp.components.soilwater.SnowAndFrost(  # (1)!
-      swsnow=1, snowinco=22.0, teprrain=2.0, teprsnow=-2.0, 
+      swsnow=1, snowinco=22.0, teprrain=2.0, teprsnow=-2.0,
       snowcoef=0.3, swfrost=1, tfroststa=0.0, tfrostend=-1.0,
     )
     ```
 
     1.  When using a code editor like VS Code or PyCharm you start typing the names of the modules, you will get type hints and module documentation, that will help you navigate thorugh the package.
-
-
 
 Classes generally act as "containers" for variables, but some also include functionality specific to their section, such as reading and formatting meteorological data from CSV files. The class definitions offer validation, type hinting, and built-in documentation that most code editors can utilize. This is especially helpful if you're just starting with the model, making it easier to understand and work with the parameters. Classes are explained in more details in the next section. If you are looking for more information about the input files visit the [wiki section](/wiki/).
