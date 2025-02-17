@@ -29,7 +29,7 @@ libs: Traversable = resources.files(__name__)
 swap_linux: Traversable = libs / "swap420-linux" / "swap420"
 """The directory of the SWAP420 Linux executable."""
 
-swap_windows: Traversable = libs / "swap420-exe" / "swap420.exe"
+swap_windows: Traversable = libs / "swap420-exe" / "swap.exe"
 """The directory of the SWAP420 Windows executable."""
 
 crop_params: Traversable = libs / "WOFOST_crop_parameters"
