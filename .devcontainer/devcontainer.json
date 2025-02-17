@@ -1,0 +1,40 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
+{
+  "name": "pyswap",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bullseye",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/poetry:2": {},
+    "ghcr.io/devcontainers/features/common-utils:2.5.2": {}
+  },
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
+
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "editorconfig.editorconfig",
+        "ms-vscode.makefile-tools",
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "github.vscode-pull-request-github"
+      ],
+      "settings": {
+        "files.eol": "\n",
+        "editor.rulers": [80],
+        // This below is a bugfix related to the new "native" Python locator issue in VSCode
+        // see https://stackoverflow.com/questions/78886125/vscode-python-extension-loading-forever-saying-reactivating-terminals
+        "python.locator": "js",
+        "python.testing.pytestArgs": ["tests"],
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true,
+        "python.defaultInterpreterPath": "/workspaces/pyswap/.venv/bin/python",
+        "python.testing.pytestPath": "/workspaces/pyswap/.venv/bin/pytest"
+      }
+    }
+  }
+}

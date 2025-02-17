@@ -1,2 +1,15 @@
-from .run_testcase import get
-from .loda_dataset import view_resources, load_met, load_observations
+from pyswap.testcase.load_dataset import (
+    get_path,
+    load_met,
+    load_observations,
+    view_resources,
+)
+from pyswap.testcase.run_testcase import get
+
+__all__ = [
+    "get_path",
+    "load_met",
+    "load_observations",
+    "view_resources",
+    "get",
+]

@@ -7,6 +7,7 @@ __pycache__/
 *.pyz
 *.pyzw
 cache/
+dist/
 
 # Virtual Environments
 venv/
@@ -34,14 +35,18 @@ env2/
 .DS_Store
 Thumbs.db
 
+# mkdocs site
+site
+
 *.egg-info
 /docs/build
 /docs/source
 *.bat
-Makefile
-CD_Erika/
-RD_Erika/
-2. opeil/
 .data
 .examples
 *.h5
+
+node_modules/
+.ruff_cache/
+.pytest_cache/
+.logs/

@@ -1,87 +1,145 @@
+# mypy: disable-error-code="attr-defined"
+# attr-defined is disabled because it was easier to implement part of the
+# functionality of one mixin in the base class. Could be considered to be
+# fixed later.
+"""Base models inherited by all pySWAP models.
+
+A lot of functionality can be abstracted away in the base models. This way, the
+code is more DRY and easier to maintain. The base models are used to enforce
+the correct data types and structure of the input data. They also provide
+methods to convert the data to the format required by the SWAP model.
+
+Classes defined here are based on Pydantic BaseModel and Pandera DataFrameModel.
+Both are meant to ensure the correct data types and structure of the input data,
+as successful validation means smooth execution of the SWAP model. Particularily
+important when run as a submitted job on an HPC.
+
+Classes:
+    BaseModel: Base class for pySWAP models. Inherits from Pydantic BaseModel.
+    BaseTableModel: Base class for pySWAP models that validate pandas
+        DataFrames. Inherits from Pandera DataFrameModel.
+"""
+
 from __future__ import annotations
-from pydantic import BaseModel, ConfigDict
-from .serializers import quote_string
-from .files import save_file
+
+from typing import Any
+
+import pandas as pd
+import pandera as pa
+from pandera.typing import DataFrame
+from pydantic import BaseModel, ConfigDict, field_validator
+
+from pyswap.core.defaults import ADDITIONAL_SWITCHES
 
 
 class PySWAPBaseModel(BaseModel):
-    """Base class for PySWAP models.
-
-    Attributes:
-        model_config (ConfigDict): Overriding Pydantic model configuration.
+    """Base class for pySWAP models.
 
     Methods:
-        save_element: Saves model element to a file.
-        model_string: Returns a custom model string representation that matches the requirements of .swp file.
-        _concat_sections: Concatenate a string from individual sections.
-        model_string: Returns a custom model string representation that matches the requirements of .swp file.
+        __setattr__: Overriden method to silently ignore assignment of frozen
+            fields.
+        update: Update the model with new values from a dictionary.
     """
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
         validate_assignment=True,
-        extra='forbid'
+        extra="ignore",
+        populate_by_name=True,
     )
 
-    @staticmethod
-    def save_element(string: str, path: str, filename: str, extension: str | None = None) -> str:
-        """Saves model element to a file.
+    def __setattr__(self, name, value):
+        """Silently ignore assignment of frozen fields.
 
-        Args:
-            string (str): String to be saved.
-            path (str): Path to the file.
-            filename (str): File name.
-
-        Returns:
-            str: Success message.
+        This method is overridden to silently ignore assignment of frozen fields
+        to avoid errors when an old swp files is read.
         """
-        save_file(
-            string=string,
-            fname=filename,
-            extension=extension,
-            path=path
-        )
-        return f'{filename}.{extension} saved successfully.'
 
-    def model_string(self) -> str:
-        """Returns a custom model string representation that matches the requirements of .swp file.
+        if name in self.model_fields and self.model_fields[name].frozen:
+            return
+        super().__setattr__(name, value)
 
-        Note:
-            If values are simple types, they are formatted as 'ATTR = VALUE'. If the valies are
-            tables (in pySWAP pd.DataFrame are used), they are formatted simply as 'TABLE_VALUE'. Additionally,
-            a custom serializer (pyswap.core.utils.serializers.quote_string) is used to quote strings.
+    def update(self, new: dict, inplace: bool = False, no_validate: bool = False):
+        """Update the model with new values.
 
-        Returns:
-            str: Custom model string representation.
+        Given dictionary of values is first filtered to include only the fields
+        that exist in the model. The model is then updated with the new values.
+        The updated model is returned (either new or updated self).
+
+        Parameters:
+            new (dict): Dictionary with new values.
+            inplace (bool): If True, update the model in place.
         """
-        string = ''
 
-        def formatter(attr, value, string):
-            if attr.startswith('table_') or attr.startswith('list_'):
-                return string + value
+        # filtered = {k: v for k, v in new.items() if k in self.model_fields}
+
+        # updated_model = self.model_validate(dict(self) | filtered)
+        updated_model = self.model_validate(dict(self) | new)
+
+        if not inplace:
+            # added this for the case when the user loads a model from the
+            # classic ASCII files. Then the .update() method is used, but not
+            # all the attributes will be available immediatelly. Full validation
+            # will still be performed upon model run.
+            if no_validate:
+                updated_model._validation = False
             else:
-                return string + f'{attr.upper()} = {quote_string(value)}\n'
+                updated_model._validation = True
+            updated_model.validate_with_yaml() if hasattr(
+                updated_model, "validate_with_yaml"
+            ) else None
+            return updated_model
 
-        for attr, value in self.model_dump(
-                mode='json', exclude_none=True).items():
-            if isinstance(value, dict):
-                for k, v in value.items():
-                    string = formatter(k, v, string)
+        else:
+            for field, value in updated_model:
+                setattr(self, field, value)
+            if no_validate:
+                updated_model._validation = False
             else:
-                string = formatter(attr, value, string)
+                updated_model._validation = True
+            self.validate_with_yaml() if hasattr(
+                updated_model, "validate_with_yaml"
+            ) else None
 
-        return string
+            return self
 
-    def _concat_sections(self) -> str:
-        """Concatenate a string from individual sections.
+    @field_validator("*", mode="before")
+    @classmethod
+    def convert_switches(cls, value: Any, info: Any) -> Any:
+        """Convert switch values to integers.
 
-        This method is meant to be used on models that collect other
-        models, like DraFile, or Model.
+        This method was necessary to ensure that loading models from ASCII files
+        would work. It could be improved to include literals that do not start
+        with "sw" as well.
         """
+        if (
+            (info.field_name.startswith("sw") or info.field_name in ADDITIONAL_SWITCHES)
+            and info.field_name != "swap_ver"
+            and value
+        ):
+            try:
+                return int(value)
+            except ValueError:
+                return value
+        return value
 
-        string = ''
-        for k, v in dict(self).items():
-            if v is None or isinstance(v, str):
-                continue
-            string += v.model_string()
-        return string
+
+class BaseTableModel(pa.DataFrameModel):
+    """Base model for pandas DataFrames.
+
+    Methods:
+        create: Create a validated DataFrame from a dictionary.
+    """
+
+    class Config:
+        coerce = True
+
+    @classmethod
+    def create(cls, data: dict, columns: list | None = None) -> DataFrame:
+        df = pd.DataFrame(data)
+        if columns:
+            df.columns = columns
+        else:
+            df.columns = df.columns.str.upper()
+        validated_df = cls.validate(df)
+        return validated_df

@@ -29,8 +29,8 @@
   PATHATM   = {{PATHATM}}    ! Path to folder with weather files [A80]
   PATHCROP  = {{PATHCROP}}   ! Path to folder with crop files [A80]
   PATHDRAIN = '.\'           ! Path to folder with drainage files [A80]
-  
-* Switch, display progression of simulation run to screen:  
+
+* Switch, display progression of simulation run to screen:
   SWSCRE    = 0              ! 0 = no display to screen
                              ! 1 = display water balance components
                              ! 2 = display daynumber
@@ -52,7 +52,7 @@
 
 
 **********************************************************************************
-* Part 3: Output dates 
+* Part 3: Output dates
 
 * Number of output times during a day
   NPRINTDAY = {{NPRINTDAY}}  ! Number of output times during a day [1..1440, I]
@@ -85,7 +85,7 @@
   DATEFIX = 31 12            ! Specify day and month for output of yearly balances [dd mm]
 
 {{/SWITCH_SWYRVAR_OPTION_0}}
-{{#SWITCH_SWYRVAR_OPTION_1}}  
+{{#SWITCH_SWYRVAR_OPTION_1}}
 * If SWYRVAR = 1 specify all output dates [date], maximum MAOUT dates:
   OUTDAT =
   2003-12-31
@@ -114,7 +114,7 @@
   SWBMA  = 0                 ! Switch, output file with water fluxes, only for macropore flow [Y=1, N=0]
   SWDRF  = 0                 ! Switch, output of drainage fluxes, only for extended drainage [Y=1, N=0]
   SWSWB  = 0                 ! Switch, output surface water reservoir, only for extended drainage [Y=1, N=0]
-  SWINI  = 0                 ! Switch, output of initial SoilPhysParam and HeatParam [Y=1, N=0]  
+  SWINI  = 0                 ! Switch, output of initial SoilPhysParam and HeatParam [Y=1, N=0]
   SWINC  = 0                 ! Switch, output of water balance increments [Y=1, N=0]
   SWCRP  = 0                 ! Switch, output of simple or detailed crop growth model [Y=1, N=0]
   SWSTR  = 0                 ! Switch, output of stress values for wetness, drought, salinity and frost [Y=1, N=0]
@@ -123,14 +123,14 @@
 * Specific CSV output file? (default: no)
   SWCSV  = {{SWCSV}}         ! Switch, output of variables to be specified [Y=1, N=0]
 
-{{#SWITCH_SWCSV_OPTION_1}}  
+{{#SWITCH_SWCSV_OPTION_1}}
   INLIST_CSV = {{INLIST_CSV}}
 
-{{/SWITCH_SWCSV_OPTION_1}}  
+{{/SWITCH_SWCSV_OPTION_1}}
 * Specific CSV output file? (default: no)
   SWCSV_TZ  = {{SWCSV_TZ}}   ! Switch, output of variables to be specified [Y=1, N=0]
 
-{{#SWITCH_SWCSV_TZ_OPTION_1}}  
+{{#SWITCH_SWCSV_TZ_OPTION_1}}
   INLIST_CSV_TZ = {{INLIST_CSV_TZ}}
 
 {{/SWITCH_SWCSV_TZ_OPTION_1}}
@@ -158,13 +158,13 @@
 {{#SWITCH_SWDISCRVERT_OPTION_1}}
 * Only If SWDISCRVERT = 1 then NUMNODNEW and DZNEW are required
   NUMNODNEW = 22             ! New number of nodes [1...macp,I,-]
-*                            ! (boundaries of soil layers may not change, which implies   
-*                            !  that the sum of thicknesses within a soil layer must be 
+*                            ! (boundaries of soil layers may not change, which implies
+*                            !  that the sum of thicknesses within a soil layer must be
 *                            !  equal to the thickness of the soil layer.
 *                            !  See also: SoilWaterSection, Part4: Vertical discretization of soil profile)
 
-* Thickness of compartments [1.0d-6...5.0d2, cm, R] 
- DZNEW = 
+* Thickness of compartments [1.0d-6...5.0d2, cm, R]
+ DZNEW =
    5.0   5.0   5.0   5.0   5.0   5.0  10.0  10.0  10.0  10.0  10.0  10.0  10.0  20.0  20.0  20.0  20.0  20.0  20.0  40.0  40.0  40.0
 
 {{/SWITCH_SWDISCRVERT_OPTION_1}}
@@ -181,13 +181,13 @@
 {{#SWITCH_SWDISCRVERT_OPTION_1}}
 * Only If SWDISCRVERT = 1 then NUMNODNEW and DZNEW are required
   NUMNODNEW = 22             ! New number of nodes [1...macp,I,-]
-*                            ! (boundaries of soil layers may not change, which implies   
-*                            !  that the sum of thicknesses within a soil layer must be 
+*                            ! (boundaries of soil layers may not change, which implies
+*                            !  that the sum of thicknesses within a soil layer must be
 *                            !  equal to the thickness of the soil layer.
 *                            !  See also: SoilWaterSection, Part4: Vertical discretization of soil profile)
 
-* Thickness of compartments [1.0d-6...5.0d2, cm, R] 
- DZNEW = 
+* Thickness of compartments [1.0d-6...5.0d2, cm, R]
+ DZNEW =
    5.0   5.0   5.0   5.0   5.0   5.0  10.0  10.0  10.0  10.0  10.0  10.0  10.0  20.0  20.0  20.0  20.0  20.0  20.0  40.0  40.0  40.0
 
 {{/SWITCH_SWDISCRVERT_OPTION_1}}
@@ -204,13 +204,13 @@
 {{#SWITCH_SWDISCRVERT_OPTION_1}}
 * Only If SWDISCRVERT = 1 then NUMNODNEW and DZNEW are required
   NUMNODNEW = 22             ! New number of nodes [1...macp,I,-]
-*                            ! (boundaries of soil layers may not change, which implies   
-*                            !  that the sum of thicknesses within a soil layer must be 
+*                            ! (boundaries of soil layers may not change, which implies
+*                            !  that the sum of thicknesses within a soil layer must be
 *                            !  equal to the thickness of the soil layer.
 *                            !  See also: SoilWaterSection, Part4: Vertical discretization of soil profile)
 
-* Thickness of compartments [1.0d-6...5.0d2, cm, R] 
- DZNEW = 
+* Thickness of compartments [1.0d-6...5.0d2, cm, R]
+ DZNEW =
    5.0   5.0   5.0   5.0   5.0   5.0  10.0  10.0  10.0  10.0  10.0  10.0  10.0  20.0  20.0  20.0  20.0  20.0  20.0  40.0  40.0  40.0
 
 {{/SWITCH_SWDISCRVERT_OPTION_1}}
@@ -227,13 +227,13 @@
 {{#SWITCH_SWDISCRVERT_OPTION_1}}
 * Only If SWDISCRVERT = 1 then NUMNODNEW and DZNEW are required
   NUMNODNEW = 22             ! New number of nodes [1...macp,I,-]
-*                            ! (boundaries of soil layers may not change, which implies   
-*                            !  that the sum of thicknesses within a soil layer must be 
+*                            ! (boundaries of soil layers may not change, which implies
+*                            !  that the sum of thicknesses within a soil layer must be
 *                            !  equal to the thickness of the soil layer.
 *                            !  See also: SoilWaterSection, Part4: Vertical discretization of soil profile)
 
-* Thickness of compartments [1.0d-6...5.0d2, cm, R] 
- DZNEW = 
+* Thickness of compartments [1.0d-6...5.0d2, cm, R]
+ DZNEW =
    5.0   5.0   5.0   5.0   5.0   5.0  10.0  10.0  10.0  10.0  10.0  10.0  10.0  20.0  20.0  20.0  20.0  20.0  20.0  40.0  40.0  40.0
 
 {{/SWITCH_SWDISCRVERT_OPTION_1}}
@@ -254,7 +254,7 @@
 
 * Details of meteo station:
   LAT = {{LAT}}              ! Latitude of meteo station [-90..90 degrees, R, North = +]
-  
+
 * Type of weather data for potential evapotranspiration
   SWETR = {{SWETR}}          ! 0 = Use basic weather data and apply Penman-Monteith equation
                              ! 1 = Use reference evapotranspiration data in combination with crop factors
@@ -298,7 +298,7 @@
   RAINFIL = {{RAINFIL}}      ! File name of detailed rainfall data without extension .YYY, [A200]
                              ! Extension is equal to last 3 digits of year, e.g. 003 denotes year 2003
 {{/SWITCH_SWRAIN_OPTION_3}}
-{{/SWITCH_SWMETDETAIL_OPTION_0}}                                
+{{/SWITCH_SWMETDETAIL_OPTION_0}}
 {{#SWITCH_SWMETDETAIL_OPTION_1}}
 * In case of detailed meteorological weather records (SWMETDETAIL = 1), specify:
   NMETDETAIL = 24            ! Number of weather data records each day [1..96 -, I]
@@ -340,7 +340,7 @@
 **********************************************************************************
 * Part 1: Crop rotation scheme
 
-* Switch for bare soil or cultivated soil:  
+* Switch for bare soil or cultivated soil:
   SWCROP = {{SWCROP}}        ! 0 = Bare soil
                              ! 1 = Cultivated soil
 
@@ -592,7 +592,7 @@
                              ! 2 = hysteresis, initial condition drying
 
 {{#SWITCH_SWHYST_OPTION_1}}
-* If SWHYST = 1 or 2, specify:                                      
+* If SWHYST = 1 or 2, specify:
   TAU = {{TAU}}              ! Minimum pressure head difference to change wetting-drying, [0..1 cm, R]
 
 {{/SWITCH_SWHYST_OPTION_1}}
@@ -618,7 +618,7 @@
 
 {{#SWITCH_SWSNOW_OPTION_1}}
 * If SWSNOW = 1, specify:
-  SNOWINCO = {{SNOWINCO}}    ! Initial snow water equivalent [0..1000 cm, R] 
+  SNOWINCO = {{SNOWINCO}}    ! Initial snow water equivalent [0..1000 cm, R]
   TEPRRAIN = {{TEPRRAIN}}    ! Temperature above which all precipitation is rain[ 0..10 oC, R]
   TEPRSNOW = {{TEPRSNOW}}    ! Temperature below which all precipitation is snow[-10..0 oC, R]
   SNOWCOEF = {{SNOWCOEF}}    ! Snowmelt calibration factor [0...10 -, R]
@@ -737,7 +737,7 @@
 * In case of sinus function (SW2 = 1), specify:
   SINAVE = {{SINAVE}}        ! Average value of bottom flux [-10..10 cm/d, R, + = upwards]
   SINAMP = {{SINAMP}}        ! Amplitude of bottom flux sine function [-10..10 cm/d, R]
-  SINMAX = {{SINMAX}}        ! Time of the year with maximum bottom flux [0..366 d, R]  
+  SINMAX = {{SINMAX}}        ! Time of the year with maximum bottom flux [0..366 d, R]
 {{/SWITCH_SW2_OPTION_1}}
 {{#SWITCH_SW2_OPTION_2}}
 * In case of table (SW2 = 2), specify date DATE2 [date] and bottom flux QBOT2 [-100..100 cm/d, R, positive = upwards]:
@@ -766,12 +766,12 @@
   RIMLAY = {{RIMLAY}}        ! Vertical resistance of aquitard [0..100000 d, R]
 
 * Specify whether a sinus function or a table are used for the hydraulic head in the deep aquifer:
-  SW3    = {{SW3}}           ! 1 = sinus function  
-                             ! 2 = table 
+  SW3    = {{SW3}}           ! 1 = sinus function
+                             ! 2 = table
 
 {{#SWITCH_SW3_OPTION_1}}
 * In case of sinus function (SW3  = 1), specify:
-  AQAVE  = {{AQAVE}}         ! Average hydraulic head in underlaying aquifer [-10000..1000 cm, R] 
+  AQAVE  = {{AQAVE}}         ! Average hydraulic head in underlaying aquifer [-10000..1000 cm, R]
   AQAMP  = {{AQAMP}}         ! Amplitude hydraulic head sinus wave [0..1000 cm, R]
   AQTMAX = {{AQTMAX}}        ! First time of the year with maximum hydraulic head [0..366 d, R]
   AQPER  = {{AQPER}}         ! Period hydraulic head sinus wave [0..366 d, I]
@@ -786,7 +786,7 @@
 {{/SWITCH_SW3_OPTION_2}}
 
 * An extra groundwater flux can be specified which is added to above specified flux
-  SW4   = {{SW4}}            ! 0 = no extra flux 
+  SW4   = {{SW4}}            ! 0 = no extra flux
                              ! 1 = include extra flux
 
 {{#SWITCH_SW4_OPTION_1}}
@@ -898,7 +898,7 @@
 * End of table
 {{/SWITCH_SWINCO_OPTION_2}}
 
-* Define top boundary condition: 
+* Define top boundary condition:
   SWTOPBHEA = {{SWTOPBHEA}}  ! 1 = use air temperature of meteo input file as top boundary
                              ! 2 = use measured top soil temperature as top boundary
 
@@ -1039,9 +1039,9 @@
 
 **********************************************************************************
 
- 
+
 **********************************************************************************
-* Part 4: Adsorption 
+* Part 4: Adsorption
 
 * Switch, consider solute adsorption
   SWSP = {{SWSP}}            ! 0 = no solute adsorption
@@ -1068,7 +1068,7 @@
   GAMPAR = {{GAMPAR}}        ! Factor reduction decomposition due to temperature [0..0.5 /C, R]
   RTHETA = {{RTHETA}}        ! Minimum water content for potential decomposition [0..0.4 cm3/cm3, R]
   BEXP   = {{BEXP}}          ! Exponent in reduction decomposition due to dryness [0..2 -, R]
-  
+
 {{/SWITCH_SWDC_OPTION_1}}
 **********************************************************************************
 

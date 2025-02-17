@@ -1,12 +1,8 @@
-"""
-# SWAP model package
+"""SWAP model package
 
-The main subpackage for the SWAP model. 
+The main subpackage for the SWAP model.
 
 Modules:
-    model: SWAP model class
-    result: SWAP result class
+    model: Building, running and parsing the results of a SWAP model run.
+    result: Capturing model results.
 """
-
-from .model import Model
-from .result import Result

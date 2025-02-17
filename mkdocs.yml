@@ -12,19 +12,20 @@ extra_css:
 theme:
   name: material
   logo: public/logo.webp
+  navigation_depth: 2
   features:
     - navigation.instant
     - navigation.instant.progress
     - navigation.tabs
     - navigation.tabs.sticky
-    # - navigation.sections
-    - navigation.expand
+    - navigation.sections
     - navigation.top
     - navigation.footer
-    - toc.integrate
+    # search settings
     - search.suggest
     - search.highlight
     - content.tabs.link
+    - content.code.annotate
     - content.code.annotation
     - content.code.copy
   language: en
@@ -44,8 +45,13 @@ theme:
 plugins:
   - search
   - autorefs
-  - blog
   - include-markdown
+  - awesome-pages
+  - exclude-search:
+      exclude:
+        - tutorials/
+  - mkdocs-jupyter:
+      execute: true
   - mkdocstrings:
       handlers:
         python:
@@ -54,6 +60,7 @@ plugins:
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             show_root_toc_entry: false
+            show_root_heading: false
             heading_level: 2
 
 markdown_extensions:
@@ -63,6 +70,8 @@ markdown_extensions:
   - md_in_html
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.emoji:

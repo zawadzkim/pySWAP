@@ -1,59 +1,86 @@
+# mypy: disable-error-code="no-any-return"
+
+
 """Capturing model results.
 
-Tip:
-    The Result class is now focusing on the output in CSV format and the log file. the other
-    result files are also retrieved as a list of strings which user can access if needed.
+After a model is run, the results are stored in a `Result` object. The object
+stores the log file, output file, and warnings. Output is a dictionary with
+the keys being the file extensions and the values being the file contents. There
+are also computed properties making the most common output formats easily
+accessible.
 
 Classes:
-    Result: Stores the result of a model run.
-
+    Result: Result of a model run.
 """
-from pydantic import BaseModel, ConfigDict, computed_field, Field
-from typing import Optional, List, Dict
-from pandas import DataFrame
+
 import re
+
+from pandas import DataFrame
+from pydantic import BaseModel, ConfigDict, Field, computed_field
+
+__all__ = ["Result"]
 
 
 class Result(BaseModel):
-    """Class to store the result of a model run.
+    """Result of a model run.
 
     Attributes:
         log (str): The log file of the model run.
-        summary (str, optional): The summary file of the model run.
-        output (DataFrame, optional): The output file of the model run.
-        output_tz (DataFrame, optional): The output file of the model run with timezone.
-        output_old (Dict[str, str], optional): The old output files of the model run.
-        warning (List[str], optional): The warnings of the model run.
-        model_config (ConfigDict): The configuration for the model.
+        output (DataFrame): The output file of the model run.
+        warning (List[str]): The warnings of the model run.
 
-    Methods:
-        iteration_stats (str): The part of the log file that describes the iteration statistics.
+    Properties:
+        ascii (dict): The output in ASCII format.
+        csv (DataFrame): The output in CSV format.
+        csv_tz (DataFrame): The output in CSV format with depth.
+        iteration_stats (str): Return the part the iteration statistics from
+            the log.
         blc_summary (str): The .blc file if it exists.
-        water_balance (str): The water balance of the model run.
+        yearly_summary (DataFrame): Yearly sums of all output variables. Will
+            return an error if csv was not included in the output file formats.
     """
 
-    log: str
-    output: Optional[DataFrame] = Field(default=None, repr=False)
-    output_tz: Optional[DataFrame] = Field(default=None, repr=False)
-    output_old: Optional[Dict[str, str]] = Field(default=None, repr=False)
-    warning: Optional[List[str]] = Field(default=None, repr=False)
+    log: str | None = Field(default=None, repr=False)
+    output: dict | None = Field(default_factory=dict, repr=False)
+    warning: list[str] | None = Field(default=None, repr=False)
 
     model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-        extra='forbid'
+        arbitrary_types_allowed=True, validate_assignment=True, extra="forbid"
     )
 
-    @computed_field(return_type=str)
-    def iteration_stats(self):
-        """Return the part of the string that describes the iteration statistics."""
-        return re.search(r'.*(Iteration statistics\s*.*)$', self.log, re.DOTALL)[1]
+    @computed_field(return_type=dict, repr=False)
+    def ascii(self) -> dict:
+        """Return all outputs in ASCII format."""
+        return {k: v for k, v in self.output.items() if not k.endswith("csv")}
 
-    @computed_field(return_type=str)
-    def blc_summary(self):
-        """Return the .blc file if it exists."""
-        return self.output_old.get('blc') if self.output_old else None
+    @computed_field(return_type=DataFrame, repr=False)
+    def csv(self) -> DataFrame:
+        """Return the output in CSV format."""
+        return self.output.get("csv", None)
 
-    def yearly_summary(self):
+    @computed_field(return_type=DataFrame, repr=False)
+    def csv_tz(self) -> DataFrame:
+        """Return the output in CSV format with depth."""
+        return self.output.get("csv_tz", None)
+
+    @computed_field(return_type=str, repr=False)
+    def iteration_stats(self) -> str:
+        """Print the part the iteration statistics from the log."""
+        match = re.search(r".*(Iteration statistics\s*.*)$", self.log, re.DOTALL)
+        if match:
+            return match.group(1)
+        return ""
+
+    @computed_field(return_type=str, repr=False)
+    def blc_summary(self) -> str:
+        """Print the .blc file if it exists."""
+        print(self.output.get("blc", None))
+        return
+
+    @computed_field(return_type=DataFrame, repr=False)
+    def yearly_summary(self) -> DataFrame:
         """Return yearly sums of all output variables."""
-        return self.output.resample('YE').sum()
+        if not isinstance(self.csv, DataFrame):
+            msg = "CSV file not included in output file formats."
+            raise TypeError(msg)
+        return self.csv.resample("YE").sum()

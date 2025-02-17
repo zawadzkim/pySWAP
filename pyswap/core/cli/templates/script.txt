@@ -1,0 +1,5 @@
+import pyswap as psp
+
+metadata = psp.components.Metadata(
+{formatted_string}
+)

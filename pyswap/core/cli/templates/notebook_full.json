@@ -1,0 +1,92 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": ["# {title}\n"]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "_Here you can document your model creation process. Good luck!_"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": ["## General section"]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": ["### Project metadata"]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "import pyswap as ps\n\n",
+        "metadata = ps.Metadata(\n",
+        "{formatted_string}\n",
+        ")\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": ["### General settings"]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": ["metadata = ps.GeneralSettings(\n", "# ...\n", ")\n"]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": ["### Meteorological section"]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": ["#### Prepare meteo file"]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "# first prepare your meteorological data and then use:\n",
+        "metfile = ps.MetFile(\n",
+        "# ...\n",
+        ")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": ["metadata = ps.Meteorology(\n", "# ...\n", ")\n"]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python",
+      "version": "3.8"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+}
