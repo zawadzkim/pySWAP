@@ -1,0 +1,36 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: "pyswap: Python wrapper for SWAP hydrological model."
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Mateusz
+    family-names: Zawadzki
+    email: zawadzkimat@outlook.com
+    affiliation: Vrije Universiteit Brussel
+    orcid: "https://orcid.org/0000-0001-9524-4208"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.14884488
+    description: latest pyswap release
+repository-code: "https://github.com/zawadzkim/pySWAP"
+url: "https://zawadzkim.github.io/pySWAP/"
+abstract: >-
+  pySWAP is a Python wrapper (not Python implementation) for
+  the SWAP hydrological model. It simplifies the creation of
+  input files, execution of the SWAP model, and analysis and
+  visualization of results. Users can set up and document
+  their models in Jupyter notebooks, enhancing transparency,
+  collaboration, and facilitating community-supported
+  debugging.
+keywords:
+  - vadose zone
+  - hydrology
+  - SWAP model
+  - 1D model
+license: MIT
+date-released: "2025-02-17"
