@@ -53,10 +53,6 @@ class PySWAPBaseModel(BaseModel):
 
         This method is overridden to silently ignore assignment of frozen fields
         to avoid errors when an old swp files is read.
-
-        Parameters:
-            name: The name of the attribute.
-            value: The value of the attribute.
         """
 
         if name in self.model_fields and self.model_fields[name].frozen:

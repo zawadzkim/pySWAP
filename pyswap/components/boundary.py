@@ -17,7 +17,6 @@ from typing import Literal as _Literal
 from pydantic import (
     Field as _Field,
     PrivateAttr as _PrivateAttr,
-    computed_field as _computed_field,
 )
 
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
@@ -169,7 +168,7 @@ class BottomBoundary(
 
     def _model_string(self, **kwargs) -> str:
         """Internal method to handle model string generation.
-        
+
         This was implemented to avoid pydantic from raising a maximum recursion
         depth error when calling the model_string method from the super class.
         """

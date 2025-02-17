@@ -1,4 +1,8 @@
 # ruff: noqa: SIM210
+# mypy: disable-error-code="operator"
+# The operator error was being raised on the method that was matching the
+# dictionarties in _parse_ascii_file. This was not a priority to fix.
+
 import re
 from pathlib import Path
 from typing import Literal as _Literal
@@ -157,7 +161,10 @@ def load_crp(path: Path, crptype: _Literal["fixed", "wofost", "grass"], name: st
     for value in cropfile_setup.values():
         if isinstance(value, str):
             continue
-        value.update(new=params, inplace=True)
+        if isinstance(value, PySWAPBaseModel):
+            value.update(new=params, inplace=True)
+        else:
+            continue
 
     crp = CropFile(**cropfile_setup)
 

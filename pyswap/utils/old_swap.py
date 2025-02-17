@@ -1,6 +1,9 @@
 # ruff: noqa: C901
+# mypy: disable-error-code="call-overload, attr-defined"
 # error C901 was raised for the parse_ascii_file function. The function indeed
 # could use refactoring, but for now we keep it as it is.
+# attribute defined was causing issue with the __name__ dunder method, which was
+# wrong. Call overload was raised on the create schema function call.
 import inspect
 import re
 
@@ -182,6 +185,7 @@ def create_schema_object(
     except pa.errors.SchemaError as e:
         msg = f"Validation error for {schema.__name__}: {e!s}"
         print(msg)
+        return None
     else:
         return schema_object
 

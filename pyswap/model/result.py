@@ -81,5 +81,6 @@ class Result(BaseModel):
     def yearly_summary(self) -> DataFrame:
         """Return yearly sums of all output variables."""
         if not isinstance(self.csv, DataFrame):
-            raise ValueError("CSV file not included in output file formats.")
+            msg = "CSV file not included in output file formats."
+            raise TypeError(msg)
         return self.csv.resample("YE").sum()

@@ -1,3 +1,13 @@
+# mypy: disable-error-code="attr-defined, no-any-return, index"
+# attr-defined error showed in when the .update method was called in the wofost mixin.
+# the easiest way to fix it would be to just check for the PySWAPBaseModel
+# instance, but that would create circular import issue and I did not want to
+# play with that. It's not a priority to fix for now.
+# no-any-return error was raised in the get_origin method. This was not a
+# priority to fix. Same as the index error; it complained that the FieldInfo
+# object is not indexable, but in fact in this case it should be, because of the
+# Optional or Annotated types.
+
 """Reusable mixins enhancing functionality of specific PySWAPBaseModel.
 
 To keep the main PySWAPBaseModel class and the components library clean and
@@ -177,7 +187,7 @@ class SerializableMixin(BaseModel):
 
         Parameters:
             mode (Literal["str", "list]): The output format.
-            kwargs: Additional keyword arguments passed to `model_dump()`.
+            kwargs (dict): Additional keyword arguments passed to `model_dump()`.
         """
         dump = self.model_dump(
             mode="json", exclude_none=True, by_alias=True, **kwargs
@@ -289,6 +299,10 @@ class WOFOSTUpdateMixin:
         # parameters attribute returns a dictionary with the key-value pairs and
         # tables as list of lists. Before updating, the tables should be
         # created.
+        if not hasattr(self, "wofost_variety"):
+            msg = "The model does not have the WOFOST variety settings."
+            raise AttributeError(msg)
+
         variety_params = self.wofost_variety.parameters
         new_arrays = create_array_objects(variety_params)
         new = variety_params | new_arrays

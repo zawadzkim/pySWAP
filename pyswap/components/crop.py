@@ -706,9 +706,7 @@ class CropFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
         name (str): Name of the crop
         path (Optional[str]): Path to the .crp file
         prep (Optional[Preparation]): Preparation settings
-        cropdev_settings (Optional[CropDevelopmentSettings |
-            CropDevelopmentSettingsFixed |
-            CropDevelopmentSettingsWOFOST]): Crop development settings
+        cropdev_settings (Optional[CropDevelopmentSettings]): Crop development settings
         oxygenstress (Optional[OxygenStress]): Oxygen stress settings
         droughtstress (Optional[DroughtStress]): Drought stress settings
         saltstress (Optional[SaltStress]): Salt stress settings

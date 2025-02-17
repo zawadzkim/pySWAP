@@ -218,8 +218,6 @@ class HDF5(BaseModel):
 
     def _save_plain_string(self, group, name, data):
         """Save data as a plain string dataset."""
-        
-
 
     def _save_pickled(self, group, name, data):
         """Save data as a pickled dataset."""

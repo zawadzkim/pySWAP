@@ -96,7 +96,7 @@ class ModelBuilder:
             logger.info("Copying linux executable into temporary directory...")
 
         return self
-    
+
     def get_inputs(self) -> dict:
         """Get the inpup files in a dictionary."""
         inputs = {}
@@ -110,11 +110,10 @@ class ModelBuilder:
             inputs["met"] = self.model.meteorology.met
         if self.model.fixedirrigation.swirgfil == 1:
             inputs["irg"] = self.model.fixedirrigation.irg
-        if self.model.bottomboundary.swbbcfile == 1: 
+        if self.model.bottomboundary.swbbcfile == 1:
             inputs["bbc"] = self.model.bottomboundary.bbc
 
         return inputs
-
 
     def write_inputs(self) -> None:
         """Write the input files to the temporary directory."""
@@ -130,7 +129,7 @@ class ModelBuilder:
             self.model.meteorology.write_met(self.tempdir)
         if self.model.fixedirrigation.swirgfil == 1:
             self.model.fixedirrigation.write_irg(self.tempdir)
-        if self.model.bottomboundary.swbbcfile == 1: 
+        if self.model.bottomboundary.swbbcfile == 1:
             self.model.bottomboundary.write_bbc(self.tempdir)
 
         return self
@@ -348,7 +347,7 @@ class ResultReader:
         we just read them as strings.
 
         Returns:
-            dict: A dictionary of the output strings with extension as key.
+            dict (dict): A dictionary of the output strings with extension as key.
         """
 
         ascii_extensions = [
@@ -556,7 +555,7 @@ def run_parallel(
         mls (list[Model]): List of models to run.
         path (Path | str): The path to the temporary directory.
         silence_warnings (bool): If True, warnings are not raised.
-        **kwargs: Keyword arguments for Pool().
+        **kwargs (dict): Keyword arguments for Pool().
 
     Returns:
         list[Result]: List of results from the model runs.
