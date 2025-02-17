@@ -49,7 +49,9 @@ def test_cli_init_script(setup_and_teardown):
 
     with open(main_script_path) as f:
         content = f.read()
-        assert "metadata = ps.Metadata(" in content, "Content of main.py is incorrect."
+        assert "metadata = psp.components.Metadata(" in content, (
+            "Content of main.py is incorrect."
+        )
 
 
 def test_cli_init_notebook(setup_and_teardown):

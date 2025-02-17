@@ -1,3 +1,4 @@
+# mypy: disable-error-code="index"
 from pyswap import testcase
 from pyswap.db import HDF5
 
