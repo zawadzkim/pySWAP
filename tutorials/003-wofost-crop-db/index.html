@@ -1948,32 +1948,31 @@ cropdb.croptypes</div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">FileNotFoundError</span>                         Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[2], line 2</span>
-<span class="ansi-green-intense-fg ansi-bold">      1</span> cropdb <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>db<span style="color: rgb(98,98,98)">.</span>WOFOSTCropDB()
-<span class="ansi-green-fg">----&gt; 2</span> <span class="ansi-yellow-bg">cropdb</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">croptypes</span>
-
-File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/db/cropdb.py:143</span>, in <span class="ansi-cyan-fg">WOFOSTCropDB.croptypes</span><span class="ansi-blue-fg">(self)</span>
-<span class="ansi-green-intense-fg ansi-bold">    140</span> <span style="color: rgb(175,0,255)">@computed_field</span>(return_type<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">None</span>)
-<span class="ansi-green-intense-fg ansi-bold">    141</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">croptypes</span>(<span style="color: rgb(0,135,0)">self</span>):
-<span class="ansi-green-intense-fg ansi-bold">    142</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">"""Print the list of available files"""</span>
-<span class="ansi-green-fg">--&gt; 143</span>     pprint(<span class="ansi-yellow-bg">load_yaml</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">crop_params</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">/</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">"</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">crops.yaml</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">"</span><span class="ansi-yellow-bg">)</span>[<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">available_crops</span><span style="color: rgb(175,0,0)">"</span>])
-
-File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/core/io/io_yaml.py:18</span>, in <span class="ansi-cyan-fg">load_yaml</span><span class="ansi-blue-fg">(file)</span>
-<span class="ansi-green-intense-fg ansi-bold">     12</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">load_yaml</span>(file: Path) <span style="color: rgb(98,98,98)">-</span><span style="color: rgb(98,98,98)">&gt;</span> <span style="color: rgb(0,135,0)">dict</span>:
-<span class="ansi-green-intense-fg ansi-bold">     13</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">"""Load a YAML file.</span>
-<span class="ansi-green-intense-fg ansi-bold">     14</span> 
-<span class="ansi-green-intense-fg ansi-bold">     15</span> <span style="color: rgb(175,0,0)">    Arguments:</span>
-<span class="ansi-green-intense-fg ansi-bold">     16</span> <span style="color: rgb(175,0,0)">        file: Path to the YAML file.</span>
-<span class="ansi-green-intense-fg ansi-bold">     17</span> <span style="color: rgb(175,0,0)">    """</span>
-<span class="ansi-green-fg">---&gt; 18</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">open</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">file</span><span class="ansi-yellow-bg">)</span> <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> file:
-<span class="ansi-green-intense-fg ansi-bold">     19</span>         content: <span style="color: rgb(0,135,0)">dict</span> <span style="color: rgb(98,98,98)">=</span> yaml<span style="color: rgb(98,98,98)">.</span>safe_load(file)
-<span class="ansi-green-intense-fg ansi-bold">     21</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> content
-
-<span class="ansi-red-fg">FileNotFoundError</span>: [Errno 2] No such file or directory: '/home/runner/work/pySWAP/pySWAP/pyswap/libs/WOFOST_crop_parameters/crops.yaml'</pre>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>['barley',
+ 'cassava',
+ 'chickpea',
+ 'cotton',
+ 'cowpea',
+ 'fababean',
+ 'groundnut',
+ 'maize',
+ 'millet',
+ 'mungbean',
+ 'pigeonpea',
+ 'potato',
+ 'rapeseed',
+ 'rice',
+ 'sorghum',
+ 'soybean',
+ 'sugarbeet',
+ 'sugarcane',
+ 'sunflower',
+ 'sweetpotato',
+ 'tobacco',
+ 'wheat',
+ 'seed_onion']
+</pre>
 </div>
 </div>
 </div>
@@ -1990,8 +1989,8 @@ File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/core/io/io_yaml.py:
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2012,44 +2011,6 @@ File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/core/io/io_yaml.py:
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">cropfile</span> <span class="o">=</span> <span class="n">cropdb</span><span class="o">.</span><span class="n">load_crop_file</span><span class="p">(</span><span class="s2">"rice"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3">cropfile = cropdb.load_crop_file("rice")</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">FileNotFoundError</span>                         Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[3], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> cropfile <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">cropdb</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">load_crop_file</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">"</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">rice</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">"</span><span class="ansi-yellow-bg">)</span>
-
-File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/db/cropdb.py:152</span>, in <span class="ansi-cyan-fg">WOFOSTCropDB.load_crop_file</span><span class="ansi-blue-fg">(self, crop)</span>
-<span class="ansi-green-intense-fg ansi-bold">    146</span> <span style="color: rgb(175,0,0)">"""Load a specific crop file and return the content as a dictionary"""</span>
-<span class="ansi-green-intense-fg ansi-bold">    147</span> path <span style="color: rgb(98,98,98)">=</span> (
-<span class="ansi-green-intense-fg ansi-bold">    148</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>libdir <span style="color: rgb(98,98,98)">/</span> <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>crop<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">"</span>
-<span class="ansi-green-intense-fg ansi-bold">    149</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> crop<span style="color: rgb(98,98,98)">.</span>endswith(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">.yaml</span><span style="color: rgb(175,0,0)">"</span>)
-<span class="ansi-green-intense-fg ansi-bold">    150</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">else</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>libdir <span style="color: rgb(98,98,98)">/</span> <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>crop<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">.yaml</span><span style="color: rgb(175,0,0)">"</span>
-<span class="ansi-green-intense-fg ansi-bold">    151</span> )
-<span class="ansi-green-fg">--&gt; 152</span> <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> WOFOSTCropFile(yaml_content<span style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">load_yaml</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">path</span><span class="ansi-yellow-bg">)</span>)
-
-File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/core/io/io_yaml.py:18</span>, in <span class="ansi-cyan-fg">load_yaml</span><span class="ansi-blue-fg">(file)</span>
-<span class="ansi-green-intense-fg ansi-bold">     12</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">load_yaml</span>(file: Path) <span style="color: rgb(98,98,98)">-</span><span style="color: rgb(98,98,98)">&gt;</span> <span style="color: rgb(0,135,0)">dict</span>:
-<span class="ansi-green-intense-fg ansi-bold">     13</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">"""Load a YAML file.</span>
-<span class="ansi-green-intense-fg ansi-bold">     14</span> 
-<span class="ansi-green-intense-fg ansi-bold">     15</span> <span style="color: rgb(175,0,0)">    Arguments:</span>
-<span class="ansi-green-intense-fg ansi-bold">     16</span> <span style="color: rgb(175,0,0)">        file: Path to the YAML file.</span>
-<span class="ansi-green-intense-fg ansi-bold">     17</span> <span style="color: rgb(175,0,0)">    """</span>
-<span class="ansi-green-fg">---&gt; 18</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">open</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">file</span><span class="ansi-yellow-bg">)</span> <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> file:
-<span class="ansi-green-intense-fg ansi-bold">     19</span>         content: <span style="color: rgb(0,135,0)">dict</span> <span style="color: rgb(98,98,98)">=</span> yaml<span style="color: rgb(98,98,98)">.</span>safe_load(file)
-<span class="ansi-green-intense-fg ansi-bold">     21</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> content
-
-<span class="ansi-red-fg">FileNotFoundError</span>: [Errno 2] No such file or directory: '/home/runner/work/pySWAP/pySWAP/pyswap/libs/WOFOST_crop_parameters/rice.yaml'</pre>
 </div>
 </div>
 </div>
@@ -2085,16 +2046,26 @@ File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/core/io/io_yaml.py:
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[4], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> <span class="ansi-yellow-bg">cropfile</span><span style="color: rgb(98,98,98)">.</span>metadata
-
-<span class="ansi-red-fg">NameError</span>: name 'cropfile' is not defined</pre>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>{'Creator': 'Allard de Wit',
+ 'Contributor': None,
+ 'Contact': 'allard.dewit@wur.nl',
+ 'Publisher': 'Wageningen Environmental Research',
+ 'Title': 'Parameter sets for the WOFOST7.2/WOFOST8.0 model for simulating rice',
+ 'Date': datetime.date(2022, 2, 13),
+ 'Language': 'EN',
+ 'Format': 'YAML',
+ 'Subject': 'WOFOST parameters for rice',
+ 'Description': 'This file provides parameters for several rice varieties. Mostly calibrated based on observations done at the International Rice Research Institute, but also based on observations from Europe and earlier work.',
+ 'Identifier': None,
+ 'Relation': None,
+ 'Source': None,
+ 'Type': None,
+ 'Coverage': {'Region': 'Selected locations in Europe (France, Spain, Greece, Italy, Portugal), tropical regions'},
+ 'Rights': 'European Union Public License (EUPL)',
+ 'Keyword': 'rice; Oryza sativa'}</pre>
 </div>
 </div>
 </div>
@@ -2134,22 +2105,17 @@ print(cropfile.varieties)</div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[5], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> <span style="color: rgb(0,135,0)">print</span>(<span class="ansi-yellow-bg">cropfile</span><span style="color: rgb(98,98,98)">.</span>ecotypes)
-<span class="ansi-green-intense-fg ansi-bold">      2</span> <span style="color: rgb(0,135,0)">print</span>(cropfile<span style="color: rgb(98,98,98)">.</span>varieties)
-
-<span class="ansi-red-fg">NameError</span>: name 'cropfile' is not defined</pre>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>['rice_eu', 'rice_irri']
+['Rice_501', 'Rice_HYV_IR8', 'Rice_IR64616H_DS', 'Rice_IR64616H_WS', 'Rice_IR64', 'Rice_IR72', 'Rice_IR72_DS', 'Rice_IR72_WS', 'Rice_IR8A']
+</pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2170,24 +2136,6 @@ Cell <span class="ansi-green-fg">In[5], line 1</span>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">rice_501</span> <span class="o">=</span> <span class="n">cropfile</span><span class="o">.</span><span class="n">get_variety</span><span class="p">(</span><span class="s2">"Rice_501"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-6">rice_501 = cropfile.get_variety("Rice_501")</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[6], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> rice_501 <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">cropfile</span><span style="color: rgb(98,98,98)">.</span>get_variety(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">Rice_501</span><span style="color: rgb(175,0,0)">"</span>)
-
-<span class="ansi-red-fg">NameError</span>: name 'cropfile' is not defined</pre>
 </div>
 </div>
 </div>
@@ -2475,39 +2423,33 @@ potato_cropdev_settings.update_from_wofost()</div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
 <pre>
 <span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">FileNotFoundError</span>                         Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[8], line 2</span>
-<span class="ansi-green-intense-fg ansi-bold">      1</span> db <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>db<span style="color: rgb(98,98,98)">.</span>WOFOSTCropDB()
-<span class="ansi-green-fg">----&gt; 2</span> potato <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">db</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">load_crop_file</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">"</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">potato</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">"</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[8], line 8</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> potato <span style="color: rgb(98,98,98)">=</span> db<span style="color: rgb(98,98,98)">.</span>load_crop_file(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">potato</span><span style="color: rgb(175,0,0)">"</span>)
 <span class="ansi-green-intense-fg ansi-bold">      3</span> potato_params <span style="color: rgb(98,98,98)">=</span> potato<span style="color: rgb(98,98,98)">.</span>get_variety(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">Potato_701</span><span style="color: rgb(175,0,0)">"</span>)
 <span class="ansi-green-intense-fg ansi-bold">      5</span> potato_cropdev_settings <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>CropDevelopmentSettingsWOFOST(
 <span class="ansi-green-intense-fg ansi-bold">      6</span>     wofost_variety<span style="color: rgb(98,98,98)">=</span>potato_params,
 <span class="ansi-green-intense-fg ansi-bold">      7</span>     swcf<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">2</span>,
-<span class="ansi-green-fg">   (...)</span>
+<span class="ansi-green-fg">----&gt; 8</span>     dvs_ch<span style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">potato_chtb</span>,
+<span class="ansi-green-intense-fg ansi-bold">      9</span>     albedo<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.19</span>,
+<span class="ansi-green-intense-fg ansi-bold">     10</span>     laiem<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.0589</span>,
+<span class="ansi-green-intense-fg ansi-bold">     11</span>     ssa<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.0</span>,
+<span class="ansi-green-intense-fg ansi-bold">     12</span>     kdif<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1.0</span>,
+<span class="ansi-green-intense-fg ansi-bold">     13</span>     rsc<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">207.0</span>,
+<span class="ansi-green-intense-fg ansi-bold">     14</span>     rsw<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.0</span>,
+<span class="ansi-green-intense-fg ansi-bold">     15</span>     kdir<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.75</span>,
+<span class="ansi-green-intense-fg ansi-bold">     16</span>     eff<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.45</span>,
+<span class="ansi-green-intense-fg ansi-bold">     17</span>     swrd<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">2</span>,
+<span class="ansi-green-intense-fg ansi-bold">     18</span>     rdc<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">50.0</span>,
+<span class="ansi-green-intense-fg ansi-bold">     19</span>     swdmi2rd<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>,
 <span class="ansi-green-intense-fg ansi-bold">     20</span>     rdctb<span style="color: rgb(98,98,98)">=</span>potato_rdctb,
 <span class="ansi-green-intense-fg ansi-bold">     21</span> )
+<span class="ansi-green-intense-fg ansi-bold">     23</span> <span style="color: rgb(95,135,135)"># By calling the `update_from_wofost method`, the CropDevelopmentSettingsWOFOST object</span>
+<span class="ansi-green-intense-fg ansi-bold">     24</span> <span style="color: rgb(95,135,135)"># will be updated with the values from the WOFOST crop file and the model will be evaluated,</span>
+<span class="ansi-green-intense-fg ansi-bold">     25</span> <span style="color: rgb(95,135,135)"># to make sure that some of the required settings are not missing.</span>
+<span class="ansi-green-intense-fg ansi-bold">     26</span> potato_cropdev_settings<span style="color: rgb(98,98,98)">.</span>update_from_wofost()
 
-File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/db/cropdb.py:152</span>, in <span class="ansi-cyan-fg">WOFOSTCropDB.load_crop_file</span><span class="ansi-blue-fg">(self, crop)</span>
-<span class="ansi-green-intense-fg ansi-bold">    146</span> <span style="color: rgb(175,0,0)">"""Load a specific crop file and return the content as a dictionary"""</span>
-<span class="ansi-green-intense-fg ansi-bold">    147</span> path <span style="color: rgb(98,98,98)">=</span> (
-<span class="ansi-green-intense-fg ansi-bold">    148</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>libdir <span style="color: rgb(98,98,98)">/</span> <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>crop<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">"</span>
-<span class="ansi-green-intense-fg ansi-bold">    149</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> crop<span style="color: rgb(98,98,98)">.</span>endswith(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">.yaml</span><span style="color: rgb(175,0,0)">"</span>)
-<span class="ansi-green-intense-fg ansi-bold">    150</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">else</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>libdir <span style="color: rgb(98,98,98)">/</span> <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>crop<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">.yaml</span><span style="color: rgb(175,0,0)">"</span>
-<span class="ansi-green-intense-fg ansi-bold">    151</span> )
-<span class="ansi-green-fg">--&gt; 152</span> <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> WOFOSTCropFile(yaml_content<span style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">load_yaml</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">path</span><span class="ansi-yellow-bg">)</span>)
-
-File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/core/io/io_yaml.py:18</span>, in <span class="ansi-cyan-fg">load_yaml</span><span class="ansi-blue-fg">(file)</span>
-<span class="ansi-green-intense-fg ansi-bold">     12</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">load_yaml</span>(file: Path) <span style="color: rgb(98,98,98)">-</span><span style="color: rgb(98,98,98)">&gt;</span> <span style="color: rgb(0,135,0)">dict</span>:
-<span class="ansi-green-intense-fg ansi-bold">     13</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">"""Load a YAML file.</span>
-<span class="ansi-green-intense-fg ansi-bold">     14</span> 
-<span class="ansi-green-intense-fg ansi-bold">     15</span> <span style="color: rgb(175,0,0)">    Arguments:</span>
-<span class="ansi-green-intense-fg ansi-bold">     16</span> <span style="color: rgb(175,0,0)">        file: Path to the YAML file.</span>
-<span class="ansi-green-intense-fg ansi-bold">     17</span> <span style="color: rgb(175,0,0)">    """</span>
-<span class="ansi-green-fg">---&gt; 18</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">open</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">file</span><span class="ansi-yellow-bg">)</span> <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> file:
-<span class="ansi-green-intense-fg ansi-bold">     19</span>         content: <span style="color: rgb(0,135,0)">dict</span> <span style="color: rgb(98,98,98)">=</span> yaml<span style="color: rgb(98,98,98)">.</span>safe_load(file)
-<span class="ansi-green-intense-fg ansi-bold">     21</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> content
-
-<span class="ansi-red-fg">FileNotFoundError</span>: [Errno 2] No such file or directory: '/home/runner/work/pySWAP/pySWAP/pyswap/libs/WOFOST_crop_parameters/potato.yaml'</pre>
+<span class="ansi-red-fg">NameError</span>: name 'potato_chtb' is not defined</pre>
 </div>
 </div>
 </div>

@@ -2688,8 +2688,8 @@ crpmaize = psp.components.crop.CropFile(
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2724,50 +2724,9 @@ potato_params = potato.get_variety("Potato_701")</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">FileNotFoundError</span>                         Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[6], line 5</span>
-<span class="ansi-green-intense-fg ansi-bold">      3</span> <span style="color: rgb(95,135,135)"># Load the crop database</span>
-<span class="ansi-green-intense-fg ansi-bold">      4</span> db <span style="color: rgb(98,98,98)">=</span> db<span style="color: rgb(98,98,98)">.</span>WOFOSTCropDB()
-<span class="ansi-green-fg">----&gt; 5</span> potato <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">db</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">load_crop_file</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">"</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">potato</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">"</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      6</span> potato_params <span style="color: rgb(98,98,98)">=</span> potato<span style="color: rgb(98,98,98)">.</span>get_variety(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">Potato_701</span><span style="color: rgb(175,0,0)">"</span>)
-
-File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/db/cropdb.py:152</span>, in <span class="ansi-cyan-fg">WOFOSTCropDB.load_crop_file</span><span class="ansi-blue-fg">(self, crop)</span>
-<span class="ansi-green-intense-fg ansi-bold">    146</span> <span style="color: rgb(175,0,0)">"""Load a specific crop file and return the content as a dictionary"""</span>
-<span class="ansi-green-intense-fg ansi-bold">    147</span> path <span style="color: rgb(98,98,98)">=</span> (
-<span class="ansi-green-intense-fg ansi-bold">    148</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>libdir <span style="color: rgb(98,98,98)">/</span> <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>crop<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">"</span>
-<span class="ansi-green-intense-fg ansi-bold">    149</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> crop<span style="color: rgb(98,98,98)">.</span>endswith(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">.yaml</span><span style="color: rgb(175,0,0)">"</span>)
-<span class="ansi-green-intense-fg ansi-bold">    150</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">else</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>libdir <span style="color: rgb(98,98,98)">/</span> <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>crop<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">.yaml</span><span style="color: rgb(175,0,0)">"</span>
-<span class="ansi-green-intense-fg ansi-bold">    151</span> )
-<span class="ansi-green-fg">--&gt; 152</span> <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> WOFOSTCropFile(yaml_content<span style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">load_yaml</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">path</span><span class="ansi-yellow-bg">)</span>)
-
-File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/core/io/io_yaml.py:18</span>, in <span class="ansi-cyan-fg">load_yaml</span><span class="ansi-blue-fg">(file)</span>
-<span class="ansi-green-intense-fg ansi-bold">     12</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">load_yaml</span>(file: Path) <span style="color: rgb(98,98,98)">-</span><span style="color: rgb(98,98,98)">&gt;</span> <span style="color: rgb(0,135,0)">dict</span>:
-<span class="ansi-green-intense-fg ansi-bold">     13</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">"""Load a YAML file.</span>
-<span class="ansi-green-intense-fg ansi-bold">     14</span> 
-<span class="ansi-green-intense-fg ansi-bold">     15</span> <span style="color: rgb(175,0,0)">    Arguments:</span>
-<span class="ansi-green-intense-fg ansi-bold">     16</span> <span style="color: rgb(175,0,0)">        file: Path to the YAML file.</span>
-<span class="ansi-green-intense-fg ansi-bold">     17</span> <span style="color: rgb(175,0,0)">    """</span>
-<span class="ansi-green-fg">---&gt; 18</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">open</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">file</span><span class="ansi-yellow-bg">)</span> <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> file:
-<span class="ansi-green-intense-fg ansi-bold">     19</span>         content: <span style="color: rgb(0,135,0)">dict</span> <span style="color: rgb(98,98,98)">=</span> yaml<span style="color: rgb(98,98,98)">.</span>safe_load(file)
-<span class="ansi-green-intense-fg ansi-bold">     21</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> content
-
-<span class="ansi-red-fg">FileNotFoundError</span>: [Errno 2] No such file or directory: '/home/runner/work/pySWAP/pySWAP/pyswap/libs/WOFOST_crop_parameters/potato.yaml'</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2946,57 +2905,6 @@ crppotato = psp.components.crop.CropFile(
     interception=maize_interception,
     scheduledirrigation=scheduled_irrigation,
 )</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[7], line 32</span>
-<span class="ansi-green-intense-fg ansi-bold">     16</span> potato_chtb <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>CFTB<span style="color: rgb(98,98,98)">.</span>create({
-<span class="ansi-green-intense-fg ansi-bold">     17</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">DVS</span><span style="color: rgb(175,0,0)">"</span>: [<span style="color: rgb(98,98,98)">0.0</span>, <span style="color: rgb(98,98,98)">1.0</span>, <span style="color: rgb(98,98,98)">2.0</span>],
-<span class="ansi-green-intense-fg ansi-bold">     18</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">CH</span><span style="color: rgb(175,0,0)">"</span>: [
-<span class="ansi-green-fg">   (...)</span>
-<span class="ansi-green-intense-fg ansi-bold">     22</span>     ],
-<span class="ansi-green-intense-fg ansi-bold">     23</span> })
-<span class="ansi-green-intense-fg ansi-bold">     25</span> potato_rdctb <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>RDCTB<span style="color: rgb(98,98,98)">.</span>create({
-<span class="ansi-green-intense-fg ansi-bold">     26</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">RRD</span><span style="color: rgb(175,0,0)">"</span>: [<span style="color: rgb(98,98,98)">0.0</span>, <span style="color: rgb(98,98,98)">1.0</span>],
-<span class="ansi-green-intense-fg ansi-bold">     27</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">RDENS</span><span style="color: rgb(175,0,0)">"</span>: [<span style="color: rgb(98,98,98)">1.0</span>, <span style="color: rgb(98,98,98)">0.0</span>],
-<span class="ansi-green-intense-fg ansi-bold">     28</span> })
-<span class="ansi-green-intense-fg ansi-bold">     31</span> potato_cropdev_settings <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>CropDevelopmentSettingsWOFOST(
-<span class="ansi-green-fg">---&gt; 32</span>     wofost_variety<span style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">potato_params</span>,
-<span class="ansi-green-intense-fg ansi-bold">     33</span>     swcf<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">2</span>,
-<span class="ansi-green-intense-fg ansi-bold">     34</span>     cftb<span style="color: rgb(98,98,98)">=</span>potato_chtb,
-<span class="ansi-green-intense-fg ansi-bold">     35</span>     albedo<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.19</span>,
-<span class="ansi-green-intense-fg ansi-bold">     36</span>     laiem<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.0589</span>,
-<span class="ansi-green-intense-fg ansi-bold">     37</span>     ssa<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     38</span>     kdif<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     39</span>     rsc<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">207.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     40</span>     rsw<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     41</span>     kdir<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.75</span>,
-<span class="ansi-green-intense-fg ansi-bold">     42</span>     eff<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.45</span>,
-<span class="ansi-green-intense-fg ansi-bold">     43</span>     swrd<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">2</span>,
-<span class="ansi-green-intense-fg ansi-bold">     44</span>     rdc<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">50.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     45</span>     swdmi2rd<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>,
-<span class="ansi-green-intense-fg ansi-bold">     46</span>     rdctb<span style="color: rgb(98,98,98)">=</span>potato_rdctb,
-<span class="ansi-green-intense-fg ansi-bold">     47</span> )
-<span class="ansi-green-intense-fg ansi-bold">     49</span> potato_cropdev_settings<span style="color: rgb(98,98,98)">.</span>update_from_wofost()
-<span class="ansi-green-intense-fg ansi-bold">     51</span> potato_ox_stress <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>OxygenStress(
-<span class="ansi-green-intense-fg ansi-bold">     52</span>     swoxygen<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>,
-<span class="ansi-green-intense-fg ansi-bold">     53</span>     swwrtnonox<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>,
-<span class="ansi-green-fg">   (...)</span>
-<span class="ansi-green-intense-fg ansi-bold">     59</span>     root_radiuso2<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.00015</span>,
-<span class="ansi-green-intense-fg ansi-bold">     60</span> )
-
-<span class="ansi-red-fg">NameError</span>: name 'potato_params' is not defined</pre>
 </div>
 </div>
 </div>
@@ -3375,8 +3283,8 @@ crpgrass = psp.components.crop.CropFile(
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3425,36 +3333,6 @@ crop = psp.components.crop.Crop(
 )
 
 ml.crop = crop</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[9], line 12</span>
-<span class="ansi-green-intense-fg ansi-bold">      1</span> croprotation <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>CROPROTATION<span style="color: rgb(98,98,98)">.</span>create({
-<span class="ansi-green-intense-fg ansi-bold">      2</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">CROPSTART</span><span style="color: rgb(175,0,0)">"</span>: [dt(<span style="color: rgb(98,98,98)">2002</span>, <span style="color: rgb(98,98,98)">5</span>, <span style="color: rgb(98,98,98)">1</span>), dt(<span style="color: rgb(98,98,98)">2003</span>, <span style="color: rgb(98,98,98)">5</span>, <span style="color: rgb(98,98,98)">10</span>), dt(<span style="color: rgb(98,98,98)">2004</span>, <span style="color: rgb(98,98,98)">1</span>, <span style="color: rgb(98,98,98)">1</span>)],
-<span class="ansi-green-intense-fg ansi-bold">      3</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">CROPEND</span><span style="color: rgb(175,0,0)">"</span>: [dt(<span style="color: rgb(98,98,98)">2002</span>, <span style="color: rgb(98,98,98)">10</span>, <span style="color: rgb(98,98,98)">15</span>), dt(<span style="color: rgb(98,98,98)">2003</span>, <span style="color: rgb(98,98,98)">9</span>, <span style="color: rgb(98,98,98)">29</span>), dt(<span style="color: rgb(98,98,98)">2004</span>, <span style="color: rgb(98,98,98)">12</span>, <span style="color: rgb(98,98,98)">31</span>)],
-<span class="ansi-green-intense-fg ansi-bold">      4</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">CROPFIL</span><span style="color: rgb(175,0,0)">"</span>: [<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">'</span><span style="color: rgb(175,0,0)">maizes</span><span style="color: rgb(175,0,0)">'</span><span style="color: rgb(175,0,0)">"</span>, <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">'</span><span style="color: rgb(175,0,0)">potatod</span><span style="color: rgb(175,0,0)">'</span><span style="color: rgb(175,0,0)">"</span>, <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">'</span><span style="color: rgb(175,0,0)">grassd</span><span style="color: rgb(175,0,0)">'</span><span style="color: rgb(175,0,0)">"</span>],
-<span class="ansi-green-intense-fg ansi-bold">      5</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">CROPTYPE</span><span style="color: rgb(175,0,0)">"</span>: [<span style="color: rgb(98,98,98)">1</span>, <span style="color: rgb(98,98,98)">2</span>, <span style="color: rgb(98,98,98)">3</span>],
-<span class="ansi-green-intense-fg ansi-bold">      6</span> })
-<span class="ansi-green-intense-fg ansi-bold">      8</span> crop <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>Crop(
-<span class="ansi-green-intense-fg ansi-bold">      9</span>     swcrop<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>,
-<span class="ansi-green-intense-fg ansi-bold">     10</span>     rds<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">200.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     11</span>     croprotation<span style="color: rgb(98,98,98)">=</span>croprotation,
-<span class="ansi-green-fg">---&gt; 12</span>     cropfiles<span style="color: rgb(98,98,98)">=</span>{<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">maizes</span><span style="color: rgb(175,0,0)">"</span>: crpmaize, <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">potatod</span><span style="color: rgb(175,0,0)">"</span>: <span class="ansi-yellow-bg">crppotato</span>, <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">grassd</span><span style="color: rgb(175,0,0)">"</span>: crpgrass},
-<span class="ansi-green-intense-fg ansi-bold">     13</span> )
-<span class="ansi-green-intense-fg ansi-bold">     15</span> ml<span style="color: rgb(98,98,98)">.</span>crop <span style="color: rgb(98,98,98)">=</span> crop
-
-<span class="ansi-red-fg">NameError</span>: name 'crppotato' is not defined</pre>
 </div>
 </div>
 </div>
@@ -3908,38 +3786,8 @@ ml.bottomboundary = bottom_boundary</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ValidationError</span>                           Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[17], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> result <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">ml</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">run</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
-
-File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/model/model.py:535</span>, in <span class="ansi-cyan-fg">Model.run</span><span class="ansi-blue-fg">(self, path, silence_warnings)</span>
-<span class="ansi-green-intense-fg ansi-bold">    531</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">run</span>(
-<span class="ansi-green-intense-fg ansi-bold">    532</span>     <span style="color: rgb(0,135,0)">self</span>, path: <span style="color: rgb(0,135,0)">str</span> <span style="color: rgb(98,98,98)">|</span> Path <span style="color: rgb(98,98,98)">|</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span> <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>, silence_warnings: <span style="color: rgb(0,135,0)">bool</span> <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">False</span>
-<span class="ansi-green-intense-fg ansi-bold">    533</span> ) <span style="color: rgb(98,98,98)">-</span><span style="color: rgb(98,98,98)">&gt;</span> Result:
-<span class="ansi-green-intense-fg ansi-bold">    534</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">"""Run the model using ModelRunner."""</span>
-<span class="ansi-green-fg">--&gt; 535</span>     <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">validate</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    536</span>     path <span style="color: rgb(98,98,98)">=</span> Path<span style="color: rgb(98,98,98)">.</span>cwd() <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> path <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span> path
-<span class="ansi-green-intense-fg ansi-bold">    537</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> ModelRunner(<span style="color: rgb(0,135,0)">self</span>)<span style="color: rgb(98,98,98)">.</span>run(path, silence_warnings)
-
-File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/model/model.py:503</span>, in <span class="ansi-cyan-fg">Model.validate</span><span class="ansi-blue-fg">(self)</span>
-<span class="ansi-green-intense-fg ansi-bold">    501</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
-<span class="ansi-green-intense-fg ansi-bold">    502</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_validate_on_run <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">True</span>
-<span class="ansi-green-fg">--&gt; 503</span>     <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">model_validate</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    504</span> <span class="ansi-bold" style="color: rgb(0,135,0)">finally</span>:
-<span class="ansi-green-intense-fg ansi-bold">    505</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_validate_on_run <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">False</span>
-
-File <span class="ansi-green-fg">~/.cache/pypoetry/virtualenvs/pyswap-6KVGVCEZ-py3.11/lib/python3.11/site-packages/pydantic/main.py:627</span>, in <span class="ansi-cyan-fg">BaseModel.model_validate</span><span class="ansi-blue-fg">(cls, obj, strict, from_attributes, context)</span>
-<span class="ansi-green-intense-fg ansi-bold">    625</span> <span style="color: rgb(95,135,135)"># `__tracebackhide__` tells pytest and some other tools to omit this function from tracebacks</span>
-<span class="ansi-green-intense-fg ansi-bold">    626</span> __tracebackhide__ <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">True</span>
-<span class="ansi-green-fg">--&gt; 627</span> <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">cls</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">__pydantic_validator__</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">validate_python</span><span class="ansi-yellow-bg">(</span>
-<span class="ansi-green-intense-fg ansi-bold">    628</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">obj</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">strict</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">strict</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">from_attributes</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">from_attributes</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">context</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">context</span>
-<span class="ansi-green-intense-fg ansi-bold">    629</span> <span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-red-fg">ValidationError</span>: 1 validation error for Model
-  Value error, Missing required components: crop [type=value_error, input_value=Model(version='base'), input_type=Model]
-    For further information visit https://errors.pydantic.dev/2.10/v/value_error</pre>
+<pre>Warning from module Readswap : simulation with additonal Ksat value (Ksatexm)
+</pre>
 </div>
 </div>
 </div>
@@ -3977,14 +3825,19 @@ File <span class="ansi-green-fg">~/.cache/pypoetry/virtualenvs/pyswap-6KVGVCEZ-p
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[18], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> <span style="color: rgb(0,135,0)">print</span>(<span class="ansi-yellow-bg">result</span><span style="color: rgb(98,98,98)">.</span>yearly_summary)
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>             RAIN  IRRIG   INTERC  RUNOFF      EPOT      EACT  DRAINAGE  \
+DATETIME                                                                  
+2002-12-31  84.18    0.5  3.74188     0.0  33.11621  16.68886  22.11524   
+2003-12-31  71.98    0.0  2.05788     0.0  36.00281  17.18128  26.44559   
+2004-12-31  80.55    0.0  4.91521     0.0  29.90119  17.89115  24.75732   
 
-<span class="ansi-red-fg">NameError</span>: name 'result' is not defined</pre>
+            QBOTTOM         GWL      TPOT      TACT    DSTOR  
+DATETIME                                                      
+2002-12-31      0.0 -1107.59506  38.70771  38.16895  3.96511  
+2003-12-31      0.0 -1154.50523  29.42375  29.21989 -2.92464  
+2004-12-31      0.0 -1036.91954  32.57631  32.57291  0.41342  
+</pre>
 </div>
 </div>
 </div>
