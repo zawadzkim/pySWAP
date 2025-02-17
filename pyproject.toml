@@ -1,6 +1,6 @@
 [project]
 name = "pyswap"
-version = "0.2.4"
+version = "0.2.6"
 description = "Python wrapper for SWAP hydrological model."
 authors = [{name = "Mateusz", email = "zawadzkimat@outlook.com"}]
 license = "MIT"
@@ -55,8 +55,9 @@ mkdocs-exclude-search = "^0.6.6"
 [tool.poetry]
 packages = [
   {include = "pyswap"},
-  {include = "py.typed"}
+  {include = "py.typed"},
 ]
+include = ["pyswap/libs/WOFOST_crop_parameters/**"]
 
 [build-system]
 requires = ["poetry-core"]
