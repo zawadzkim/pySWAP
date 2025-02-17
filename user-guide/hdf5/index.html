@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../ascii-vs-classes/">
+        <link rel="prev" href="../to-classic-swap/">
       
       
-        <link rel="next" href="../run-parallel/">
+        <link rel="next" href="../../tutorials/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Data Structures - pySWAP documentation</title>
+        <title>HDF5 Database - pySWAP documentation</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data_structures" class="md-skip">
+        <a href="#hdf5_database" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data Structures
+              HDF5 Database
             
           </span>
         </div>
@@ -492,31 +492,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Data Structures
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../data-structures/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -526,44 +505,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#classes_and_attribute_types" class="md-nav__link">
-    <span class="md-ellipsis">
-      Classes and attribute types
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tables" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tables
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -617,10 +558,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../hdf5/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -630,6 +580,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1387,32 +1338,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#classes_and_attribute_types" class="md-nav__link">
-    <span class="md-ellipsis">
-      Classes and attribute types
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tables" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tables
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1430,115 +1355,17 @@
   
 
 
-<h1 id="data_structures">Data Structures<a class="headerlink" href="#data_structures" title="Permanent link">&para;</a></h1>
-<p>The SWAP model input is a simple formatted string saved in a plain ASCII file. There are three main formats/types of input:</p>
+<h1 id="hdf5_database">HDF5 Database<a class="headerlink" href="#hdf5_database" title="Permanent link">&para;</a></h1>
+<p>Preserving generated models is crucial for this package. Several technologies were considered with primary concerns being:</p>
 <ul>
-<li><strong>Key-value pairs</strong>: A variable name followed by an equal sign and a formatted value.</li>
-<li><strong>Tables</strong>: Rows of data with column names on top. Columns are separated by spaces and lines by newline characters. They do not have a tag (variable name followed by an equal sign).</li>
-<li><strong>Arrays</strong>: Rows of data without column names on top. Columns are separated by spaces and lines by newline characters. They are preceded by a tag, and the data starts on the next line.</li>
+<li>Wide-spread use</li>
+<li>Simple structure</li>
+<li>Cross-platform compatibility</li>
+<li>Programming-language-agnostic</li>
 </ul>
-<p>All parameters are grouped into classes representing different components of the SWAP model.</p>
-<h2 id="classes_and_attribute_types">Classes and attribute types<a class="headerlink" href="#classes_and_attribute_types" title="Permanent link">&para;</a></h2>
-<p><code>pyswap</code> models (classes or objects) are subclasses of <a href="https://docs.pydantic.dev/latest/">Pydantic's</a> <code>BaseModel</code>. Pydantic is a powerful validation and serialization library that ensures the provided data is of the right type and within the right range. When possible, the input is coerced into the correct format; otherwise, exceptions are raised. Below see an example of a pyswap class definition:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span> <span class="nc">SnowAndFrost</span><span class="p">(</span><span class="n">_PySWAPBaseModel</span><span class="p">,</span> <span class="n">_SerializableMixin</span><span class="p">,</span> <span class="n">_YAMLValidatorMixin</span><span class="p">):</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Snow and frost settings for the model.</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="sd">    Attributes:</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="sd">        swsnow (Literal[0, 1]): Switch for calculation of</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="sd">            snow accumulation and melt.</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="sd">        swfrost (Literal[0, 1]): Switch, in case of frost reduce</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="sd">            soil water flow.</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="sd">        snowinco (Optional[Decimal2f]): Initial snow water equivalent [0..1000 cm].</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="sd">        teprrain (Optional[Decimal2f]): Temperature above which all</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="sd">            precipitation is rain [0..10 oC].</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="sd">        teprsnow (Optional[Decimal2f]): Temperature below which all</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="sd">            precipitation is snow [-10..0 oC].</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="sd">        tfroststa (Optional[Decimal2f]): Soil temperature (oC) where reduction</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="sd">            of water fluxes starts [-10.0..5.0 oC].</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="sd">        tfrostend (Optional[Decimal2f]): Soil temperature (oC) where reduction</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="sd">            of water fluxes ends [-10.0..5.0 oC].</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">swsnow</span><span class="p">:</span> <span class="n">_Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n">swfrost</span><span class="p">:</span> <span class="n">_Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">snowinco</span><span class="p">:</span> <span class="n">_Decimal2f</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">_Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">teprrain</span><span class="p">:</span> <span class="n">_Decimal2f</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">_Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">teprsnow</span><span class="p">:</span> <span class="n">_Decimal2f</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">_Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">tfroststa</span><span class="p">:</span> <span class="n">_Decimal2f</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">_Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">tfrostend</span><span class="p">:</span> <span class="n">_Decimal2f</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">_Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-</span></code></pre></div>
-<p>Attributes of each class generally correspond to the names of the variables in the SWAP input files. Each attribute has an assigned type and validation rules (e.g., lower and upper bounds). Many of these types are custom annotated types with specific serialization and validation rules. These rules tell the class constructor how to interpret a value when it's provided and how to format the data when it is saved to a file.</p>
-<p>Below are examples of types with their validation and serialization rules. For more details, see the <a href="/reference/developer/#validation_and_serialization">validation and serialization section</a>.</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">FloatList</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">AfterValidator</span><span class="p">(</span><span class="n">parse_float_list</span><span class="p">),</span>  <span class="c1"># (1)!</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">PlainSerializer</span><span class="p">(</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Decimal</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]),</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        <span class="n">return_type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="n">when_used</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>  <span class="c1"># (2)!</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="p">),</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">]</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="sd">&quot;&quot;&quot;Serialize list of floats to a string with elements separated by spaces.&quot;&quot;&quot;</span>
-</span></code></pre></div>
-<ol>
-<li>Normally, the input should be a list of floats, but if provided as a string, <code>parse_float_list</code> will convert it into a list. This is useful when a formatted string from SWAP input files is passed directly. For details, see <a href="/reference/developer/#pyswap.core.parsers.parse_float_list">reference</a>.</li>
-<li><code>PlainSerializer</code> ensures that during serialization (when input variables are written to a file), the list is converted into a properly formatted string representing the floats with two decimal points using a lambda function.</li>
-</ol>
-<p>Here is another example of a field:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">Decimal2f</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="nb">float</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">BeforeValidator</span><span class="p">(</span><span class="n">parse_decimal</span><span class="p">),</span>  <span class="c1"># (1)!</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">PlainSerializer</span><span class="p">(</span><span class="n">serialize_decimal</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">return_type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">when_used</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">),</span>  <span class="c1"># (2)!</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">]</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="sd">&quot;&quot;&quot;Serialize float to a string with 2 decimal places.&quot;&quot;&quot;</span>
-</span></code></pre></div>
-<ol>
-<li><a href="/reference/developer/#pyswap.core.parsers.parse_decimal">parse_decimal</a> ensures that the string from the input file is actually a float. It removes any Fortran-compatible notation like "d" or "e" to ensure it coerces to a float.</li>
-<li><a href="/reference/developer/#pyswap.core.serializers.serialize_decimal">serialize_decimal</a> ensures that the float is saved to the input file with two decimal points.</li>
-</ol>
-<h2 id="tables">Tables<a class="headerlink" href="#tables" title="Permanent link">&para;</a></h2>
-<p>Tabular data is defined the same way as the key-value pairs by assignmnet to a class attribute. Those attributes are either of type Arrays or Table, depending on what kind or serialization is needed for that particular variable. For both input and output, <code>pyswap</code> relies on pandas DataFrames.</p>
-<h3 id="input">Input<a class="headerlink" href="#input" title="Permanent link">&para;</a></h3>
-<p>Tabular input is provided as dataframes and shuld be validated before running the model for the presence of certain columns, uper and lower bounds, etc. <code>pyswap</code> uses <a href="https://pandera.readthedocs.io/en/stable/">Pandera</a> library for this, very similar to Pydantic. Currently the way to validate the dataframes is by using <code>.create()</code> method of respective schemas. Schemas are essentially classes that in their definition contain the information on which columns are required and what are the required data types.</p>
-<p>See below the example of SOILPROFILE schema being defined and then generated using <code>.create()</code> method:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">class</span> <span class="nc">SOILPROFILE</span><span class="p">(</span><span class="n">BaseTableModel</span><span class="p">):</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Vertical discretization of soil profile</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="sd">    Attributes:</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="sd">        ISUBLAY: Series[int]: number of sub layer, start with 1 at soil surface [1..MACP, I].</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="sd">        ISOILLAY: Series[int]: number of soil physical layer, start with 1 at soil surface [1..MAHO, I].</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="sd">        HSUBLAY: Series[float]: height of sub layer [0..1.d4 cm, R].</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="sd">        HCOMP: Series[float]: height of compartments in the sub layer [0.0..1000.0 cm, R].</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="sd">        NCOMP: Series[int]: number of compartments in the sub layer (Mind NCOMP = HSUBLAY/HCOMP) [1..MACP, I].</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">ISOILLAY</span><span class="p">:</span> <span class="n">Series</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="n">ISUBLAY</span><span class="p">:</span> <span class="n">Series</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">HSUBLAY</span><span class="p">:</span> <span class="n">Series</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0e4</span><span class="p">)</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="n">HCOMP</span><span class="p">:</span> <span class="n">Series</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0e3</span><span class="p">)</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="n">NCOMP</span><span class="p">:</span> <span class="n">Series</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span></code></pre></div>
-<p>This is how you create the table:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">pyswap</span> <span class="k">as</span> <span class="nn">psp</span>  <span class="c1"># (1)!</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">soil_profile</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">soilwater</span><span class="o">.</span><span class="n">SOILPROFILE</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="s2">&quot;ISUBLAY&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>  <span class="c1"># (2)!</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="s2">&quot;ISOILLAY&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="s2">&quot;HSUBLAY&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">,</span> <span class="mf">140.0</span><span class="p">],</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="s2">&quot;HCOMP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">],</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="s2">&quot;NCOMP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="p">})</span>
-</span></code></pre></div>
-<ol>
-<li>Table schemas are imported from the same component group as the class they should be assigned to. So <code>SOILPROFILE</code> will be imported from <code>soilwater</code> component.</li>
-<li>Here, for example, if we tried to set one of the elements in <code>ISUBLAY</code> column to 0, we would get an error.</li>
-</ol>
-<h3 id="output">Output<a class="headerlink" href="#output" title="Permanent link">&para;</a></h3>
-<p>All output from the model is captured in a <code>Result</code> object. This includes requested output ascii files (e.g., .blc) and CSV files. The CSV output files are automatically converted to a pandas DataFrame with DateTime index.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>ASCII output files, like .blc will be deprecated in the future version of SWAP and pyswap.</p>
-</div>
+<p>Initially, SQLite was considered a good option for simple tabular data. However, SWAP's diverse input and output formats would challenge SQLite, requiring unconventional use of RDBMS. Why force a cylinder through a square hole?</p>
+<p>A better option, widely used in science, is the HDF5 file format. It accepts almost any format, is compatible with multiple languages (R, Python, Fortran), and has a simple, folder-like structure. Thus, pySWAP builds on the <code>h5py</code> library.</p>
+<p>The goal is to make the HDF5 database easily shareable with modellers using different programming languages. Currently, pySWAP saves and retrieves Python-specific binary formats using pickle. However, more formats can be added according to the community needs. Using pickle objects with some metadata attached is a very straightforward approach and allowes for easy storage and retrieval of the entire models and their results. To demonstrate how this works, Follow the <a href="/tutorials/002-hdf5-database/">HDF5 database tutorial</a>.</p>
 
 
 
@@ -1576,7 +1403,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../ascii-vs-classes/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SWAP model settings">
+          <a href="../to-classic-swap/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Saving models to a directory">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1586,20 +1413,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                SWAP model settings
+                Saving models to a directory
               </div>
             </div>
           </a>
         
         
           
-          <a href="../run-parallel/" class="md-footer__link md-footer__link--next" aria-label="Next: Run parallel">
+          <a href="../../tutorials/" class="md-footer__link md-footer__link--next" aria-label="Next: Working examples">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Run parallel
+                Working examples
               </div>
             </div>
             <div class="md-footer__button md-icon">

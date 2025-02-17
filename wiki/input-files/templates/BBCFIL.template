@@ -52,7 +52,7 @@
 * In case of sinus function (SW2 = 1), specify:
   SINAVE = {{SINAVE}}        ! Average value of bottom flux [-10..10 cm/d, R, + = upwards]
   SINAMP = {{SINAMP}}        ! Amplitude of bottom flux sine function [-10..10 cm/d, R]
-  SINMAX = {{SINMAX}}        ! Time of the year with maximum bottom flux [0..366 d, R]  
+  SINMAX = {{SINMAX}}        ! Time of the year with maximum bottom flux [0..366 d, R]
 {{/SWITCH_SW2_OPTION_1}}
 {{#SWITCH_SW2_OPTION_2}}
 * In case of table (SW2 = 2), specify date DATE2 [date] and bottom flux QBOT2 [-100..100 cm/d, R, positive = upwards]:
@@ -83,12 +83,12 @@
   RIMLAY = {{RIMLAY}}        ! Vertical resistance of aquitard [0..100000 d, R]
 
 * Specify whether a sinus function or a table are used for the hydraulic head in the deep aquifer:
-  SW3    = {{SW3}}           ! 1 = sinus function  
-                             ! 2 = table 
+  SW3    = {{SW3}}           ! 1 = sinus function
+                             ! 2 = table
 
 {{#SWITCH_SW3_OPTION_1}}
 * In case of sinus function (SW3  = 1), specify:
-  AQAVE  = {{AQAVE}}         ! Average hydraulic head in underlaying aquifer [-10000..1000 cm, R] 
+  AQAVE  = {{AQAVE}}         ! Average hydraulic head in underlaying aquifer [-10000..1000 cm, R]
   AQAMP  = {{AQAMP}}         ! Amplitude hydraulic head sinus wave [0..1000 cm, R]
   AQTMAX = {{AQTMAX}}        ! First time of the year with maximum hydraulic head [0..366 d, R]
   AQPER  = {{AQPER}}         ! Period hydraulic head sinus wave [0..366 d, I]
@@ -103,7 +103,7 @@
 {{/SWITCH_SW3_OPTION_2}}
 
 * An extra groundwater flux can be specified which is added to above specified flux
-  SW4   = {{SW4}}            ! 0 = no extra flux 
+  SW4   = {{SW4}}            ! 0 = no extra flux
                              ! 1 = include extra flux
 
 {{#SWITCH_SW4_OPTION_1}}
@@ -152,7 +152,7 @@
 {{#SWITCH_SWBOTB_OPTION_5}}
 **********************************************************************************
 * In case of SWBOTB = 5, prescribe soil water pressure head of bottom compartment
- 
+
 * Specify date DATE5 [date] and bottom compartment pressure head HBOT5 [-1.d10..1000 cm, R]:
 
 {{#TABLE_SWBOTBTB5}}

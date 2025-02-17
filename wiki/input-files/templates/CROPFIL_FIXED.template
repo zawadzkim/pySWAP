@@ -39,7 +39,7 @@
 
 {{/SWITCH_SWSOW_OPTION_1}}
 * Part 0c: Germination
-  
+
 * Switch for germination:
   SWGERM = {{SWGERM}}        ! 0 = No germination
                              ! 1 = Simulate germination depending on temperature
@@ -48,15 +48,15 @@
 {{#SWITCH_SWGERM_OPTION_1}}
 * If SWGERM = 1, specify:
   TSUMEMEOPT = {{TSUMEMEOPT}} ! Temperature sum needed for crop emergence [0..1000 oC, R]
-  TBASEM = {{TBASEM}}        ! Minimum temperature, used for germination trajectory [0..40 oC, R]  
-  TEFFMX = {{TEFFMX}}        ! Maximum temperature, used for germination trajectory [0..40 oC, R]  
+  TBASEM = {{TBASEM}}        ! Minimum temperature, used for germination trajectory [0..40 oC, R]
+  TEFFMX = {{TEFFMX}}        ! Maximum temperature, used for germination trajectory [0..40 oC, R]
 
 {{/SWITCH_SWGERM_OPTION_1}}
 {{#SWITCH_SWGERM_OPTION_2}}
 * If SWGERM = 1, specify:
   TSUMEMEOPT = {{TSUMEMEOPT}} ! Temperature sum needed for crop emergence [0..1000 oC, R]
-  TBASEM = {{TBASEM}}        ! Minimum temperature, used for germination trajectory [0..40 oC, R]  
-  TEFFMX = {{TEFFMX}}        ! Maximum temperature, used for germination trajectory [0..40 oC, R]  
+  TBASEM = {{TBASEM}}        ! Minimum temperature, used for germination trajectory [0..40 oC, R]
+  TEFFMX = {{TEFFMX}}        ! Maximum temperature, used for germination trajectory [0..40 oC, R]
   HDRYGERM = {{HDRYGERM}}    ! Pressure head rootzone for dry germination trajectory [-1000..-0.01 cm, R]
   HWETGERM = {{HWETGERM}}    ! Pressure head rootzone for wet germination trajectory [-100..-0.01 cm, R]
   ZGERM = {{ZGERM}}          ! Z-level for monitoring average pressure head [-100..0 cm, R]
@@ -67,7 +67,7 @@
 * Part 0d: Harvest
 
   DVSEND = {{DVSEND}}        ! Development stage at harvest [0..3 -, R]
-  
+
 * Switch to check work-ability during harvest:
   SWHARV = {{SWHARV}}        ! 0 = Timing of harvest depends on end of growing period (CROPEND)
                              ! 1 = Timing of harvest depends on development stage (DVSEND)
@@ -83,11 +83,11 @@
                              ! 2 = Duration is variable
 
 {{#SWITCH_IDEV_OPTION_1}}
-* If duration is fixed (IDEV = 1), specify:                                                
+* If duration is fixed (IDEV = 1), specify:
   LCC = {{LCC}}              ! Duration of the crop growing period [1..366 days, I]
 {{/SWITCH_IDEV_OPTION_1}}
 {{#SWITCH_IDEV_OPTION_2}}
-* If duration is variable (IDEV = 2), specify:                                                
+* If duration is variable (IDEV = 2), specify:
   TSUMEA = {{TSUMEA}}        ! Temperature sum from emergence to anthesis [0..1d4 oC, R]
   TSUMAM = {{TSUMAM}}        ! Temperature sum from anthesis to maturity  [0..1d4 oC, R]
   TBASE = {{TBASE}}          ! Start value of temperature sum [-10..30 0C, R]
@@ -116,7 +116,7 @@
 * If SWGC = 1, list Leaf Area Index [0..12 (m2 leaf)/(m2 soil), R], as function of dev. stage [0..2 -, R]:
 
 * DVS   LAI
-  GCTB =                
+  GCTB =
 {{#TABLE_GCTB}}
   {{DVS}} {{LAI}}
 {{/TABLE_GCTB}}
@@ -125,7 +125,7 @@
 * If SWGC = 2, list Soil Cover Fraction [0..1 (m2 cover)/(m2 soil), R], as function of dev. stage [0..2 -, R]:
 
 * DVS   SCF
-  GCTB =                
+  GCTB =
 {{#TABLE_GCTB}}
   {{DVS}} {{SCF}}
 {{/TABLE_GCTB}}
@@ -141,7 +141,7 @@
 * Choose between crop factor and crop height
 * Choose crop factor if ETref is used, either from meteo input file (SWETR = 1) or with Penman-Monteith
 * Choose crop height if Penman-Monteith should be used with actual crop height, albedo and canopy resistance
-  SWCF = {{SWCF}}            ! 1 = Crop factor 
+  SWCF = {{SWCF}}            ! 1 = Crop factor
                              ! 2 = Crop height
 
 {{#SWITCH_SWCF_OPTION_1}}
@@ -160,7 +160,7 @@
 * End of table
 
 * If SWCF = 2, in addition to crop height list crop specific values for:
-  ALBEDO = {{ALBEDO}}        ! Crop reflection coefficient [0..1.0 -, R]                    
+  ALBEDO = {{ALBEDO}}        ! Crop reflection coefficient [0..1.0 -, R]
   RSC = {{RSC}}              ! Minimum canopy resistance [0..1d6 s/m, R]
   RSW = {{RSW}}              ! Canopy resistance of intercepted water [0..1d6 s/m, R]
 {{/SWITCH_SWCF_OPTION_2}}
@@ -208,7 +208,7 @@
 {{/TABLE_RLWTB}}
 * End of table
 
-  WRTMAX = {{WRTMAX}}        ! Maximum root weight [0..1d5 kg DM/ha, R]                
+  WRTMAX = {{WRTMAX}}        ! Maximum root weight [0..1d5 kg DM/ha, R]
 {{/SWITCH_SWRD_OPTION_3}}
 
 * Always specify:
@@ -254,10 +254,10 @@
 {{#SWITCH_SWOXYGEN_OPTION_2}}
 * If SWOXYGEN=2, specify:
   Q10_MICROBIAL = {{Q10_MICROBIAL}} ! Relative increase in microbial respiration at temperature increase of 10 C [1.0..4.0 -, R]
-  SPECIFIC_RESP_HUMUS = {{SPECIFIC_RESP_HUMUS}} ! Respiration rate of humus at 25 C [0.0..1.0 kg O2/kg C/d, R] 
-  SRL = {{SRL}}              ! Specific root length [0.0..1.d10 m root/kg root, R]      
-  
-* Switch for calculation of root radius:  
+  SPECIFIC_RESP_HUMUS = {{SPECIFIC_RESP_HUMUS}} ! Respiration rate of humus at 25 C [0.0..1.0 kg O2/kg C/d, R]
+  SRL = {{SRL}}              ! Specific root length [0.0..1.d10 m root/kg root, R]
+
+* Switch for calculation of root radius:
   SWROOTRADIUS = {{SWROOTRADIUS}} ! 1 = Calculate root radius
                              ! 2 = Root radius is given in input file
 
@@ -272,7 +272,7 @@
 * If SWROOTRADIUS=2, specify:
   ROOT_RADIUSO2 = {{ROOT_RADIUSO2}} ! Root radius for oxygen stress module [1d-6..0.1 m, R]
 {{/SWITCH_SWROOTRADIUS_OPTION_2}}
-* If CROPTYPE=1 and SWOXYGEN=2 growth, specify: 
+* If CROPTYPE=1 and SWOXYGEN=2 growth, specify:
   Q10_ROOT = {{Q10_ROOT}}    ! Relative increase in root respiration at temperature increase of 10 oC [1.0..4.0 -, R]
   F_SENES  = {{F_SENES}}     ! Reduction factor for senescence, used for maintenance respiration [0..1.0 -, R]
   C_MROOT  = {{C_MROOT}}     ! Maintenance coefficient of root [0.0..1.0 kg O2/kg/d, R]
@@ -299,7 +299,7 @@
 
 **********************************************************************************
 * Part 12: Drought stress
-  
+
 * Switch for drought stress:
   SWDROUGHT = {{SWDROUGHT}}  ! 1 = Drought stress according to Feddes et al. (1978)
                              ! 2 = Drought stress according to De Jong van Lier et al. (2008)
@@ -309,8 +309,8 @@
   HLIM3H = {{HLIM3H}}        ! Pressure head below which water uptake reduction starts at high Tpot [-1d4..100 cm, R]
   HLIM3L = {{HLIM3L}}        ! Pressure head below which water uptake reduction starts at low Tpot  [-1d4..100 cm, R]
   HLIM4 = {{HLIM4}}          ! No water extraction at lower soil water pressure heads [-1.6d4..100 cm, R]
-  ADCRH = {{ADCRH}}          ! Level of high atmospheric demand, corresponding to HLIM3H [0..5 cm/d, R]     
-  ADCRL = {{ADCRL}}          ! Level of low atmospheric demand, corresponding to HLIM3L [0..5 cm/d, R]     
+  ADCRH = {{ADCRH}}          ! Level of high atmospheric demand, corresponding to HLIM3H [0..5 cm/d, R]
+  ADCRL = {{ADCRL}}          ! Level of low atmospheric demand, corresponding to HLIM3L [0..5 cm/d, R]
 {{/SWITCH_SWDROUGHT_OPTION_1}}
 {{#SWITCH_SWDROUGHT_OPTION_2}}
 * If SWDROUGHT=2, specify:
@@ -318,7 +318,7 @@
   KSTEM = {{KSTEM}}          ! Hydraulic conductance between leaf and root xylem [1d-10..10 /d, R]
   RXYLEM = {{RXYLEM}}        ! Xylem radius [1d-4..1 cm, R]
   ROOTRADIUS = {{ROOTRADIUS}} ! Root radius [1d-4..1 cm, R]
-  KROOT = {{KROOT}}          ! Radial hydraulic conductivity of root tissue [1d-10..1d10 cm/d, R] 
+  KROOT = {{KROOT}}          ! Radial hydraulic conductivity of root tissue [1d-10..1d10 cm/d, R]
   ROOTCOEFA  = {{ROOTCOEFA}} ! Defines relative distance between roots at which mean soil water content occurs [0..1 -, R]
   SWHYDRLIFT = {{SWHYDRLIFT}} ! Switch for possibility hydraulic lift in root system [N=0, Y=1]
   ROOTEFF = {{ROOTEFF}}      ! Root system efficiency factor [0..1 -, R]
@@ -340,8 +340,8 @@
 
 {{#SWITCH_SWSALINITY_OPTION_1}}
 * If SWSALINITY = 1, specify threshold and slope of Maas and Hoffman
-  SALTMAX = {{SALTMAX}}      ! Threshold salt concentration in soil water  [0..100 mg/cm3, R] 
-  SALTSLOPE = {{SALTSLOPE}}  ! Decline of root water uptake above threshold [0..1.0 cm3/mg, R] 
+  SALTMAX = {{SALTMAX}}      ! Threshold salt concentration in soil water  [0..100 mg/cm3, R]
+  SALTSLOPE = {{SALTSLOPE}}  ! Decline of root water uptake above threshold [0..1.0 cm3/mg, R]
 {{/SWITCH_SWSALINITY_OPTION_1}}
 {{#SWITCH_SWSALINITY_OPTION_2}}
 * If SWSALINITY = 2, specify:
@@ -387,7 +387,7 @@
 
 
 **********************************************************************************
-* Part 14: interception                                            
+* Part 14: interception
 
 * For agricultural crops apply interception concept of Von Hoyningen-Hune and Braden
 * Switch for rainfall interception method:
@@ -423,7 +423,7 @@
 **********************************************************************************
 * Part 1: General
 
-  SCHEDULE = {{SCHEDULE}}    ! Switch for application irrigation scheduling [Y=1, N=0] 
+  SCHEDULE = {{SCHEDULE}}    ! Switch for application irrigation scheduling [Y=1, N=0]
 
 {{#SWITCH_SCHEDULE_OPTION_1}}
 * If SCHEDULE = 1, specify:
@@ -431,7 +431,7 @@
   ENDIRR = {{ENDIRR}}        ! Specify day and month at which irrigation scheduling stops [dd mm]
   CIRRS = {{CIRRS}}          ! Solute concentration of irrigation water [0..100 mg/cm3, R]
 
-* Switch for type of irrigation method: 
+* Switch for type of irrigation method:
   ISUAS = {{ISUAS}}          ! 0 = Sprinkling irrigation
                              ! 1 = Surface irrigation
 
@@ -459,7 +459,7 @@
 * End of table
 {{/SWITCH_TCS_OPTION_1}}
 {{#SWITCH_TCS_OPTION_2}}
-* Depletion of Readily Available Water (TCS = 2) 
+* Depletion of Readily Available Water (TCS = 2)
 * Specify minimum fraction of readily available water RAW [0..1 -, R] as function of crop development stage
 {{#TABLE_TC2TB}}
   {{DVS_TC2}} {{RAW}}
@@ -558,22 +558,22 @@
 {{#SWITCH_DCS_OPTION_1}}
 {{#SWITCH_TCS_OPTION_1}}
 * Specify pressure head at field capacity
-  PHFIELDCAPACITY = {{PHFIELDCAPACITY}} ! Soil water pressure head at field capacity [-1000..0 cm, R] 
+  PHFIELDCAPACITY = {{PHFIELDCAPACITY}} ! Soil water pressure head at field capacity [-1000..0 cm, R]
 
 {{/SWITCH_TCS_OPTION_1}}
 {{#SWITCH_TCS_OPTION_6}}
 * Specify pressure head at field capacity
-  PHFIELDCAPACITY = {{PHFIELDCAPACITY}} ! Soil water pressure head at field capacity [-1000..0 cm, R] 
+  PHFIELDCAPACITY = {{PHFIELDCAPACITY}} ! Soil water pressure head at field capacity [-1000..0 cm, R]
 
 {{/SWITCH_TCS_OPTION_6}}
 {{#SWITCH_TCS_OPTION_7}}
 * Specify pressure head at field capacity
-  PHFIELDCAPACITY = {{PHFIELDCAPACITY}} ! Soil water pressure head at field capacity [-1000..0 cm, R] 
+  PHFIELDCAPACITY = {{PHFIELDCAPACITY}} ! Soil water pressure head at field capacity [-1000..0 cm, R]
 
 {{/SWITCH_TCS_OPTION_7}}
 {{#SWITCH_TCS_OPTION_8}}
 * Specify pressure head at field capacity
-  PHFIELDCAPACITY = {{PHFIELDCAPACITY}} ! Soil water pressure head at field capacity [-1000..0 cm, R] 
+  PHFIELDCAPACITY = {{PHFIELDCAPACITY}} ! Soil water pressure head at field capacity [-1000..0 cm, R]
 
 {{/SWITCH_TCS_OPTION_8}}
 * Specify amount of under (-) or over (+) irrigation DI [-100..100 mm, R] as function of crop development stage [0..2, R]:

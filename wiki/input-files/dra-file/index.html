@@ -1,0 +1,2360 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../crp-file/">
+      
+      
+        <link rel="next" href="../bbc-file/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.4">
+    
+    
+      
+        <title>.DRA - pySWAP documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.8608ea7d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dra" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="pySWAP documentation" class="md-header__button md-logo" aria-label="pySWAP documentation" data-md-component="logo">
+      
+  <img src="../../../public/logo.webp" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            pySWAP documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              .DRA
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="purple"  aria-label="Switch to Dark Mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to Dark Mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="lime"  aria-label="Switch to Light Mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to Light Mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5M7 15a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zawadzkim/pySWAP" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zawadzkim/pySWAP
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Welcome to pyswap documentation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../user-guide/quick-start/" class="md-tabs__link">
+          
+  
+  User guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../tutorials/" class="md-tabs__link">
+          
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  Wiki
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/model-components/" class="md-tabs__link">
+          
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../contributing/" class="md-tabs__link">
+          
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="pySWAP documentation" class="md-nav__button md-logo" aria-label="pySWAP documentation" data-md-component="logo">
+      
+  <img src="../../../public/logo.webp" alt="logo">
+
+    </a>
+    pySWAP documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zawadzkim/pySWAP" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zawadzkim/pySWAP
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Welcome to pyswap documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    User guide
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            User guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/quick-start/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/ascii-vs-classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SWAP model settings
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/data-structures/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Structures
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/run-parallel/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Run parallel
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/to-classic-swap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Saving models to a directory
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/hdf5/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HDF5 Database
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Working examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/000-setting-up-hupselbrook/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hupselbrook Model Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/001-basic-usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Basic usage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/002-hdf5-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using HDF5 database
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/003-wofost-crop-db/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    WOFOST crop database
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/004-loading-classic-swap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Load classic SWAP model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Wiki
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Wiki
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Input files
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            Input files
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Input files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../swp-file/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    .SWP
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crp-file/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    .CRP
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    .DRA
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    .DRA
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#simple_drainage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simple drainage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extended_drainage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extended drainage
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bbc-file/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    .BBC
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../met-file/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    .MET
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../irg-file/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    .IRG
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/model-components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Model components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/pyswap-model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pySWAP Model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/integrations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Integrations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/visualization/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Visualization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/developer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced elements
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Welcome Contributors!
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/documentation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Documentation is critical
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/imports/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Importing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/makefile/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Makefile
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#simple_drainage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simple drainage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extended_drainage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extended drainage
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="dra">.DRA<a class="headerlink" href="#dra" title="Permanent link">&para;</a></h1>
+<p>There are two types of drainage files: simple and extended. The templates can be found below.</p>
+<h2 id="simple_drainage">Simple drainage<a class="headerlink" href="#simple_drainage" title="Permanent link">&para;</a></h2>
+<details class="filetemplate">
+<summary>DRFIL_BASIC.template</summary>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>**********************************************************************************
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>* Filename: swap.dra
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>* Contents: SWAP 4 - Input data for basic and extended drainage
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>**********************************************************************************
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>* Comment area:
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>* Testbank of SWAP: build with template of dra-file
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>*
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>**********************************************************************************
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>*** BASIC DRAINAGE SECTION ***
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>**********************************************************************************
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>* Part 0: General
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>* Switch, method of lateral drainage calculation:
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  DRAMET = {{DRAMET}}        ! 1 = Use table of drainage flux - groundwater level relation
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                             ! 2 = Use drainage formula of Hooghoudt or Ernst
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>                             ! 3 = Use drainage/infiltration resistance, multi-level if needed
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  SWDIVD = {{SWDIVD}}        ! Calculate vertical distribution of drainage flux in groundwater [Y=1, N=0]
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>* If SWDIVD = 1, specify anisotropy factor COFANI (horizontal/vertical saturated hydraulic
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>* conductivity) for each soil layer (maximum MAHO), [0.0001..1000 -, R]:
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>  COFANI = {{COFANI}}
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>* Switch to adjust upper boundary of model discharge layer
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>  SWDISLAY = 0               ! switch to adjust discharge layer  [0,1,2, -, I]
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>**********************************************************************************
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>{{#SWITCH_DRAMET_OPTION_1}}
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>**********************************************************************************
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>* Part 1: Table of drainage flux - groundwater level relation (DRAMET = 1)
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>* If SWDIVD = 1, specify the drain spacing:
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>  LM1 = {{LM1}}              ! Drain spacing, [1..1000 m, R]
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>* Specify drainage flux QDRAIN [-100..1000 cm/d, R] as function of groundwater level GWL [-1000.0..10.0 cm, R]
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>* negative GWL is below soil surface; start with highest groundwater level; maximum of 25 records:
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>{{#TABLE_QDRNTB}}
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>  {{QDRAIN}} {{GWL}}
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>{{/TABLE_QDRNTB}}
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>* End of table
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>{{/SWITCH_DRAMET_OPTION_1}}
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>{{#SWITCH_DRAMET_OPTION_2}}
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>**********************************************************************************
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>* Part 2: Drainage formula of Hooghoudt or Ernst (DRAMET = 2)
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>*
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>* Drain characteristics:
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>  LM2    = {{LM2}}           ! Drain spacing, [1..1000 m, R]
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>  SHAPE  = {{SHAPE_DRA}}     ! Shape factor to account for actual location between drain and water divide [0.0..1.0 -, R]
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>  WETPER = {{WETPER}}        ! Wet perimeter of the drain, [0..1000 cm, R]
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>  ZBOTDR = {{ZBOTDR}}        ! Level of drain bottom, [-1000..0 cm, R, neg. below soil surface]
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>  ENTRES = {{ENTRES}}        ! Drain entry resistance, [0..1000 d, R]
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>* Soil profile characteristics:
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>* Position of drain:
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>  IPOS   = {{IPOS}}          ! 1 = On top of an impervious layer in a homogeneous profile
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>                             ! 2 = Above an impervious layer in a homogeneous profile
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>                             ! 3 = At the interface of a fine upper and a coarse lower soil layer
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>                             ! 4 = In the lower, more coarse soil layer
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>                             ! 5 = In the upper, more fine soil layer
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>* For all positions specify:
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>  BASEGW = {{BASEGW}}        ! Level of impervious layer, [-1d4..0 cm, R]
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>  KHTOP  = {{KHTOP}}         ! Horizontal hydraulic conductivity top layer, [0..1000 cm/d, R]
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>{{#SWITCH_IPOS_OPTION_3}}
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>* In addition, in case IPOS = 3
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>  KHBOT  = {{KHBOT}}         ! horizontal hydraulic conductivity bottom layer, [0..1000 cm/d, R]
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>  ZINTF  = {{ZINTF}}         ! Level of interface of fine and coarse soil layer, [-1d4..0 cm, R]
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>{{/SWITCH_IPOS_OPTION_3}}
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>{{#SWITCH_IPOS_OPTION_4}}
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>* In addition, in case IPOS = 4
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>  KHBOT  = {{KHBOT}}         ! horizontal hydraulic conductivity bottom layer, [0..1000 cm/d, R]
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>  ZINTF  = {{ZINTF}}         ! Level of interface of fine and coarse soil layer, [-1d4..0 cm, R]
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>  KVTOP  = {{KVTOP}}         ! Vertical hydraulic conductivity top layer, [0..1000 cm/d, R]
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>  KVBOT  = {{KVBOT}}         ! Vertical hydraulic conductivity bottom layer, [0..1000 cm/d, R]
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>{{/SWITCH_IPOS_OPTION_4}}
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>{{#SWITCH_IPOS_OPTION_5}}
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>* In addition, in case IPOS = 5
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>  KHBOT  = {{KHBOT}}         ! horizontal hydraulic conductivity bottom layer, [0..1000 cm/d, R]
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>  ZINTF  = {{ZINTF}}         ! Level of interface of fine and coarse soil layer, [-1d4..0 cm, R]
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>  KVTOP  = {{KVTOP}}         ! Vertical hydraulic conductivity top layer, [0..1000 cm/d, R]
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>  KVBOT  = {{KVBOT}}         ! Vertical hydraulic conductivity bottom layer, [0..1000 cm/d, R]
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>  GEOFAC = {{GEOFAC}}        ! Geometry factor of Ernst,  [0..100 -, R]
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>{{/SWITCH_IPOS_OPTION_5}}
+</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>{{/SWITCH_DRAMET_OPTION_2}}
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>{{#SWITCH_DRAMET_OPTION_3}}
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>**********************************************************************************
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>* METHOD 3 - Part 3: Drainage and infiltration resistance (DRAMET = 3)
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>
+</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>  NRLEVS = {{NRLEVS}}        ! Number of drainage levels, [1..5, I]
+</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>
+</span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>* Option for interflow in highest drainage level (shallow system with short residence time)
+</span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>  SWINTFL = {{SWINTFL}}      ! Switch for interflow [0,1, I]
+</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>
+</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>{{#SWITCH_SWINTFL_OPTION_1}}
+</span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>* If SWINTFL = 1, specify:
+</span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a>  COFINTFLB = {{COFINTFLB}}  ! Coefficient for interflow relation  [0.01..10.0 d, R]
+</span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a>  EXPINTFLB = {{EXPINTFLB}}  ! Exponent for interflow relation  [0.1..1.0 -, R]
+</span><span id="__span-0-109"><a id="__codelineno-0-109" name="__codelineno-0-109" href="#__codelineno-0-109"></a>
+</span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110" href="#__codelineno-0-110"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111" href="#__codelineno-0-111"></a>* Switch to adjust the bottom of the model discharge layer in case of lateral interflow (SWDIVD=1).
+</span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112" href="#__codelineno-0-112"></a>* In case of SWTOPNRSRF=1) then the bottom of the highest order drainage system (ZBORDR(NUMDRAIN)) represents the max depth of the interflow.
+</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113" href="#__codelineno-0-113"></a> SWTOPNRSRF = {{SWTOPNRSRF}} ! Switch to enable adjustment of model discharge layer [0,1, I]
+</span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114" href="#__codelineno-0-114"></a>
+</span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115" href="#__codelineno-0-115"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-116"><a id="__codelineno-0-116" name="__codelineno-0-116" href="#__codelineno-0-116"></a>{{/SWITCH_SWINTFL_OPTION_1}}
+</span><span id="__span-0-117"><a id="__codelineno-0-117" name="__codelineno-0-117" href="#__codelineno-0-117"></a>**********************************************************************************
+</span><span id="__span-0-118"><a id="__codelineno-0-118" name="__codelineno-0-118" href="#__codelineno-0-118"></a>
+</span><span id="__span-0-119"><a id="__codelineno-0-119" name="__codelineno-0-119" href="#__codelineno-0-119"></a>{{#SWITCH_NRLEVS_OPTION_1}}
+</span><span id="__span-0-120"><a id="__codelineno-0-120" name="__codelineno-0-120" href="#__codelineno-0-120"></a>**********************************************************************************
+</span><span id="__span-0-121"><a id="__codelineno-0-121" name="__codelineno-0-121" href="#__codelineno-0-121"></a>* Part 3a: Drainage to level 1
+</span><span id="__span-0-122"><a id="__codelineno-0-122" name="__codelineno-0-122" href="#__codelineno-0-122"></a>
+</span><span id="__span-0-123"><a id="__codelineno-0-123" name="__codelineno-0-123" href="#__codelineno-0-123"></a>  DRARES1 = {{DRARES1}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-124"><a id="__codelineno-0-124" name="__codelineno-0-124" href="#__codelineno-0-124"></a>  INFRES1 = {{INFRES1}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-125"><a id="__codelineno-0-125" name="__codelineno-0-125" href="#__codelineno-0-125"></a>
+</span><span id="__span-0-126"><a id="__codelineno-0-126" name="__codelineno-0-126" href="#__codelineno-0-126"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-127"><a id="__codelineno-0-127" name="__codelineno-0-127" href="#__codelineno-0-127"></a>  SWALLO1 = {{SWALLO1}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-128"><a id="__codelineno-0-128" name="__codelineno-0-128" href="#__codelineno-0-128"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-129"><a id="__codelineno-0-129" name="__codelineno-0-129" href="#__codelineno-0-129"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-130"><a id="__codelineno-0-130" name="__codelineno-0-130" href="#__codelineno-0-130"></a>
+</span><span id="__span-0-131"><a id="__codelineno-0-131" name="__codelineno-0-131" href="#__codelineno-0-131"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-132"><a id="__codelineno-0-132" name="__codelineno-0-132" href="#__codelineno-0-132"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-133"><a id="__codelineno-0-133" name="__codelineno-0-133" href="#__codelineno-0-133"></a>  L1 = {{L1}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-134"><a id="__codelineno-0-134" name="__codelineno-0-134" href="#__codelineno-0-134"></a>
+</span><span id="__span-0-135"><a id="__codelineno-0-135" name="__codelineno-0-135" href="#__codelineno-0-135"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-136"><a id="__codelineno-0-136" name="__codelineno-0-136" href="#__codelineno-0-136"></a>  ZBOTDR1 = {{ZBOTDR1}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-137"><a id="__codelineno-0-137" name="__codelineno-0-137" href="#__codelineno-0-137"></a>  SWDTYP1 = {{SWDTYP1}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-138"><a id="__codelineno-0-138" name="__codelineno-0-138" href="#__codelineno-0-138"></a>
+</span><span id="__span-0-139"><a id="__codelineno-0-139" name="__codelineno-0-139" href="#__codelineno-0-139"></a>* Specify date DATOWL1 [date] and channel water level LEVEL1 [-10000..200, cm, R]
+</span><span id="__span-0-140"><a id="__codelineno-0-140" name="__codelineno-0-140" href="#__codelineno-0-140"></a>* LEVEL1 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-141"><a id="__codelineno-0-141" name="__codelineno-0-141" href="#__codelineno-0-141"></a>
+</span><span id="__span-0-142"><a id="__codelineno-0-142" name="__codelineno-0-142" href="#__codelineno-0-142"></a>{{#TABLE_DATOWLTB1}}
+</span><span id="__span-0-143"><a id="__codelineno-0-143" name="__codelineno-0-143" href="#__codelineno-0-143"></a>  {{DATOWL1}} {{LEVEL1}}
+</span><span id="__span-0-144"><a id="__codelineno-0-144" name="__codelineno-0-144" href="#__codelineno-0-144"></a>{{/TABLE_DATOWLTB1}}
+</span><span id="__span-0-145"><a id="__codelineno-0-145" name="__codelineno-0-145" href="#__codelineno-0-145"></a>* End of table
+</span><span id="__span-0-146"><a id="__codelineno-0-146" name="__codelineno-0-146" href="#__codelineno-0-146"></a>{{/SWITCH_NRLEVS_OPTION_1}}
+</span><span id="__span-0-147"><a id="__codelineno-0-147" name="__codelineno-0-147" href="#__codelineno-0-147"></a>{{#SWITCH_NRLEVS_OPTION_2}}
+</span><span id="__span-0-148"><a id="__codelineno-0-148" name="__codelineno-0-148" href="#__codelineno-0-148"></a>**********************************************************************************
+</span><span id="__span-0-149"><a id="__codelineno-0-149" name="__codelineno-0-149" href="#__codelineno-0-149"></a>* Part 3a: Drainage to level 1
+</span><span id="__span-0-150"><a id="__codelineno-0-150" name="__codelineno-0-150" href="#__codelineno-0-150"></a>
+</span><span id="__span-0-151"><a id="__codelineno-0-151" name="__codelineno-0-151" href="#__codelineno-0-151"></a>  DRARES1 = {{DRARES1}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-152"><a id="__codelineno-0-152" name="__codelineno-0-152" href="#__codelineno-0-152"></a>  INFRES1 = {{INFRES1}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-153"><a id="__codelineno-0-153" name="__codelineno-0-153" href="#__codelineno-0-153"></a>
+</span><span id="__span-0-154"><a id="__codelineno-0-154" name="__codelineno-0-154" href="#__codelineno-0-154"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-155"><a id="__codelineno-0-155" name="__codelineno-0-155" href="#__codelineno-0-155"></a>  SWALLO1 = {{SWALLO1}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-156"><a id="__codelineno-0-156" name="__codelineno-0-156" href="#__codelineno-0-156"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-157"><a id="__codelineno-0-157" name="__codelineno-0-157" href="#__codelineno-0-157"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-158"><a id="__codelineno-0-158" name="__codelineno-0-158" href="#__codelineno-0-158"></a>
+</span><span id="__span-0-159"><a id="__codelineno-0-159" name="__codelineno-0-159" href="#__codelineno-0-159"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-160"><a id="__codelineno-0-160" name="__codelineno-0-160" href="#__codelineno-0-160"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161" href="#__codelineno-0-161"></a>  L1 = {{L1}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162" href="#__codelineno-0-162"></a>
+</span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163" href="#__codelineno-0-163"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164" href="#__codelineno-0-164"></a>  ZBOTDR1 = {{ZBOTDR1}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165" href="#__codelineno-0-165"></a>  SWDTYP1 = {{SWDTYP1}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166" href="#__codelineno-0-166"></a>
+</span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167" href="#__codelineno-0-167"></a>* Specify date DATOWL1 [date] and channel water level LEVEL1 [-10000..200, cm, R]
+</span><span id="__span-0-168"><a id="__codelineno-0-168" name="__codelineno-0-168" href="#__codelineno-0-168"></a>* LEVEL1 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-169"><a id="__codelineno-0-169" name="__codelineno-0-169" href="#__codelineno-0-169"></a>
+</span><span id="__span-0-170"><a id="__codelineno-0-170" name="__codelineno-0-170" href="#__codelineno-0-170"></a>{{#TABLE_DATOWLTB1}}
+</span><span id="__span-0-171"><a id="__codelineno-0-171" name="__codelineno-0-171" href="#__codelineno-0-171"></a>  {{DATOWL1}} {{LEVEL1}}
+</span><span id="__span-0-172"><a id="__codelineno-0-172" name="__codelineno-0-172" href="#__codelineno-0-172"></a>{{/TABLE_DATOWLTB1}}
+</span><span id="__span-0-173"><a id="__codelineno-0-173" name="__codelineno-0-173" href="#__codelineno-0-173"></a>* End of table
+</span><span id="__span-0-174"><a id="__codelineno-0-174" name="__codelineno-0-174" href="#__codelineno-0-174"></a>
+</span><span id="__span-0-175"><a id="__codelineno-0-175" name="__codelineno-0-175" href="#__codelineno-0-175"></a>**********************************************************************************
+</span><span id="__span-0-176"><a id="__codelineno-0-176" name="__codelineno-0-176" href="#__codelineno-0-176"></a>
+</span><span id="__span-0-177"><a id="__codelineno-0-177" name="__codelineno-0-177" href="#__codelineno-0-177"></a>
+</span><span id="__span-0-178"><a id="__codelineno-0-178" name="__codelineno-0-178" href="#__codelineno-0-178"></a>**********************************************************************************
+</span><span id="__span-0-179"><a id="__codelineno-0-179" name="__codelineno-0-179" href="#__codelineno-0-179"></a>* Part 3b: Drainage to level 2
+</span><span id="__span-0-180"><a id="__codelineno-0-180" name="__codelineno-0-180" href="#__codelineno-0-180"></a>
+</span><span id="__span-0-181"><a id="__codelineno-0-181" name="__codelineno-0-181" href="#__codelineno-0-181"></a>  DRARES2 = {{DRARES2}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-182"><a id="__codelineno-0-182" name="__codelineno-0-182" href="#__codelineno-0-182"></a>  INFRES2 = {{INFRES2}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-183"><a id="__codelineno-0-183" name="__codelineno-0-183" href="#__codelineno-0-183"></a>
+</span><span id="__span-0-184"><a id="__codelineno-0-184" name="__codelineno-0-184" href="#__codelineno-0-184"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-185"><a id="__codelineno-0-185" name="__codelineno-0-185" href="#__codelineno-0-185"></a>  SWALLO2 = {{SWALLO2}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-186"><a id="__codelineno-0-186" name="__codelineno-0-186" href="#__codelineno-0-186"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187" href="#__codelineno-0-187"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188" href="#__codelineno-0-188"></a>
+</span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189" href="#__codelineno-0-189"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190" href="#__codelineno-0-190"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191" href="#__codelineno-0-191"></a>  L2 = {{L2}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-192"><a id="__codelineno-0-192" name="__codelineno-0-192" href="#__codelineno-0-192"></a>
+</span><span id="__span-0-193"><a id="__codelineno-0-193" name="__codelineno-0-193" href="#__codelineno-0-193"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-194"><a id="__codelineno-0-194" name="__codelineno-0-194" href="#__codelineno-0-194"></a>  ZBOTDR2 = {{ZBOTDR2}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-195"><a id="__codelineno-0-195" name="__codelineno-0-195" href="#__codelineno-0-195"></a>  SWDTYP2 = {{SWDTYP2}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196" href="#__codelineno-0-196"></a>
+</span><span id="__span-0-197"><a id="__codelineno-0-197" name="__codelineno-0-197" href="#__codelineno-0-197"></a>* Specify date DATOWL2 [date] and channel water level LEVEL2 [-10000..200, cm, R]
+</span><span id="__span-0-198"><a id="__codelineno-0-198" name="__codelineno-0-198" href="#__codelineno-0-198"></a>* LEVEL2 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-199"><a id="__codelineno-0-199" name="__codelineno-0-199" href="#__codelineno-0-199"></a>
+</span><span id="__span-0-200"><a id="__codelineno-0-200" name="__codelineno-0-200" href="#__codelineno-0-200"></a>{{#TABLE_DATOWLTB2}}
+</span><span id="__span-0-201"><a id="__codelineno-0-201" name="__codelineno-0-201" href="#__codelineno-0-201"></a>  {{DATOWL2}} {{LEVEL2}}
+</span><span id="__span-0-202"><a id="__codelineno-0-202" name="__codelineno-0-202" href="#__codelineno-0-202"></a>{{/TABLE_DATOWLTB2}}
+</span><span id="__span-0-203"><a id="__codelineno-0-203" name="__codelineno-0-203" href="#__codelineno-0-203"></a>* End of table
+</span><span id="__span-0-204"><a id="__codelineno-0-204" name="__codelineno-0-204" href="#__codelineno-0-204"></a>{{/SWITCH_NRLEVS_OPTION_2}}
+</span><span id="__span-0-205"><a id="__codelineno-0-205" name="__codelineno-0-205" href="#__codelineno-0-205"></a>{{#SWITCH_NRLEVS_OPTION_3}}
+</span><span id="__span-0-206"><a id="__codelineno-0-206" name="__codelineno-0-206" href="#__codelineno-0-206"></a>**********************************************************************************
+</span><span id="__span-0-207"><a id="__codelineno-0-207" name="__codelineno-0-207" href="#__codelineno-0-207"></a>* Part 3a: Drainage to level 1
+</span><span id="__span-0-208"><a id="__codelineno-0-208" name="__codelineno-0-208" href="#__codelineno-0-208"></a>
+</span><span id="__span-0-209"><a id="__codelineno-0-209" name="__codelineno-0-209" href="#__codelineno-0-209"></a>  DRARES1 = {{DRARES1}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-210"><a id="__codelineno-0-210" name="__codelineno-0-210" href="#__codelineno-0-210"></a>  INFRES1 = {{INFRES1}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-211"><a id="__codelineno-0-211" name="__codelineno-0-211" href="#__codelineno-0-211"></a>
+</span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212" href="#__codelineno-0-212"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213" href="#__codelineno-0-213"></a>  SWALLO1 = {{SWALLO1}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214" href="#__codelineno-0-214"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215" href="#__codelineno-0-215"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216" href="#__codelineno-0-216"></a>
+</span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217" href="#__codelineno-0-217"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218" href="#__codelineno-0-218"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219" href="#__codelineno-0-219"></a>  L1 = {{L1}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-220"><a id="__codelineno-0-220" name="__codelineno-0-220" href="#__codelineno-0-220"></a>
+</span><span id="__span-0-221"><a id="__codelineno-0-221" name="__codelineno-0-221" href="#__codelineno-0-221"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222" href="#__codelineno-0-222"></a>  ZBOTDR1 = {{ZBOTDR1}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-223"><a id="__codelineno-0-223" name="__codelineno-0-223" href="#__codelineno-0-223"></a>  SWDTYP1 = {{SWDTYP1}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-224"><a id="__codelineno-0-224" name="__codelineno-0-224" href="#__codelineno-0-224"></a>
+</span><span id="__span-0-225"><a id="__codelineno-0-225" name="__codelineno-0-225" href="#__codelineno-0-225"></a>* Specify date DATOWL1 [date] and channel water level LEVEL1 [-10000..200, cm, R]
+</span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226" href="#__codelineno-0-226"></a>* LEVEL1 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-227"><a id="__codelineno-0-227" name="__codelineno-0-227" href="#__codelineno-0-227"></a>
+</span><span id="__span-0-228"><a id="__codelineno-0-228" name="__codelineno-0-228" href="#__codelineno-0-228"></a>{{#TABLE_DATOWLTB1}}
+</span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229" href="#__codelineno-0-229"></a>  {{DATOWL1}} {{LEVEL1}}
+</span><span id="__span-0-230"><a id="__codelineno-0-230" name="__codelineno-0-230" href="#__codelineno-0-230"></a>{{/TABLE_DATOWLTB1}}
+</span><span id="__span-0-231"><a id="__codelineno-0-231" name="__codelineno-0-231" href="#__codelineno-0-231"></a>* End of table
+</span><span id="__span-0-232"><a id="__codelineno-0-232" name="__codelineno-0-232" href="#__codelineno-0-232"></a>
+</span><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233" href="#__codelineno-0-233"></a>**********************************************************************************
+</span><span id="__span-0-234"><a id="__codelineno-0-234" name="__codelineno-0-234" href="#__codelineno-0-234"></a>
+</span><span id="__span-0-235"><a id="__codelineno-0-235" name="__codelineno-0-235" href="#__codelineno-0-235"></a>
+</span><span id="__span-0-236"><a id="__codelineno-0-236" name="__codelineno-0-236" href="#__codelineno-0-236"></a>**********************************************************************************
+</span><span id="__span-0-237"><a id="__codelineno-0-237" name="__codelineno-0-237" href="#__codelineno-0-237"></a>* Part 3b: Drainage to level 2
+</span><span id="__span-0-238"><a id="__codelineno-0-238" name="__codelineno-0-238" href="#__codelineno-0-238"></a>
+</span><span id="__span-0-239"><a id="__codelineno-0-239" name="__codelineno-0-239" href="#__codelineno-0-239"></a>  DRARES2 = {{DRARES2}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-240"><a id="__codelineno-0-240" name="__codelineno-0-240" href="#__codelineno-0-240"></a>  INFRES2 = {{INFRES2}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-241"><a id="__codelineno-0-241" name="__codelineno-0-241" href="#__codelineno-0-241"></a>
+</span><span id="__span-0-242"><a id="__codelineno-0-242" name="__codelineno-0-242" href="#__codelineno-0-242"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-243"><a id="__codelineno-0-243" name="__codelineno-0-243" href="#__codelineno-0-243"></a>  SWALLO2 = {{SWALLO2}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-244"><a id="__codelineno-0-244" name="__codelineno-0-244" href="#__codelineno-0-244"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-245"><a id="__codelineno-0-245" name="__codelineno-0-245" href="#__codelineno-0-245"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-246"><a id="__codelineno-0-246" name="__codelineno-0-246" href="#__codelineno-0-246"></a>
+</span><span id="__span-0-247"><a id="__codelineno-0-247" name="__codelineno-0-247" href="#__codelineno-0-247"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-248"><a id="__codelineno-0-248" name="__codelineno-0-248" href="#__codelineno-0-248"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-249"><a id="__codelineno-0-249" name="__codelineno-0-249" href="#__codelineno-0-249"></a>  L2 = {{L2}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-250"><a id="__codelineno-0-250" name="__codelineno-0-250" href="#__codelineno-0-250"></a>
+</span><span id="__span-0-251"><a id="__codelineno-0-251" name="__codelineno-0-251" href="#__codelineno-0-251"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-252"><a id="__codelineno-0-252" name="__codelineno-0-252" href="#__codelineno-0-252"></a>  ZBOTDR2 = {{ZBOTDR2}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-253"><a id="__codelineno-0-253" name="__codelineno-0-253" href="#__codelineno-0-253"></a>  SWDTYP2 = {{SWDTYP2}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-254"><a id="__codelineno-0-254" name="__codelineno-0-254" href="#__codelineno-0-254"></a>
+</span><span id="__span-0-255"><a id="__codelineno-0-255" name="__codelineno-0-255" href="#__codelineno-0-255"></a>* Specify date DATOWL2 [date] and channel water level LEVEL2 [-10000..200, cm, R]
+</span><span id="__span-0-256"><a id="__codelineno-0-256" name="__codelineno-0-256" href="#__codelineno-0-256"></a>* LEVEL2 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-257"><a id="__codelineno-0-257" name="__codelineno-0-257" href="#__codelineno-0-257"></a>
+</span><span id="__span-0-258"><a id="__codelineno-0-258" name="__codelineno-0-258" href="#__codelineno-0-258"></a>{{#TABLE_DATOWLTB2}}
+</span><span id="__span-0-259"><a id="__codelineno-0-259" name="__codelineno-0-259" href="#__codelineno-0-259"></a>  {{DATOWL2}} {{LEVEL2}}
+</span><span id="__span-0-260"><a id="__codelineno-0-260" name="__codelineno-0-260" href="#__codelineno-0-260"></a>{{/TABLE_DATOWLTB2}}
+</span><span id="__span-0-261"><a id="__codelineno-0-261" name="__codelineno-0-261" href="#__codelineno-0-261"></a>* End of table
+</span><span id="__span-0-262"><a id="__codelineno-0-262" name="__codelineno-0-262" href="#__codelineno-0-262"></a>
+</span><span id="__span-0-263"><a id="__codelineno-0-263" name="__codelineno-0-263" href="#__codelineno-0-263"></a>**********************************************************************************
+</span><span id="__span-0-264"><a id="__codelineno-0-264" name="__codelineno-0-264" href="#__codelineno-0-264"></a>
+</span><span id="__span-0-265"><a id="__codelineno-0-265" name="__codelineno-0-265" href="#__codelineno-0-265"></a>
+</span><span id="__span-0-266"><a id="__codelineno-0-266" name="__codelineno-0-266" href="#__codelineno-0-266"></a>**********************************************************************************
+</span><span id="__span-0-267"><a id="__codelineno-0-267" name="__codelineno-0-267" href="#__codelineno-0-267"></a>* Part 3c: Drainage to level 3
+</span><span id="__span-0-268"><a id="__codelineno-0-268" name="__codelineno-0-268" href="#__codelineno-0-268"></a>
+</span><span id="__span-0-269"><a id="__codelineno-0-269" name="__codelineno-0-269" href="#__codelineno-0-269"></a>  DRARES3 = {{DRARES3}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-270"><a id="__codelineno-0-270" name="__codelineno-0-270" href="#__codelineno-0-270"></a>  INFRES3 = {{INFRES3}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-271"><a id="__codelineno-0-271" name="__codelineno-0-271" href="#__codelineno-0-271"></a>
+</span><span id="__span-0-272"><a id="__codelineno-0-272" name="__codelineno-0-272" href="#__codelineno-0-272"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-273"><a id="__codelineno-0-273" name="__codelineno-0-273" href="#__codelineno-0-273"></a>  SWALLO3 = {{SWALLO3}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-274"><a id="__codelineno-0-274" name="__codelineno-0-274" href="#__codelineno-0-274"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-275"><a id="__codelineno-0-275" name="__codelineno-0-275" href="#__codelineno-0-275"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-276"><a id="__codelineno-0-276" name="__codelineno-0-276" href="#__codelineno-0-276"></a>
+</span><span id="__span-0-277"><a id="__codelineno-0-277" name="__codelineno-0-277" href="#__codelineno-0-277"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-278"><a id="__codelineno-0-278" name="__codelineno-0-278" href="#__codelineno-0-278"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-279"><a id="__codelineno-0-279" name="__codelineno-0-279" href="#__codelineno-0-279"></a>  L3 = {{L3}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-280"><a id="__codelineno-0-280" name="__codelineno-0-280" href="#__codelineno-0-280"></a>
+</span><span id="__span-0-281"><a id="__codelineno-0-281" name="__codelineno-0-281" href="#__codelineno-0-281"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-282"><a id="__codelineno-0-282" name="__codelineno-0-282" href="#__codelineno-0-282"></a>  ZBOTDR3 = {{ZBOTDR3}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-283"><a id="__codelineno-0-283" name="__codelineno-0-283" href="#__codelineno-0-283"></a>  SWDTYP3 = {{SWDTYP3}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-284"><a id="__codelineno-0-284" name="__codelineno-0-284" href="#__codelineno-0-284"></a>
+</span><span id="__span-0-285"><a id="__codelineno-0-285" name="__codelineno-0-285" href="#__codelineno-0-285"></a>* Specify date DATOWL3 [date] and channel water level LEVEL3 [-10000..200, cm, R]
+</span><span id="__span-0-286"><a id="__codelineno-0-286" name="__codelineno-0-286" href="#__codelineno-0-286"></a>* LEVEL3 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-287"><a id="__codelineno-0-287" name="__codelineno-0-287" href="#__codelineno-0-287"></a>
+</span><span id="__span-0-288"><a id="__codelineno-0-288" name="__codelineno-0-288" href="#__codelineno-0-288"></a>{{#TABLE_DATOWLTB3}}
+</span><span id="__span-0-289"><a id="__codelineno-0-289" name="__codelineno-0-289" href="#__codelineno-0-289"></a>  {{DATOWL3}} {{LEVEL3}}
+</span><span id="__span-0-290"><a id="__codelineno-0-290" name="__codelineno-0-290" href="#__codelineno-0-290"></a>{{/TABLE_DATOWLTB3}}
+</span><span id="__span-0-291"><a id="__codelineno-0-291" name="__codelineno-0-291" href="#__codelineno-0-291"></a>* End of table
+</span><span id="__span-0-292"><a id="__codelineno-0-292" name="__codelineno-0-292" href="#__codelineno-0-292"></a>{{/SWITCH_NRLEVS_OPTION_3}}
+</span><span id="__span-0-293"><a id="__codelineno-0-293" name="__codelineno-0-293" href="#__codelineno-0-293"></a>{{#SWITCH_NRLEVS_OPTION_4}}
+</span><span id="__span-0-294"><a id="__codelineno-0-294" name="__codelineno-0-294" href="#__codelineno-0-294"></a>**********************************************************************************
+</span><span id="__span-0-295"><a id="__codelineno-0-295" name="__codelineno-0-295" href="#__codelineno-0-295"></a>* Part 3a: Drainage to level 1
+</span><span id="__span-0-296"><a id="__codelineno-0-296" name="__codelineno-0-296" href="#__codelineno-0-296"></a>
+</span><span id="__span-0-297"><a id="__codelineno-0-297" name="__codelineno-0-297" href="#__codelineno-0-297"></a>  DRARES1 = {{DRARES1}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-298"><a id="__codelineno-0-298" name="__codelineno-0-298" href="#__codelineno-0-298"></a>  INFRES1 = {{INFRES1}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-299"><a id="__codelineno-0-299" name="__codelineno-0-299" href="#__codelineno-0-299"></a>
+</span><span id="__span-0-300"><a id="__codelineno-0-300" name="__codelineno-0-300" href="#__codelineno-0-300"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-301"><a id="__codelineno-0-301" name="__codelineno-0-301" href="#__codelineno-0-301"></a>  SWALLO1 = {{SWALLO1}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-302"><a id="__codelineno-0-302" name="__codelineno-0-302" href="#__codelineno-0-302"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-303"><a id="__codelineno-0-303" name="__codelineno-0-303" href="#__codelineno-0-303"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-304"><a id="__codelineno-0-304" name="__codelineno-0-304" href="#__codelineno-0-304"></a>
+</span><span id="__span-0-305"><a id="__codelineno-0-305" name="__codelineno-0-305" href="#__codelineno-0-305"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-306"><a id="__codelineno-0-306" name="__codelineno-0-306" href="#__codelineno-0-306"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-307"><a id="__codelineno-0-307" name="__codelineno-0-307" href="#__codelineno-0-307"></a>  L1 = {{L1}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-308"><a id="__codelineno-0-308" name="__codelineno-0-308" href="#__codelineno-0-308"></a>
+</span><span id="__span-0-309"><a id="__codelineno-0-309" name="__codelineno-0-309" href="#__codelineno-0-309"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-310"><a id="__codelineno-0-310" name="__codelineno-0-310" href="#__codelineno-0-310"></a>  ZBOTDR1 = {{ZBOTDR1}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-311"><a id="__codelineno-0-311" name="__codelineno-0-311" href="#__codelineno-0-311"></a>  SWDTYP1 = {{SWDTYP1}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-312"><a id="__codelineno-0-312" name="__codelineno-0-312" href="#__codelineno-0-312"></a>
+</span><span id="__span-0-313"><a id="__codelineno-0-313" name="__codelineno-0-313" href="#__codelineno-0-313"></a>* Specify date DATOWL1 [date] and channel water level LEVEL1 [-10000..200, cm, R]
+</span><span id="__span-0-314"><a id="__codelineno-0-314" name="__codelineno-0-314" href="#__codelineno-0-314"></a>* LEVEL1 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-315"><a id="__codelineno-0-315" name="__codelineno-0-315" href="#__codelineno-0-315"></a>
+</span><span id="__span-0-316"><a id="__codelineno-0-316" name="__codelineno-0-316" href="#__codelineno-0-316"></a>{{#TABLE_DATOWLTB1}}
+</span><span id="__span-0-317"><a id="__codelineno-0-317" name="__codelineno-0-317" href="#__codelineno-0-317"></a>  {{DATOWL1}} {{LEVEL1}}
+</span><span id="__span-0-318"><a id="__codelineno-0-318" name="__codelineno-0-318" href="#__codelineno-0-318"></a>{{/TABLE_DATOWLTB1}}
+</span><span id="__span-0-319"><a id="__codelineno-0-319" name="__codelineno-0-319" href="#__codelineno-0-319"></a>* End of table
+</span><span id="__span-0-320"><a id="__codelineno-0-320" name="__codelineno-0-320" href="#__codelineno-0-320"></a>
+</span><span id="__span-0-321"><a id="__codelineno-0-321" name="__codelineno-0-321" href="#__codelineno-0-321"></a>**********************************************************************************
+</span><span id="__span-0-322"><a id="__codelineno-0-322" name="__codelineno-0-322" href="#__codelineno-0-322"></a>
+</span><span id="__span-0-323"><a id="__codelineno-0-323" name="__codelineno-0-323" href="#__codelineno-0-323"></a>
+</span><span id="__span-0-324"><a id="__codelineno-0-324" name="__codelineno-0-324" href="#__codelineno-0-324"></a>**********************************************************************************
+</span><span id="__span-0-325"><a id="__codelineno-0-325" name="__codelineno-0-325" href="#__codelineno-0-325"></a>* Part 3b: Drainage to level 2
+</span><span id="__span-0-326"><a id="__codelineno-0-326" name="__codelineno-0-326" href="#__codelineno-0-326"></a>
+</span><span id="__span-0-327"><a id="__codelineno-0-327" name="__codelineno-0-327" href="#__codelineno-0-327"></a>  DRARES2 = {{DRARES2}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-328"><a id="__codelineno-0-328" name="__codelineno-0-328" href="#__codelineno-0-328"></a>  INFRES2 = {{INFRES2}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-329"><a id="__codelineno-0-329" name="__codelineno-0-329" href="#__codelineno-0-329"></a>
+</span><span id="__span-0-330"><a id="__codelineno-0-330" name="__codelineno-0-330" href="#__codelineno-0-330"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-331"><a id="__codelineno-0-331" name="__codelineno-0-331" href="#__codelineno-0-331"></a>  SWALLO2 = {{SWALLO2}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-332"><a id="__codelineno-0-332" name="__codelineno-0-332" href="#__codelineno-0-332"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-333"><a id="__codelineno-0-333" name="__codelineno-0-333" href="#__codelineno-0-333"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-334"><a id="__codelineno-0-334" name="__codelineno-0-334" href="#__codelineno-0-334"></a>
+</span><span id="__span-0-335"><a id="__codelineno-0-335" name="__codelineno-0-335" href="#__codelineno-0-335"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-336"><a id="__codelineno-0-336" name="__codelineno-0-336" href="#__codelineno-0-336"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-337"><a id="__codelineno-0-337" name="__codelineno-0-337" href="#__codelineno-0-337"></a>  L2 = {{L2}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-338"><a id="__codelineno-0-338" name="__codelineno-0-338" href="#__codelineno-0-338"></a>
+</span><span id="__span-0-339"><a id="__codelineno-0-339" name="__codelineno-0-339" href="#__codelineno-0-339"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-340"><a id="__codelineno-0-340" name="__codelineno-0-340" href="#__codelineno-0-340"></a>  ZBOTDR2 = {{ZBOTDR2}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-341"><a id="__codelineno-0-341" name="__codelineno-0-341" href="#__codelineno-0-341"></a>  SWDTYP2 = {{SWDTYP2}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-342"><a id="__codelineno-0-342" name="__codelineno-0-342" href="#__codelineno-0-342"></a>
+</span><span id="__span-0-343"><a id="__codelineno-0-343" name="__codelineno-0-343" href="#__codelineno-0-343"></a>* Specify date DATOWL2 [date] and channel water level LEVEL2 [-10000..200, cm, R]
+</span><span id="__span-0-344"><a id="__codelineno-0-344" name="__codelineno-0-344" href="#__codelineno-0-344"></a>* LEVEL2 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-345"><a id="__codelineno-0-345" name="__codelineno-0-345" href="#__codelineno-0-345"></a>
+</span><span id="__span-0-346"><a id="__codelineno-0-346" name="__codelineno-0-346" href="#__codelineno-0-346"></a>{{#TABLE_DATOWLTB2}}
+</span><span id="__span-0-347"><a id="__codelineno-0-347" name="__codelineno-0-347" href="#__codelineno-0-347"></a>  {{DATOWL2}} {{LEVEL2}}
+</span><span id="__span-0-348"><a id="__codelineno-0-348" name="__codelineno-0-348" href="#__codelineno-0-348"></a>{{/TABLE_DATOWLTB2}}
+</span><span id="__span-0-349"><a id="__codelineno-0-349" name="__codelineno-0-349" href="#__codelineno-0-349"></a>* End of table
+</span><span id="__span-0-350"><a id="__codelineno-0-350" name="__codelineno-0-350" href="#__codelineno-0-350"></a>
+</span><span id="__span-0-351"><a id="__codelineno-0-351" name="__codelineno-0-351" href="#__codelineno-0-351"></a>**********************************************************************************
+</span><span id="__span-0-352"><a id="__codelineno-0-352" name="__codelineno-0-352" href="#__codelineno-0-352"></a>
+</span><span id="__span-0-353"><a id="__codelineno-0-353" name="__codelineno-0-353" href="#__codelineno-0-353"></a>
+</span><span id="__span-0-354"><a id="__codelineno-0-354" name="__codelineno-0-354" href="#__codelineno-0-354"></a>**********************************************************************************
+</span><span id="__span-0-355"><a id="__codelineno-0-355" name="__codelineno-0-355" href="#__codelineno-0-355"></a>* Part 3c: Drainage to level 3
+</span><span id="__span-0-356"><a id="__codelineno-0-356" name="__codelineno-0-356" href="#__codelineno-0-356"></a>
+</span><span id="__span-0-357"><a id="__codelineno-0-357" name="__codelineno-0-357" href="#__codelineno-0-357"></a>  DRARES3 = {{DRARES3}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-358"><a id="__codelineno-0-358" name="__codelineno-0-358" href="#__codelineno-0-358"></a>  INFRES3 = {{INFRES3}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-359"><a id="__codelineno-0-359" name="__codelineno-0-359" href="#__codelineno-0-359"></a>
+</span><span id="__span-0-360"><a id="__codelineno-0-360" name="__codelineno-0-360" href="#__codelineno-0-360"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-361"><a id="__codelineno-0-361" name="__codelineno-0-361" href="#__codelineno-0-361"></a>  SWALLO3 = {{SWALLO3}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-362"><a id="__codelineno-0-362" name="__codelineno-0-362" href="#__codelineno-0-362"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-363"><a id="__codelineno-0-363" name="__codelineno-0-363" href="#__codelineno-0-363"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-364"><a id="__codelineno-0-364" name="__codelineno-0-364" href="#__codelineno-0-364"></a>
+</span><span id="__span-0-365"><a id="__codelineno-0-365" name="__codelineno-0-365" href="#__codelineno-0-365"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-366"><a id="__codelineno-0-366" name="__codelineno-0-366" href="#__codelineno-0-366"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-367"><a id="__codelineno-0-367" name="__codelineno-0-367" href="#__codelineno-0-367"></a>  L3 = {{L3}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-368"><a id="__codelineno-0-368" name="__codelineno-0-368" href="#__codelineno-0-368"></a>
+</span><span id="__span-0-369"><a id="__codelineno-0-369" name="__codelineno-0-369" href="#__codelineno-0-369"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-370"><a id="__codelineno-0-370" name="__codelineno-0-370" href="#__codelineno-0-370"></a>  ZBOTDR3 = {{ZBOTDR3}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-371"><a id="__codelineno-0-371" name="__codelineno-0-371" href="#__codelineno-0-371"></a>  SWDTYP3 = {{SWDTYP3}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-372"><a id="__codelineno-0-372" name="__codelineno-0-372" href="#__codelineno-0-372"></a>
+</span><span id="__span-0-373"><a id="__codelineno-0-373" name="__codelineno-0-373" href="#__codelineno-0-373"></a>* Specify date DATOWL3 [date] and channel water level LEVEL3 [-10000..200, cm, R]
+</span><span id="__span-0-374"><a id="__codelineno-0-374" name="__codelineno-0-374" href="#__codelineno-0-374"></a>* LEVEL3 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-375"><a id="__codelineno-0-375" name="__codelineno-0-375" href="#__codelineno-0-375"></a>
+</span><span id="__span-0-376"><a id="__codelineno-0-376" name="__codelineno-0-376" href="#__codelineno-0-376"></a>{{#TABLE_DATOWLTB3}}
+</span><span id="__span-0-377"><a id="__codelineno-0-377" name="__codelineno-0-377" href="#__codelineno-0-377"></a>  {{DATOWL3}} {{LEVEL3}}
+</span><span id="__span-0-378"><a id="__codelineno-0-378" name="__codelineno-0-378" href="#__codelineno-0-378"></a>{{/TABLE_DATOWLTB3}}
+</span><span id="__span-0-379"><a id="__codelineno-0-379" name="__codelineno-0-379" href="#__codelineno-0-379"></a>* End of table
+</span><span id="__span-0-380"><a id="__codelineno-0-380" name="__codelineno-0-380" href="#__codelineno-0-380"></a>
+</span><span id="__span-0-381"><a id="__codelineno-0-381" name="__codelineno-0-381" href="#__codelineno-0-381"></a>**********************************************************************************
+</span><span id="__span-0-382"><a id="__codelineno-0-382" name="__codelineno-0-382" href="#__codelineno-0-382"></a>
+</span><span id="__span-0-383"><a id="__codelineno-0-383" name="__codelineno-0-383" href="#__codelineno-0-383"></a>
+</span><span id="__span-0-384"><a id="__codelineno-0-384" name="__codelineno-0-384" href="#__codelineno-0-384"></a>**********************************************************************************
+</span><span id="__span-0-385"><a id="__codelineno-0-385" name="__codelineno-0-385" href="#__codelineno-0-385"></a>* Part 3d: Drainage to level 4
+</span><span id="__span-0-386"><a id="__codelineno-0-386" name="__codelineno-0-386" href="#__codelineno-0-386"></a>
+</span><span id="__span-0-387"><a id="__codelineno-0-387" name="__codelineno-0-387" href="#__codelineno-0-387"></a>  DRARES4 = {{DRARES4}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-388"><a id="__codelineno-0-388" name="__codelineno-0-388" href="#__codelineno-0-388"></a>  INFRES4 = {{INFRES4}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-389"><a id="__codelineno-0-389" name="__codelineno-0-389" href="#__codelineno-0-389"></a>
+</span><span id="__span-0-390"><a id="__codelineno-0-390" name="__codelineno-0-390" href="#__codelineno-0-390"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-391"><a id="__codelineno-0-391" name="__codelineno-0-391" href="#__codelineno-0-391"></a>  SWALLO4 = {{SWALLO4}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-392"><a id="__codelineno-0-392" name="__codelineno-0-392" href="#__codelineno-0-392"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-393"><a id="__codelineno-0-393" name="__codelineno-0-393" href="#__codelineno-0-393"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-394"><a id="__codelineno-0-394" name="__codelineno-0-394" href="#__codelineno-0-394"></a>
+</span><span id="__span-0-395"><a id="__codelineno-0-395" name="__codelineno-0-395" href="#__codelineno-0-395"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-396"><a id="__codelineno-0-396" name="__codelineno-0-396" href="#__codelineno-0-396"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-397"><a id="__codelineno-0-397" name="__codelineno-0-397" href="#__codelineno-0-397"></a>  L4 = {{L4}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-398"><a id="__codelineno-0-398" name="__codelineno-0-398" href="#__codelineno-0-398"></a>
+</span><span id="__span-0-399"><a id="__codelineno-0-399" name="__codelineno-0-399" href="#__codelineno-0-399"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-400"><a id="__codelineno-0-400" name="__codelineno-0-400" href="#__codelineno-0-400"></a>  ZBOTDR4 = {{ZBOTDR4}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-401"><a id="__codelineno-0-401" name="__codelineno-0-401" href="#__codelineno-0-401"></a>  SWDTYP4 = {{SWDTYP4}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-402"><a id="__codelineno-0-402" name="__codelineno-0-402" href="#__codelineno-0-402"></a>
+</span><span id="__span-0-403"><a id="__codelineno-0-403" name="__codelineno-0-403" href="#__codelineno-0-403"></a>* Specify date DATOWL4 [date] and channel water level LEVEL4 [-10000..200, cm, R]
+</span><span id="__span-0-404"><a id="__codelineno-0-404" name="__codelineno-0-404" href="#__codelineno-0-404"></a>* LEVEL4 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-405"><a id="__codelineno-0-405" name="__codelineno-0-405" href="#__codelineno-0-405"></a>
+</span><span id="__span-0-406"><a id="__codelineno-0-406" name="__codelineno-0-406" href="#__codelineno-0-406"></a>{{#TABLE_DATOWLTB4}}
+</span><span id="__span-0-407"><a id="__codelineno-0-407" name="__codelineno-0-407" href="#__codelineno-0-407"></a>  {{DATOWL4}} {{LEVEL4}}
+</span><span id="__span-0-408"><a id="__codelineno-0-408" name="__codelineno-0-408" href="#__codelineno-0-408"></a>{{/TABLE_DATOWLTB4}}
+</span><span id="__span-0-409"><a id="__codelineno-0-409" name="__codelineno-0-409" href="#__codelineno-0-409"></a>* End of table
+</span><span id="__span-0-410"><a id="__codelineno-0-410" name="__codelineno-0-410" href="#__codelineno-0-410"></a>{{/SWITCH_NRLEVS_OPTION_4}}
+</span><span id="__span-0-411"><a id="__codelineno-0-411" name="__codelineno-0-411" href="#__codelineno-0-411"></a>{{#SWITCH_NRLEVS_OPTION_5}}
+</span><span id="__span-0-412"><a id="__codelineno-0-412" name="__codelineno-0-412" href="#__codelineno-0-412"></a>**********************************************************************************
+</span><span id="__span-0-413"><a id="__codelineno-0-413" name="__codelineno-0-413" href="#__codelineno-0-413"></a>* Part 3a: Drainage to level 1
+</span><span id="__span-0-414"><a id="__codelineno-0-414" name="__codelineno-0-414" href="#__codelineno-0-414"></a>
+</span><span id="__span-0-415"><a id="__codelineno-0-415" name="__codelineno-0-415" href="#__codelineno-0-415"></a>  DRARES1 = {{DRARES1}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-416"><a id="__codelineno-0-416" name="__codelineno-0-416" href="#__codelineno-0-416"></a>  INFRES1 = {{INFRES1}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-417"><a id="__codelineno-0-417" name="__codelineno-0-417" href="#__codelineno-0-417"></a>
+</span><span id="__span-0-418"><a id="__codelineno-0-418" name="__codelineno-0-418" href="#__codelineno-0-418"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-419"><a id="__codelineno-0-419" name="__codelineno-0-419" href="#__codelineno-0-419"></a>  SWALLO1 = {{SWALLO1}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-420"><a id="__codelineno-0-420" name="__codelineno-0-420" href="#__codelineno-0-420"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-421"><a id="__codelineno-0-421" name="__codelineno-0-421" href="#__codelineno-0-421"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-422"><a id="__codelineno-0-422" name="__codelineno-0-422" href="#__codelineno-0-422"></a>
+</span><span id="__span-0-423"><a id="__codelineno-0-423" name="__codelineno-0-423" href="#__codelineno-0-423"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-424"><a id="__codelineno-0-424" name="__codelineno-0-424" href="#__codelineno-0-424"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-425"><a id="__codelineno-0-425" name="__codelineno-0-425" href="#__codelineno-0-425"></a>  L1 = {{L1}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-426"><a id="__codelineno-0-426" name="__codelineno-0-426" href="#__codelineno-0-426"></a>
+</span><span id="__span-0-427"><a id="__codelineno-0-427" name="__codelineno-0-427" href="#__codelineno-0-427"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-428"><a id="__codelineno-0-428" name="__codelineno-0-428" href="#__codelineno-0-428"></a>  ZBOTDR1 = {{ZBOTDR1}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-429"><a id="__codelineno-0-429" name="__codelineno-0-429" href="#__codelineno-0-429"></a>  SWDTYP1 = {{SWDTYP1}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-430"><a id="__codelineno-0-430" name="__codelineno-0-430" href="#__codelineno-0-430"></a>
+</span><span id="__span-0-431"><a id="__codelineno-0-431" name="__codelineno-0-431" href="#__codelineno-0-431"></a>* Specify date DATOWL1 [date] and channel water level LEVEL1 [-10000..200, cm, R]
+</span><span id="__span-0-432"><a id="__codelineno-0-432" name="__codelineno-0-432" href="#__codelineno-0-432"></a>* LEVEL1 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-433"><a id="__codelineno-0-433" name="__codelineno-0-433" href="#__codelineno-0-433"></a>
+</span><span id="__span-0-434"><a id="__codelineno-0-434" name="__codelineno-0-434" href="#__codelineno-0-434"></a>{{#TABLE_DATOWLTB1}}
+</span><span id="__span-0-435"><a id="__codelineno-0-435" name="__codelineno-0-435" href="#__codelineno-0-435"></a>  {{DATOWL1}} {{LEVEL1}}
+</span><span id="__span-0-436"><a id="__codelineno-0-436" name="__codelineno-0-436" href="#__codelineno-0-436"></a>{{/TABLE_DATOWLTB1}}
+</span><span id="__span-0-437"><a id="__codelineno-0-437" name="__codelineno-0-437" href="#__codelineno-0-437"></a>* End of table
+</span><span id="__span-0-438"><a id="__codelineno-0-438" name="__codelineno-0-438" href="#__codelineno-0-438"></a>
+</span><span id="__span-0-439"><a id="__codelineno-0-439" name="__codelineno-0-439" href="#__codelineno-0-439"></a>**********************************************************************************
+</span><span id="__span-0-440"><a id="__codelineno-0-440" name="__codelineno-0-440" href="#__codelineno-0-440"></a>
+</span><span id="__span-0-441"><a id="__codelineno-0-441" name="__codelineno-0-441" href="#__codelineno-0-441"></a>
+</span><span id="__span-0-442"><a id="__codelineno-0-442" name="__codelineno-0-442" href="#__codelineno-0-442"></a>**********************************************************************************
+</span><span id="__span-0-443"><a id="__codelineno-0-443" name="__codelineno-0-443" href="#__codelineno-0-443"></a>* Part 3b: Drainage to level 2
+</span><span id="__span-0-444"><a id="__codelineno-0-444" name="__codelineno-0-444" href="#__codelineno-0-444"></a>
+</span><span id="__span-0-445"><a id="__codelineno-0-445" name="__codelineno-0-445" href="#__codelineno-0-445"></a>  DRARES2 = {{DRARES2}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-446"><a id="__codelineno-0-446" name="__codelineno-0-446" href="#__codelineno-0-446"></a>  INFRES2 = {{INFRES2}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-447"><a id="__codelineno-0-447" name="__codelineno-0-447" href="#__codelineno-0-447"></a>
+</span><span id="__span-0-448"><a id="__codelineno-0-448" name="__codelineno-0-448" href="#__codelineno-0-448"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-449"><a id="__codelineno-0-449" name="__codelineno-0-449" href="#__codelineno-0-449"></a>  SWALLO2 = {{SWALLO2}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-450"><a id="__codelineno-0-450" name="__codelineno-0-450" href="#__codelineno-0-450"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-451"><a id="__codelineno-0-451" name="__codelineno-0-451" href="#__codelineno-0-451"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-452"><a id="__codelineno-0-452" name="__codelineno-0-452" href="#__codelineno-0-452"></a>
+</span><span id="__span-0-453"><a id="__codelineno-0-453" name="__codelineno-0-453" href="#__codelineno-0-453"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-454"><a id="__codelineno-0-454" name="__codelineno-0-454" href="#__codelineno-0-454"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-455"><a id="__codelineno-0-455" name="__codelineno-0-455" href="#__codelineno-0-455"></a>  L2 = {{L2}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-456"><a id="__codelineno-0-456" name="__codelineno-0-456" href="#__codelineno-0-456"></a>
+</span><span id="__span-0-457"><a id="__codelineno-0-457" name="__codelineno-0-457" href="#__codelineno-0-457"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-458"><a id="__codelineno-0-458" name="__codelineno-0-458" href="#__codelineno-0-458"></a>  ZBOTDR2 = {{ZBOTDR2}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-459"><a id="__codelineno-0-459" name="__codelineno-0-459" href="#__codelineno-0-459"></a>  SWDTYP2 = {{SWDTYP2}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-460"><a id="__codelineno-0-460" name="__codelineno-0-460" href="#__codelineno-0-460"></a>
+</span><span id="__span-0-461"><a id="__codelineno-0-461" name="__codelineno-0-461" href="#__codelineno-0-461"></a>* Specify date DATOWL2 [date] and channel water level LEVEL2 [-10000..200, cm, R]
+</span><span id="__span-0-462"><a id="__codelineno-0-462" name="__codelineno-0-462" href="#__codelineno-0-462"></a>* LEVEL2 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-463"><a id="__codelineno-0-463" name="__codelineno-0-463" href="#__codelineno-0-463"></a>
+</span><span id="__span-0-464"><a id="__codelineno-0-464" name="__codelineno-0-464" href="#__codelineno-0-464"></a>{{#TABLE_DATOWLTB2}}
+</span><span id="__span-0-465"><a id="__codelineno-0-465" name="__codelineno-0-465" href="#__codelineno-0-465"></a>  {{DATOWL2}} {{LEVEL2}}
+</span><span id="__span-0-466"><a id="__codelineno-0-466" name="__codelineno-0-466" href="#__codelineno-0-466"></a>{{/TABLE_DATOWLTB2}}
+</span><span id="__span-0-467"><a id="__codelineno-0-467" name="__codelineno-0-467" href="#__codelineno-0-467"></a>* End of table
+</span><span id="__span-0-468"><a id="__codelineno-0-468" name="__codelineno-0-468" href="#__codelineno-0-468"></a>
+</span><span id="__span-0-469"><a id="__codelineno-0-469" name="__codelineno-0-469" href="#__codelineno-0-469"></a>**********************************************************************************
+</span><span id="__span-0-470"><a id="__codelineno-0-470" name="__codelineno-0-470" href="#__codelineno-0-470"></a>
+</span><span id="__span-0-471"><a id="__codelineno-0-471" name="__codelineno-0-471" href="#__codelineno-0-471"></a>
+</span><span id="__span-0-472"><a id="__codelineno-0-472" name="__codelineno-0-472" href="#__codelineno-0-472"></a>**********************************************************************************
+</span><span id="__span-0-473"><a id="__codelineno-0-473" name="__codelineno-0-473" href="#__codelineno-0-473"></a>* Part 3c: Drainage to level 3
+</span><span id="__span-0-474"><a id="__codelineno-0-474" name="__codelineno-0-474" href="#__codelineno-0-474"></a>
+</span><span id="__span-0-475"><a id="__codelineno-0-475" name="__codelineno-0-475" href="#__codelineno-0-475"></a>  DRARES3 = {{DRARES3}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-476"><a id="__codelineno-0-476" name="__codelineno-0-476" href="#__codelineno-0-476"></a>  INFRES3 = {{INFRES3}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-477"><a id="__codelineno-0-477" name="__codelineno-0-477" href="#__codelineno-0-477"></a>
+</span><span id="__span-0-478"><a id="__codelineno-0-478" name="__codelineno-0-478" href="#__codelineno-0-478"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-479"><a id="__codelineno-0-479" name="__codelineno-0-479" href="#__codelineno-0-479"></a>  SWALLO3 = {{SWALLO3}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-480"><a id="__codelineno-0-480" name="__codelineno-0-480" href="#__codelineno-0-480"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-481"><a id="__codelineno-0-481" name="__codelineno-0-481" href="#__codelineno-0-481"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-482"><a id="__codelineno-0-482" name="__codelineno-0-482" href="#__codelineno-0-482"></a>
+</span><span id="__span-0-483"><a id="__codelineno-0-483" name="__codelineno-0-483" href="#__codelineno-0-483"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-484"><a id="__codelineno-0-484" name="__codelineno-0-484" href="#__codelineno-0-484"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-485"><a id="__codelineno-0-485" name="__codelineno-0-485" href="#__codelineno-0-485"></a>  L3 = {{L3}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-486"><a id="__codelineno-0-486" name="__codelineno-0-486" href="#__codelineno-0-486"></a>
+</span><span id="__span-0-487"><a id="__codelineno-0-487" name="__codelineno-0-487" href="#__codelineno-0-487"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-488"><a id="__codelineno-0-488" name="__codelineno-0-488" href="#__codelineno-0-488"></a>  ZBOTDR3 = {{ZBOTDR3}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-489"><a id="__codelineno-0-489" name="__codelineno-0-489" href="#__codelineno-0-489"></a>  SWDTYP3 = {{SWDTYP3}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-490"><a id="__codelineno-0-490" name="__codelineno-0-490" href="#__codelineno-0-490"></a>
+</span><span id="__span-0-491"><a id="__codelineno-0-491" name="__codelineno-0-491" href="#__codelineno-0-491"></a>* Specify date DATOWL3 [date] and channel water level LEVEL3 [-10000..200, cm, R]
+</span><span id="__span-0-492"><a id="__codelineno-0-492" name="__codelineno-0-492" href="#__codelineno-0-492"></a>* LEVEL3 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-493"><a id="__codelineno-0-493" name="__codelineno-0-493" href="#__codelineno-0-493"></a>
+</span><span id="__span-0-494"><a id="__codelineno-0-494" name="__codelineno-0-494" href="#__codelineno-0-494"></a>{{#TABLE_DATOWLTB3}}
+</span><span id="__span-0-495"><a id="__codelineno-0-495" name="__codelineno-0-495" href="#__codelineno-0-495"></a>  {{DATOWL3}} {{LEVEL3}}
+</span><span id="__span-0-496"><a id="__codelineno-0-496" name="__codelineno-0-496" href="#__codelineno-0-496"></a>{{/TABLE_DATOWLTB3}}
+</span><span id="__span-0-497"><a id="__codelineno-0-497" name="__codelineno-0-497" href="#__codelineno-0-497"></a>* End of table
+</span><span id="__span-0-498"><a id="__codelineno-0-498" name="__codelineno-0-498" href="#__codelineno-0-498"></a>
+</span><span id="__span-0-499"><a id="__codelineno-0-499" name="__codelineno-0-499" href="#__codelineno-0-499"></a>**********************************************************************************
+</span><span id="__span-0-500"><a id="__codelineno-0-500" name="__codelineno-0-500" href="#__codelineno-0-500"></a>
+</span><span id="__span-0-501"><a id="__codelineno-0-501" name="__codelineno-0-501" href="#__codelineno-0-501"></a>
+</span><span id="__span-0-502"><a id="__codelineno-0-502" name="__codelineno-0-502" href="#__codelineno-0-502"></a>**********************************************************************************
+</span><span id="__span-0-503"><a id="__codelineno-0-503" name="__codelineno-0-503" href="#__codelineno-0-503"></a>* Part 3d: Drainage to level 4
+</span><span id="__span-0-504"><a id="__codelineno-0-504" name="__codelineno-0-504" href="#__codelineno-0-504"></a>
+</span><span id="__span-0-505"><a id="__codelineno-0-505" name="__codelineno-0-505" href="#__codelineno-0-505"></a>  DRARES4 = {{DRARES4}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-506"><a id="__codelineno-0-506" name="__codelineno-0-506" href="#__codelineno-0-506"></a>  INFRES4 = {{INFRES4}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-507"><a id="__codelineno-0-507" name="__codelineno-0-507" href="#__codelineno-0-507"></a>
+</span><span id="__span-0-508"><a id="__codelineno-0-508" name="__codelineno-0-508" href="#__codelineno-0-508"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-509"><a id="__codelineno-0-509" name="__codelineno-0-509" href="#__codelineno-0-509"></a>  SWALLO4 = {{SWALLO4}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-510"><a id="__codelineno-0-510" name="__codelineno-0-510" href="#__codelineno-0-510"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-511"><a id="__codelineno-0-511" name="__codelineno-0-511" href="#__codelineno-0-511"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-512"><a id="__codelineno-0-512" name="__codelineno-0-512" href="#__codelineno-0-512"></a>
+</span><span id="__span-0-513"><a id="__codelineno-0-513" name="__codelineno-0-513" href="#__codelineno-0-513"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-514"><a id="__codelineno-0-514" name="__codelineno-0-514" href="#__codelineno-0-514"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-515"><a id="__codelineno-0-515" name="__codelineno-0-515" href="#__codelineno-0-515"></a>  L4 = {{L4}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-516"><a id="__codelineno-0-516" name="__codelineno-0-516" href="#__codelineno-0-516"></a>
+</span><span id="__span-0-517"><a id="__codelineno-0-517" name="__codelineno-0-517" href="#__codelineno-0-517"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-518"><a id="__codelineno-0-518" name="__codelineno-0-518" href="#__codelineno-0-518"></a>  ZBOTDR4 = {{ZBOTDR4}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-519"><a id="__codelineno-0-519" name="__codelineno-0-519" href="#__codelineno-0-519"></a>  SWDTYP4 = {{SWDTYP4}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-520"><a id="__codelineno-0-520" name="__codelineno-0-520" href="#__codelineno-0-520"></a>
+</span><span id="__span-0-521"><a id="__codelineno-0-521" name="__codelineno-0-521" href="#__codelineno-0-521"></a>* Specify date DATOWL4 [date] and channel water level LEVEL4 [-10000..200, cm, R]
+</span><span id="__span-0-522"><a id="__codelineno-0-522" name="__codelineno-0-522" href="#__codelineno-0-522"></a>* LEVEL4 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-523"><a id="__codelineno-0-523" name="__codelineno-0-523" href="#__codelineno-0-523"></a>
+</span><span id="__span-0-524"><a id="__codelineno-0-524" name="__codelineno-0-524" href="#__codelineno-0-524"></a>{{#TABLE_DATOWLTB4}}
+</span><span id="__span-0-525"><a id="__codelineno-0-525" name="__codelineno-0-525" href="#__codelineno-0-525"></a>  {{DATOWL4}} {{LEVEL4}}
+</span><span id="__span-0-526"><a id="__codelineno-0-526" name="__codelineno-0-526" href="#__codelineno-0-526"></a>{{/TABLE_DATOWLTB4}}
+</span><span id="__span-0-527"><a id="__codelineno-0-527" name="__codelineno-0-527" href="#__codelineno-0-527"></a>* End of table
+</span><span id="__span-0-528"><a id="__codelineno-0-528" name="__codelineno-0-528" href="#__codelineno-0-528"></a>
+</span><span id="__span-0-529"><a id="__codelineno-0-529" name="__codelineno-0-529" href="#__codelineno-0-529"></a>**********************************************************************************
+</span><span id="__span-0-530"><a id="__codelineno-0-530" name="__codelineno-0-530" href="#__codelineno-0-530"></a>
+</span><span id="__span-0-531"><a id="__codelineno-0-531" name="__codelineno-0-531" href="#__codelineno-0-531"></a>
+</span><span id="__span-0-532"><a id="__codelineno-0-532" name="__codelineno-0-532" href="#__codelineno-0-532"></a>**********************************************************************************
+</span><span id="__span-0-533"><a id="__codelineno-0-533" name="__codelineno-0-533" href="#__codelineno-0-533"></a>* Part 3e: Drainage to level 5
+</span><span id="__span-0-534"><a id="__codelineno-0-534" name="__codelineno-0-534" href="#__codelineno-0-534"></a>
+</span><span id="__span-0-535"><a id="__codelineno-0-535" name="__codelineno-0-535" href="#__codelineno-0-535"></a>  DRARES5 = {{DRARES5}}      ! Drainage resistance, [10..1d5 d, R]
+</span><span id="__span-0-536"><a id="__codelineno-0-536" name="__codelineno-0-536" href="#__codelineno-0-536"></a>  INFRES5 = {{INFRES5}}      ! Infiltration resistance, [0..1d5 d, R]
+</span><span id="__span-0-537"><a id="__codelineno-0-537" name="__codelineno-0-537" href="#__codelineno-0-537"></a>
+</span><span id="__span-0-538"><a id="__codelineno-0-538" name="__codelineno-0-538" href="#__codelineno-0-538"></a>* Switch, for allowance drainage/infiltration:
+</span><span id="__span-0-539"><a id="__codelineno-0-539" name="__codelineno-0-539" href="#__codelineno-0-539"></a>  SWALLO5 = {{SWALLO5}}      ! 1 = Drainage and infiltration are both allowed
+</span><span id="__span-0-540"><a id="__codelineno-0-540" name="__codelineno-0-540" href="#__codelineno-0-540"></a>                             ! 2 = Drainage is not allowed
+</span><span id="__span-0-541"><a id="__codelineno-0-541" name="__codelineno-0-541" href="#__codelineno-0-541"></a>                             ! 3 = Infiltration is not allowed
+</span><span id="__span-0-542"><a id="__codelineno-0-542" name="__codelineno-0-542" href="#__codelineno-0-542"></a>
+</span><span id="__span-0-543"><a id="__codelineno-0-543" name="__codelineno-0-543" href="#__codelineno-0-543"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-544"><a id="__codelineno-0-544" name="__codelineno-0-544" href="#__codelineno-0-544"></a>* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+</span><span id="__span-0-545"><a id="__codelineno-0-545" name="__codelineno-0-545" href="#__codelineno-0-545"></a>  L5 = {{L5}}                ! Drain spacing, [1..100000 m, R]
+</span><span id="__span-0-546"><a id="__codelineno-0-546" name="__codelineno-0-546" href="#__codelineno-0-546"></a>
+</span><span id="__span-0-547"><a id="__codelineno-0-547" name="__codelineno-0-547" href="#__codelineno-0-547"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-0-548"><a id="__codelineno-0-548" name="__codelineno-0-548" href="#__codelineno-0-548"></a>  ZBOTDR5 = {{ZBOTDR5}}      ! Level of drainage medium bottom, [-10000..0 cm, R]
+</span><span id="__span-0-549"><a id="__codelineno-0-549" name="__codelineno-0-549" href="#__codelineno-0-549"></a>  SWDTYP5 = {{SWDTYP5}}      ! Type of drainage medium: 1 = drain tube, 2 = open channel
+</span><span id="__span-0-550"><a id="__codelineno-0-550" name="__codelineno-0-550" href="#__codelineno-0-550"></a>
+</span><span id="__span-0-551"><a id="__codelineno-0-551" name="__codelineno-0-551" href="#__codelineno-0-551"></a>* Specify date DATOWL5 [date] and channel water level LEVEL5 [-10000..200, cm, R]
+</span><span id="__span-0-552"><a id="__codelineno-0-552" name="__codelineno-0-552" href="#__codelineno-0-552"></a>* LEVEL5 is negative if below soil surface; maximum MAOWL records:
+</span><span id="__span-0-553"><a id="__codelineno-0-553" name="__codelineno-0-553" href="#__codelineno-0-553"></a>
+</span><span id="__span-0-554"><a id="__codelineno-0-554" name="__codelineno-0-554" href="#__codelineno-0-554"></a>{{#TABLE_DATOWLTB5}}
+</span><span id="__span-0-555"><a id="__codelineno-0-555" name="__codelineno-0-555" href="#__codelineno-0-555"></a>  {{DATOWL5}} {{LEVEL5}}
+</span><span id="__span-0-556"><a id="__codelineno-0-556" name="__codelineno-0-556" href="#__codelineno-0-556"></a>{{/TABLE_DATOWLTB5}}
+</span><span id="__span-0-557"><a id="__codelineno-0-557" name="__codelineno-0-557" href="#__codelineno-0-557"></a>* End of table
+</span><span id="__span-0-558"><a id="__codelineno-0-558" name="__codelineno-0-558" href="#__codelineno-0-558"></a>{{/SWITCH_NRLEVS_OPTION_5}}
+</span><span id="__span-0-559"><a id="__codelineno-0-559" name="__codelineno-0-559" href="#__codelineno-0-559"></a>{{/SWITCH_DRAMET_OPTION_3}}
+</span><span id="__span-0-560"><a id="__codelineno-0-560" name="__codelineno-0-560" href="#__codelineno-0-560"></a>
+</span><span id="__span-0-561"><a id="__codelineno-0-561" name="__codelineno-0-561" href="#__codelineno-0-561"></a>**********************************************************************************
+</span><span id="__span-0-562"><a id="__codelineno-0-562" name="__codelineno-0-562" href="#__codelineno-0-562"></a>
+</span><span id="__span-0-563"><a id="__codelineno-0-563" name="__codelineno-0-563" href="#__codelineno-0-563"></a>* End of .dra file!
+</span></code></pre></div>
+</details>
+<h2 id="extended_drainage">Extended drainage<a class="headerlink" href="#extended_drainage" title="Permanent link">&para;</a></h2>
+<details class="filetemplate">
+<summary>DRFIL_EXTENDED.template</summary>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>**********************************************************************************
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>* Filename: swap.dra
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>* Contents: SWAP 4 - Input data for basic and extended drainage
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>**********************************************************************************
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>* Comment area:
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>* Testbank of SWAP: build with template of dra-file
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>*
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>**********************************************************************************
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>*** EXTENDED DRAINAGE SECTION ***
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>**********************************************************************************
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>* Part 0: General
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>  SWDIVD = {{SWDIVD}}        ! Calculate vertical distribution of drainage flux in groundwater [Y=1, N=0]
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>{{#SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>* If SWDIVD = 1, specify anisotropy factor COFANI (horizontal/vertical saturated hydraulic
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>* conductivity) for each soil layer (maximum MAHO), [0.0001..1000 -, R]:
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>  COFANI = {{COFANI}}
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>{{/SWITCH_SWDIVD_OPTION_1}}
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>* Switch to adjust upper boundary of model discharge layer
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>  SWDISLAY = 0               ! switch to adjust discharge layer  [0,1,2, -, I]
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>**********************************************************************************
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>**********************************************************************************
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>* Part 0: Reference level
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>  ALTCU = 0.0                ! Altitude of the control unit relative to reference level [-300000..300000 cm, R]
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>**********************************************************************************
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>* Part 1: drainage characteristics
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>  NRSRF  = {{NRSRF}}         ! number of subsurface drainage levels [1..5, I]
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>* Table with physical characteristics of each subsurface drainage level:
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>* Variables RENTRY, REXIT, WIDTHR and TALUDR must have realistic values when the type of drainage medium is open
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>* LEVEL   = Drainage level number [1..NRSRF, I]
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>* SWDTYP  = Type of drainage medium [open=0, closed=1]
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>* L       = Spacing between channels/drains [1..100000 m, R]
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>* ZBOTDRE = Altitude of bottom of channel or drain [ALTCU-1000..ALTCU-0.01 cm,R]
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>* GWLINF  = Groundwater level for maximum infiltration [-1000..0 cm rel. to soil surf., R]
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>* RDRAIN  = Drainage resistance [1..100000 d, R]
+</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>* RINFI   = Infiltration resistance  [1..100000 d, R]
+</span><span id="__span-1-48"><a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a>* RENTRY  = Entry resistance  [0..100 d, R]
+</span><span id="__span-1-49"><a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a>* REXIT   = Exit resistance   [0..100 d, R]
+</span><span id="__span-1-50"><a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a>* WIDTHR  = Bottom width of channel [0..10000 cm, R]
+</span><span id="__span-1-51"><a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>* TALUDR  = Side-slope (dh/dw) of channel [0.01..5, R]
+</span><span id="__span-1-52"><a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a>
+</span><span id="__span-1-53"><a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a>{{#TABLE_DRNTB}}
+</span><span id="__span-1-54"><a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a>  {{LEV}} {{SWDTYP}} {{L}} {{ZBOTDRE}} {{GWLINF}} {{RDRAIN}} {{RINFI}} {{RENTRY}} {{REXIT}} {{WIDTHR}} {{TALUDR}}
+</span><span id="__span-1-55"><a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a>{{/TABLE_DRNTB}}
+</span><span id="__span-1-56"><a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a>* End of table
+</span><span id="__span-1-57"><a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a>
+</span><span id="__span-1-58"><a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a>* Switch to introduce rapid subsurface drainage [0..2, I]
+</span><span id="__span-1-59"><a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a>  SWNRSRF = {{SWNRSRF}}      ! 0 = No rapid drainage
+</span><span id="__span-1-60"><a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a>                             ! 1 = Rapid drainage in the highest drainage system (implies adjustment of RDRAIN of highest drainage system)
+</span><span id="__span-1-61"><a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a>                             ! 2 = Rapid drainage as interflow according to a power relation (implies adjustment of RDRAIN of highest drainage system)
+</span><span id="__span-1-62"><a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a>
+</span><span id="__span-1-63"><a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a>{{#SWITCH_SWNRSRF_OPTION_1}}
+</span><span id="__span-1-64"><a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a>* In case of SWRNSRF=1, specify rapid drainage
+</span><span id="__span-1-65"><a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a>  RSURFDEEP    = {{RSURFDEEP}} ! Maximum resistance of rapid subsurface drainage [0.001..1000.0 d, R]
+</span><span id="__span-1-66"><a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a>  RSURFSHALLOW = {{RSURFSHALLOW}} ! Minimum resistance of rapid subsurface drainage [0.001..1000.0 d, R]
+</span><span id="__span-1-67"><a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a>{{/SWITCH_SWNRSRF_OPTION_1}}
+</span><span id="__span-1-68"><a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a>{{#SWITCH_SWNRSRF_OPTION_2}}
+</span><span id="__span-1-69"><a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a>* In case of SWRNSRF=2, specify coefficients of power function
+</span><span id="__span-1-70"><a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a> COFINTFL = {{COFINTFL}}     ! Coefficient of interflow relation [0.01..10.0 d-1, R]
+</span><span id="__span-1-71"><a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a> EXPINTFL = {{EXPINTFL}}     ! Exponent of interflow relation [0.1...1.0 -, R]
+</span><span id="__span-1-72"><a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a>{{/SWITCH_SWNRSRF_OPTION_2}}
+</span><span id="__span-1-73"><a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a>
+</span><span id="__span-1-74"><a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a>* Switch to adjust the bottom of the model discharge layer in case of lateral (SWDIVD=1) interflow or rapid drainage (SWNRSRF=1 or SWNRSRF=2).
+</span><span id="__span-1-75"><a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a>* In case of SWTOPNRSRF=1) then the bottom of the highest order drainage system (ZBORDR(NUMDRAIN)) represents the max depth of the interflow.
+</span><span id="__span-1-76"><a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a> SWTOPNRSRF = {{SWTOPNRSRF}} ! Switch to enable adjustment of model discharge layer [0,1, I]
+</span><span id="__span-1-77"><a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a>
+</span><span id="__span-1-78"><a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a>**********************************************************************************
+</span><span id="__span-1-79"><a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a>
+</span><span id="__span-1-80"><a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a>
+</span><span id="__span-1-81"><a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a>**********************************************************************************
+</span><span id="__span-1-82"><a id="__codelineno-1-82" name="__codelineno-1-82" href="#__codelineno-1-82"></a>* Part 2: Specification and control of surface water system
+</span><span id="__span-1-83"><a id="__codelineno-1-83" name="__codelineno-1-83" href="#__codelineno-1-83"></a>
+</span><span id="__span-1-84"><a id="__codelineno-1-84" name="__codelineno-1-84" href="#__codelineno-1-84"></a>* Switch for interaction with surface water system [1..3, I]
+</span><span id="__span-1-85"><a id="__codelineno-1-85" name="__codelineno-1-85" href="#__codelineno-1-85"></a>  SWSRF = {{SWSRF}}          ! 1 = No interaction with surface water system
+</span><span id="__span-1-86"><a id="__codelineno-1-86" name="__codelineno-1-86" href="#__codelineno-1-86"></a>                             ! 2 = Surface water system is simulated with no separate primary system
+</span><span id="__span-1-87"><a id="__codelineno-1-87" name="__codelineno-1-87" href="#__codelineno-1-87"></a>                             ! 3 = Surface water system is simulated with separate primary system
+</span><span id="__span-1-88"><a id="__codelineno-1-88" name="__codelineno-1-88" href="#__codelineno-1-88"></a>
+</span><span id="__span-1-89"><a id="__codelineno-1-89" name="__codelineno-1-89" href="#__codelineno-1-89"></a>{{#SWITCH_SWSRF_OPTION_2}}
+</span><span id="__span-1-90"><a id="__codelineno-1-90" name="__codelineno-1-90" href="#__codelineno-1-90"></a>* If SWSRF=2, specify option for surface water level of secondary system [1..2, I]
+</span><span id="__span-1-91"><a id="__codelineno-1-91" name="__codelineno-1-91" href="#__codelineno-1-91"></a>  SWSEC = {{SWSEC}}          ! 1 = Surface water level is input
+</span><span id="__span-1-92"><a id="__codelineno-1-92" name="__codelineno-1-92" href="#__codelineno-1-92"></a>                             ! 2 = Surface water level is simulated
+</span><span id="__span-1-93"><a id="__codelineno-1-93" name="__codelineno-1-93" href="#__codelineno-1-93"></a>
+</span><span id="__span-1-94"><a id="__codelineno-1-94" name="__codelineno-1-94" href="#__codelineno-1-94"></a>
+</span><span id="__span-1-95"><a id="__codelineno-1-95" name="__codelineno-1-95" href="#__codelineno-1-95"></a>{{#SWITCH_SWSEC_OPTION_1}}
+</span><span id="__span-1-96"><a id="__codelineno-1-96" name="__codelineno-1-96" href="#__codelineno-1-96"></a>* Water level in secondary water course [ALTCU-1000..ALTCU-0.01 cm, R] as function of DATE2 [dd-mmm-yyyy]
+</span><span id="__span-1-97"><a id="__codelineno-1-97" name="__codelineno-1-97" href="#__codelineno-1-97"></a>{{#TABLE_SECWATLVL}}
+</span><span id="__span-1-98"><a id="__codelineno-1-98" name="__codelineno-1-98" href="#__codelineno-1-98"></a>  {{DATE2}} {{WLS}}
+</span><span id="__span-1-99"><a id="__codelineno-1-99" name="__codelineno-1-99" href="#__codelineno-1-99"></a>{{/TABLE_SECWATLVL}}
+</span><span id="__span-1-100"><a id="__codelineno-1-100" name="__codelineno-1-100" href="#__codelineno-1-100"></a>* End of table
+</span><span id="__span-1-101"><a id="__codelineno-1-101" name="__codelineno-1-101" href="#__codelineno-1-101"></a>{{/SWITCH_SWSEC_OPTION_1}}
+</span><span id="__span-1-102"><a id="__codelineno-1-102" name="__codelineno-1-102" href="#__codelineno-1-102"></a>{{#SWITCH_SWSEC_OPTION_2}}
+</span><span id="__span-1-103"><a id="__codelineno-1-103" name="__codelineno-1-103" href="#__codelineno-1-103"></a>* Miscellaneous parameters
+</span><span id="__span-1-104"><a id="__codelineno-1-104" name="__codelineno-1-104" href="#__codelineno-1-104"></a>  WLACT  = {{WLACT}}         ! Initial surface water level [ALTCU-1000..ALTCU cm,R]
+</span><span id="__span-1-105"><a id="__codelineno-1-105" name="__codelineno-1-105" href="#__codelineno-1-105"></a>  OSSWLM = {{OSSWLM}}        ! Criterium for warning about oscillation [0..10 cm, R]
+</span><span id="__span-1-106"><a id="__codelineno-1-106" name="__codelineno-1-106" href="#__codelineno-1-106"></a>
+</span><span id="__span-1-107"><a id="__codelineno-1-107" name="__codelineno-1-107" href="#__codelineno-1-107"></a>* Management of surface water levels
+</span><span id="__span-1-108"><a id="__codelineno-1-108" name="__codelineno-1-108" href="#__codelineno-1-108"></a>  NMPER  =  {{NMPER}}        ! Number of management periods [1..3660, I]
+</span><span id="__span-1-109"><a id="__codelineno-1-109" name="__codelineno-1-109" href="#__codelineno-1-109"></a>
+</span><span id="__span-1-110"><a id="__codelineno-1-110" name="__codelineno-1-110" href="#__codelineno-1-110"></a>* For each management period specify:
+</span><span id="__span-1-111"><a id="__codelineno-1-111" name="__codelineno-1-111" href="#__codelineno-1-111"></a>* IMPER  = Index of management period [1..NMPER, I]
+</span><span id="__span-1-112"><a id="__codelineno-1-112" name="__codelineno-1-112" href="#__codelineno-1-112"></a>* IMPEND = Date that period ends [dd-mm-yyyy]
+</span><span id="__span-1-113"><a id="__codelineno-1-113" name="__codelineno-1-113" href="#__codelineno-1-113"></a>* SWMAN  = Type of water management 1 = fixed weir crest (see part 4c and 4d) 2 = automatic weir (see part 4e) [1..2, I]
+</span><span id="__span-1-114"><a id="__codelineno-1-114" name="__codelineno-1-114" href="#__codelineno-1-114"></a>* WSCAP  = Surface water supply capacity [0..100 cm/d, R]
+</span><span id="__span-1-115"><a id="__codelineno-1-115" name="__codelineno-1-115" href="#__codelineno-1-115"></a>* WLDIP  = Allowed dip of surface water level before starting supply [0..100 cm, R]
+</span><span id="__span-1-116"><a id="__codelineno-1-116" name="__codelineno-1-116" href="#__codelineno-1-116"></a>* INTWL  = Length of water-level adjustment period (SWMAN=2 only) [1..31 d, I]
+</span><span id="__span-1-117"><a id="__codelineno-1-117" name="__codelineno-1-117" href="#__codelineno-1-117"></a>
+</span><span id="__span-1-118"><a id="__codelineno-1-118" name="__codelineno-1-118" href="#__codelineno-1-118"></a>{{#TABLE_MANSECWATLVL}}
+</span><span id="__span-1-119"><a id="__codelineno-1-119" name="__codelineno-1-119" href="#__codelineno-1-119"></a>  {{IMPER_4B}} {{IMPEND}} {{SWMAN}} {{WSCAP}} {{WLDIP}} {{INTWL}}
+</span><span id="__span-1-120"><a id="__codelineno-1-120" name="__codelineno-1-120" href="#__codelineno-1-120"></a>{{/TABLE_MANSECWATLVL}}
+</span><span id="__span-1-121"><a id="__codelineno-1-121" name="__codelineno-1-121" href="#__codelineno-1-121"></a>* End of table
+</span><span id="__span-1-122"><a id="__codelineno-1-122" name="__codelineno-1-122" href="#__codelineno-1-122"></a>
+</span><span id="__span-1-123"><a id="__codelineno-1-123" name="__codelineno-1-123" href="#__codelineno-1-123"></a>* Switch for type of discharge relationship [1..2, I]
+</span><span id="__span-1-124"><a id="__codelineno-1-124" name="__codelineno-1-124" href="#__codelineno-1-124"></a>  SWQHR = {{SWQHR}}          ! 1 = Exponential relationship
+</span><span id="__span-1-125"><a id="__codelineno-1-125" name="__codelineno-1-125" href="#__codelineno-1-125"></a>                             ! 2 = Table
+</span><span id="__span-1-126"><a id="__codelineno-1-126" name="__codelineno-1-126" href="#__codelineno-1-126"></a>
+</span><span id="__span-1-127"><a id="__codelineno-1-127" name="__codelineno-1-127" href="#__codelineno-1-127"></a>{{#SWITCH_SWQHR_OPTION_1}}
+</span><span id="__span-1-128"><a id="__codelineno-1-128" name="__codelineno-1-128" href="#__codelineno-1-128"></a>* If SWQHR=1, specify:
+</span><span id="__span-1-129"><a id="__codelineno-1-129" name="__codelineno-1-129" href="#__codelineno-1-129"></a>  SOFCU = {{SOFCU}}          ! Size of the control unit [0.1..100000.0 ha, R]
+</span><span id="__span-1-130"><a id="__codelineno-1-130" name="__codelineno-1-130" href="#__codelineno-1-130"></a>
+</span><span id="__span-1-131"><a id="__codelineno-1-131" name="__codelineno-1-131" href="#__codelineno-1-131"></a>* If SWQHR=1, specify exponential discharge relation for all periods:
+</span><span id="__span-1-132"><a id="__codelineno-1-132" name="__codelineno-1-132" href="#__codelineno-1-132"></a>* IMPER  = Index of management period [1..NMPER, I]
+</span><span id="__span-1-133"><a id="__codelineno-1-133" name="__codelineno-1-133" href="#__codelineno-1-133"></a>* HBWEIR = Weir crest; levels above soil surface are allowed, but simulated surface water levels should remain below 100 cm above soil surface;
+</span><span id="__span-1-134"><a id="__codelineno-1-134" name="__codelineno-1-134" href="#__codelineno-1-134"></a>*          the crest must be higher than the deepest channel bottom of the secondary system (ZBOTDR(1 or 2), [ALTCU-ZBOTDR..ALTCU+100 cm,R].
+</span><span id="__span-1-135"><a id="__codelineno-1-135" name="__codelineno-1-135" href="#__codelineno-1-135"></a>*          If SWMAN=2, HBWEIR represents the lowest possible weir position.
+</span><span id="__span-1-136"><a id="__codelineno-1-136" name="__codelineno-1-136" href="#__codelineno-1-136"></a>* ALPHAW = Alpha-coefficient of discharge formula [0.1..50.0, R]
+</span><span id="__span-1-137"><a id="__codelineno-1-137" name="__codelineno-1-137" href="#__codelineno-1-137"></a>* BETAW  = Beta-coefficient of discharge formula [0.5..3.0, R]
+</span><span id="__span-1-138"><a id="__codelineno-1-138" name="__codelineno-1-138" href="#__codelineno-1-138"></a>
+</span><span id="__span-1-139"><a id="__codelineno-1-139" name="__codelineno-1-139" href="#__codelineno-1-139"></a>{{#TABLE_QWEIR}}
+</span><span id="__span-1-140"><a id="__codelineno-1-140" name="__codelineno-1-140" href="#__codelineno-1-140"></a>  {{IMPER_4C}} {{HBWEIR}} {{ALPHAW}} {{BETAW}}
+</span><span id="__span-1-141"><a id="__codelineno-1-141" name="__codelineno-1-141" href="#__codelineno-1-141"></a>{{/TABLE_QWEIR}}
+</span><span id="__span-1-142"><a id="__codelineno-1-142" name="__codelineno-1-142" href="#__codelineno-1-142"></a>* End of table
+</span><span id="__span-1-143"><a id="__codelineno-1-143" name="__codelineno-1-143" href="#__codelineno-1-143"></a>{{/SWITCH_SWQHR_OPTION_1}}
+</span><span id="__span-1-144"><a id="__codelineno-1-144" name="__codelineno-1-144" href="#__codelineno-1-144"></a>{{#SWITCH_SWQHR_OPTION_2}}
+</span><span id="__span-1-145"><a id="__codelineno-1-145" name="__codelineno-1-145" href="#__codelineno-1-145"></a>* If SWQHR=2, specify table discharge relation:
+</span><span id="__span-1-146"><a id="__codelineno-1-146" name="__codelineno-1-146" href="#__codelineno-1-146"></a>* IMPER  = Index of management period [1..NMPER, I]
+</span><span id="__span-1-147"><a id="__codelineno-1-147" name="__codelineno-1-147" href="#__codelineno-1-147"></a>* IMPTAB = Index per management period [1..10, I]
+</span><span id="__span-1-148"><a id="__codelineno-1-148" name="__codelineno-1-148" href="#__codelineno-1-148"></a>* HTAB   = Surface water level [ALTCU-1000..ALTCU+100 cm, R] (first value for each period = ALTCU + 100 cm)
+</span><span id="__span-1-149"><a id="__codelineno-1-149" name="__codelineno-1-149" href="#__codelineno-1-149"></a>* QTAB   = Discharge [0..500 cm/d, R] (should go down to a value of zero at a level that is higher than the deepest channel bottom of secondary surface water system)
+</span><span id="__span-1-150"><a id="__codelineno-1-150" name="__codelineno-1-150" href="#__codelineno-1-150"></a>
+</span><span id="__span-1-151"><a id="__codelineno-1-151" name="__codelineno-1-151" href="#__codelineno-1-151"></a>{{#TABLE_QWEIRTB}}
+</span><span id="__span-1-152"><a id="__codelineno-1-152" name="__codelineno-1-152" href="#__codelineno-1-152"></a>  {{IMPER_4D}} {{IMPTAB}} {{HTAB}} {{QTAB}}
+</span><span id="__span-1-153"><a id="__codelineno-1-153" name="__codelineno-1-153" href="#__codelineno-1-153"></a>{{/TABLE_QWEIRTB}}
+</span><span id="__span-1-154"><a id="__codelineno-1-154" name="__codelineno-1-154" href="#__codelineno-1-154"></a>* End of table
+</span><span id="__span-1-155"><a id="__codelineno-1-155" name="__codelineno-1-155" href="#__codelineno-1-155"></a>{{/SWITCH_SWQHR_OPTION_2}}
+</span><span id="__span-1-156"><a id="__codelineno-1-156" name="__codelineno-1-156" href="#__codelineno-1-156"></a>{{/SWITCH_SWSEC_OPTION_2}}
+</span><span id="__span-1-157"><a id="__codelineno-1-157" name="__codelineno-1-157" href="#__codelineno-1-157"></a>{{/SWITCH_SWSRF_OPTION_2}}
+</span><span id="__span-1-158"><a id="__codelineno-1-158" name="__codelineno-1-158" href="#__codelineno-1-158"></a>{{#SWITCH_SWSRF_OPTION_3}}
+</span><span id="__span-1-159"><a id="__codelineno-1-159" name="__codelineno-1-159" href="#__codelineno-1-159"></a>* If SWSRF=3, specify water levels in the primary system [max. = 52]
+</span><span id="__span-1-160"><a id="__codelineno-1-160" name="__codelineno-1-160" href="#__codelineno-1-160"></a>* No levels above soil surface for primary system
+</span><span id="__span-1-161"><a id="__codelineno-1-161" name="__codelineno-1-161" href="#__codelineno-1-161"></a>
+</span><span id="__span-1-162"><a id="__codelineno-1-162" name="__codelineno-1-162" href="#__codelineno-1-162"></a>* Water level in primary water course [ALTCU-1000..ALTCU-0.01 cm, R] as function of DATE1 [date]
+</span><span id="__span-1-163"><a id="__codelineno-1-163" name="__codelineno-1-163" href="#__codelineno-1-163"></a>{{#TABLE_PRIWATLVL}}
+</span><span id="__span-1-164"><a id="__codelineno-1-164" name="__codelineno-1-164" href="#__codelineno-1-164"></a>  {{DATE1}} {{WLP}}
+</span><span id="__span-1-165"><a id="__codelineno-1-165" name="__codelineno-1-165" href="#__codelineno-1-165"></a>{{/TABLE_PRIWATLVL}}
+</span><span id="__span-1-166"><a id="__codelineno-1-166" name="__codelineno-1-166" href="#__codelineno-1-166"></a>* End of table
+</span><span id="__span-1-167"><a id="__codelineno-1-167" name="__codelineno-1-167" href="#__codelineno-1-167"></a>
+</span><span id="__span-1-168"><a id="__codelineno-1-168" name="__codelineno-1-168" href="#__codelineno-1-168"></a>* If SWSRF=3, specify option for surface water level of secondary system [1..2, I]
+</span><span id="__span-1-169"><a id="__codelineno-1-169" name="__codelineno-1-169" href="#__codelineno-1-169"></a>  SWSEC = {{SWSEC}}          ! 1 = Surface water level is input
+</span><span id="__span-1-170"><a id="__codelineno-1-170" name="__codelineno-1-170" href="#__codelineno-1-170"></a>                             ! 2 = Surface water level is simulated
+</span><span id="__span-1-171"><a id="__codelineno-1-171" name="__codelineno-1-171" href="#__codelineno-1-171"></a>
+</span><span id="__span-1-172"><a id="__codelineno-1-172" name="__codelineno-1-172" href="#__codelineno-1-172"></a>{{#SWITCH_SWSEC_OPTION_1}}
+</span><span id="__span-1-173"><a id="__codelineno-1-173" name="__codelineno-1-173" href="#__codelineno-1-173"></a>* Water level in secondary water course [ALTCU-1000..ALTCU-0.01 cm, R] as function of DATE2 [dd-mmm-yyyy]
+</span><span id="__span-1-174"><a id="__codelineno-1-174" name="__codelineno-1-174" href="#__codelineno-1-174"></a>{{#TABLE_SECWATLVL}}
+</span><span id="__span-1-175"><a id="__codelineno-1-175" name="__codelineno-1-175" href="#__codelineno-1-175"></a>  {{DATE2}} {{WLS}}
+</span><span id="__span-1-176"><a id="__codelineno-1-176" name="__codelineno-1-176" href="#__codelineno-1-176"></a>{{/TABLE_SECWATLVL}}
+</span><span id="__span-1-177"><a id="__codelineno-1-177" name="__codelineno-1-177" href="#__codelineno-1-177"></a>* End of table
+</span><span id="__span-1-178"><a id="__codelineno-1-178" name="__codelineno-1-178" href="#__codelineno-1-178"></a>{{/SWITCH_SWSEC_OPTION_1}}
+</span><span id="__span-1-179"><a id="__codelineno-1-179" name="__codelineno-1-179" href="#__codelineno-1-179"></a>{{#SWITCH_SWSEC_OPTION_2}}
+</span><span id="__span-1-180"><a id="__codelineno-1-180" name="__codelineno-1-180" href="#__codelineno-1-180"></a>* Miscellaneous parameters
+</span><span id="__span-1-181"><a id="__codelineno-1-181" name="__codelineno-1-181" href="#__codelineno-1-181"></a>  WLACT  = {{WLACT}}         ! Initial surface water level [ALTCU-1000..ALTCU cm,R]
+</span><span id="__span-1-182"><a id="__codelineno-1-182" name="__codelineno-1-182" href="#__codelineno-1-182"></a>  OSSWLM = {{OSSWLM}}        ! Criterium for warning about oscillation [0..10 cm, R]
+</span><span id="__span-1-183"><a id="__codelineno-1-183" name="__codelineno-1-183" href="#__codelineno-1-183"></a>
+</span><span id="__span-1-184"><a id="__codelineno-1-184" name="__codelineno-1-184" href="#__codelineno-1-184"></a>* Management of surface water levels
+</span><span id="__span-1-185"><a id="__codelineno-1-185" name="__codelineno-1-185" href="#__codelineno-1-185"></a>  NMPER  =  {{NMPER}}        ! Number of management periods [1..3660, I]
+</span><span id="__span-1-186"><a id="__codelineno-1-186" name="__codelineno-1-186" href="#__codelineno-1-186"></a>
+</span><span id="__span-1-187"><a id="__codelineno-1-187" name="__codelineno-1-187" href="#__codelineno-1-187"></a>* For each management period specify:
+</span><span id="__span-1-188"><a id="__codelineno-1-188" name="__codelineno-1-188" href="#__codelineno-1-188"></a>* IMPER  = Index of management period [1..NMPER, I]
+</span><span id="__span-1-189"><a id="__codelineno-1-189" name="__codelineno-1-189" href="#__codelineno-1-189"></a>* IMPEND = Date that period ends [dd-mm-yyyy]
+</span><span id="__span-1-190"><a id="__codelineno-1-190" name="__codelineno-1-190" href="#__codelineno-1-190"></a>* SWMAN  = Type of water management 1 = fixed weir crest (see part 4c and 4d) 2 = automatic weir (see part 4e) [1..2, I]
+</span><span id="__span-1-191"><a id="__codelineno-1-191" name="__codelineno-1-191" href="#__codelineno-1-191"></a>* WSCAP  = Surface water supply capacity [0..100 cm/d, R]
+</span><span id="__span-1-192"><a id="__codelineno-1-192" name="__codelineno-1-192" href="#__codelineno-1-192"></a>* WLDIP  = Allowed dip of surface water level before starting supply [0..100 cm, R]
+</span><span id="__span-1-193"><a id="__codelineno-1-193" name="__codelineno-1-193" href="#__codelineno-1-193"></a>* INTWL  = Length of water-level adjustment period (SWMAN=2 only) [1..31 d, I]
+</span><span id="__span-1-194"><a id="__codelineno-1-194" name="__codelineno-1-194" href="#__codelineno-1-194"></a>
+</span><span id="__span-1-195"><a id="__codelineno-1-195" name="__codelineno-1-195" href="#__codelineno-1-195"></a>{{#TABLE_MANSECWATLVL}}
+</span><span id="__span-1-196"><a id="__codelineno-1-196" name="__codelineno-1-196" href="#__codelineno-1-196"></a>  {{IMPER_4B}} {{IMPEND}} {{SWMAN}} {{WSCAP}} {{WLDIP}} {{INTWL}}
+</span><span id="__span-1-197"><a id="__codelineno-1-197" name="__codelineno-1-197" href="#__codelineno-1-197"></a>{{/TABLE_MANSECWATLVL}}
+</span><span id="__span-1-198"><a id="__codelineno-1-198" name="__codelineno-1-198" href="#__codelineno-1-198"></a>* End of table
+</span><span id="__span-1-199"><a id="__codelineno-1-199" name="__codelineno-1-199" href="#__codelineno-1-199"></a>
+</span><span id="__span-1-200"><a id="__codelineno-1-200" name="__codelineno-1-200" href="#__codelineno-1-200"></a>* Switch for type of discharge relationship [1..2, I]
+</span><span id="__span-1-201"><a id="__codelineno-1-201" name="__codelineno-1-201" href="#__codelineno-1-201"></a>  SWQHR = {{SWQHR}}          ! 1 = Exponential relationship
+</span><span id="__span-1-202"><a id="__codelineno-1-202" name="__codelineno-1-202" href="#__codelineno-1-202"></a>                             ! 2 = Table
+</span><span id="__span-1-203"><a id="__codelineno-1-203" name="__codelineno-1-203" href="#__codelineno-1-203"></a>
+</span><span id="__span-1-204"><a id="__codelineno-1-204" name="__codelineno-1-204" href="#__codelineno-1-204"></a>{{#SWITCH_SWQHR_OPTION_1}}
+</span><span id="__span-1-205"><a id="__codelineno-1-205" name="__codelineno-1-205" href="#__codelineno-1-205"></a>* If SWQHR=1, specify:
+</span><span id="__span-1-206"><a id="__codelineno-1-206" name="__codelineno-1-206" href="#__codelineno-1-206"></a>  SOFCU = {{SOFCU}}          ! Size of the control unit [0.1..100000.0 ha, R]
+</span><span id="__span-1-207"><a id="__codelineno-1-207" name="__codelineno-1-207" href="#__codelineno-1-207"></a>
+</span><span id="__span-1-208"><a id="__codelineno-1-208" name="__codelineno-1-208" href="#__codelineno-1-208"></a>* If SWQHR=1, specify exponential discharge relation for all periods:
+</span><span id="__span-1-209"><a id="__codelineno-1-209" name="__codelineno-1-209" href="#__codelineno-1-209"></a>* IMPER  = Index of management period [1..NMPER, I]
+</span><span id="__span-1-210"><a id="__codelineno-1-210" name="__codelineno-1-210" href="#__codelineno-1-210"></a>* HBWEIR = Weir crest; levels above soil surface are allowed, but simulated surface water levels should remain below 100 cm above soil surface;
+</span><span id="__span-1-211"><a id="__codelineno-1-211" name="__codelineno-1-211" href="#__codelineno-1-211"></a>*          the crest must be higher than the deepest channel bottom of the secondary system (ZBOTDR(1 or 2), [ALTCU-ZBOTDR..ALTCU+100 cm,R].
+</span><span id="__span-1-212"><a id="__codelineno-1-212" name="__codelineno-1-212" href="#__codelineno-1-212"></a>*          If SWMAN=2, HBWEIR represents the lowest possible weir position.
+</span><span id="__span-1-213"><a id="__codelineno-1-213" name="__codelineno-1-213" href="#__codelineno-1-213"></a>* ALPHAW = Alpha-coefficient of discharge formula [0.1..50.0, R]
+</span><span id="__span-1-214"><a id="__codelineno-1-214" name="__codelineno-1-214" href="#__codelineno-1-214"></a>* BETAW  = Beta-coefficient of discharge formula [0.5..3.0, R]
+</span><span id="__span-1-215"><a id="__codelineno-1-215" name="__codelineno-1-215" href="#__codelineno-1-215"></a>
+</span><span id="__span-1-216"><a id="__codelineno-1-216" name="__codelineno-1-216" href="#__codelineno-1-216"></a>{{#TABLE_QWEIR}}
+</span><span id="__span-1-217"><a id="__codelineno-1-217" name="__codelineno-1-217" href="#__codelineno-1-217"></a>  {{IMPER_4C}} {{HBWEIR}} {{ALPHAW}} {{BETAW}}
+</span><span id="__span-1-218"><a id="__codelineno-1-218" name="__codelineno-1-218" href="#__codelineno-1-218"></a>{{/TABLE_QWEIR}}
+</span><span id="__span-1-219"><a id="__codelineno-1-219" name="__codelineno-1-219" href="#__codelineno-1-219"></a>* End of table
+</span><span id="__span-1-220"><a id="__codelineno-1-220" name="__codelineno-1-220" href="#__codelineno-1-220"></a>{{/SWITCH_SWQHR_OPTION_1}}
+</span><span id="__span-1-221"><a id="__codelineno-1-221" name="__codelineno-1-221" href="#__codelineno-1-221"></a>{{#SWITCH_SWQHR_OPTION_2}}
+</span><span id="__span-1-222"><a id="__codelineno-1-222" name="__codelineno-1-222" href="#__codelineno-1-222"></a>* If SWQHR=2, specify table discharge relation:
+</span><span id="__span-1-223"><a id="__codelineno-1-223" name="__codelineno-1-223" href="#__codelineno-1-223"></a>* IMPER  = Index of management period [1..NMPER, I]
+</span><span id="__span-1-224"><a id="__codelineno-1-224" name="__codelineno-1-224" href="#__codelineno-1-224"></a>* IMPTAB = Index per management period [1..10, I]
+</span><span id="__span-1-225"><a id="__codelineno-1-225" name="__codelineno-1-225" href="#__codelineno-1-225"></a>* HTAB   = Surface water level [ALTCU-1000..ALTCU+100 cm, R] (first value for each period = ALTCU + 100 cm)
+</span><span id="__span-1-226"><a id="__codelineno-1-226" name="__codelineno-1-226" href="#__codelineno-1-226"></a>* QTAB   = Discharge [0..500 cm/d, R] (should go down to a value of zero at a level that is higher than the deepest channel bottom of secondary surface water system)
+</span><span id="__span-1-227"><a id="__codelineno-1-227" name="__codelineno-1-227" href="#__codelineno-1-227"></a>
+</span><span id="__span-1-228"><a id="__codelineno-1-228" name="__codelineno-1-228" href="#__codelineno-1-228"></a>{{#TABLE_QWEIRTB}}
+</span><span id="__span-1-229"><a id="__codelineno-1-229" name="__codelineno-1-229" href="#__codelineno-1-229"></a>  {{IMPER_4D}} {{IMPTAB}} {{HTAB}} {{QTAB}}
+</span><span id="__span-1-230"><a id="__codelineno-1-230" name="__codelineno-1-230" href="#__codelineno-1-230"></a>{{/TABLE_QWEIRTB}}
+</span><span id="__span-1-231"><a id="__codelineno-1-231" name="__codelineno-1-231" href="#__codelineno-1-231"></a>* End of table
+</span><span id="__span-1-232"><a id="__codelineno-1-232" name="__codelineno-1-232" href="#__codelineno-1-232"></a>{{/SWITCH_SWQHR_OPTION_2}}
+</span><span id="__span-1-233"><a id="__codelineno-1-233" name="__codelineno-1-233" href="#__codelineno-1-233"></a>{{/SWITCH_SWSEC_OPTION_2}}
+</span><span id="__span-1-234"><a id="__codelineno-1-234" name="__codelineno-1-234" href="#__codelineno-1-234"></a>{{/SWITCH_SWSRF_OPTION_3}}
+</span><span id="__span-1-235"><a id="__codelineno-1-235" name="__codelineno-1-235" href="#__codelineno-1-235"></a>{{/SWITCH_SWDRA_OPTION_2}}
+</span><span id="__span-1-236"><a id="__codelineno-1-236" name="__codelineno-1-236" href="#__codelineno-1-236"></a>
+</span><span id="__span-1-237"><a id="__codelineno-1-237" name="__codelineno-1-237" href="#__codelineno-1-237"></a>**********************************************************************************
+</span><span id="__span-1-238"><a id="__codelineno-1-238" name="__codelineno-1-238" href="#__codelineno-1-238"></a>
+</span><span id="__span-1-239"><a id="__codelineno-1-239" name="__codelineno-1-239" href="#__codelineno-1-239"></a>* End of .dra file!
+</span></code></pre></div>
+</details>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../crp-file/" class="md-footer__link md-footer__link--prev" aria-label="Previous: .CRP">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                .CRP
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../bbc-file/" class="md-footer__link md-footer__link--next" aria-label="Next: .BBC">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                .BBC
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotate", "content.code.annotation", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      
+    
+  </body>
+</html>
