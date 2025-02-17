@@ -44,7 +44,7 @@ pandas-stubs = "^2.2.3.241126"
 h5py-stubs = "^0.1.1"
 
 [tool.poetry.group.docs.dependencies]
-mkdocs-material = "^9.5.27"
+mkdocs-material = "^9.6.4"
 mkdocs-include-markdown-plugin = "^6.2.0"
 mkdocs-autorefs = "^1.0.1"
 mkdocstrings-python = "^1.10.3"
