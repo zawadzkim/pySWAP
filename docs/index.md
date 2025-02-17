@@ -44,8 +44,6 @@ The model variables are based on the original input files from SWAP developers, 
       pySWAP is open-source with MIT license and aims at improving
       transparency and sharability of modelling work
 
-      [:octicons-arrow-right-24: License](#)
-
 </div>
 
 ## SWAP: Soil-Water-Atmosphere-Plant model
