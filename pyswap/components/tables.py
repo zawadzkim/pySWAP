@@ -193,7 +193,7 @@ class DTSMTB(BaseTableModel):
 
 
 class SLATB(BaseTableModel):
-    """leaf area [0..1 ha/kg, R] as function of crop development stage [0..2 -, R]
+    """Specific leaf area [0..1 ha/kg, R] as function of crop development stage [0..2 -, R]
 
     Attributes:
         DVS (Series[float]): Development stage of the crop.
@@ -606,18 +606,18 @@ class SOILHYDRFUNC(BaseTableModel):
 
         !!! warning
             ALFAW required only when the hysteresis option is set to 1 or 2. This column is set as optional column and (for now) is not checked.
-    ('ORES', 'OSAT', 'ALFA', 'NPAR', 'KSATFIT', 'LEXP', 'ALFAW', 'H_ENPR', 'KSATEXM', 'BDENS')
-        Attributes:
-            ORES (Series[float]): Residual water content [0..1 cm3/cm3, R]
-            OSAT (Series[float]): Saturated water content [0..1 cm3/cm3, R]
-            ALFA (Series[float]): Parameter alfa of main drying curve [0.0001..100 /cm, R]
-            NPAR (Series[float]): Parameter n [1.001..9 -, R]
-            LEXP (Series[float]): Exponent in hydraulic conductivity function [-25..25 -, R]
-            KSATFIT (Series[float]): Fitting parameter Ksat of hydraulic conductivity function [1.d-5..1d5 cm/d, R]
-            H_ENPR (Series[float]): Air entry pressure head [-40.0..0.0 cm, R]
-            KSATEXM (Series[float]): Measured hydraulic conductivity at saturated conditions [1.d-5..1d5 cm/d, R]
-            BDENS (Series[float]): Dry soil bulk density [100..1d4 mg/cm3, R]
-            ALFAW (Optional[Series[float]]): Alfa parameter of main wetting curve in case of hysteresis [0.0001..100 /cm, R]
+    
+    Attributes:
+        ORES (Series[float]): Residual water content [0..1 cm3/cm3, R]
+        OSAT (Series[float]): Saturated water content [0..1 cm3/cm3, R]
+        ALFA (Series[float]): Parameter alfa of main drying curve [0.0001..100 /cm, R]
+        NPAR (Series[float]): Parameter n [1.001..9 -, R]
+        LEXP (Series[float]): Exponent in hydraulic conductivity function [-25..25 -, R]
+        KSATFIT (Series[float]): Fitting parameter Ksat of hydraulic conductivity function [1.d-5..1d5 cm/d, R]
+        H_ENPR (Series[float]): Air entry pressure head [-40.0..0.0 cm, R]
+        KSATEXM (Series[float]): Measured hydraulic conductivity at saturated conditions [1.d-5..1d5 cm/d, R]
+        BDENS (Series[float]): Dry soil bulk density [100..1d4 mg/cm3, R]
+        ALFAW (Optional[Series[float]]): Alfa parameter of main wetting curve in case of hysteresis [0.0001..100 /cm, R]
     """
 
     ORES: Series[float] = pa.Field(ge=0.0, le=1.0)

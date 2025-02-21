@@ -216,42 +216,43 @@ class _CropDevelopmentSettings(
 class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
     """Additional settings as defined for the WOFOST model.
 
-    idsl (Literal[0, 1, 2]): Switch for crop development.
-    dtsmtb  _Arrays): List increase in temperature sum as function of daily average temperature.
-    dlo (Optional[float]): Optimum day length for crop development.
-    dlc (Optional[float]): Minimum day length.
-    vernsat (Optional[float]): Saturated vernalisation requirement.
-    vernbase (Optional[float]): Base vernalisation requirement.
-    verndvs (Optional[float]): Critical development stage after which the effect of vernalisation is halted.
-    verntb (Optional _Arrays]): _Table with rate of vernalisation as function of average air temperature.
-    tdwi (float): Initial total crop dry weight.
-    laiem (float): Leaf area index at emergence.
-    rgrlai (float): Maximum relative increase in LAI.
-    spa (float): Specific pod area.
-    ssa (float): Specific stem area.
-    span (float): Life span under leaves under optimum conditions.
-    slatb  _Arrays): List specific leaf area as function of crop development stage.
-    eff (float): Light use efficiency for real leaf.
-    amaxtb  _Arrays): List maximum CO2 assimilation rate as function of development stage.
-    tmpftb  _Arrays): List reduction factor of AMAX as function of average day temperature.
-    tmnftb  _Arrays): List reduction factor of AMAX as function of minimum day temperature.
-    cvo (float): Efficiency of conversion into storage organs.
-    cvl (float): Efficiency of conversion into leaves.
-    cvr (float): Efficiency of conversion into roots.
-    cvs (float): Efficiency of conversion into stems.
-    q10 (float): Increase in respiration rate with temperature.
-    rml (float): Maintenance respiration rate of leaves.
-    rmo (float): Maintenance respiration rate of storage organs.
-    rmr (float): Maintenance respiration rate of roots.
-    rms (float): Maintenance respiration rate of stems.
-    rfsetb  _Arrays): List reduction factor of senescence as function of development stage.
-    frtb  _Arrays): List fraction of total dry matter increase partitioned to the roots as function of development stage.
-    fltb  _Arrays): List fraction of total above ground dry matter increase partitioned to the leaves as function of development stage.
-    fstb  _Arrays): List fraction of total above ground dry matter increase partitioned to the stems as function of development stage.
-    fotb  _Arrays): List fraction of total above ground dry matter increase partitioned to the storage organs as function of development stage.
-    perdl (float): Maximum relative death rate of leaves due to water stress.
-    rdrrtb  _Arrays): List relative death rates of roots as function of development stage.
-    rdrstb  _Arrays): List relative death rates of stems as function of development stage.
+    Attributes:
+        idsl (Literal[0, 1, 2]): Switch for crop development.
+        dtsmtb  _Arrays): List increase in temperature sum as function of daily average temperature.
+        dlo (Optional[float]): Optimum day length for crop development.
+        dlc (Optional[float]): Minimum day length.
+        vernsat (Optional[float]): Saturated vernalisation requirement.
+        vernbase (Optional[float]): Base vernalisation requirement.
+        verndvs (Optional[float]): Critical development stage after which the effect of vernalisation is halted.
+        verntb (Optional _Arrays]): _Table with rate of vernalisation as function of average air temperature.
+        tdwi (float): Initial total crop dry weight.
+        laiem (float): Leaf area index at emergence.
+        rgrlai (float): Maximum relative increase in LAI.
+        spa (float): Specific pod area.
+        ssa (float): Specific stem area.
+        span (float): Life span under leaves under optimum conditions.
+        slatb  _Arrays): List specific leaf area as function of crop development stage.
+        eff (float): Light use efficiency for real leaf.
+        amaxtb  _Arrays): List maximum CO2 assimilation rate as function of development stage.
+        tmpftb  _Arrays): List reduction factor of AMAX as function of average day temperature.
+        tmnftb  _Arrays): List reduction factor of AMAX as function of minimum day temperature.
+        cvo (float): Efficiency of conversion into storage organs.
+        cvl (float): Efficiency of conversion into leaves.
+        cvr (float): Efficiency of conversion into roots.
+        cvs (float): Efficiency of conversion into stems.
+        q10 (float): Increase in respiration rate with temperature.
+        rml (float): Maintenance respiration rate of leaves.
+        rmo (float): Maintenance respiration rate of storage organs.
+        rmr (float): Maintenance respiration rate of roots.
+        rms (float): Maintenance respiration rate of stems.
+        rfsetb  _Arrays): List reduction factor of senescence as function of development stage.
+        frtb  _Arrays): List fraction of total dry matter increase partitioned to the roots as function of development stage.
+        fltb  _Arrays): List fraction of total above ground dry matter increase partitioned to the leaves as function of development stage.
+        fstb  _Arrays): List fraction of total above ground dry matter increase partitioned to the stems as function of development stage.
+        fotb  _Arrays): List fraction of total above ground dry matter increase partitioned to the storage organs as function of development stage.
+        perdl (float): Maximum relative death rate of leaves due to water stress.
+        rdrrtb  _Arrays): List relative death rates of roots as function of development stage.
+        rdrstb  _Arrays): List relative death rates of stems as function of development stage.
     """
 
     idsl: _Literal[0, 1, 2] | None = None
@@ -758,7 +759,7 @@ class Crop(_PySWAPBaseModel, _SerializableMixin, _FileMixin, _YAMLValidatorMixin
             * 1 - Simulate crop.
 
         rds (Optional[float]): Rooting depth of the crop [cm].
-        _table_croprotation (Optional[_Table]): _Table with crop rotation data.
+        croprotation (Optional[_Table]): _Table with crop rotation data.
         cropfiles (Optional[List[CropFile]]): List of crop files.
 
     Methods:

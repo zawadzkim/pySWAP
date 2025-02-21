@@ -101,7 +101,7 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         extensions (list): list of file extensions SWAP should return.
             Available options are: ["wba", "end", "vap", "bal", "blc", "sba", "ate",
             "bma", "drf", "swb", "ini", "inc", "crp", "str", "irg", "csv", "csv_tz"]
-        inlist_csv (Optional[StringList]): list of
+        inlist_csv (Optional[StringList]): list of variables for the csv output
         inlist_csv_tz (Optional[StringList]): list of variables for
             the csv tz output
         swafo (Literal[0, 1, 2]): Switch, output file with
