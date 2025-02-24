@@ -36,10 +36,49 @@ __all__ = [
     "DMMOWTB",
     "DMMOWDELAY",
     "SHORTINTERVALMETEODATA",
-]
+]  #  TODO: needs update?
 
 # %% ++++++++++++++++++++++++++++ CROP TABLES ++++++++++++++++++++++++++++
 
+crop_tables = [
+    "DATEHARVEST",
+    "RDTB",
+    "RDCTB",
+    "GCTB",
+    "CFTB",
+    "INTERTB",
+    "KYTB",
+    "MRFTB",
+    "WRTB",
+    "CROPROTATION",
+    "DTSMTB",
+    "SLATB",
+    "AMAXTB",
+    "TMPFTB",
+    "TMNFTB",
+    "RFSETB",
+    "FRTB",
+    "FLTB",
+    "FSTB",
+    "FOTB",
+    "RDRRTB",
+    "RDRSTB",
+    "DMGRZTB",
+    "LSDATB",
+    "LSDBTB",
+    "RLWTB",
+    "DMMOWTB",
+    "DMMOWDELAY",
+    "IRRIGEVENTS",
+    "TC1TB",
+    "TC2TB",
+    "TC3TB",
+    "TC4TB",
+    "TC7TB",
+    "TC8TB",
+    "DC1TB",
+    "DC2TB",
+]
 
 class DATEHARVEST(BaseTableModel):
     """Date of harvest
@@ -664,6 +703,20 @@ class INITSOILTEMP(BaseTableModel):
 
 
 # %% ++++++++++++++++++++++++++++ BOUNDARY TABLES ++++++++++++++++++++++++++++
+
+boundary_tables = [
+    "GWLEVEL",
+    "QBOT2",
+    "HAQUIF",
+    "QBOT4",
+    "QTAB",
+    "HBOT5",
+    "DATET",
+    "CSEEPARR",
+    "INISSOIL",
+    "MISC"
+]
+
 class GWLEVEL(BaseTableModel):
     """Table for groundwater levels.
 
@@ -788,6 +841,21 @@ class MISC(BaseTableModel):
 
 # %% ++++++++++++++++++++++++++++ DRAINAGE TABLES ++++++++++++++++++++++++++++
 
+drainage_tables = [
+    "DRNTB",
+    "DRAINAGELEVELTOPPARAMS",
+    "DATOWLTB1",
+    "DATOWLTB2",
+    "DATOWLTB3",
+    "DATOWLTB4",
+    "DATOWLTB5",
+    "SECWATLVL",
+    "MANSECWATLVL",
+    "QWEIR",
+    "QWEIRTB",
+    "PRIWATLVL",
+    "QDRNTB"
+]
 
 class DRNTB(BaseTableModel):
     """Drainage characteristics table.
@@ -935,6 +1003,12 @@ class QDRNTB(BaseTableModel):
 
 
 # %% ++++++++++++++++++++++++++++ GENERAL SETTINGS TABLES ++++++++++++++++++++++++++++
+
+general_settings_tables = [
+    "OUTDATIN",
+    "OUTDAT"
+]
+
 class OUTDATIN(BaseTableModel):
     """OUTDATIN table
 
