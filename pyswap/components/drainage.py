@@ -57,7 +57,7 @@ class Flux(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
             * 1 - Drainage and infiltration are both allowed.
             * 2 - Only infiltration is allowed.
             * 3 - Only drainage is allowed.
-        
+
         l (Optional[float]): Drain spacing [1 .. 1e5 m].
         zbotdr (float): Level of the bottom of the drain [-1e4 .. 0 cm].
         swdtyp (Literal[1, 2]): Drainage type.
@@ -132,11 +132,11 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
             * 0 - No adjustment
             * 1 - Adjustment based on depth of top of model discharge
             * 2 - Adjustment based on factor of top of model discharge
-    
+
     Attributes drainage flux table (option 1):
         lm1 (float): Drain spacing
         table_qdrntb (Table): Table of drainage flux - groundwater level.
-        
+
     Attributes drainage formula (option 2):
         lm2 (float): Drain spacing.
         shape (float): Shape factor to account for actual location between
@@ -174,7 +174,7 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
         swtopnrsrf (Literal[0, 1]): Switch to enable adjustment of
             model discharge layer.
         fluxes (Flux): Flux object containing parameters for each drainage level.
-    
+
     Attributes extended section (surface water management):
         altcu (float): Altitude of the control unit relative to reference level.
         nrsrf (int): Number of subsurface drainage levels.

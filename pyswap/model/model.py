@@ -381,13 +381,13 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         generalsettings (Subsection): Simulation settings.
         meteorology (Subsection): Meteorological data.
         crop (Subsection): Crop data.
-        fixedirrigation (Subsection): Fixed irrigation settings.
+        fixedirrigation (Subsection): Fixed irrigation settings (default: no irrigation).
         soilmoisture (Subsection): Soil moisture data.
         surfaceflow (Subsection): Surface flow data.
         evaporation (Subsection): Evaporation data.
         soilprofile (Subsection): Soil profile data.
-        snowandfrost (Subsection): Snow and frost data.
-        richards (Subsection): Richards data.
+        snowandfrost (Subsection): Snow and frost data (default: no snow and frost).
+        richards (Subsection): Richards data (default: TODO).
         lateraldrainage (Subsection): Lateral drainage data.
         bottomboundary (Subsection): Bottom boundary data.
         heatflow (Subsection): Heat flow data.
