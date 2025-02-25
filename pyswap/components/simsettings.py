@@ -80,8 +80,8 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         swscre (Literal[0, 1, 3]): Switch, display progression of simulation
             run to screen
         swerror (Literal[0, 1]): Switch for printing errors to screen
-        tstart (d): Start date of simulation run, give day-month-year
-        tend (d): End date of simulation run, give day-month-year
+        tstart (d): Start date of simulation run.
+        tend (d): End date of simulation run.
         nprintday (int): Number of output times during a day
         swmonth (Literal[0, 1]): Switch, output each month
         swyrvar (Literal[0, 1]): Output times for overall water and solute
@@ -101,7 +101,7 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         extensions (list): list of file extensions SWAP should return.
             Available options are: ["wba", "end", "vap", "bal", "blc", "sba", "ate",
             "bma", "drf", "swb", "ini", "inc", "crp", "str", "irg", "csv", "csv_tz"]
-        inlist_csv (Optional[StringList]): list of
+        inlist_csv (Optional[StringList]): list of variables for the csv output
         inlist_csv_tz (Optional[StringList]): list of variables for
             the csv tz output
         swafo (Literal[0, 1, 2]): Switch, output file with
