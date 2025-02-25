@@ -371,11 +371,13 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     """Main class that runs the SWAP model.
 
     Even though all sections are set to optional, the model will not run if
-    any of the components are missing.
+    any of the components are missing, except for fixedirrigation, SnowAndFrost,
+    RichardsSettings, HeatFlow and SoluteTransport. These components have
+    default values that will be used if they are not provided.
 
     Attributes:
         metadata (Subsection): Metadata of the model.
-        version (str): The version of the model.
+        version (str): The version of the model (default: "base").
         generalsettings (Subsection): Simulation settings.
         meteorology (Subsection): Meteorological data.
         crop (Subsection): Crop data.
