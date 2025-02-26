@@ -17,6 +17,21 @@ from pydantic import (
     PrivateAttr as _PrivateAttr,
 )
 
+from pyswap.components.tables import (
+    DATOWLTB1,
+    DATOWLTB2,
+    DATOWLTB3,
+    DATOWLTB4,
+    DATOWLTB5,
+    DRAINAGELEVELTOPPARAMS,
+    DRNTB,
+    MANSECWATLVL,
+    PRIWATLVL,
+    QDRNTB,
+    QWEIR,
+    QWEIRTB,
+    SECWATLVL,
+)
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.defaults import FNAME_IN as _FNAME_IN
 from pyswap.core.fields import (
@@ -37,6 +52,19 @@ __all__ = [
     "Flux",
     "DraFile",
     "Drainage",
+    "DRNTB",
+    "DRAINAGELEVELTOPPARAMS",
+    "DATOWLTB1",
+    "DATOWLTB2",
+    "DATOWLTB3",
+    "DATOWLTB4",
+    "DATOWLTB5",
+    "SECWATLVL",
+    "MANSECWATLVL",
+    "QWEIR",
+    "QWEIRTB",
+    "PRIWATLVL",
+    "QDRNTB",
 ]
 
 
