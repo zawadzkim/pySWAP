@@ -8,6 +8,11 @@ test-grass: ## Install the poetry environment and install the pre-commit hooks
 	@echo "Running grass growth example"
 	@poetry run pytest tests/test_cases.py::test_grassgrowth
 
+.PHONY: test-meteo
+test-meteo: ## Test the retrieval and converstion of meteodata
+	@ echo "Running meteo tester"
+	@poetry run pytest tests/test_meteo.py
+
 .PHONY: testcheck
 testcheck: ## Run code quality tools in test configuration
 	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry check --lock"

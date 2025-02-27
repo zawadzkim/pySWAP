@@ -31,9 +31,14 @@ from pydantic import (
     PrivateAttr as _PrivateAttr,
 )
 
+from pyswap.components.tables import (
+    DAILYMETEODATA,
+    DETAILEDRAINFALL,
+    RAINFLUX,
+    SHORTINTERVALMETEODATA,
+)
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.fields import (
-    CSVTable as _CSVTable,
     Decimal2f as _Decimal2f,
     File as _File,
     String as _String,
@@ -47,7 +52,16 @@ from pyswap.utils.mixins import (
     YAMLValidatorMixin as _YAMLValidatorMixin,
 )
 
-__all__ = ["MetFile", "Meteorology", "metfile_from_csv", "metfile_from_knmi"]
+__all__ = [
+    "MetFile",
+    "Meteorology",
+    "metfile_from_csv",
+    "metfile_from_knmi",
+    "DAILYMETEODATA",
+    "SHORTINTERVALMETEODATA",
+    "DETAILEDRAINFALL",
+    "RAINFLUX",
+]
 
 
 class MetFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
@@ -66,7 +80,7 @@ class MetFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     _extension: bool = _PrivateAttr(default=None)
 
     metfil: _String
-    content: _CSVTable | None = _Field(default=None, exclude=True)
+    content: _Table | None = _Field(default=None, exclude=True)
 
 
 class Meteorology(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
@@ -182,7 +196,12 @@ class Meteorology(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
 
 
 def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
-    """Method for loading meteorological data from a CSV file.
+    """Method for loading daily meteorological data from a CSV file.
+
+    !!! note
+
+        The CSV file must contain the following columns:
+        station, dd, mm, yyyy, tmin, tmax, hum, wet, wind, rain, etref, rad
 
     Parameters:
         metfil (str): name of the .met file
@@ -192,49 +211,63 @@ def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
     Returns:
         MetFile object.
     """
+    # Create table from csv
+    df = _read_csv(csv_path, **kwargs)
+    table = DAILYMETEODATA.create(data=df.to_dict())
 
-    return MetFile(metfil=metfil, content=_read_csv(csv_path, **kwargs))
+    # Make sure Station column has quotes
+    table.loc[:, "STATION"] = table.STATION.apply(
+        lambda x: f"'{x}'" if not str(x).startswith("'") else x
+    )
+
+    return MetFile(metfil=metfil, content=table)
 
 
 def metfile_from_knmi(
     metfil: str,
     stations: str | list,
-    variables: list[
+    variables: str | list[
         _Literal[
-            "WIND",
-            "TEMP",
-            "SUNR",
-            "PRCP",
-            "VICL",
-            "WEER",
-            "DD",
-            "FH",
-            "FF",
-            "FX",
-            "T",
+            "FHVEC",
+            "FG",
+            "FHX",
+            "FHXH",
+            "FHN",
+            "FHNH",
+            "FXX",
+            "FXXH",
+            "TG",
+            "TN",
+            "TNH",
+            "TX",
+            "TXH",
             "T10N",
-            "TD",
+            "T10NH",
             "SQ",
+            "SP",
             "Q",
             "DR",
             "RH",
-            "P",
-            "VV",
-            "N",
-            "U",
-            "WW",
-            "IX",
-            "M",
-            "R",
-            "S",
-            "O",
-            "Y",
+            "RHX",
+            "RHXH",
+            "PG",
+            "PX",
+            "PXH",
+            "PN",
+            "PNH",
+            "VVN",
+            "VVNH",
+            "VVX",
+            "VVXH",
+            "NG",
             "UG",
-            "FG",
             "UX",
+            "UXH",
             "UN",
+            "UNH",
+            "EV24",
         ]
-    ],
+    ] | None = None,
     start: str | _datetime = "20000101",
     end: str | _datetime = "20200101",
     frequency: _Literal["day", "hour"] = "day",
@@ -246,7 +279,47 @@ def metfile_from_knmi(
     Parameters:
         metfil (str): name of the .met file
         stations (str | list): station number(s) to retrieve data from
-        variables (str | list): variables to retrieve
+        variables (str | list): variables to retrieve. options:
+            * YYYYMMDD - Date (YYYY=year MM=month DD=day)
+            * DDVEC - Vector mean wind direction in degrees (360=north, 90=east, 180=south, 270=west, 0=calm/variable)
+            * FHVEC - Vector mean windspeed (in 0.1 m/s)
+            * FG - Daily mean windspeed (in 0.1 m/s)
+            * FHX - Maximum hourly mean windspeed (in 0.1 m/s)
+            * FHXH - Hourly division in which FHX was measured
+            * FHN - Minimum hourly mean windspeed (in 0.1 m/s)
+            * FHNH - Hourly division in which FHN was measured
+            * FXX - Maximum wind gust (in 0.1 m/s)
+            * FXXH - Hourly division in which FXX was measured
+            * TG - Daily mean temperature in (0.1 degrees Celsius)
+            * TN - Minimum temperature (in 0.1 degrees Celsius)
+            * TNH - Hourly division in which TN was measured
+            * TX - Maximum temperature (in 0.1 degrees Celsius)
+            * TXH - Hourly division in which TX was measured
+            * T10N - Minimum temperature at 10 cm above surface (in 0.1 degrees Celsius)
+            * T10NH - 6-hourly division in which T10N was measured; 6=0-6 UT, 12=6-12 UT, 18=12-18 UT, 24=18-24 UT
+            * SQ - Sunshine duration (in 0.1 hour) calculated from global radiation (-1 for <0.05 hour)
+            * SP - Percentage of maximum potential sunshine duration
+            * Q - Global radiation (in J/cm2)
+            * DR - Precipitation duration (in 0.1 hour)
+            * RH - Daily precipitation amount (in 0.1 mm) (-1 for <0.05 mm)
+            * RHX - Maximum hourly precipitation amount (in 0.1 mm) (-1 for <0.05 mm)
+            * RHXH - Hourly division in which RHX was measured
+            * PG - Daily mean sea level pressure (in 0.1 hPa) calculated from 24 hourly values
+            * PX - Maximum hourly sea level pressure (in 0.1 hPa)
+            * PXH - Hourly division in which PX was measured
+            * PN - Minimum hourly sea level pressure (in 0.1 hPa)
+            * PNH - Hourly division in which PN was measured
+            * VVN - Minimum visibility; 0: <100 m, 1:100-200 m, 2:200-300 m,..., 49:4900-5000 m, 50:5-6 km, 56:6-7 km, 57:7-8 km,..., 79:29-30 km, 80:30-35 km, 81:35-40 km,..., 89: >70 km
+            * VVNH - Hourly division in which VVN was measured
+            * VVX - Maximum visibility; 0: <100 m, 1:100-200 m, 2:200-300 m,..., 49:4900-5000 m, 50:5-6 km, 56:6-7 km, 57:7-8 km,..., 79:29-30 km, 80:30-35 km, 81:35-40 km,..., 89: >70 km
+            * VVXH - Hourly division in which VVX was measured
+            * NG - Mean daily cloud cover (in octants, 9=sky invisible)
+            * UG - Daily mean relative atmospheric humidity (in percents)
+            * UX - Maximum relative atmospheric humidity (in percents)
+            * UXH - Hourly division in which UX was measured
+            * UN - Minimum relative atmospheric humidity (in percents)
+            * UNH - Hourly division in which UN was measured
+            * EV24 - Potential evapotranspiration (Makkink) (in 0.1 mm)
         start (str | dt): start date of the data
         end (str | dt): end date of the data
         frequency (Literal['day', 'hour']): frequency of the data (day or hour)
@@ -262,7 +335,7 @@ def metfile_from_knmi(
         variables = [variables]
 
     if not variables:
-        variables = ["TEMP", "PRCP", "Q", "UG", "FG", "UX", "UN"]
+        variables = ["TN", "TX", "UG", "DR", "FG", "RH", "EV24", "Q"]
 
     get_func = (
         _get_day_data_dataframe if frequency == "day" else _get_hour_data_dataframe
@@ -274,28 +347,41 @@ def metfile_from_knmi(
 
     # rename some columns
     required_column_names = {
-        "STN": "Station",
-        "TN": "Tmin",
-        "TX": "Tmax",
+        "STN": "STATION",
+        "TN": "TMIN",
+        "TX": "TMAX",
         "UG": "HUM",
         "DR": "WET",
         "FG": "WIND",
         "RH": "RAIN",
-        "EV24": "ETref",
+        "EV24": "ETREF",
         "Q": "RAD",
     }
 
     df = df.rename(columns=required_column_names)
 
+    # Making separate columns for day, month, year
+    df["DD"] = df.index.day
+    df["MM"] = df.index.month
+    df["YYYY"] = df.index.year
+    df = df.reset_index(drop=True)
+
     # recalculation of the parameters, the original unit is 0.1 Unit
-    df[["Tmin", "Tmax", "ETref", "RAIN", "WIND"]] = df[
-        ["Tmin", "Tmax", "ETref", "RAIN", "WIND"]
+    df[["TMIN", "TMAX", "ETREF", "RAIN", "WIND"]] = df[
+        ["TMIN", "TMAX", "ETREF", "RAIN", "WIND"]
     ].multiply(0.1)
 
     # The required unit is days
     df["WET"] = df["WET"].multiply(0.1).multiply(24)
 
-    return MetFile(metfil=metfil, content=df)
+    # Make MeteoData table
+    table = DAILYMETEODATA.create(data=df.to_dict())
+    # Make sure Station column has quotes
+    table.loc[:, "STATION"] = table.STATION.apply(
+        lambda x: f"'{x}'" if not str(x).startswith("'") else x
+    )
+
+    return MetFile(metfil=metfil, content=table)
 
 
 meteo_tables = ["SHORTINTERVALMETEODATA", "DETAILEDRAINFALL", "RAINFLUX"]
