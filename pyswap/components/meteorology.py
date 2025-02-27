@@ -226,7 +226,7 @@ def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
 def metfile_from_knmi(
     metfil: str,
     stations: str | list,
-    variables: str | list[
+    variables: list[
         _Literal[
             "FHVEC",
             "FG",
@@ -267,7 +267,7 @@ def metfile_from_knmi(
             "UNH",
             "EV24",
         ]
-    ] | None = None,
+    ],
     start: str | _datetime = "20000101",
     end: str | _datetime = "20200101",
     frequency: _Literal["day", "hour"] = "day",
