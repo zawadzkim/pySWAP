@@ -541,24 +541,21 @@ meteo_tables = [
 class DAILYMETEODATA(BaseTableModel):
     """Format detailed daily meteo data.
 
-    validate that the station is in single quotes.
-    check if the dd, mm, yyyy columns are already in the
-        dataframe. If not, require datetime index and
-        parse the datetime index to separate columns.
+    TODO:
     format decimals in the variables.
     """
 
-    Station: Series[str]
+    STATION: Series[str]
     DD: Series[str]
     MM: Series[str]
     YYYY: Series[str]
     RAD: Series[float]
-    Tmin: Series[float]
-    Tmax: Series[float]
+    TMIN: Series[float]
+    TMAX: Series[float]
     HUM: Series[float]
     WIND: Series[float]
     RAIN: Series[float]
-    ETref: Series[float]
+    ETREF: Series[float]
     WET: Series[float]
 
 
