@@ -53,7 +53,11 @@ def test_metfile_from_csv():
 def test_metfile_from_knmi():
     # Test default variables
     table_test = meteo.metfile_from_knmi(
-        metfil="test_knmi", stations="260", start="20200101", end="20200101"
+        metfil="test_knmi",
+        stations="260",
+        start="20200101",
+        end="20200101",
+        variables=None,
     ).content
     # expected output
     table_exp = pd.read_csv("tests/test_meteo/test_knmi.csv")
