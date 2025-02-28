@@ -335,7 +335,7 @@ def metfile_from_knmi(
         variables = [variables]
 
     if not variables:
-        variables = ["TN", "TX", "UG", "DR", "FG", "RH", "EV24", "Q"]
+        variables = ["Q", "TN", "TX", "UG", "FG", "RH", "EV24", "DR"]
 
     get_func = (
         _get_day_data_dataframe if frequency == "day" else _get_hour_data_dataframe
@@ -361,9 +361,9 @@ def metfile_from_knmi(
     df = df.rename(columns=required_column_names)
 
     # Making separate columns for day, month, year
-    df["DD"] = df.index.day
-    df["MM"] = df.index.month
-    df["YYYY"] = df.index.year
+    df.insert(1, "DD", df.index.day)
+    df.insert(2, "MM", df.index.month)
+    df.insert(3, "YYYY", df.index.year)
     df = df.reset_index(drop=True)
 
     # recalculation of the parameters, the original unit is 0.1 Unit
