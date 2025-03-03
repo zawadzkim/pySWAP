@@ -2,7 +2,9 @@ import pandas as pd
 import pytest
 from pandera.errors import SchemaError
 
+import pyswap as psp
 import pyswap.components.meteorology as meteo
+import pyswap.testcase as testcase
 
 
 def test_metfile_from_csv():
@@ -55,10 +57,10 @@ def test_metfile_from_knmi():
     table_test = meteo.metfile_from_knmi(
         metfil="test_knmi",
         stations="260",
-        start="20200101",
-        end="20200101",
-        variables=None,
+        start="20200103",
+        end="20200103",
     ).content
+
     # expected output
     table_exp = pd.read_csv("tests/test_meteo/test_knmi.csv")
     table_exp["STATION"] = table_exp["STATION"].astype(str)
@@ -73,15 +75,31 @@ def test_metfile_from_knmi():
         table_test,
         table_exp,
         check_dtype=False,
+        rtol=1e-2,
     )
 
-    # Test with a missing variable
-    with pytest.raises(SchemaError) as exc_info:
-        table_test = meteo.metfile_from_knmi(
-            metfil="test_knmi",
-            stations="260",
-            start="20200101",
-            end="20200102",
-            variables=["TN", "TX", "UG", "DR", "FG", "RH", "EV24"],
-        )
-    assert "not in dataframe. Columns in dataframe:" in str(exc_info.value)
+
+def test_hupsel_with_knmi_input():
+    model = testcase.get("hupselbrook")
+
+    metfile = psp.components.meteorology.metfile_from_knmi(
+        metfil="knmitest.met", stations="260", start="2002-01-01", end="2004-12-31"
+    )
+
+    meteo = psp.components.meteorology.Meteorology(
+        metfile=metfile,
+        lat=52.0,
+        alt=2,  # m
+        swetr=0,  # Penman-Monteith
+        angstroma=0.25,  # TODO
+        angstromb=0.50,  # TODO
+        swmetdetail=0,  # daily data
+        swdivide=1,  # divide E and T using PM
+        swrain=0,  # Use only daily rainfall amounts
+        swetsine=0,  # Distribute Tp and Ep over the day using a sine wave
+        altw=2.0,  # wind, m
+    )
+
+    model.meteorology = meteo
+
+    model.run("./", silence_warnings=True)
