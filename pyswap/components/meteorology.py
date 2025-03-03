@@ -25,6 +25,7 @@ from knmi import (
     get_day_data_dataframe as _get_day_data_dataframe,
     get_hour_data_dataframe as _get_hour_data_dataframe,
 )
+from numpy import exp as _exp
 from pandas import read_csv as _read_csv
 from pydantic import (
     Field as _Field,
@@ -226,163 +227,89 @@ def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
 def metfile_from_knmi(
     metfil: str,
     stations: str | list,
-    variables: list[
-        _Literal[
-            "FHVEC",
-            "FG",
-            "FHX",
-            "FHXH",
-            "FHN",
-            "FHNH",
-            "FXX",
-            "FXXH",
-            "TG",
-            "TN",
-            "TNH",
-            "TX",
-            "TXH",
-            "T10N",
-            "T10NH",
-            "SQ",
-            "SP",
-            "Q",
-            "DR",
-            "RH",
-            "RHX",
-            "RHXH",
-            "PG",
-            "PX",
-            "PXH",
-            "PN",
-            "PNH",
-            "VVN",
-            "VVNH",
-            "VVX",
-            "VVXH",
-            "NG",
-            "UG",
-            "UX",
-            "UXH",
-            "UN",
-            "UNH",
-            "EV24",
-        ]
-    ],
     start: str | _datetime = "20000101",
     end: str | _datetime = "20200101",
     frequency: _Literal["day", "hour"] = "day",
-    inseason: bool = False,
+    # inseason: bool = False,  # Do not use, will cause missing data crashing SWAP
 ) -> MetFile:
     """Retrieves the meteorological data from KNMI API using knmi-py and
     enforces SWAP required format.
 
+    !!! note:
+        Currently, only daily data can be retrieved.
+
     Parameters:
         metfil (str): name of the .met file
         stations (str | list): station number(s) to retrieve data from
-        variables (str | list): variables to retrieve. options:
-            * YYYYMMDD - Date (YYYY=year MM=month DD=day)
-            * DDVEC - Vector mean wind direction in degrees (360=north, 90=east, 180=south, 270=west, 0=calm/variable)
-            * FHVEC - Vector mean windspeed (in 0.1 m/s)
-            * FG - Daily mean windspeed (in 0.1 m/s)
-            * FHX - Maximum hourly mean windspeed (in 0.1 m/s)
-            * FHXH - Hourly division in which FHX was measured
-            * FHN - Minimum hourly mean windspeed (in 0.1 m/s)
-            * FHNH - Hourly division in which FHN was measured
-            * FXX - Maximum wind gust (in 0.1 m/s)
-            * FXXH - Hourly division in which FXX was measured
-            * TG - Daily mean temperature in (0.1 degrees Celsius)
-            * TN - Minimum temperature (in 0.1 degrees Celsius)
-            * TNH - Hourly division in which TN was measured
-            * TX - Maximum temperature (in 0.1 degrees Celsius)
-            * TXH - Hourly division in which TX was measured
-            * T10N - Minimum temperature at 10 cm above surface (in 0.1 degrees Celsius)
-            * T10NH - 6-hourly division in which T10N was measured; 6=0-6 UT, 12=6-12 UT, 18=12-18 UT, 24=18-24 UT
-            * SQ - Sunshine duration (in 0.1 hour) calculated from global radiation (-1 for <0.05 hour)
-            * SP - Percentage of maximum potential sunshine duration
-            * Q - Global radiation (in J/cm2)
-            * DR - Precipitation duration (in 0.1 hour)
-            * RH - Daily precipitation amount (in 0.1 mm) (-1 for <0.05 mm)
-            * RHX - Maximum hourly precipitation amount (in 0.1 mm) (-1 for <0.05 mm)
-            * RHXH - Hourly division in which RHX was measured
-            * PG - Daily mean sea level pressure (in 0.1 hPa) calculated from 24 hourly values
-            * PX - Maximum hourly sea level pressure (in 0.1 hPa)
-            * PXH - Hourly division in which PX was measured
-            * PN - Minimum hourly sea level pressure (in 0.1 hPa)
-            * PNH - Hourly division in which PN was measured
-            * VVN - Minimum visibility; 0: <100 m, 1:100-200 m, 2:200-300 m,..., 49:4900-5000 m, 50:5-6 km, 56:6-7 km, 57:7-8 km,..., 79:29-30 km, 80:30-35 km, 81:35-40 km,..., 89: >70 km
-            * VVNH - Hourly division in which VVN was measured
-            * VVX - Maximum visibility; 0: <100 m, 1:100-200 m, 2:200-300 m,..., 49:4900-5000 m, 50:5-6 km, 56:6-7 km, 57:7-8 km,..., 79:29-30 km, 80:30-35 km, 81:35-40 km,..., 89: >70 km
-            * VVXH - Hourly division in which VVX was measured
-            * NG - Mean daily cloud cover (in octants, 9=sky invisible)
-            * UG - Daily mean relative atmospheric humidity (in percents)
-            * UX - Maximum relative atmospheric humidity (in percents)
-            * UXH - Hourly division in which UX was measured
-            * UN - Minimum relative atmospheric humidity (in percents)
-            * UNH - Hourly division in which UN was measured
-            * EV24 - Potential evapotranspiration (Makkink) (in 0.1 mm)
         start (str | dt): start date of the data
         end (str | dt): end date of the data
         frequency (Literal['day', 'hour']): frequency of the data (day or hour)
-        inseason (bool): whether to retrieve in-season data
 
     Returns:
         MetFile object.
     """
 
-    if isinstance(stations, str):
+    if not isinstance(stations, list):
         stations = [stations]
-    if isinstance(variables, str):
-        variables = [variables]
 
-    if not variables:
-        variables = ["Q", "TN", "TX", "UG", "FG", "RH", "EV24", "DR"]
+    # variables to retrieve and their SWAP name
+    variables = {
+        "STN": "STATION",
+        "Q": "RAD",
+        "TN": "TMIN",
+        "TX": "TMAX",
+        "UG": "HUM",
+        "FG": "WIND",
+        "RH": "RAIN",
+        "EV24": "ETREF",
+        "DR": "WET",
+    }
 
+    # Retrieve data
     get_func = (
         _get_day_data_dataframe if frequency == "day" else _get_hour_data_dataframe
     )
 
     df = get_func(
-        stations=stations, start=start, end=end, variables=variables, inseason=inseason
+        stations=stations,
+        start=start,
+        end=end,
+        variables=list(variables.keys())[1:],
     )
-
-    # rename some columns
-    required_column_names = {
-        "STN": "STATION",
-        "TN": "TMIN",
-        "TX": "TMAX",
-        "UG": "HUM",
-        "DR": "WET",
-        "FG": "WIND",
-        "RH": "RAIN",
-        "EV24": "ETREF",
-        "Q": "RAD",
-    }
-
-    df = df.rename(columns=required_column_names)
 
     # Making separate columns for day, month, year
     df.insert(1, "DD", df.index.day)
     df.insert(2, "MM", df.index.month)
     df.insert(3, "YYYY", df.index.year)
+
+    # Rename columns and drop index
     df = df.reset_index(drop=True)
+    df = df.rename(columns=variables)
 
-    # recalculation of the parameters, the original unit is 0.1 Unit
-    df[["TMIN", "TMAX", "ETREF", "RAIN", "WIND"]] = df[
-        ["TMIN", "TMAX", "ETREF", "RAIN", "WIND"]
-    ].multiply(0.1)
+    # Changing unit of data (see knmi documentation)
+    factor = {
+        "RAD": 10,  # Convert from J/cm2 to kJ/m2
+        "TMIN": 0.1,  # Unit: Convert from 1 to 0.1 degC
+        "TMAX": 0.1,  # Convert from 1 to 0.1 degC
+        "HUM": 0.01,  # Convert from % to fraction
+        "WIND": 0.1,  # Convert from 1 to 0.1 m/s
+        "RAIN": 0.1,  # Convert from 1 to 0.1 mm
+        "ETREF": 0.1,  # Convert from 1 to 0.1 mm
+        "WET": (0.1 / 24),  # Convert from 0.1 h to fraction of day
+    }
+    df = df.apply(lambda x: x * factor.get(x.name, 1))
 
-    # The required unit is days
-    df["WET"] = df["WET"].multiply(0.1).multiply(24)
+    # Convert from fraction to kPa according to Allen et al. (1998)
+    es_min = 0.6108 * _exp(17.27 * df["TMIN"].values / (df["TMIN"].values + 237.3))
+    es_max = 0.6108 * _exp(17.27 * df["TMAX"].values / (df["TMAX"].values + 237.3))
+    df["HUM"] = (es_min + es_max) / 2 * df["HUM"]
 
-    # Make MeteoData table
-    table = DAILYMETEODATA.create(data=df.to_dict())
     # Make sure Station column has quotes
-    table.loc[:, "STATION"] = table.STATION.apply(
+    df["STATION"] = df["STATION"].apply(
         lambda x: f"'{x}'" if not str(x).startswith("'") else x
     )
 
+    # Make MeteoData table
+    table = DAILYMETEODATA.create(data=df.to_dict())
+
     return MetFile(metfil=metfil, content=table)
-
-
-meteo_tables = ["SHORTINTERVALMETEODATA", "DETAILEDRAINFALL", "RAINFLUX"]
-__all__.extend(meteo_tables)
