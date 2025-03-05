@@ -45,16 +45,21 @@ class Flux(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
 
     !!! note
 
-        This was rewritten to be a single class instead of a list of classe.
+        This was rewritten to be a single class instead of a list of classes.
         Simplicity over DRY. Anyway, the prefered way to set this up would be
         through the table from the extended section I guess.
 
     Attributes:
-        drares (float): Drainage resistance.
-        infres (float): Infiltration resistance.
+        drares (float): Drainage resistance [10 .. 1e5 d].
+        infres (float): Infiltration resistance [10 .. 1e5 d].
         swallo (Literal[1, 2]): Switch to allow drainage from this level.
-        l (Optional[float]): Drain spacing.
-        zbotdr (float): Level of the bottom of the drain.
+
+            * 1 - Drainage and infiltration are both allowed.
+            * 2 - Only infiltration is allowed.
+            * 3 - Only drainage is allowed.
+        
+        l (Optional[float]): Drain spacing [1 .. 1e5 m].
+        zbotdr (float): Level of the bottom of the drain [-1e4 .. 0 cm].
         swdtyp (Literal[1, 2]): Drainage type.
 
             * 1 - drain tube.
@@ -109,7 +114,7 @@ class Flux(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
 class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     """Content of the drainage file (.dra).
 
-    Attributes:
+    Attributes general:
         dramet (Literal[1, 2, 3]): Method of lateral drainage calculation
 
             * 1 - Use table of drainage flux - groundwater level relation.
@@ -127,10 +132,12 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
             * 0 - No adjustment
             * 1 - Adjustment based on depth of top of model discharge
             * 2 - Adjustment based on factor of top of model discharge
+    
+    Attributes drainage flux table (option 1):
         lm1 (float): Drain spacing
         table_qdrntb (Table): Table of drainage flux - groundwater level.
-        lm1: float = _Field(ge=1.0, le=1000.0)
-        qdrntb: _Table
+        
+    Attributes drainage formula (option 2):
         lm2 (float): Drain spacing.
         shape (float): Shape factor to account for actual location between
             drain and water divide.
@@ -157,6 +164,8 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
         kvbot (Optional[float]): Vertical hydraulic conductivity of
             the bottom layer.
         geofac (Optional[float]): Geometric factor of Ernst.
+
+    Attributes drainage infiltration resistance (option 3):
         nrlevs (int): Number of drainage levels.
         swintfl (Literal[0, 1]): Option for interflow in highest
             drainage level (shallow system with short residence time).
@@ -164,7 +173,9 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
         expintflb (float): Exponent for interflow relation.
         swtopnrsrf (Literal[0, 1]): Switch to enable adjustment of
             model discharge layer.
-        fluxes (Subsection): List of level fluxes.
+        fluxes (Flux): Flux object containing parameters for each drainage level.
+    
+    Attributes extended section (surface water management):
         altcu (float): Altitude of the control unit relative to reference level.
         nrsrf (int): Number of subsurface drainage levels.
         swnrsrf (Literal[0, 1, 2]): Switch to introduce rapid subsurface drainage.
