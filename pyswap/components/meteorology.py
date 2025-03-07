@@ -26,7 +26,6 @@ from knmi import (
     get_hour_data_dataframe as _get_hour_data_dataframe,
 )
 from numpy import exp as _exp
-from pandas import read_csv as _read_csv
 from pydantic import (
     Field as _Field,
     PrivateAttr as _PrivateAttr,
@@ -45,6 +44,7 @@ from pyswap.core.fields import (
     String as _String,
     Table as _Table,
 )
+from pyswap.core.io.io_csv import load_csv
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
 from pyswap.gis import Location as _Location
 from pyswap.utils.mixins import (
@@ -213,7 +213,7 @@ def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
         MetFile object.
     """
     # Create table from csv
-    df = _read_csv(csv_path, **kwargs)
+    df = load_csv(csv_path, **kwargs)
     table = DAILYMETEODATA.create(data=df.to_dict())
 
     # Make sure Station column has quotes
