@@ -13,6 +13,11 @@ test-meteo: ## Test the retrieval and converstion of meteodata
 	@ echo "Running meteo tester"
 	@poetry run pytest tests/test_meteo.py
 
+.PHONY: test-soilprofile
+test-soilprofile: ## Test the retrieval and converstion of meteodata
+	@ echo "Running soilprofile tester"
+	@poetry run pytest tests/test_bofeksoilprofile.py
+
 .PHONY: testcheck
 testcheck: ## Run code quality tools in test configuration
 	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry check --lock"
