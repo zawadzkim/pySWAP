@@ -237,7 +237,7 @@ def soilprofile_from_Dutch_standards(
         ]
     else:
         m = f"""Provide a valid soil profile number ({soilprofile_ix})
-                         or BOFEK cluster number ({bofek_cluster})."""
+                or BOFEK cluster number ({bofek_cluster})."""
         raise ValueError(m)
 
     # Get bottom of the soil physical layers
