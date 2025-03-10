@@ -4,6 +4,7 @@
 from typing import Literal as _Literal
 
 from numpy import arange, array, concatenate, diff, searchsorted
+from pandas import DataFrame, concat
 from pydantic import (
     Field as _Field,
     PrivateAttr as _PrivateAttr,
@@ -190,7 +191,37 @@ class SurfaceFlow(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     pondmxtb: _Table | None = None
 
 
-def soilprofile_from_Dutch_standards(
+def get_soilprofiles_from_Dutch_standards(
+    bofek_cluster: int | list | None = None,
+    soilprofile_ix: int | list | None = None,
+    soilprofile_code: str | list | None = None,
+) -> DataFrame:
+    """Return a list with dataframes with the soil profile(s) matching the input."""
+    # Read library with profiles
+    all_profiles = load_csv(soilprofiles)
+
+    # For all params, find corresponding profiles if it exists
+    profiles = []
+    for params, column in zip(
+        [bofek_cluster, soilprofile_ix, soilprofile_code],
+        ["CLUSTER_BOFEK", "SOILPROFILE_INDEX", "SOILPROFILE_CODE"],
+        strict=False,
+    ):
+        params = [params] if not isinstance(params, list) else params
+        for par in params:
+            if (par is not None) and (par in all_profiles[column].values):
+                profiles.append(all_profiles[all_profiles[column].values == par])
+    # Check if there was a match, if not raise an error, else return one dataframe with all matches
+    if profiles == []:
+        m = f"""Provide a valid soil profile number ({soilprofile_ix}),
+                soil profile code ({soilprofile_code})
+                or BOFEK cluster number ({bofek_cluster})."""
+        raise ValueError(m)
+    else:
+        return concat(profiles)
+
+
+def input_soil_from_Dutch_standards(
     bofek_cluster: int | None = None,
     soilprofile_ix: int | None = None,
 ) -> tuple[SOILPROFILE, SOILHYDRFUNC]:
@@ -209,6 +240,7 @@ def soilprofile_from_Dutch_standards(
         KSATEXM is set to KSATFIT.
         H_ENPR is set to 0.0.
         BDENS is set to 1300.0 mg/cm3.
+        When simulating drainage, set cofani to a list with as length the number of soil physical layers.
 
     Parameters:
         bofek_cluster (int): BOFEK cluster number (default: None).
@@ -218,28 +250,12 @@ def soilprofile_from_Dutch_standards(
         SOILPROFILE: Soil profile table.
     """
 
-    # Read library with profiles
-    all_profiles = load_csv(soilprofiles)
+    # Get soil profile, if bofek given, find dominant soil profile
+    soilprofile = get_soilprofiles_from_Dutch_standards(bofek_cluster, soilprofile_ix)
+    if bofek_cluster is not None:
+        soilprofile = soilprofile[soilprofile["CLUSTER_DOMINANT"] == 1]
 
-    # Select profile by soilprofile index, code or BOFEK cluster, check if it exists
-    if (bofek_cluster is not None) and (
-        bofek_cluster in all_profiles["CLUSTER_BOFEK"].values
-    ):
-        mask = (all_profiles["CLUSTER_BOFEK"] == bofek_cluster) & (
-            all_profiles["CLUSTER_DOMINANT"]
-        )
-        soilprofile = all_profiles.loc[mask]
-    elif (soilprofile_ix is not None) and (
-        soilprofile_ix in all_profiles["SOILPROFILE_INDEX"].values
-    ):
-        soilprofile = all_profiles.loc[
-            all_profiles["SOILPROFILE_INDEX"] == soilprofile_ix
-        ]
-    else:
-        m = f"""Provide a valid soil profile number ({soilprofile_ix})
-                or BOFEK cluster number ({bofek_cluster})."""
-        raise ValueError(m)
-
+    # Build SOILPROFILE table
     # Get bottom of the soil physical layers
     zb_soillay = array(soilprofile["LAYER_ZBOTTOM"])
     # Define bottom and compartment height of the discretization layers
@@ -264,6 +280,7 @@ def soilprofile_from_Dutch_standards(
     # Calculate the amount of compartments in each layer
     ncomp = (hsublay / hcomp).astype(int)
 
+    # Create the SOILPROFILE table
     soilprofile_table = SOILPROFILE.create({
         "ISUBLAY": isublay,
         "ISOILLAY": isoillay,
@@ -272,21 +289,17 @@ def soilprofile_from_Dutch_standards(
         "NCOMP": ncomp,
     })
 
-    # Get the soil hydraulic function parameters
-    soilhydro_table = soilprofile_table[["ISOILLAY"]].join(
-        soilprofile[
-            ["LAYER", "ORES", "OSAT", "ALFA", "NPAR", "KSATFIT", "LEXP"]
-        ].set_index("LAYER"),
-        on="ISOILLAY",
-        how="left",
-    )
+    # Build SOILDHYDRFUNC table
+    # Select the columns needed for the SOILHYDRFUNC table
+    soilhydro_table = soilprofile[
+        ["ORES", "OSAT", "ALFA", "NPAR", "KSATFIT", "LEXP"]
+    ].copy()
+
     # Set extra parameters to default values
-    soilhydro_table["H_ENPR"] = 0.0
-    soilhydro_table["KSATEXM"] = soilhydro_table["KSATFIT"]
-    soilhydro_table["BDENS"] = 1300.0
-    # Omit the ISOILLAY column
-    soilhydro_table = soilhydro_table[soilhydro_table.columns[1:]]
-    print(soilprofile_table, soilhydro_table)
+    soilhydro_table = soilhydro_table.assign(H_ENPR=0.0)
+    soilhydro_table = soilhydro_table.assign(KSATEXM=soilhydro_table["KSATFIT"])
+    soilhydro_table = soilhydro_table.assign(BDENS=1300.0)
+
     # Create the SOILHYDRFUNC table
     soilhydro_table = SOILHYDRFUNC.create(soilhydro_table.to_dict("list"))
 
