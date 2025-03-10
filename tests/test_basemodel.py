@@ -1,5 +1,7 @@
 import pandas as pd
 
+import pyswap.components.crop as crp
+
 
 def test_model_serialization(simple_serializable_model):
     tabular_data = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
@@ -23,3 +25,15 @@ def test_model_serialization(simple_serializable_model):
     assert model.model_string() == expected_output, (
         f"Expected: \n {expected_output} \n but got \n {model.model_string()}"
     )
+
+
+def test_table_update():
+    table = crp.CROPROTATION.create({
+        "CROPSTART": ["2000-04-01"],
+        "CROPEND": ["2000-10-31"],
+        "CROPFIL": ["'maizes'"],
+        "CROPTYPE": [1],
+    })
+
+    # Test if method runs without errors
+    crp.CROPROTATION.update(table, {"CROPTYPE": [2]})

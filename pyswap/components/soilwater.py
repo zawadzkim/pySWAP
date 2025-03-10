@@ -296,9 +296,9 @@ def input_soil_from_Dutch_standards(
     ].copy()
 
     # Set extra parameters to default values
-    soilhydro_table = soilhydro_table.assign(H_ENPR=0.0)
-    soilhydro_table = soilhydro_table.assign(KSATEXM=soilhydro_table["KSATFIT"])
-    soilhydro_table = soilhydro_table.assign(BDENS=1300.0)
+    soilhydro_table = soilhydro_table.assign(
+        H_ENPR=0.0, KSATEXM=soilhydro_table["KSATFIT"], BDENS=1300.0
+    )
 
     # Create the SOILHYDRFUNC table
     soilhydro_table = SOILHYDRFUNC.create(soilhydro_table.to_dict("list"))
