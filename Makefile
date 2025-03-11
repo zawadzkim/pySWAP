@@ -23,6 +23,11 @@ test-simple: ## Test the retrieval and converstion of meteodata
 	@ echo "Running simple model tester"
 	@poetry run pytest tests/test_cases.py::test_simple_model
 
+.PHONY:test-table
+test-table: ## Test the update of table data
+	@ echo "Running table tester"
+	@poetry run pytest tests/test_basemodel.py::test_table_update
+
 .PHONY: testcheck
 testcheck: ## Run code quality tools in test configuration
 	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry check --lock"

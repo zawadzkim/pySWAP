@@ -37,3 +37,7 @@ def test_table_update():
 
     # Test if method runs without errors
     crp.CROPROTATION.update(table, {"CROPTYPE": [2]})
+
+
+if __name__ == "__main__":
+    test_table_update()
