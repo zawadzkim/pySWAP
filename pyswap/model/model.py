@@ -379,6 +379,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         metadata (Subsection): Metadata of the model.
         version (str): The version of the model (default: "base").
         generalsettings (Subsection): Simulation settings.
+        richardsettings (Subsection): Richards settings.
         meteorology (Subsection): Meteorological data.
         crop (Subsection): Crop data.
         fixedirrigation (Subsection): Fixed irrigation settings.
@@ -386,8 +387,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         surfaceflow (Subsection): Surface flow data.
         evaporation (Subsection): Evaporation data.
         soilprofile (Subsection): Soil profile data.
-        snowandfrost (Subsection): Snow and frost data.
-        richards (Subsection): Richards data.
+        snowandfrost (Subsection): Snow and frost data (default: no snow and frost).
         lateraldrainage (Subsection): Lateral drainage data.
         bottomboundary (Subsection): Bottom boundary data.
         heatflow (Subsection): Heat flow data.
@@ -407,6 +407,9 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     generalsettings: Subsection[GeneralSettings] | None = Field(
         default=None, repr=False
     )
+    richardsettings: Subsection[RichardsSettings] | None = Field(
+        default=RichardsSettings(swkmean=1, swkimpl=0), repr=False
+    )
     meteorology: Subsection[Meteorology] | None = Field(default=None, repr=False)
     crop: Subsection[Crop] | None = Field(default=None, repr=False)
     fixedirrigation: Subsection[FixedIrrigation] | None = Field(
@@ -418,9 +421,6 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     soilprofile: Subsection[SoilProfile] | None = Field(default=None, repr=False)
     snowandfrost: Subsection[SnowAndFrost] | None = Field(
         default=SnowAndFrost(swsnow=0, swfrost=0), repr=False
-    )
-    richards: Subsection[RichardsSettings] | None = Field(
-        default=RichardsSettings(swkmean=1, swkimpl=0), repr=False
     )
     lateraldrainage: Subsection[Drainage] | None = Field(default=None, repr=False)
     bottomboundary: Subsection[BottomBoundary] | None = Field(default=None, repr=False)
@@ -449,6 +449,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         required_components = [
             "metadata",
             "generalsettings",
+            "richardsettings",
             "meteorology",
             "crop",
             "fixedirrigation",
@@ -457,7 +458,6 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
             "evaporation",
             "soilprofile",
             "snowandfrost",
-            "richards",
             "lateraldrainage",
             "bottomboundary",
             "heatflow",
