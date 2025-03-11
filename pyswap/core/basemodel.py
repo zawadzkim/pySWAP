@@ -136,7 +136,7 @@ class BaseTableModel(pa.DataFrameModel):
 
     @classmethod
     def create(cls, data: dict, columns: list | None = None) -> DataFrame:
-        df = pd.DataFrame(data)
+        df = pd.DataFrame(data=data)
         if columns:
             df.columns = columns
         else:
@@ -149,4 +149,4 @@ class BaseTableModel(pa.DataFrameModel):
         # Update the table with new values
         table_upd = table.to_dict("list")
         table_upd.update(new)
-        return cls.create(dict)
+        return cls.create(table_upd)
