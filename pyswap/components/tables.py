@@ -129,7 +129,7 @@ class GCTB(BaseTableModel):
 
 
 class CFTB(BaseTableModel):
-    """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
+    """Crop factor [0..2 [-], R], as function of dev. stage [0..2 -, R]
 
     Attributes:
         DVS (Series[float]): Development stage of the crop.
@@ -137,9 +137,19 @@ class CFTB(BaseTableModel):
     """
 
     DVS: Series[float] | None = pa.Field(**DVSRANGE)
-    DNR: Series[float] | None = pa.Field(**YEARRANGE)
-    CH: Series[float] | None
     CF: Series[float] | None
+
+
+class CHTB(BaseTableModel):
+    """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
+
+    Attributes:
+        DVS (Series[float]): Development stage of the crop.
+        CF (Series[float]): Crop height.
+    """
+
+    DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    CH: Series[float] | None
 
 
 class INTERTB(BaseTableModel):
