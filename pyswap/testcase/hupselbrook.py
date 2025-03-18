@@ -167,7 +167,7 @@ def _make_hupselbrook():
         swharv=0,
     )
 
-    potato_chtb = psp.components.crop.CFTB.create({
+    potato_chtb = psp.components.crop.CHTB.create({
         "DVS": [0.0, 1.0, 2.0],
         "CH": [
             1.0,
@@ -189,7 +189,7 @@ def _make_hupselbrook():
     potato_cropdev_settings = psp.components.crop.CropDevelopmentSettingsWOFOST(
         wofost_variety=potato_params,
         swcf=2,
-        cftb=potato_chtb,
+        chtb=potato_chtb,
         idsl=0,
         albedo=0.19,
         laiem=0.0589,

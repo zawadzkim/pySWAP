@@ -286,6 +286,10 @@ def metfile_from_knmi(
     df = df.reset_index(drop=True)
     df = df.rename(columns=variables)
 
+    # Set -1 to zero in RAIN and SUNH columns (rain or sun hours < 0.05 mm and h respectively)
+    df["RAIN"] = df["RAIN"].apply(lambda x: 0 if x == -1 else x)
+    df["SUNH"] = df["SUNH"].apply(lambda x: 0 if x == -1 else x)
+
     # Changing unit of data (see knmi documentation)
     factor = {
         "RAD": 10,  # Convert from J/cm2 to kJ/m2

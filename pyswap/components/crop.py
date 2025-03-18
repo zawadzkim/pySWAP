@@ -14,7 +14,7 @@ SWAP has three modes for crop simulations which users define in the CROPROTATION
     * 3 - dynamic grass growth model - use CropDevelopmentSettingsGrass
 
 For each choice, the .crp file will look different. Therefore, multiple classes
-are defined in this module to deal with thos different settings.
+# are defined in this module to deal with those different settings.
 
 Classes:
     CropFile: Class for the .crp file.
@@ -45,6 +45,7 @@ from pyswap.components.irrigation import ScheduledIrrigation as _ScheduledIrriga
 from pyswap.components.tables import (
     AMAXTB,
     CFTB,
+    CHTB,
     CROPROTATION,
     DMGRZTB,
     DMMOWDELAY,
@@ -91,6 +92,7 @@ from pyswap.utils.mixins import (
 )
 
 __all__ = [
+    "CropDevelopmentSettings",
     "CropDevelopmentSettingsWOFOST",
     "CropDevelopmentSettingsFixed",
     "CropDevelopmentSettingsGrass",
@@ -107,6 +109,7 @@ __all__ = [
     "RDCTB",
     "GCTB",
     "CFTB",
+    "CHTB",
     "KYTB",
     "MRFTB",
     "WRTB",
@@ -132,7 +135,7 @@ __all__ = [
 ]
 
 
-class _CropDevelopmentSettings(
+class CropDevelopmentSettings(
     _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _WOFOSTUpdateMixin
 ):
     """Crop development settings.
@@ -153,8 +156,8 @@ class _CropDevelopmentSettings(
             * 1 - Crop factor
             * 2 - Crop height
 
-        _table_dvs_cf (Optional[_Table]): _Table with crop factors as a function of development stage
-        _table_dvs_ch (Optional[_Table]): _Table with crop height as a function of development stage
+        cftb (Optional[_Table]): Table with crop factors as a function of development stage
+        chtb (Optional[_Table]): Table with crop height as a function of development stage
         albedo (Optional[float]): Crop reflection coefficient
         rsc (Optional[float]): Minimum canopy resistance
         rsw (Optional[float]): Canopy resistance of intercepted water
@@ -193,6 +196,7 @@ class _CropDevelopmentSettings(
 
     swcf: _Literal[1, 2] | None = None
     cftb: _Table | None = None
+    chtb: _Table | None = None
     albedo: _Decimal2f | None = _Field(default=None, **_UNITRANGE)
     rsc: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
     rsw: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
@@ -213,7 +217,7 @@ class _CropDevelopmentSettings(
     rdctb: _Arrays | None = None
 
 
-class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
+class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
     """Additional settings as defined for the WOFOST model.
 
     Attributes:
@@ -293,7 +297,7 @@ class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
     rdrstb: _Arrays | None = None
 
 
-class CropDevelopmentSettingsFixed(_CropDevelopmentSettings):
+class CropDevelopmentSettingsFixed(CropDevelopmentSettings):
     """Fixed crop development settings (Additionaly to CropDevelopmentSettings).
 
     Attributes:
