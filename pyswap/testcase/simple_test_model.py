@@ -271,6 +271,31 @@ def _make_simple_test_model():
     )
     ml.lateraldrainage = drainage
 
+    # Heat flow
+    # Soil textures for each physical layer
+    soiltextures = psp.components.transport.SOILTEXTURES.create({
+        "PSAND": [0.87, 0.89, 0.89, 0.91],
+        "PSILT": [0.1, 0.08, 0.08, 0.06],
+        "PCLAY": [0.03, 0.03, 0.03, 0.03],
+        "ORGMAT": [0.057, 0.022, 0.01, 0.003],
+    })  # TODO: get from soil database
+
+    # Initial soil temperatures; source: WWL
+    initsoiltemp = psp.components.transport.INITSOILTEMP.create({
+        "ZH": [-10.0, -40.0, -70.0, -95.0],
+        "TSOIL": [12.0, 12.0, 10.0, 9.0],
+    })
+
+    heatflow = psp.components.transport.HeatFlow(
+        swhea=1,  # Simulate heat flow in soil
+        swcalt=2,  # Use the numerical method
+        swtopbhea=1,  # Air temperature is top boundary condition
+        swbotbhea=1,  # No heat flux in bottom boundary
+        initsoiltemp=initsoiltemp,
+        soiltextures=soiltextures,
+    )
+    ml.heatflow = heatflow
+
     return ml
 
 
