@@ -88,7 +88,7 @@ class PySWAPBaseModel(BaseModel):
             updated_model.validate_with_yaml() if hasattr(
                 updated_model, "validate_with_yaml"
             ) else None
-            return updated_model
+            return updated_model.model_copy(deep=True)
 
         else:
             for field, value in updated_model:
