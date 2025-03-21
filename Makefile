@@ -9,9 +9,24 @@ test-grass: ## Install the poetry environment and install the pre-commit hooks
 	@poetry run pytest tests/test_cases.py::test_grassgrowth
 
 .PHONY: test-meteo
-test-meteo: ## Test the retrieval and converstion of meteodata
+test-meteo: ## Test the retrieval and conversion of meteodata
 	@ echo "Running meteo tester"
 	@poetry run pytest tests/test_meteo.py
+
+.PHONY: test-soilprofile
+test-soilprofile: ## Test the retrieval and conversion of soilprofile data
+	@ echo "Running soilprofile tester"
+	@poetry run pytest tests/test_bofeksoilprofile.py
+
+.PHONY: test-simple
+test-simple: ## Test the retrieval and converstion of meteodata
+	@ echo "Running simple model tester"
+	@poetry run pytest tests/test_cases.py::test_simple_model
+
+.PHONY:test-table
+test-table: ## Test the update of table data
+	@ echo "Running table tester"
+	@poetry run pytest tests/test_basemodel.py::test_table_update
 
 .PHONY: testcheck
 testcheck: ## Run code quality tools in test configuration
