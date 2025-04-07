@@ -58,7 +58,7 @@ from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.defaults import IS_WINDOWS
 from pyswap.core.fields import Subsection
 from pyswap.core.io.io_ascii import open_ascii
-from pyswap.libs import swap_linux, swap_windows
+from pyswap.libs import co2correction, swap_linux, swap_windows
 from pyswap.model.result import Result
 from pyswap.utils.mixins import FileMixin, SerializableMixin
 
@@ -125,6 +125,13 @@ class ModelBuilder:
             self.model.lateraldrainage.write_dra(self.tempdir)
         if self.model.crop.cropfiles:
             self.model.crop.write_crop(self.tempdir)
+            # Copy co2correction file if it is necessary
+            crops_co2corrections = [
+                cropfile.co2correction is not None
+                for cropfile in self.model.crop.cropfiles.values()
+            ]
+            if sum(crops_co2corrections) > 0:
+                shutil.copy(co2correction, self.tempdir)
         if self.model.meteorology.metfile:
             self.model.meteorology.write_met(self.tempdir)
         if self.model.fixedirrigation.swirgfil == 1:
