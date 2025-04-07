@@ -144,7 +144,9 @@ class CFTB(BaseTableModel):
     """
 
     DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     CF: Series[float] | None
+    CH: Series[float] | None
 
 
 class CHTB(BaseTableModel):
@@ -156,7 +158,9 @@ class CHTB(BaseTableModel):
     """
 
     DVS: Series[float] | None = pa.Field(**DVSRANGE)
+    DNR: Series[float] | None = pa.Field(**YEARRANGE)
     CH: Series[float] | None
+    CF: Series[float] | None
 
 
 class INTERTB(BaseTableModel):
