@@ -36,6 +36,9 @@ __all__ = [
     "DMMOWTB",
     "DMMOWDELAY",
     "SHORTINTERVALMETEODATA",
+    "CO2EFFTB",
+    "CO2TRATB",
+    "CO2AMAXTB",
 ]  #  TODO: needs update?
 
 # %% ++++++++++++++++++++++++++++ CROP TABLES ++++++++++++++++++++++++++++
@@ -78,6 +81,9 @@ crop_tables = [
     "TC8TB",
     "DC1TB",
     "DC2TB",
+    "CO2EFFTB",
+    "CO2TRATB",
+    "CO2AMAXTB",
 ]
 
 
@@ -537,6 +543,27 @@ class DC1TB(BaseTableModel):
 class DC2TB(BaseTableModel):
     DVS_DC2: Series[float]
     FID: Series[float]
+
+
+class CO2EFFTB(BaseTableModel):
+    """Correction factor light use efficiency for change in CO2 concentration."""
+
+    CO2PPM: Series[float]
+    FACTOR: Series[float]
+
+
+class CO2TRATB(BaseTableModel):
+    """Correction factor maximum transpiration rate for change in CO2 concentration."""
+
+    CO2PPM: Series[float]
+    FACTOR: Series[float]
+
+
+class CO2AMAXTB(BaseTableModel):
+    """Correction factor assimilation rate for change in CO2 concentration."""
+
+    CO2PPM: Series[float]
+    FACTOR: Series[float]
 
 
 # %% ++++++++++++++++++++++++++++ METEO TABLES ++++++++++++++++++++++++++++
