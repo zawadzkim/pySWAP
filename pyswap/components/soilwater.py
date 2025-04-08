@@ -3,8 +3,6 @@
 
 from typing import Literal as _Literal
 
-from numpy import arange, array, concatenate, diff, searchsorted
-from pandas import DataFrame, concat
 from pydantic import (
     Field as _Field,
     PrivateAttr as _PrivateAttr,
@@ -18,9 +16,7 @@ from pyswap.core.fields import (
     String as _String,
     Table as _Table,
 )
-from pyswap.core.io.io_csv import load_csv
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
-from pyswap.libs import soilprofiles
 from pyswap.utils.mixins import (
     SerializableMixin as _SerializableMixin,
     YAMLValidatorMixin as _YAMLValidatorMixin,
@@ -189,118 +185,3 @@ class SurfaceFlow(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     pondmx: _Decimal2f | None = _Field(default=None, ge=0, le=1000)
     rufil: _String | None = None
     pondmxtb: _Table | None = None
-
-
-def get_soilprofiles_from_Dutch_standards(
-    bofek_cluster: int | list | None = None,
-    soilprofile_ix: int | list | None = None,
-    soilprofile_code: str | list | None = None,
-) -> DataFrame:
-    """Return a list with dataframes with the soil profile(s) matching the input."""
-    # Read library with profiles
-    all_profiles = load_csv(soilprofiles)
-
-    # For all params, find corresponding profiles if it exists
-    profiles = []
-    for params, column in zip(
-        [bofek_cluster, soilprofile_ix, soilprofile_code],
-        ["CLUSTER_BOFEK", "SOILPROFILE_INDEX", "SOILPROFILE_CODE"],
-        strict=False,
-    ):
-        params = [params] if not isinstance(params, list) else params
-        for par in params:
-            if (par is not None) and (par in all_profiles[column].values):
-                profiles.append(all_profiles[all_profiles[column].values == par])
-    # Check if there was a match, if not raise an error, else return one dataframe with all matches
-    if profiles == []:
-        m = f"""Provide a valid soil profile number ({soilprofile_ix}),
-                soil profile code ({soilprofile_code})
-                or BOFEK cluster number ({bofek_cluster})."""
-        raise ValueError(m)
-    else:
-        return concat(profiles)
-
-
-def input_soil_from_Dutch_standards(
-    bofek_cluster: int | None = None,
-    soilprofile_ix: int | None = None,
-) -> tuple[SOILPROFILE, SOILHYDRFUNC]:
-    """Create a SOILPROFILE and SOILHYDRFUNC table from a BOFEK soil cluster or Dutch soil profile.
-
-    !!! note:
-        Parameters `bofek_cluster`, `soilprofile_nr` and `soilprofile_code` are checked sequentially
-         for a value and the first defined parameter is used.
-        This function returns a SOILPROFILE and SOILHYDRFUNC table with the following compartment heights:
-            0-50 cm depth: 1 cm
-            50-80 cm depth : 2 cm
-            80-140 cm depth: 5 cm
-            140-200 cm depth: 10 cm
-            200-300 cm depth: 20 cm
-        Layers deeper than the BOFEK profile get the same physical properties as the deepest layer.
-        KSATEXM is set to KSATFIT.
-        H_ENPR is set to 0.0.
-        BDENS is set to 1300.0 mg/cm3.
-        When simulating drainage, set cofani to a list with as length the number of soil physical layers.
-
-    Parameters:
-        bofek_cluster (int): BOFEK cluster number (default: None).
-        soilprofile_nr (int): Soil profile number (default: None).
-
-    Returns:
-        SOILPROFILE: Soil profile table.
-    """
-
-    # Get soil profile, if bofek given, find dominant soil profile
-    soilprofile = get_soilprofiles_from_Dutch_standards(bofek_cluster, soilprofile_ix)
-    if bofek_cluster is not None:
-        soilprofile = soilprofile[soilprofile["CLUSTER_DOMINANT"] == 1]
-
-    # Build SOILPROFILE table
-    # Get bottom of the soil physical layers
-    zb_soillay = array(soilprofile["LAYER_ZBOTTOM"])
-    # Define bottom and compartment height of the discretization layers
-    discr = {50: 1, 80: 2, 140: 5, 200: 10, 300: 20}
-    # Merge bottom discretisation and soil physical layers: sublayers
-    zb_sublay = array(sorted(set(zb_soillay).union(discr.keys())))
-
-    # Define the total amount of sublayers and their thickness
-    isublay = arange(1, len(zb_sublay) + 1)
-    hsublay = diff(concatenate(([0], zb_sublay)))
-
-    # Define corresponding soil layer for each sublayer
-    isoillay = searchsorted(zb_soillay, zb_sublay, side="left") + 1
-    # Deeper sublayers than the BOFEK profile get same properties as the deepest soil physical layer
-    isoillay[isoillay > len(zb_soillay)] = len(zb_soillay)
-
-    # Find the height of the compartments in this soillayer, defined in discr
-    hcomp = array(list(discr.values()))[
-        searchsorted(array(list(discr.keys())), zb_sublay, side="left")
-    ]
-
-    # Calculate the amount of compartments in each layer
-    ncomp = (hsublay / hcomp).astype(int)
-
-    # Create the SOILPROFILE table
-    soilprofile_table = SOILPROFILE.create({
-        "ISUBLAY": isublay,
-        "ISOILLAY": isoillay,
-        "HSUBLAY": hsublay,
-        "HCOMP": hcomp,
-        "NCOMP": ncomp,
-    })
-
-    # Build SOILDHYDRFUNC table
-    # Select the columns needed for the SOILHYDRFUNC table
-    soilhydro_table = soilprofile[
-        ["ORES", "OSAT", "ALFA", "NPAR", "KSATFIT", "LEXP"]
-    ].copy()
-
-    # Set extra parameters to default values
-    soilhydro_table = soilhydro_table.assign(
-        H_ENPR=0.0, KSATEXM=soilhydro_table["KSATFIT"], BDENS=1300.0
-    )
-
-    # Create the SOILHYDRFUNC table
-    soilhydro_table = SOILHYDRFUNC.create(soilhydro_table.to_dict("list"))
-
-    return (soilprofile_table, soilhydro_table)

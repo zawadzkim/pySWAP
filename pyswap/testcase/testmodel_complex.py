@@ -70,7 +70,7 @@ def _make_complex_test_model():
         angstromb=0.50,  # Angstrom coefficient b (Allen et al, 1998)
         swmetdetail=0,  # daily data
         swdivide=1,  # divide E and T using PM
-        swrain=0,  # Use only daily rainfall amounts, not intensity TODO
+        swrain=0,  # Use only daily rainfall amounts, not intensity
         swetsine=0,  # Do not distribute Tp and Ep over the day using a sine wave
     )
 
@@ -104,23 +104,25 @@ def _make_complex_test_model():
 
     # Soil profile properties
     ## Soil profile and hydraulic functions
-    soil_profile, soil_hydraulic_functions = (
-        psp.components.soilwater.input_soil_from_Dutch_standards(
-            bofek_cluster=3015  # Zwak lemig zand, grasland
-        )
+    soilprofiles_db = psp.db.SoilProfilesDB()
+    soil_profile = soilprofiles_db.get_profile(
+        bofek_cluster=3015,  # Zwak lemig zand, grasland
+    )
+    soil_discr = soil_profile.get_swapinput_profile(
+        discretisation_depths=[50, 30, 60, 60, 100],
+        discretisation_compheights=[1, 2, 5, 10, 20],
     )
 
     soilprofile = psp.components.soilwater.SoilProfile(
         swsophy=0,  # MVG functions
         swhyst=0,  # No hysteresis
         swmacro=0,  # No preferential flow
-        soilprofile=soil_profile,
-        soilhydrfunc=soil_hydraulic_functions,
+        soilprofile=soil_discr,
+        soilhydrfunc=soil_profile.get_swapinput_hydraulic_params(),
     )
     ml.soilprofile = soilprofile
 
     # Bottom boundary condition
-    ## TODO: many options available, check them out
     bottom_boundary = psp.components.boundary.BottomBoundary(
         swbbcfile=0,  # Do not specify in separate file
         swbotb=6,  # Bottom flux equals zero
@@ -171,7 +173,7 @@ def _make_complex_test_model():
         "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
     })
 
-    ## Root density as function of depth TODO
+    ## Root density as function of depth
     maize_rdctb = psp.components.crop.RDCTB.create({
         "RRD": [0.0, 1.0],
         "RDENS": [1.0, 0.0],
@@ -204,7 +206,7 @@ def _make_complex_test_model():
         # Root development
         rdc=100.0,  # Maximum root depth [cm]
         swrd=2,  # Root depth depends on maximum daily increase
-        swdmi2rd=0,  # Rooting depth increase depends on assimilate availability TODO: New module uses also water and oxygen stress
+        swdmi2rd=0,  # Rooting depth increase depends on assimilate availability
         rdctb=maize_rdctb,
     )
 
@@ -256,7 +258,7 @@ def _make_complex_test_model():
     #     swtype_tred=1,  # Use Campbell sigmoidal reduction function
     #     swhydrlift=0,  # No hydraulic lift
     #     swdosatrel=0,  # For layers with h >=0 RWU is proportional to Lrv in those layers; remaining Tpot is then solved by the microscopic RWU model
-    #     swo2ect=1,  # effect on RWU: lrv  TODO???
+    #     swo2ect=1,  # effect on RWU: lrv
     #     swalptot=1,  # Effect RWU: Multiply stress by oxygen and solutes
     #     wiltpoint=-10000,
     #     kstem=1.0e-1,
@@ -345,12 +347,12 @@ def _make_complex_test_model():
     ## Drainage file
     dra = psp.components.drainage.DraFile(
         dramet=3,  # Use resistance
-        swdivd=1,  # Calculate vertical distribution of drainage flux TODO does it matter?
-        cofani=[1.0, 1.0, 1.0, 1.0],  # anisotropy factor
-        swdislay=0,  # No adjustment top layer TODO
+        swdivd=1,  # Calculate vertical distribution of drainage flux
+        cofani=soil_profile.get_swapinput_cofani(),  # anisotropy factor
+        swdislay=0,  # No adjustment top layer
         nrlevs=1,  # Number of levels
-        swtopnrsrf=0,  # No adjustment bottom discharge layer TODO
-        swintfl=0,  # No interflow in highest drainage level TODO
+        swtopnrsrf=0,  # No adjustment bottom discharge layer
+        swintfl=0,  # No interflow in highest drainage level
         fluxes=flux,
     )
 
@@ -368,7 +370,7 @@ def _make_complex_test_model():
         "PSILT": [0.1, 0.08, 0.08, 0.06],
         "PCLAY": [0.03, 0.03, 0.03, 0.03],
         "ORGMAT": [0.057, 0.022, 0.01, 0.003],
-    })  # TODO: get from soil database
+    })
 
     ## Initial soil temperatures; source: WWL
     initsoiltemp = psp.components.transport.INITSOILTEMP.create({
