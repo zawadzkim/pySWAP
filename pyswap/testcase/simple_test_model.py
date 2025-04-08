@@ -102,24 +102,26 @@ def _make_simple_test_model():
     ml.evaporation = evaporation
 
     # Soil profile properties
-    ## Soil profile and hydraulic functions
-    soil_profile, soil_hydraulic_functions = (
-        psp.components.soilwater.input_soil_from_Dutch_standards(
-            bofek_cluster=3015  # Zwak lemig zand, grasland
-        )
+    ## Get soil profile from dutch database
+    soilprofiles_db = psp.db.SoilProfilesDB()
+    soil_profile = soilprofiles_db.get_profile(
+        bofek_cluster=3015,  # Zwak lemig zand, grasland
+    )
+    soil_discr = soil_profile.get_swapinput_profile(
+        discretisation_depths=[50, 30, 60, 60, 100],
+        discretisation_compheights=[1, 2, 5, 10, 20],
     )
 
     soilprofile = psp.components.soilwater.SoilProfile(
         swsophy=0,  # MVG functions
         swhyst=0,  # No hysteresis
         swmacro=0,  # No preferential flow
-        soilprofile=soil_profile,
-        soilhydrfunc=soil_hydraulic_functions,
+        soilprofile=soil_discr,
+        soilhydrfunc=soil_profile.get_swapinput_hydraulic_params(),
     )
     ml.soilprofile = soilprofile
 
     # Bottom boundary condition
-    ## TODO: many options available, check them out
     bottom_boundary = psp.components.boundary.BottomBoundary(
         swbbcfile=0,  # Do not specify in separate file
         swbotb=6,  # Bottom flux equals zero
