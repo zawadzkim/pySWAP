@@ -168,8 +168,8 @@ Meteorology:
   swetr:
     1:
       - swetsine
-      - swrain
-      - rainflux
+      # - swrain  # optional, not required
+      # - rainflux  # optional, not required
     0:
       - alt
       - altw
