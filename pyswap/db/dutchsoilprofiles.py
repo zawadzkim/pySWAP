@@ -146,7 +146,7 @@ class SoilProfile(BaseModel):
         """
         Returns a list containing 1.0 for each soil physical layer.
         """
-        return [1.0] * len(self.data)
+        return [1.0] * len(next(iter(self.data.values())))
 
 
 class SoilProfilesDB(BaseModel):
