@@ -43,4 +43,4 @@ soilprofiles_dutch: Traversable = (
 )
 """The directory of soil profile parameters."""
 
-co2correction: Traversable = libs / "co2-concentration" / "Atmospheric.co2"
+co2concentration: Traversable = libs / "co2-concentration" / "Atmospheric.co2"

@@ -1,3 +1,5 @@
+import os
+
 import pyswap as psp
 
 
@@ -21,7 +23,7 @@ def _make_complex_test_model():
         swscre=1,  # Print simulation progression
         swerror=1,  # Print error messages
         tstart="2000-01-01",
-        tend="2000-12-31",
+        tend="2003-12-31",
         nprintday=1,  # number of output times a day
         swmonth=1,  # monthly output
         # period=1,  # daily output, swmonth=0
@@ -57,7 +59,7 @@ def _make_complex_test_model():
         metfil="260.met",
         stations=["260"],
         start="2000-01-01",
-        end="2000-12-31",
+        end="2003-12-31",
     )
 
     meteo = psp.components.meteorology.Meteorology(
@@ -306,10 +308,10 @@ def _make_complex_test_model():
 
     ## Crop rotation
     croprotation = psp.components.crop.CROPROTATION.create({
-        "CROPSTART": ["2000-05-01"],
-        "CROPEND": ["2000-10-15"],
-        "CROPFIL": ["'maizes'"],
-        "CROPTYPE": [2],
+        "CROPSTART": ["2000-05-01", "2001-05-01", "2002-05-01"],
+        "CROPEND": ["2000-10-15", "2001-10-15", "2002-10-15"],
+        "CROPFIL": ["'maizes'", "'maizes'", "'maizes'"],
+        "CROPTYPE": [2, 2, 2],
     })
 
     # ## No irrigation
@@ -329,7 +331,7 @@ def _make_complex_test_model():
     # Lateral drainage
     ## Freeboard over time
     datowltb1 = psp.components.drainage.DATOWLTB1.create({
-        "DATOWL1": ["2000-01-01", "2000-12-31"],
+        "DATOWL1": ["2000-01-01", "2003-12-31"],
         "LEVEL1": [-80.0, -80.0],
     })
 
@@ -393,7 +395,7 @@ def _make_complex_test_model():
 
 if __name__ == "__main__":
     ml = _make_complex_test_model()
-    # ml.to_classic_swap(os.path.join("pyswap", "testcase", "temp"))
+    ml.to_classic_swap(os.path.join("pyswap", "testcase", "tempdir"))
     res1 = ml.run()
     # ml.swapversion = "4.2.202"
     # res2 = ml.run()
