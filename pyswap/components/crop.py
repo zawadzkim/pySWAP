@@ -92,7 +92,7 @@ from pyswap.utils.mixins import (
 )
 
 __all__ = [
-    "CropDevelopmentSettings",
+    "_CropDevelopmentSettings",
     "CropDevelopmentSettingsWOFOST",
     "CropDevelopmentSettingsFixed",
     "CropDevelopmentSettingsGrass",
@@ -135,7 +135,7 @@ __all__ = [
 ]
 
 
-class CropDevelopmentSettings(
+class _CropDevelopmentSettings(
     _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _WOFOSTUpdateMixin
 ):
     """Crop development settings.
@@ -214,10 +214,42 @@ class CropDevelopmentSettings(
     rdctb: _Arrays | None = None
 
 
-class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
+class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
     """Additional settings as defined for the WOFOST model.
 
     Attributes:
+        wofost_variety (CropVariety): Crop variety settings.
+        swcf (Literal[1, 2]): Choose between crop factor and crop height for simulation of
+            * 1 - Crop factor, when using ETref from meteo or Penman-Monteith.
+            * 2 - Crop height, when using Penman-Monteith with actual crop height, albedo and canopy resistance.
+        cftb (Optional[_Table]): Table with crop factors [0..2 -] as a function of development stage.
+        chtb (Optional[_Table]): Table with crop height [0..1e4 cm] as a function of development stage.
+        albedo (Optional[float]): Crop reflection coefficient [0..1.0 -].
+        rsc (Optional[float]): Minimum canopy resistance [0..1e6 s/m].
+        rsw (Optional[float]): Canopy resistance of intercepted water [0..1e6 s/m].
+        tsumea (float): Temperature sum from emergence to anthesis [0..1e4 degrees C].
+        tsumam (float): Temperature sum from anthesis to maturity [1..1e4 degrees C].
+        tbase (Optional[float]): Start value of temperature sum [-10..30 degrees C].
+        kdif (float): Extinction coefficient for diffuse visible light [0..2 -].
+        kdir (float): Extinction coefficient for direct visible light [0..2 -].
+        swrd (Optional[Literal[1, 2, 3]]): Switch development of root growth.
+            * 1 - Root growth depends on development stage.
+            * 2 - Root growth depends on maximum daily increase.
+            * 3 - Root growth depends on available root biomass.
+        rdtb (Optional [_Arrays]): Rooting depth [0..1000 cm] as a function of development stage [0..2 -].
+        rdi (float): Initial rooting depth [0..1000 cm].
+        rri (float): Maximum daily increase in rooting depth [0..100 cm].
+        rdc (float): Maximum rooting depth of particular crop [0..1000 cm].
+        swdmi2rd (Optional[Literal[0, 1]]): Switch for calculation rooting depth.
+            * 0 - Rooting depth increase is related to availability assimilates for roots.
+            * 1 - Rooting depth increase is related to relative dry matter increase.
+        rlwtb (Optional _Arrays]): rooting depth [0..5000 cm] as function of root weight [0..5000 kg DM/ha].
+        wrtmax (float): Maximum root weight [0..1e5 kg DM/ha].
+        swrdc (Literal[0, 1]): Switch for calculation of relative root density.
+            * 0 - Root density is not modified.
+            * 1 - Root density is modified based on root water extraction.
+        TODO: add parameters related to swdrc=1: fgwrt, fdwrt, wrtmin
+        rdctb (_Arrays): root density [0..1 -] as function of relative rooting depth [0..1 -].
         idsl (Literal[0, 1, 2]): Switch for crop development.
             * 0 - Depends on temperature
             * 1 - Depends on temperature and daylength
@@ -297,10 +329,41 @@ class CropDevelopmentSettingsWOFOST(CropDevelopmentSettings):
     rdrstb: _Arrays | None = None
 
 
-class CropDevelopmentSettingsFixed(CropDevelopmentSettings):
+class CropDevelopmentSettingsFixed(_CropDevelopmentSettings):
     """Fixed crop development settings (Additionaly to CropDevelopmentSettings).
 
     Attributes:
+        swcf (Literal[1, 2]): Choose between crop factor and crop height for simulation of
+            * 1 - Crop factor, when using ETref from meteo or Penman-Monteith.
+            * 2 - Crop height, when using Penman-Monteith with actual crop height, albedo and canopy resistance.
+        cftb (Optional[_Table]): Table with crop factors [0..2 -] as a function of development stage.
+        chtb (Optional[_Table]): Table with crop height [0..1e4 cm] as a function of development stage.
+        albedo (Optional[float]): Crop reflection coefficient [0..1.0 -].
+        rsc (Optional[float]): Minimum canopy resistance [0..1e6 s/m].
+        rsw (Optional[float]): Canopy resistance of intercepted water [0..1e6 s/m].
+        tsumea (float): Temperature sum from emergence to anthesis [0..1e4 degrees C].
+        tsumam (float): Temperature sum from anthesis to maturity [1..1e4 degrees C].
+        tbase (Optional[float]): Start value of temperature sum [-10..30 degrees C].
+        kdif (float): Extinction coefficient for diffuse visible light [0..2 -].
+        kdir (float): Extinction coefficient for direct visible light [0..2 -].
+        swrd (Optional[Literal[1, 2, 3]]): Switch development of root growth.
+            * 1 - Root growth depends on development stage.
+            * 2 - Root growth depends on maximum daily increase.
+            * 3 - Root growth depends on available root biomass.
+        rdtb (Optional [_Arrays]): Rooting depth [0..1000 cm] as a function of development stage [0..2 -].
+        rdi (float): Initial rooting depth [0..1000 cm].
+        rri (float): Maximum daily increase in rooting depth [0..100 cm].
+        rdc (float): Maximum rooting depth of particular crop [0..1000 cm].
+        swdmi2rd (Optional[Literal[0, 1]]): Switch for calculation rooting depth.
+            * 0 - Rooting depth increase is related to availability assimilates for roots.
+            * 1 - Rooting depth increase is related to relative dry matter increase.
+        rlwtb (Optional _Arrays]): rooting depth [0..5000 cm] as function of root weight [0..5000 kg DM/ha].
+        wrtmax (float): Maximum root weight [0..1e5 kg DM/ha].
+        swrdc (Literal[0, 1]): Switch for calculation of relative root density.
+            * 0 - Root density is not modified.
+            * 1 - Root density is modified based on root water extraction.
+        TODO: add parameters related to swdrc=1: fgwrt, fdwrt, wrtmin
+        rdctb (_Arrays): root density [0..1 -] as function of relative rooting depth [0..1 -].
         idev (Literal[1, 2]): Duration of crop growing period
 
             * 1 - Duration is fixed
