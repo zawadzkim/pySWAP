@@ -20,7 +20,7 @@ class SoilProfile(BaseModel):
 
     bofek_cluster: int | None = None
     soilprofile_index: int | None = None
-    data: dict | None = None
+    data: dict
 
     def plot(
         self,
@@ -139,7 +139,7 @@ class SoilProfile(BaseModel):
         # Create the SOILHYDRFUNC table
         return SOILHYDRFUNC.create(soilhydro_table)
 
-    def get_swapinput_fractions():
+    def get_swapinput_fractions(self):
         pass
 
     def get_swapinput_cofani(self):
@@ -229,5 +229,5 @@ class SoilProfilesDB(BaseModel):
         else:
             return concat(profiles)
 
-    def plot_profiles():
+    def plot_profiles(self):
         pass
