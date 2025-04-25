@@ -88,7 +88,7 @@ class PySWAPBaseModel(BaseModel):
             updated_model.validate_with_yaml() if hasattr(
                 updated_model, "validate_with_yaml"
             ) else None
-            return updated_model
+            return updated_model.model_copy(deep=True)
 
         else:
             for field, value in updated_model:
@@ -136,10 +136,17 @@ class BaseTableModel(pa.DataFrameModel):
 
     @classmethod
     def create(cls, data: dict, columns: list | None = None) -> DataFrame:
-        df = pd.DataFrame(data)
+        df = pd.DataFrame(data=data)
         if columns:
             df.columns = columns
         else:
             df.columns = df.columns.str.upper()
         validated_df = cls.validate(df)
         return validated_df
+
+    @classmethod
+    def update(cls, table, new: dict):
+        # Update the table with new values
+        table_upd = table.to_dict("list")
+        table_upd.update(new)
+        return cls.create(table_upd)
