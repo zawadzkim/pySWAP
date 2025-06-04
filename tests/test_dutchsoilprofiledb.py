@@ -9,21 +9,19 @@ def test_get_soilprofile_dutch_standards():
     db = dsp.SoilProfilesDB()
 
     # Test with one soil profile id
-    test = db.get_table_profiles(soilprofile_index=90110280)
+    db.get_table_profiles(soilprofile_index=90110280)
 
     # Test with multiple soil profile ids
-    test = db.get_table_profiles(soilprofile_index=[90110280, 1020])
+    db.get_table_profiles(soilprofile_index=[90110280, 1020])
 
     # Test with bofek cluster
-    test = db.get_table_profiles(bofek_cluster=3001)
+    db.get_table_profiles(bofek_cluster=3001)
 
     # Test with multiple bofek clusters
-    test = db.get_table_profiles(bofek_cluster=[3001, 3002])
-    # print(test)
+    db.get_table_profiles(bofek_cluster=[3001, 3002])
 
     # Test with soil profile code
-    test = db.get_table_profiles(soilprofile_code="Hn21")
-    print(test)
+    db.get_table_profiles(soilprofile_code="Hn21")
 
     # Test with multiple soil profile codes
     db.get_table_profiles(soilprofile_code=["Hn21", "pZg21"])
@@ -34,11 +32,10 @@ def test_get_soilprofile_dutch_standards():
     )
 
     # Test with dominant cluster profile
-    test = db.get_table_profiles(
+    db.get_table_profiles(
         bofek_cluster=3001,
         bofek_cluster_dominant=True,
     )
-    # print(test)
 
     # Test with wrong input: soil profile id
     with pytest.raises(ValueError) as exc_info:
@@ -58,8 +55,8 @@ def test_get_soilprofile_dutch_standards():
 
 def test_soilprofile_hydrfunc():
     # Test if table values and headers are correct
-    table_correct_sp = pd.read_csv("tests/test_bofeksoilprofile/bofek1001_sp.csv")
-    table_correct_hf = pd.read_csv("tests/test_bofeksoilprofile/bofek1001_hf.csv")
+    table_correct_sp = pd.read_csv("tests/test_dutchsoilprofile/bofek1001_sp.csv")
+    table_correct_hf = pd.read_csv("tests/test_dutchsoilprofile/bofek1001_hf.csv")
 
     # Get database
     db = dsp.SoilProfilesDB()
