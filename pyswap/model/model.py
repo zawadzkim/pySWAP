@@ -58,7 +58,6 @@ from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.defaults import IS_WINDOWS
 from pyswap.core.fields import Subsection
 from pyswap.core.io.io_ascii import open_ascii
-from pyswap.db.co2concentration import CO2concentration
 from pyswap.libs import swap_linux, swap_windows
 from pyswap.model.result import Result
 from pyswap.utils.mixins import FileMixin, SerializableMixin
@@ -126,19 +125,6 @@ class ModelBuilder:
             self.model.lateraldrainage.write_dra(self.tempdir)
         if self.model.crop.cropfiles:
             self.model.crop.write_crop(self.tempdir)
-            # Check if co2correction is used in any of the cropfiles
-            crops_co2corrections = [
-                cropfile.co2correction is not None
-                for cropfile in self.model.crop.cropfiles.values()
-            ]
-            # If so, copy the co2correction file to the tempdir
-            if sum(crops_co2corrections) > 0:
-                co2db = CO2concentration()
-                period = [
-                    self.model.generalsettings.tstart,
-                    self.model.generalsettings.tend,
-                ]
-                co2db.write_co2(self.tempdir, period)
         if self.model.meteorology.metfile:
             self.model.meteorology.write_met(self.tempdir)
         if self.model.fixedirrigation.swirgfil == 1:
@@ -385,23 +371,21 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     """Main class that runs the SWAP model.
 
     Even though all sections are set to optional, the model will not run if
-    any of the components are missing, except for fixedirrigation, SnowAndFrost,
-    RichardsSettings, HeatFlow and SoluteTransport. These components have
-    default values that will be used if they are not provided.
+    any of the components are missing.
 
     Attributes:
         metadata (Subsection): Metadata of the model.
-        version (str): The version of the model (default: "base").
+        version (str): The version of the model.
         generalsettings (Subsection): Simulation settings.
-        richardsettings (Subsection): Richards settings.
         meteorology (Subsection): Meteorological data.
         crop (Subsection): Crop data.
-        fixedirrigation (Subsection): Fixed irrigation settings (default: no irrigation).
+        fixedirrigation (Subsection): Fixed irrigation settings.
         soilmoisture (Subsection): Soil moisture data.
         surfaceflow (Subsection): Surface flow data.
         evaporation (Subsection): Evaporation data.
         soilprofile (Subsection): Soil profile data.
-        snowandfrost (Subsection): Snow and frost data (default: no snow and frost).
+        snowandfrost (Subsection): Snow and frost data.
+        richards (Subsection): Richards data.
         lateraldrainage (Subsection): Lateral drainage data.
         bottomboundary (Subsection): Bottom boundary data.
         heatflow (Subsection): Heat flow data.
@@ -421,9 +405,6 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     generalsettings: Subsection[GeneralSettings] | None = Field(
         default=None, repr=False
     )
-    richardsettings: Subsection[RichardsSettings] | None = Field(
-        default=RichardsSettings(swkmean=1, swkimpl=0), repr=False
-    )
     meteorology: Subsection[Meteorology] | None = Field(default=None, repr=False)
     crop: Subsection[Crop] | None = Field(default=None, repr=False)
     fixedirrigation: Subsection[FixedIrrigation] | None = Field(
@@ -435,6 +416,9 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     soilprofile: Subsection[SoilProfile] | None = Field(default=None, repr=False)
     snowandfrost: Subsection[SnowAndFrost] | None = Field(
         default=SnowAndFrost(swsnow=0, swfrost=0), repr=False
+    )
+    richards: Subsection[RichardsSettings] | None = Field(
+        default=RichardsSettings(swkmean=1, swkimpl=0), repr=False
     )
     lateraldrainage: Subsection[Drainage] | None = Field(default=None, repr=False)
     bottomboundary: Subsection[BottomBoundary] | None = Field(default=None, repr=False)
@@ -463,7 +447,6 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         required_components = [
             "metadata",
             "generalsettings",
-            "richardsettings",
             "meteorology",
             "crop",
             "fixedirrigation",
@@ -472,6 +455,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
             "evaporation",
             "soilprofile",
             "snowandfrost",
+            "richards",
             "lateraldrainage",
             "bottomboundary",
             "heatflow",

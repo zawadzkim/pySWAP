@@ -168,8 +168,8 @@ Meteorology:
   swetr:
     1:
       - swetsine
-      # - swrain  # optional, not required
-      # - rainflux  # optional, not required
+      - swrain
+      - rainflux
     0:
       - alt
       - altw
@@ -259,8 +259,6 @@ HeatFlow:
   swhea:
     1:
       - swcalt
-      - swtopbhea
-      - swbotbhea
   swcalt:
     1:
       - tampli
@@ -269,7 +267,6 @@ HeatFlow:
       - ddamp
     2:
       - soiltextures
-      - initsoiltemp
       - swtopbhea
       - swbotbhea
   swtopbhea:
@@ -332,8 +329,6 @@ Crop:
       - rds
       - croprotation
       - cropfiles
-  # Need to add cropfile validation as well, but since this is a dict with keys that can be specified by the user, this is hard to check
-  prep:
 
 GeneralSettings:
   swscre:

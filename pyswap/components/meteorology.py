@@ -25,26 +25,20 @@ from knmi import (
     get_day_data_dataframe as _get_day_data_dataframe,
     get_hour_data_dataframe as _get_hour_data_dataframe,
 )
-from numpy import exp as _exp
+from pandas import read_csv as _read_csv
 from pydantic import (
     Field as _Field,
     PrivateAttr as _PrivateAttr,
 )
 
-from pyswap.components.tables import (
-    DAILYMETEODATA,
-    DETAILEDRAINFALL,
-    RAINFLUX,
-    SHORTINTERVALMETEODATA,
-)
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.fields import (
+    CSVTable as _CSVTable,
     Decimal2f as _Decimal2f,
     File as _File,
     String as _String,
     Table as _Table,
 )
-from pyswap.core.io.io_csv import load_csv
 from pyswap.core.valueranges import UNITRANGE as _UNITRANGE
 from pyswap.gis import Location as _Location
 from pyswap.utils.mixins import (
@@ -54,14 +48,10 @@ from pyswap.utils.mixins import (
 )
 
 __all__ = [
-    "MetFile",
-    "Meteorology",
-    "metfile_from_csv",
-    "metfile_from_knmi",
-    "DAILYMETEODATA",
-    "SHORTINTERVALMETEODATA",
-    "DETAILEDRAINFALL",
-    "RAINFLUX",
+    "MetFile", 
+    "Meteorology", 
+    "metfile_from_csv", 
+    "metfile_from_knmi"
 ]
 
 
@@ -81,7 +71,7 @@ class MetFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     _extension: bool = _PrivateAttr(default=None)
 
     metfil: _String
-    content: _Table | None = _Field(default=None, exclude=True)
+    content: _CSVTable | None = _Field(default=None, exclude=True)
 
 
 class Meteorology(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
@@ -197,12 +187,7 @@ class Meteorology(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
 
 
 def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
-    """Method for loading daily meteorological data from a CSV file.
-
-    !!! note
-
-        The CSV file must contain the following columns:
-        station, dd, mm, yyyy, tmin, tmax, hum, wet, wind, rain, etref, rad
+    """Method for loading meteorological data from a CSV file.
 
     Parameters:
         metfil (str): name of the .met file
@@ -212,107 +197,111 @@ def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
     Returns:
         MetFile object.
     """
-    # Create table from csv
-    df = load_csv(csv_path, **kwargs)
-    table = DAILYMETEODATA.create(data=df.to_dict())
 
-    # Make sure Station column has quotes
-    table.loc[:, "STATION"] = table.STATION.apply(
-        lambda x: f"'{x}'" if not str(x).startswith("'") else x
-    )
-
-    return MetFile(metfil=metfil, content=table)
+    return MetFile(metfil=metfil, content=_read_csv(csv_path, **kwargs))
 
 
 def metfile_from_knmi(
     metfil: str,
     stations: str | list,
+    variables: list[
+        _Literal[
+            "WIND",
+            "TEMP",
+            "SUNR",
+            "PRCP",
+            "VICL",
+            "WEER",
+            "DD",
+            "FH",
+            "FF",
+            "FX",
+            "T",
+            "T10N",
+            "TD",
+            "SQ",
+            "Q",
+            "DR",
+            "RH",
+            "P",
+            "VV",
+            "N",
+            "U",
+            "WW",
+            "IX",
+            "M",
+            "R",
+            "S",
+            "O",
+            "Y",
+            "UG",
+            "FG",
+            "UX",
+            "UN",
+        ]
+    ],
     start: str | _datetime = "20000101",
     end: str | _datetime = "20200101",
     frequency: _Literal["day", "hour"] = "day",
-    # inseason: bool = False,  # Do not use, will cause missing data crashing SWAP
+    inseason: bool = False,
 ) -> MetFile:
     """Retrieves the meteorological data from KNMI API using knmi-py and
     enforces SWAP required format.
 
-    !!! note:
-        Currently, only daily data can be retrieved.
-
     Parameters:
         metfil (str): name of the .met file
         stations (str | list): station number(s) to retrieve data from
+        variables (str | list): variables to retrieve
         start (str | dt): start date of the data
         end (str | dt): end date of the data
         frequency (Literal['day', 'hour']): frequency of the data (day or hour)
+        inseason (bool): whether to retrieve in-season data
 
     Returns:
         MetFile object.
     """
 
-    if not isinstance(stations, list):
+    if isinstance(stations, str):
         stations = [stations]
+    if isinstance(variables, str):
+        variables = [variables]
 
-    # variables to retrieve and their SWAP name
-    variables = {
-        "STN": "STATION",
-        "Q": "RAD",
-        "TN": "TMIN",
-        "TX": "TMAX",
-        "UG": "HUM",
-        "FG": "WIND",
-        "RH": "RAIN",
-        "EV24": "ETREF",
-        "DR": "WET",
-    }
+    if not variables:
+        variables = ["TEMP", "PRCP", "Q", "UG", "FG", "UX", "UN"]
 
-    # Retrieve data
     get_func = (
         _get_day_data_dataframe if frequency == "day" else _get_hour_data_dataframe
     )
 
     df = get_func(
-        stations=stations,
-        start=start,
-        end=end,
-        variables=list(variables.keys())[1:],
+        stations=stations, start=start, end=end, variables=variables, inseason=inseason
     )
 
-    # Making separate columns for day, month, year
-    df.insert(1, "DD", df.index.day)
-    df.insert(2, "MM", df.index.month)
-    df.insert(3, "YYYY", df.index.year)
-
-    # Rename columns and drop index
-    df = df.reset_index(drop=True)
-    df = df.rename(columns=variables)
-
-    # Set -1 to zero in RAIN and SUNH columns (rain or sun hours < 0.05 mm and h respectively)
-    df["RAIN"] = df["RAIN"].apply(lambda x: 0 if x == -1 else x)
-
-    # Changing unit of data (see knmi documentation)
-    factor = {
-        "RAD": 10,  # Convert from J/cm2 to kJ/m2
-        "TMIN": 0.1,  # Unit: Convert from 1 to 0.1 degC
-        "TMAX": 0.1,  # Convert from 1 to 0.1 degC
-        "HUM": 0.01,  # Convert from % to fraction
-        "WIND": 0.1,  # Convert from 1 to 0.1 m/s
-        "RAIN": 0.1,  # Convert from 1 to 0.1 mm
-        "ETREF": 0.1,  # Convert from 1 to 0.1 mm
-        "WET": (0.1 / 24),  # Convert from 0.1 h to fraction of day
+    # rename some columns
+    required_column_names = {
+        "STN": "Station",
+        "TN": "Tmin",
+        "TX": "Tmax",
+        "UG": "HUM",
+        "DR": "WET",
+        "FG": "WIND",
+        "RH": "RAIN",
+        "EV24": "ETref",
+        "Q": "RAD",
     }
-    df = df.apply(lambda x: x * factor.get(x.name, 1))
 
-    # Convert from fraction to kPa according to Allen et al. (1998)
-    es_min = 0.6108 * _exp(17.27 * df["TMIN"].values / (df["TMIN"].values + 237.3))
-    es_max = 0.6108 * _exp(17.27 * df["TMAX"].values / (df["TMAX"].values + 237.3))
-    df["HUM"] = (es_min + es_max) / 2 * df["HUM"]
+    df = df.rename(columns=required_column_names)
 
-    # Make sure Station column has quotes
-    df["STATION"] = df["STATION"].apply(
-        lambda x: f"'{x}'" if not str(x).startswith("'") else x
-    )
+    # recalculation of the parameters, the original unit is 0.1 Unit
+    df[["Tmin", "Tmax", "ETref", "RAIN", "WIND"]] = df[
+        ["Tmin", "Tmax", "ETref", "RAIN", "WIND"]
+    ].multiply(0.1)
 
-    # Make MeteoData table
-    table = DAILYMETEODATA.create(data=df.to_dict())
+    # The required unit is days
+    df["WET"] = df["WET"].multiply(0.1).multiply(24)
 
-    return MetFile(metfil=metfil, content=table)
+    return MetFile(metfil=metfil, content=df)
+
+
+meteo_tables = ["SHORTINTERVALMETEODATA", "DETAILEDRAINFALL", "RAINFLUX"]
+__all__.extend(meteo_tables)

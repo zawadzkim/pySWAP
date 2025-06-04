@@ -36,9 +36,6 @@ __all__ = [
     "DMMOWTB",
     "DMMOWDELAY",
     "SHORTINTERVALMETEODATA",
-    "CO2EFFTB",
-    "CO2TRATB",
-    "CO2AMAXTB",
 ]  #  TODO: needs update?
 
 # %% ++++++++++++++++++++++++++++ CROP TABLES ++++++++++++++++++++++++++++
@@ -81,11 +78,7 @@ crop_tables = [
     "TC8TB",
     "DC1TB",
     "DC2TB",
-    "CO2EFFTB",
-    "CO2TRATB",
-    "CO2AMAXTB",
 ]
-
 
 class DATEHARVEST(BaseTableModel):
     """Date of harvest
@@ -136,25 +129,11 @@ class GCTB(BaseTableModel):
 
 
 class CFTB(BaseTableModel):
-    """Crop factor [0..2 [-], R], as function of dev. stage [0..2 -, R]
-
-    Attributes:
-        DVS (Series[float]): Development stage of the crop.
-        CF (Series[float]): Crop factor.
-    """
-
-    DVS: Series[float] | None = pa.Field(**DVSRANGE)
-    DNR: Series[float] | None = pa.Field(**YEARRANGE)
-    CF: Series[float] | None
-    CH: Series[float] | None
-
-
-class CHTB(BaseTableModel):
     """Crop Height [0..1.d4 cm, R], as function of dev. stage [0..2 -, R]
 
     Attributes:
         DVS (Series[float]): Development stage of the crop.
-        CF (Series[float]): Crop height.
+        CF (Series[float]): Crop factor.
     """
 
     DVS: Series[float] | None = pa.Field(**DVSRANGE)
@@ -549,27 +528,6 @@ class DC2TB(BaseTableModel):
     FID: Series[float]
 
 
-class CO2EFFTB(BaseTableModel):
-    """Correction factor light use efficiency for change in CO2 concentration."""
-
-    CO2PPM: Series[float]
-    FACTOR: Series[float]
-
-
-class CO2TRATB(BaseTableModel):
-    """Correction factor maximum transpiration rate for change in CO2 concentration."""
-
-    CO2PPM: Series[float]
-    FACTOR: Series[float]
-
-
-class CO2AMAXTB(BaseTableModel):
-    """Correction factor assimilation rate for change in CO2 concentration."""
-
-    CO2PPM: Series[float]
-    FACTOR: Series[float]
-
-
 # %% ++++++++++++++++++++++++++++ METEO TABLES ++++++++++++++++++++++++++++
 
 meteo_tables = [
@@ -583,21 +541,24 @@ meteo_tables = [
 class DAILYMETEODATA(BaseTableModel):
     """Format detailed daily meteo data.
 
-    TODO:
+    validate that the station is in single quotes.
+    check if the dd, mm, yyyy columns are already in the
+        dataframe. If not, require datetime index and
+        parse the datetime index to separate columns.
     format decimals in the variables.
     """
 
-    STATION: Series[str]
+    Station: Series[str]
     DD: Series[str]
     MM: Series[str]
     YYYY: Series[str]
     RAD: Series[float]
-    TMIN: Series[float]
-    TMAX: Series[float]
+    Tmin: Series[float]
+    Tmax: Series[float]
     HUM: Series[float]
     WIND: Series[float]
     RAIN: Series[float]
-    ETREF: Series[float]
+    ETref: Series[float]
     WET: Series[float]
 
 
@@ -684,7 +645,7 @@ class SOILHYDRFUNC(BaseTableModel):
 
         !!! warning
             ALFAW required only when the hysteresis option is set to 1 or 2. This column is set as optional column and (for now) is not checked.
-
+    
     Attributes:
         ORES (Series[float]): Residual water content [0..1 cm3/cm3, R]
         OSAT (Series[float]): Saturated water content [0..1 cm3/cm3, R]
@@ -753,9 +714,8 @@ boundary_tables = [
     "DATET",
     "CSEEPARR",
     "INISSOIL",
-    "MISC",
+    "MISC"
 ]
-
 
 class GWLEVEL(BaseTableModel):
     """Table for groundwater levels.
@@ -894,9 +854,8 @@ drainage_tables = [
     "QWEIR",
     "QWEIRTB",
     "PRIWATLVL",
-    "QDRNTB",
+    "QDRNTB"
 ]
-
 
 class DRNTB(BaseTableModel):
     """Drainage characteristics table.
@@ -1045,8 +1004,10 @@ class QDRNTB(BaseTableModel):
 
 # %% ++++++++++++++++++++++++++++ GENERAL SETTINGS TABLES ++++++++++++++++++++++++++++
 
-general_settings_tables = ["OUTDATIN", "OUTDAT"]
-
+general_settings_tables = [
+    "OUTDATIN",
+    "OUTDAT"
+]
 
 class OUTDATIN(BaseTableModel):
     """OUTDATIN table

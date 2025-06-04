@@ -40,7 +40,7 @@ class HeatFlow(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
             * 1 - no heat flux
             * 2 - prescribe bottom temperature
         soiltextures (Optional[Table]): For each physical soil layer the soil texture (g/g mineral parts) and the organic matter content (g/g dry soil)
-        initsoiltemp (Optional[Table]): Initial temperature TSOIL [-50..50 oC, R] as function of soil depth ZH [-100000..0 cm, R]
+        initsoil (Optional[Table]): Initial temperature TSOIL [-50..50 oC, R] as function of soil depth ZH [-100000..0 cm, R]
         bbctsoil (Optional[Table]): Bottom boundary temperature TBOT [-50..50 oC, R] as function of date DATET [date]
     """
 
