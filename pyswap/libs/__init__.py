@@ -39,7 +39,7 @@ plotting: Traversable = libs / "plotting"
 """The directory of plotting resources."""
 
 soilprofiles_dutch: Traversable = (
-    libs / "soilprofiles_dutch" / "soilprofiles_bofekRpackage.csv"
+    libs / "soilprofiles_dutch" / "soilprofiles_BodemkaartBofek.csv"
 )
 """The directory of soil profile parameters."""
 

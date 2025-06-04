@@ -44,6 +44,8 @@ class SoilProfile(BaseModel):
         discretisation_compheights : list
             List of discretisation compartment heights (cm) for each discretisation depth.
 
+        TODO: proper handling of difference in defined discretisation depths and physical soil layers.
+
         Example
         -------
         discretisation_depths = [50, 30, 60, 60, 100]
@@ -58,7 +60,7 @@ class SoilProfile(BaseModel):
         """
 
         # Get bottom of the soil physical layers
-        zb_soillay = array(self.data["LAYER_ZBOTTOM"])
+        zb_soillay = array(self.data["layer_zbot"]) * 10  # convert from m to cm
 
         # Get bottom of given discretisation layers
         zb_dislay = array(list(discretisation_depths)).cumsum()
@@ -86,6 +88,8 @@ class SoilProfile(BaseModel):
         # Calculate the amount of compartments in each layer
         ncomp = (hsublay / hcomp).astype(int)
 
+        # TODO: If ncomp * hcomp != hsublay: add layer with resulting depth
+
         # Create the SOILPROFILE table
         soilprofile_table = SOILPROFILE.create({
             "ISUBLAY": isublay,
@@ -101,7 +105,6 @@ class SoilProfile(BaseModel):
         self,
         ksatexm: Series[float] | None = None,
         h_enpr: Series[float] | None = None,
-        bdens: Series[float] | None = None,
     ):
         """
         ksatexm : list
@@ -110,31 +113,25 @@ class SoilProfile(BaseModel):
         h_enpr : list
             List of measured air entry pressure head (cm).
             If not provided, it will be set equal to 0.0 cm.
-        bdens : list
-            List of measured bulk densities (g/cm3).
-            If not provided, it will be set equal to 1300 mg/cm3.
         """
-        # Select the columns needed for the SOILHYDRFUNC table
-        soilhydro_table = {
-            param: values
-            for param, values in self.data.items()
-            if param
-            in [
-                "ORES",
-                "OSAT",
-                "ALFA",
-                "NPAR",
-                "KSATFIT",
-                "LEXP",
-            ]
-        }
+        # Define a dictionary
+        soilhydro_table = {}
 
-        # Set extra parameters to given or default values
-        soilhydro_table["H_ENPR"] = h_enpr if h_enpr is not None else 0.0
-        soilhydro_table["KSATEXM"] = (
-            ksatexm if ksatexm is not None else soilhydro_table["KSATFIT"]
-        )
-        soilhydro_table["BDENS"] = bdens if bdens is not None else 1300.0
+        # Add given information or data from the database
+        soilhydro_table.update({
+            "ORES": self.data["layer_ores"],
+            "OSAT": self.data["layer_osat"],
+            "ALFA": self.data["layer_alfa"],
+            "NPAR": self.data["layer_npar"],
+            "KSATFIT": self.data["layer_ksatfit"],
+            "LEXP": self.data["layer_lexp"],
+            "H_ENPR": h_enpr
+            if h_enpr is not None
+            else [0.0] * len(self.data["layer_ores"]),
+            "KSATEXM": ksatexm if ksatexm is not None else self.data["layer_ksatfit"],
+            "BDENS": self.data["layer_bdens"]
+            * 1000,  # Convert from g / cm3 to mg / cm3
+        })
 
         # Create the SOILHYDRFUNC table
         return SOILHYDRFUNC.create(soilhydro_table)
@@ -197,13 +194,13 @@ class SoilProfilesDB(BaseModel):
         soilprofile_code: str | list | None = None,
     ):
         # Load library
-        all_profiles = load_csv(soilprofiles_dutch)
+        all_profiles = load_csv(soilprofiles_dutch, skiprows=12)
 
         # For all indexes, find corresponding profiles if they exist
         profiles = []
         for params, column in zip(
             [bofek_cluster, soilprofile_index, soilprofile_code],
-            ["CLUSTER_BOFEK", "SOILPROFILE_INDEX", "SOILPROFILE_CODE"],
+            ["bofek_cluster", "soil_id", "soil_unit"],
             strict=False,
         ):
             # If params is not a list, make it a list
@@ -216,7 +213,7 @@ class SoilProfilesDB(BaseModel):
                     mask = all_profiles[column].values == par
                     # Adjust mask if Bofek and dominant profile in bofek are wanted
                     if bofek_cluster is not None and bofek_cluster_dominant:
-                        mask = mask & all_profiles["CLUSTER_DOMINANT"]
+                        mask = mask & all_profiles["bofek_dominant"]
                     matching_profile = all_profiles[mask]
                     profiles.append(matching_profile)
 
