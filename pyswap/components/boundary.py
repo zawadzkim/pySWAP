@@ -138,7 +138,6 @@ class BottomBoundary(
     bbcfil: _String | None = None
     swbotb: _Literal[1, 2, 3, 4, 5, 6, 7, 8] | None = None
     sw2: _Literal[1, 2] | None = None
-    sw3: _Literal[1, 2] | None = None
     sw4: _Literal[0, 1] | None = None
     swbotb3resvert: _Literal[0, 1] | None = None
     swbotb3impl: _Literal[0, 1] | None = None

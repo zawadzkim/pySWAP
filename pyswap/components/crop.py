@@ -14,7 +14,7 @@ SWAP has three modes for crop simulations which users define in the CROPROTATION
     * 3 - dynamic grass growth model - use CropDevelopmentSettingsGrass
 
 For each choice, the .crp file will look different. Therefore, multiple classes
- are defined in this module to deal with those different settings.
+are defined in this module to deal with thos different settings.
 
 Classes:
     CropFile: Class for the .crp file.
@@ -45,7 +45,6 @@ from pyswap.components.irrigation import ScheduledIrrigation as _ScheduledIrriga
 from pyswap.components.tables import (
     AMAXTB,
     CFTB,
-    CHTB,
     CROPROTATION,
     DMGRZTB,
     DMMOWDELAY,
@@ -92,7 +91,6 @@ from pyswap.utils.mixins import (
 )
 
 __all__ = [
-    "_CropDevelopmentSettings",
     "CropDevelopmentSettingsWOFOST",
     "CropDevelopmentSettingsFixed",
     "CropDevelopmentSettingsGrass",
@@ -109,7 +107,6 @@ __all__ = [
     "RDCTB",
     "GCTB",
     "CFTB",
-    "CHTB",
     "KYTB",
     "MRFTB",
     "WRTB",
@@ -151,37 +148,40 @@ class _CropDevelopmentSettings(
 
     Attributes:
         wofost_variety (CropVariety): Crop variety settings.
-        swcf (Literal[1, 2]): Choose between crop factor and crop height for simulation of
-            * 1 - Crop factor, when using ETref from meteo or Penman-Monteith.
-            * 2 - Crop height, when using Penman-Monteith with actual crop height, albedo and canopy resistance.
-        cftb (Optional[_Table]): Table with crop factors [0..2 -] as a function of development stage.
-        chtb (Optional[_Table]): Table with crop height [0..1e4 cm] as a function of development stage.
-        albedo (Optional[float]): Crop reflection coefficient [0..1.0 -].
-        rsc (Optional[float]): Minimum canopy resistance [0..1e6 s/m].
-        rsw (Optional[float]): Canopy resistance of intercepted water [0..1e6 s/m].
-        tsumea (float): Temperature sum from emergence to anthesis [0..1e4 degrees C].
-        tsumam (float): Temperature sum from anthesis to maturity [1..1e4 degrees C].
-        tbase (Optional[float]): Start value of temperature sum [-10..30 degrees C].
-        kdif (float): Extinction coefficient for diffuse visible light [0..2 -].
-        kdir (float): Extinction coefficient for direct visible light [0..2 -].
-        swrd (Optional[Literal[1, 2, 3]]): Switch development of root growth.
-            * 1 - Root growth depends on development stage.
-            * 2 - Root growth depends on maximum daily increase.
-            * 3 - Root growth depends on available root biomass.
-        rdtb (Optional [_Arrays]): Rooting depth [0..1000 cm] as a function of development stage [0..2 -].
-        rdi (float): Initial rooting depth [0..1000 cm].
-        rri (float): Maximum daily increase in rooting depth [0..100 cm].
-        rdc (float): Maximum rooting depth of particular crop [0..1000 cm].
-        swdmi2rd (Optional[Literal[0, 1]]): Switch for calculation rooting depth.
-            * 0 - Rooting depth increase is related to availability assimilates for roots.
-            * 1 - Rooting depth increase is related to relative dry matter increase.
-        rlwtb (Optional _Arrays]): rooting depth [0..5000 cm] as function of root weight [0..5000 kg DM/ha].
-        wrtmax (float): Maximum root weight [0..1e5 kg DM/ha].
-        swrdc (Literal[0, 1]): Switch for calculation of relative root density.
-            * 0 - Root density is not modified.
-            * 1 - Root density is modified based on root water extraction.
-        TODO: add parameters related to swdrc=1: fgwrt, fdwrt, wrtmin
-        rdctb (_Arrays): root density [0..1 -] as function of relative rooting depth [0..1 -].
+        swcf (Literal[1, 2]): Choose between crop factor and crop height
+
+            * 1 - Crop factor
+            * 2 - Crop height
+
+        _table_dvs_cf (Optional[_Table]): _Table with crop factors as a function of development stage
+        _table_dvs_ch (Optional[_Table]): _Table with crop height as a function of development stage
+        albedo (Optional[float]): Crop reflection coefficient
+        rsc (Optional[float]): Minimum canopy resistance
+        rsw (Optional[float]): Canopy resistance of intercepted water
+        tsumea (float): Temperature sum from emergence to anthesis
+        tsumam (float): Temperature sum from anthesis to maturity
+        tbase (Optional[float]): Start value of temperature sum
+        kdif (float): Extinction coefficient for diffuse visible light
+        kdir (float): Extinction coefficient for direct visible light
+        swrd (Optional[Literal[1, 2, 3]]): Switch development of root growth
+
+            * 1 - Root growth depends on development stage
+            * 2 - Root growth depends on maximum daily increase
+            * 3 - Root growth depends on available root biomass
+
+        rdtb (Optional _Arrays]): Rooting Depth as a function of development stage
+        rdi (float): Initial rooting depth
+        rri (float): Maximum daily increase in rooting depth
+        rdc (float): Maximum rooting depth of particular crop
+        swdmi2rd (Optional[Literal[0, 1]]): Switch for calculation rooting depth
+
+            * 0 - Rooting depth increase is related to availability assimilates for roots
+            * 1 - Rooting depth increase is related to relative dry matter increase
+
+        rlwtb (Optional _Arrays]): rooting depth as function of root weight
+        wrtmax (float): Maximum root weight
+        swrdc (Literal[0, 1]): Switch for calculation of relative root density
+        rdctb  _Arrays): root density as function of relative rooting depth
     """
 
     # add in model config that additional attributes are allowed
@@ -193,7 +193,6 @@ class _CropDevelopmentSettings(
 
     swcf: _Literal[1, 2] | None = None
     cftb: _Table | None = None
-    chtb: _Table | None = None
     albedo: _Decimal2f | None = _Field(default=None, **_UNITRANGE)
     rsc: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
     rsw: _Decimal2f | None = _Field(default=None, ge=0.0, le=1.0e6)
@@ -218,77 +217,42 @@ class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
     """Additional settings as defined for the WOFOST model.
 
     Attributes:
-        wofost_variety (CropVariety): Crop variety settings.
-        swcf (Literal[1, 2]): Choose between crop factor and crop height for simulation of
-            * 1 - Crop factor, when using ETref from meteo or Penman-Monteith.
-            * 2 - Crop height, when using Penman-Monteith with actual crop height, albedo and canopy resistance.
-        cftb (Optional[_Table]): Table with crop factors [0..2 -] as a function of development stage.
-        chtb (Optional[_Table]): Table with crop height [0..1e4 cm] as a function of development stage.
-        albedo (Optional[float]): Crop reflection coefficient [0..1.0 -].
-        rsc (Optional[float]): Minimum canopy resistance [0..1e6 s/m].
-        rsw (Optional[float]): Canopy resistance of intercepted water [0..1e6 s/m].
-        tsumea (float): Temperature sum from emergence to anthesis [0..1e4 degrees C].
-        tsumam (float): Temperature sum from anthesis to maturity [1..1e4 degrees C].
-        tbase (Optional[float]): Start value of temperature sum [-10..30 degrees C].
-        kdif (float): Extinction coefficient for diffuse visible light [0..2 -].
-        kdir (float): Extinction coefficient for direct visible light [0..2 -].
-        swrd (Optional[Literal[1, 2, 3]]): Switch development of root growth.
-            * 1 - Root growth depends on development stage.
-            * 2 - Root growth depends on maximum daily increase.
-            * 3 - Root growth depends on available root biomass.
-        rdtb (Optional [_Arrays]): Rooting depth [0..1000 cm] as a function of development stage [0..2 -].
-        rdi (float): Initial rooting depth [0..1000 cm].
-        rri (float): Maximum daily increase in rooting depth [0..100 cm].
-        rdc (float): Maximum rooting depth of particular crop [0..1000 cm].
-        swdmi2rd (Optional[Literal[0, 1]]): Switch for calculation rooting depth.
-            * 0 - Rooting depth increase is related to availability assimilates for roots.
-            * 1 - Rooting depth increase is related to relative dry matter increase.
-        rlwtb (Optional _Arrays]): rooting depth [0..5000 cm] as function of root weight [0..5000 kg DM/ha].
-        wrtmax (float): Maximum root weight [0..1e5 kg DM/ha].
-        swrdc (Literal[0, 1]): Switch for calculation of relative root density.
-            * 0 - Root density is not modified.
-            * 1 - Root density is modified based on root water extraction.
-        TODO: add parameters related to swdrc=1: fgwrt, fdwrt, wrtmin
-        rdctb (_Arrays): root density [0..1 -] as function of relative rooting depth [0..1 -].
         idsl (Literal[0, 1, 2]): Switch for crop development.
-            * 0 - Depends on temperature
-            * 1 - Depends on temperature and daylength
-            * 2 - Depends on temperature, daylength and vernalisation factor
-        dtsmtb (_Arrays): List increase in temperature sum [0..60 degrees C] as function of daily average temperature.
-        dlo (Optional[float]): Optimum day length for crop development [0..24 hr].
-        dlc (Optional[float]): Minimum day length [0..24 hr].
+        dtsmtb  _Arrays): List increase in temperature sum as function of daily average temperature.
+        dlo (Optional[float]): Optimum day length for crop development.
+        dlc (Optional[float]): Minimum day length.
         vernsat (Optional[float]): Saturated vernalisation requirement.
         vernbase (Optional[float]): Base vernalisation requirement.
         verndvs (Optional[float]): Critical development stage after which the effect of vernalisation is halted.
-        verntb (Optional [_Arrays]): _Table with rate of vernalisation as function of average air temperature.
-        tdwi (float): Initial total crop dry weight [0..10000 kg/ha].
-        laiem (float): Leaf area index at emergence [0..10 m2/m2].
-        rgrlai (float): Maximum relative increase in LAI [0..1 m2/m2/d].
-        spa (float): Specific pod area [0..1 ha/kg].
-        ssa (float): Specific stem area [0..1 ha/kg].
-        span (float): Life span under leaves under optimum conditions [0..366 d].
-        slatb (_Arrays): List specific leaf area [0..1 ha/kg] as function of crop development stage.
-        eff (float): Light use efficiency for real leaf [0..10 kg/ha/hr/(J m2 s)].
-        amaxtb (_Arrays): List maximum CO2 assimilation rate [0..100 kg/ha/hr] as function of development stage.
-        tmpftb (_Arrays): List reduction factor of AMAX [-] as function of average day temperature.
-        tmnftb (_Arrays): List reduction factor of AMAX [-] as function of minimum day temperature.
-        cvo (float): Efficiency of conversion into storage organs [0..1 kg/kg].
-        cvl (float): Efficiency of conversion into leaves [0..1 kg/kg].
-        cvr (float): Efficiency of conversion into roots [0..1 kg/kg].
-        cvs (float): Efficiency of conversion into stems [0..1 kg/kg].
-        q10 (float): Increase in respiration rate with temperature [0..5 /10 degrees C].
-        rml (float): Maintenance respiration rate of leaves [0..1 kgCH2O/kg/d].
-        rmo (float): Maintenance respiration rate of storage organs [0..1 kgCH2O/kg/d].
-        rmr (float): Maintenance respiration rate of roots [0..1 kgCH2O/kg/d].
-        rms (float): Maintenance respiration rate of stems [0..1 kgCH2O/kg/d].
-        rfsetb (_Arrays): List reduction factor of senescence [0..2 -] as function of development stage.
-        frtb (_Arrays): List fraction of total dry matter increase partitioned to the roots [0..1 kg/kg] as function of development stage.
-        fltb (_Arrays): List fraction of total above ground dry matter increase partitioned to the leaves [0..1 kg/kg] as function of development stage.
-        fstb (_Arrays): List fraction of total above ground dry matter increase partitioned to the stems [0..1 kg/kg] as function of development stage.
-        fotb (_Arrays): List fraction of total above ground dry matter increase partitioned to the storage organs [0..1 kg/kg] as function of development stage.
-        perdl (float): Maximum relative death rate of leaves due to water stress [0..3 /d].
-        rdrrtb (_Arrays): List relative death rates of roots [0..1 kg/kg/d] as function of development stage.
-        rdrstb (_Arrays): List relative death rates of stems [0..1 kg/kg/d] as function of development stage.
+        verntb (Optional _Arrays]): _Table with rate of vernalisation as function of average air temperature.
+        tdwi (float): Initial total crop dry weight.
+        laiem (float): Leaf area index at emergence.
+        rgrlai (float): Maximum relative increase in LAI.
+        spa (float): Specific pod area.
+        ssa (float): Specific stem area.
+        span (float): Life span under leaves under optimum conditions.
+        slatb  _Arrays): List specific leaf area as function of crop development stage.
+        eff (float): Light use efficiency for real leaf.
+        amaxtb  _Arrays): List maximum CO2 assimilation rate as function of development stage.
+        tmpftb  _Arrays): List reduction factor of AMAX as function of average day temperature.
+        tmnftb  _Arrays): List reduction factor of AMAX as function of minimum day temperature.
+        cvo (float): Efficiency of conversion into storage organs.
+        cvl (float): Efficiency of conversion into leaves.
+        cvr (float): Efficiency of conversion into roots.
+        cvs (float): Efficiency of conversion into stems.
+        q10 (float): Increase in respiration rate with temperature.
+        rml (float): Maintenance respiration rate of leaves.
+        rmo (float): Maintenance respiration rate of storage organs.
+        rmr (float): Maintenance respiration rate of roots.
+        rms (float): Maintenance respiration rate of stems.
+        rfsetb  _Arrays): List reduction factor of senescence as function of development stage.
+        frtb  _Arrays): List fraction of total dry matter increase partitioned to the roots as function of development stage.
+        fltb  _Arrays): List fraction of total above ground dry matter increase partitioned to the leaves as function of development stage.
+        fstb  _Arrays): List fraction of total above ground dry matter increase partitioned to the stems as function of development stage.
+        fotb  _Arrays): List fraction of total above ground dry matter increase partitioned to the storage organs as function of development stage.
+        perdl (float): Maximum relative death rate of leaves due to water stress.
+        rdrrtb  _Arrays): List relative death rates of roots as function of development stage.
+        rdrstb  _Arrays): List relative death rates of stems as function of development stage.
     """
 
     idsl: _Literal[0, 1, 2] | None = None
@@ -333,37 +297,6 @@ class CropDevelopmentSettingsFixed(_CropDevelopmentSettings):
     """Fixed crop development settings (Additionaly to CropDevelopmentSettings).
 
     Attributes:
-        swcf (Literal[1, 2]): Choose between crop factor and crop height for simulation of
-            * 1 - Crop factor, when using ETref from meteo or Penman-Monteith.
-            * 2 - Crop height, when using Penman-Monteith with actual crop height, albedo and canopy resistance.
-        cftb (Optional[_Table]): Table with crop factors [0..2 -] as a function of development stage.
-        chtb (Optional[_Table]): Table with crop height [0..1e4 cm] as a function of development stage.
-        albedo (Optional[float]): Crop reflection coefficient [0..1.0 -].
-        rsc (Optional[float]): Minimum canopy resistance [0..1e6 s/m].
-        rsw (Optional[float]): Canopy resistance of intercepted water [0..1e6 s/m].
-        tsumea (float): Temperature sum from emergence to anthesis [0..1e4 degrees C].
-        tsumam (float): Temperature sum from anthesis to maturity [1..1e4 degrees C].
-        tbase (Optional[float]): Start value of temperature sum [-10..30 degrees C].
-        kdif (float): Extinction coefficient for diffuse visible light [0..2 -].
-        kdir (float): Extinction coefficient for direct visible light [0..2 -].
-        swrd (Optional[Literal[1, 2, 3]]): Switch development of root growth.
-            * 1 - Root growth depends on development stage.
-            * 2 - Root growth depends on maximum daily increase.
-            * 3 - Root growth depends on available root biomass.
-        rdtb (Optional [_Arrays]): Rooting depth [0..1000 cm] as a function of development stage [0..2 -].
-        rdi (float): Initial rooting depth [0..1000 cm].
-        rri (float): Maximum daily increase in rooting depth [0..100 cm].
-        rdc (float): Maximum rooting depth of particular crop [0..1000 cm].
-        swdmi2rd (Optional[Literal[0, 1]]): Switch for calculation rooting depth.
-            * 0 - Rooting depth increase is related to availability assimilates for roots.
-            * 1 - Rooting depth increase is related to relative dry matter increase.
-        rlwtb (Optional _Arrays]): rooting depth [0..5000 cm] as function of root weight [0..5000 kg DM/ha].
-        wrtmax (float): Maximum root weight [0..1e5 kg DM/ha].
-        swrdc (Literal[0, 1]): Switch for calculation of relative root density.
-            * 0 - Root density is not modified.
-            * 1 - Root density is modified based on root water extraction.
-        TODO: add parameters related to swdrc=1: fgwrt, fdwrt, wrtmin
-        rdctb (_Arrays): root density [0..1 -] as function of relative rooting depth [0..1 -].
         idev (Literal[1, 2]): Duration of crop growing period
 
             * 1 - Duration is fixed
@@ -609,9 +542,9 @@ class CO2Correction(
             * 1 - CO2 assimilation correction
 
         atmofil (Optional[str]): alternative filename for atmosphere.co2
-        co2amaxtb (Optional [_Arrays]): Correction of photosynthesis as a function of atmospheric CO2 concentration
-        co2efftb (Optional [_Arrays]): orrection of radiation use efficiency as a function of atmospheric CO2 concentration
-        co2tratb (Optional [_Arrays]): Correction of transpiration as a function of atmospheric CO2 concentration
+        co2amaxtb (Optional _Arrays]): Correction of photosynthesis as a function of atmospheric CO2 concentration
+        co2efftb (Optional _Arrays]): orrection of radiation use efficiency as a function of atmospheric CO2 concentration
+        co2tratb (Optional _Arrays]): Correction of transpiration as a function of atmospheric CO2 concentration
     """
 
     _validation: bool = _PrivateAttr(default=False)
@@ -628,35 +561,35 @@ class Preparation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Preparation, sowing and germination settings for .crp file.
 
     Attributes:
-        swprep (Literal[0, 1]): Switch for preparation.
-            * 1 - No preparation.
-            * 2 - Preparation before start of crop growth.
-        zprep (Optional[float]): Z-level for monitoring work-ability for the crop [-100..0 cm].
-        hprep (Optional[float]): Maximum pressure head during preparation [-200..0 cm].
-        maxprepdelay (Optional[int]): Maximum delay of preparation from start of growing season [1..366 d].
+        swprep (Literal[0, 1]): Switch for preparation
         swsow (Literal[0, 1]): Switch for sowing
-            * 0 - No sowing
-            * 1 - Sowing before start of crop growth
-        zsow (Optional[float]): Z-level for monitoring work-ability for the crop [-100..0 cm].
-        hsow (Optional[float]): Maximum pressure head during sowing [-200..0 cm].
-        ztempsow (Optional[float]): Z-level for monitoring temperature for sowing [-100..0 cm].
-        tempsow (Optional[float]): Soil temperature needed for sowing [0..30 degrees C].
-        maxsowdelay (Optional[int]): Maximum delay of sowing from start of growing season [1..366 d].
-        swgerm (Literal[0, 1, 2]): Switch for germination.
-            * 0 - No germination.
-            * 1 - Germination with temperature sum.
-            * 2 - Germination with temperature sum and water potential.
-        tsumemeopt (Optional[float]): Temperature sum needed for crop emergence [0..1000 degrees C]
-        tbasem (Optional[float]): Minimum temperature, used for germination trajectory [0..40 degrees C].
-        teffmx (Optional[float]): Maximum temperature, used for germination trajectory [0..40 degrees C].
-        hdrygerm (Optional[float]): Pressure head rootzone for dry germination trajectory [-1000..-0.01 cm].
-        hwetgerm (Optional[float]): Pressure head rootzone for wet germination trajectory [-1000..-0.01 cm].
-        zgerm (Optional[float]): Z-level for monitoring average pressure head for germination [-100..0 cm].
-        agerm (Optional[float]): A-coefficient Eq. 24/25 Feddes & Van Wijk (1988) [0..1000 -].
-        swharv (Literal[0, 1]): Switch for harvest.
-            * 0 - Timing of harvest depends on end of growing period (CROPEND).
-            * 1 - Timing of harvest depends on development stage (DVSEND).
-        dvsend (Optional[float]): Development stage at harvest [0..3 -].
+        swgerm (Literal[0, 1, 2]): Switch for germination
+
+            * 0 - No germination
+            * 1 - Germination with temperature sum
+            * 2 - Germination with temperature sum and water potential
+
+        swharv (Literal[0, 1]): Switch for harvest
+
+            * 0 - Timing of harvest depends on end of growing period (CROPEND)
+            * 1 - Timing of harvest depends on development stage (DVSEND)
+
+        dvsend (Optional[float]): Development stage at harvest
+        zprep (Optional[float]): Z-level for monitoring work-ability for the crop
+        hprep (Optional[float]): Maximum pressure head during preparation
+        maxprepdelay (Optional[int]): Maximum delay of preparation from start of growing season
+        zsow (Optional[float]): Z-level for monitoring work-ability for the crop
+        hsow (Optional[float]): Maximum pressure head during sowing
+        ztempsow (Optional[float]): Z-level for monitoring temperature for sowing
+        tempsow (Optional[float]): Soil temperature needed for sowing
+        maxsowdelay (Optional[int]): Maximum delay of sowing from start of growing season
+        tsumemeopt (Optional[float]): Temperature sum needed for crop emergence
+        tbasem (Optional[float]): Minimum temperature, used for germination trajectory
+        teffmx (Optional[float]): Maximum temperature, used for germination trajectory
+        hdrygerm (Optional[float]): Pressure head rootzone for dry germination trajectory
+        hwetgerm (Optional[float]): Pressure head rootzone for wet germination trajectory
+        zgerm (Optional[float]): Z-level for monitoring average pressure head
+        agerm (Optional[float]): A-coefficient Eq. 24/25 Feddes & Van Wijk
     """
 
     swprep: _Literal[0, 1] | None = _Field(default=None)
