@@ -1,3 +1,5 @@
+# Retrieved from: https://gist.github.com/ajdruff/16427061a41ca8c08c05992a6c74f59e
+#
 ## GITATTRIBUTES FOR WEB PROJECTS
 #
 # These settings are for any web project.
@@ -14,6 +16,16 @@
 ##   text and leave all files detected as binary untouched.
 ##   This will handle all files NOT defined below.
 *                 text=auto
+
+# SWAP files
+*.co2             text
+*.swp             text
+*.dra             text
+*.crp             text
+*.wrn             text
+*.ok              text
+*.log             text
+*.csv             text
 
 # Source code
 *.bash            text eol=lf
