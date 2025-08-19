@@ -67,6 +67,11 @@ class WOFOSTCropFile(BaseModel):
             variety=self.yaml_content["CropParameters"]["Varieties"][variety]
         )
 
+    def get_ecotype(self, ecotype: str):
+        return CropVariety(
+            variety=self.yaml_content["CropParameters"]["Ecotypes"][ecotype]
+        )
+
 
 class CropVariety(BaseModel):
     """Manage crop variety parameters.
