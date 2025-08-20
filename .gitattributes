@@ -79,6 +79,7 @@ Dockerfile        text
 *.mkdn            text diff=markdown
 *.mdtxt           text
 *.mdtext          text
+*.template        text
 *.txt             text
 AUTHORS           text
 CHANGELOG         text
