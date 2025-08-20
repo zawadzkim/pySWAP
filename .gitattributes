@@ -52,6 +52,7 @@
 *.ps1             text eol=crlf
 *.py              text diff=python
 *.rb              text diff=ruby
+*.RC              text
 *.sass            text
 *.scm             text
 *.scss            text diff=css
