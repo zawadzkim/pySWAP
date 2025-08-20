@@ -86,6 +86,7 @@ crop_tables = [
     "CO2AMAXTB",
 ]
 
+
 class DATEHARVEST(BaseTableModel):
     """Date of harvest
 
@@ -683,7 +684,7 @@ class SOILHYDRFUNC(BaseTableModel):
 
         !!! warning
             ALFAW required only when the hysteresis option is set to 1 or 2. This column is set as optional column and (for now) is not checked.
-    
+
     Attributes:
         ORES (Series[float]): Residual water content [0..1 cm3/cm3, R]
         OSAT (Series[float]): Saturated water content [0..1 cm3/cm3, R]
@@ -752,8 +753,9 @@ boundary_tables = [
     "DATET",
     "CSEEPARR",
     "INISSOIL",
-    "MISC"
+    "MISC",
 ]
+
 
 class GWLEVEL(BaseTableModel):
     """Table for groundwater levels.
@@ -892,8 +894,9 @@ drainage_tables = [
     "QWEIR",
     "QWEIRTB",
     "PRIWATLVL",
-    "QDRNTB"
+    "QDRNTB",
 ]
+
 
 class DRNTB(BaseTableModel):
     """Drainage characteristics table.
@@ -1042,10 +1045,8 @@ class QDRNTB(BaseTableModel):
 
 # %% ++++++++++++++++++++++++++++ GENERAL SETTINGS TABLES ++++++++++++++++++++++++++++
 
-general_settings_tables = [
-    "OUTDATIN",
-    "OUTDAT"
-]
+general_settings_tables = ["OUTDATIN", "OUTDAT"]
+
 
 class OUTDATIN(BaseTableModel):
     """OUTDATIN table
