@@ -19,6 +19,18 @@ from pydantic import (
     PrivateAttr as _PrivateAttr,
 )
 
+from pyswap.components.tables import (
+    CSEEPARR,
+    DATET,
+    GWLEVEL,
+    HAQUIF,
+    HBOT5,
+    INISSOIL,
+    MISC,
+    QBOT2,
+    QBOT4,
+    QTAB,
+)
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.fields import (
     Decimal2f as _Decimal2f,
@@ -34,6 +46,20 @@ from pyswap.utils.mixins import (
     SerializableMixin as _SerializableMixin,
     YAMLValidatorMixin as _YAMLValidatorMixin,
 )
+
+__all__ = [
+    "BottomBoundary",
+    "GWLEVEL",
+    "QBOT2",
+    "HAQUIF",
+    "QBOT4",
+    "QTAB",
+    "HBOT5",
+    "DATET",
+    "CSEEPARR",
+    "INISSOIL",
+    "MISC",
+]
 
 
 class BottomBoundary(
@@ -138,6 +164,7 @@ class BottomBoundary(
     bbcfil: _String | None = None
     swbotb: _Literal[1, 2, 3, 4, 5, 6, 7, 8] | None = None
     sw2: _Literal[1, 2] | None = None
+    sw3: _Literal[1, 2] | None = None
     sw4: _Literal[0, 1] | None = None
     swbotb3resvert: _Literal[0, 1] | None = None
     swbotb3impl: _Literal[0, 1] | None = None

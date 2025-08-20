@@ -103,3 +103,10 @@ def test_grassgrowth():
         check_dtype=False,
         rtol=1e-2,
     )
+
+
+def test_simple_model():
+    model = testcase.get("simple_test_model")
+    model.run("./", silence_warnings=True)
+
+    # TODO add expected data

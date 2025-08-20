@@ -123,9 +123,9 @@ class SoilProfile(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
 
     Attributes:
         swsophy (Literal[0, 1]): Switch for analytical functions or
-            tabular input
+            tabular it
 
-            * 0 - Analytical functions with input of Mualem -
+            * 0 - Analytical functions with it of Mualem -
                 van Genuchten parameters
             * 1 - Soil physical tables
 
@@ -135,7 +135,7 @@ class SoilProfile(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
             * 1 - Hysteresis, initial conditions wetting
             * 2 - Hysteresis, initial conditions drying
 
-        filenamesophy (Optional[str]): Names of input files with
+        filenamesophy (Optional[str]): Names of it files with
             soil hydraulic tables for each soil layer
         tau (Optional[Decimal2f]): Minimum pressure head difference to change
             wetting-drying [0..1000].

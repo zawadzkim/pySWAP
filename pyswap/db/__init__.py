@@ -26,4 +26,4 @@ Modules:
 from pyswap.db.cropdb import CropVariety, WOFOSTCropDB
 from pyswap.db.hdf5 import HDF5
 
-__all__ = ["HDF5", "WOFOSTCropDB", "CropVariety"]
+__all__ = ["HDF5", "WOFOSTCropDB", "CropVariety", "SoilProfile", "SoilProfilesDB"]
