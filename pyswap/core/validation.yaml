@@ -1,9 +1,9 @@
 CropDevelopmentSettings: &CropDevelopmentSettings
   swcf:
     1:
-      - dvs_cf
+      - cftb
     2:
-      - dvs_ch
+      - chtb
       - albedo
       - rsc
       - rsw

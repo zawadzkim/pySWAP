@@ -101,24 +101,36 @@ def _make_simple_test_model():
     )
     ml.evaporation = evaporation
 
-    # Soil profile properties
-    ## Get soil profile from dutch database
-    soilprofiles_db = psp.db.SoilProfilesDB()
-    soil_profile = soilprofiles_db.get_profile(
-        bofek_cluster=3015,  # Zwak lemig zand, grasland
-    )
-    soil_discr = soil_profile.get_swapinput_profile(
-        discretisation_depths=[50, 30, 60, 60, 100],
-        discretisation_compheights=[1, 2, 5, 10, 20],
-    )
+    soil_profile = psp.components.soilwater.SOILPROFILE.create({
+        "ISUBLAY": [1, 2, 3, 4],
+        "ISOILLAY": [1, 1, 2, 2],
+        "HSUBLAY": [10.0, 20.0, 30.0, 140.0],
+        "HCOMP": [1.0, 5.0, 5.0, 10.0],
+        "NCOMP": [10, 4, 6, 14],
+    })
+
+    soil_hydraulic_functions = psp.components.soilwater.SOILHYDRFUNC.create({
+        "ORES": [0.01, 0.02],
+        "OSAT": [0.42, 0.38],
+        "ALFA": [0.0276, 0.0213],
+        "NPAR": [1.491, 1.951],
+        "KSATFIT": [12.52, 12.68],
+        "LEXP": [-1.060, 0.168],
+        "ALFAW": [0.0542, 0.0426],
+        "H_ENPR": [0.0, 0.0],
+        "KSATEXM": [12.52, 12.68],
+        "BDENS": [1315.0, 1315.0],
+    })
 
     soilprofile = psp.components.soilwater.SoilProfile(
-        swsophy=0,  # MVG functions
-        swhyst=0,  # No hysteresis
-        swmacro=0,  # No preferential flow
-        soilprofile=soil_discr,
-        soilhydrfunc=soil_profile.get_swapinput_hydraulic_params(),
+        swsophy=0,
+        soilprofile=soil_profile,
+        swhyst=0,
+        tau=0.2,
+        soilhydrfunc=soil_hydraulic_functions,
+        swmacro=0,
     )
+
     ml.soilprofile = soilprofile
 
     # Bottom boundary condition
@@ -137,47 +149,56 @@ def _make_simple_test_model():
     ## Crop development settings
     dvs = [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
 
-    ## LAI
-    maize_gctb = psp.components.crop.GCTB.create({
-        "DVS": dvs,
-        "LAI": [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20],
-    })
-
     ## Crop height
-    maize_cftb = psp.components.crop.CFTB.create({
+    maize_chtb = psp.components.crop.CFTB.create({
         "DVS": dvs,
         "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
     })
 
-    ## Root density as function of depth TODO
+    ## Root density as function of depth
     maize_rdctb = psp.components.crop.RDCTB.create({
         "RRD": [0.0, 1.0],
         "RDENS": [1.0, 0.0],
     })
 
-    ## Root depth TODO: echt zo diep?
-    maize_rdtb = psp.components.crop.RDTB.create({
-        "DVS": [0.0, 0.3, 0.5, 0.7, 1.0, 2.0],
-        "RD": [5.0, 20.0, 50.0, 80.0, 90.0, 100.0],
-    })
+    ### Get WOFOST parameters for maize from database
+    db_wofost = psp.db.WOFOSTCropDB()
+    maize_wofostparams = db_wofost.load_crop_file("maize").get_variety(
+        "Grain_maize_201"
+    )
 
-    ## Fixed crop growing duration
-    maize_cropdev_settings = psp.components.crop.CropDevelopmentSettingsFixed(
-        idev=1,  # Fixed crop growing duration
-        lcc=168,  # duration crop growing period [d]
-        kdif=0.6,  # Diffuse light extinction coefficient
-        kdir=0.75,  # Direct light extinction coefficient
-        swgc=1,  # Use LAI
-        gctb=maize_gctb,
+    ### Define other parameters
+    maize_cropdev_settings = psp.components.crop.CropDevelopmentSettingsWOFOST(
+        # Wofost parameters for maize
+        wofost_variety=maize_wofostparams,
+        # Evaporation parameters
         swcf=2,  # Use crop height
-        cftb=maize_cftb,
-        albedo=0.23,
-        rsc=61.0,  # minimum canopy resistance [s/m] ???? = 1/v? TODO
-        rsw=0.0,  # Canopy resistance for intercepted water [s/m]
-        swrd=1,  # Root growth depends on development stage
-        rdtb=maize_rdtb,
+        chtb=maize_chtb,
+        albedo=0.2,  # Albedo of the crop
+        rsc=167.0,  # Minimum canopy resistance [s/m]
+        rsw=0.0,  # Canopy resistance of intercepted water [s/m]
+        # Initial values
+        laiem=0.04836,  # LAI at emergence [m2/m2]
+        # Green surface area
+        ssa=0.0,  # Specific leaf area [ha/kg]
+        # Assimilation
+        kdif=0.6,  # Extinction coefficient for diffuse light
+        kdir=0.75,  # Extinction coefficient for direct light
+        eff=0.45,  # Light use efficiency [ka/ha/hr/(J m2 s)]
+        # Root development
+        rdc=100.0,  # Maximum root depth [cm]
+        swrd=2,  # Root depth depends on maximum daily increase
+        swdmi2rd=0,  # Rooting depth increase depends on assimilate availability
         rdctb=maize_rdctb,
     )
+
+    ### Get parameters from WOFOST database
+    maize_cropdev_settings.update_from_wofost()
+
+    ## Test update function -> validation is triggered
+    maize_cropdev_settings = maize_cropdev_settings.update({
+        "RSC": 0.0
+    })
 
     ## Oxygen stress
     maize_ox_stress = psp.components.crop.OxygenStress(
@@ -219,7 +240,7 @@ def _make_simple_test_model():
         "CROPSTART": ["2000-05-01"],
         "CROPEND": ["2000-10-15"],
         "CROPFIL": ["'maizes'"],
-        "CROPTYPE": [1],
+        "CROPTYPE": [2],
     })
 
     # ## No irrigation
@@ -257,12 +278,12 @@ def _make_simple_test_model():
     ## Drainage file
     dra = psp.components.drainage.DraFile(
         dramet=3,  # Use resistance
-        swdivd=1,  # Calculate vertical distribution of drainage flux TODO does it matter?
-        cofani=[1.0, 1.0, 1.0, 1.0],  # anisotropy factor
-        swdislay=0,  # No adjustment top layer TODO
+        swdivd=1,  # Calculate vertical distribution of drainage flux
+        cofani=[1.0, 1.0],  # anisotropy factor
+        swdislay=0,  # No adjustment top layer
         nrlevs=1,  # Number of levels
-        swtopnrsrf=0,  # No adjustment bottom discharge layer TODO
-        swintfl=0,  # No interflow in highest drainage level TODO
+        swtopnrsrf=0,  # No adjustment bottom discharge layer
+        swintfl=0,  # No interflow in highest drainage level
         fluxes=flux,
     )
 
@@ -276,11 +297,11 @@ def _make_simple_test_model():
     # Heat flow
     # Soil textures for each physical layer
     soiltextures = psp.components.transport.SOILTEXTURES.create({
-        "PSAND": [0.87, 0.89, 0.89, 0.91],
-        "PSILT": [0.1, 0.08, 0.08, 0.06],
-        "PCLAY": [0.03, 0.03, 0.03, 0.03],
-        "ORGMAT": [0.057, 0.022, 0.01, 0.003],
-    })  # TODO: get from soil database
+        "PSAND": [0.87, 0.89],
+        "PSILT": [0.1, 0.08],
+        "PCLAY": [0.03, 0.03],
+        "ORGMAT": [0.057, 0.022],
+    })
 
     # Initial soil temperatures; source: WWL
     initsoiltemp = psp.components.transport.INITSOILTEMP.create({
