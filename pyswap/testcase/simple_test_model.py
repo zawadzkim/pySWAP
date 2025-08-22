@@ -150,7 +150,7 @@ def _make_simple_test_model():
     dvs = [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
 
     ## Crop height
-    maize_chtb = psp.components.crop.CFTB.create({
+    maize_chtb = psp.components.crop.CHTB.create({
         "DVS": dvs,
         "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
     })
@@ -196,9 +196,7 @@ def _make_simple_test_model():
     maize_cropdev_settings.update_from_wofost()
 
     ## Test update function -> validation is triggered
-    maize_cropdev_settings = maize_cropdev_settings.update({
-        "RSC": 0.0
-    })
+    maize_cropdev_settings = maize_cropdev_settings.update({"RSC": 0.0})
 
     ## Oxygen stress
     maize_ox_stress = psp.components.crop.OxygenStress(

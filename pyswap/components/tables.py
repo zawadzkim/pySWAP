@@ -140,13 +140,13 @@ class CFTB(BaseTableModel):
 
     Attributes:
         DVS (Series[float]): Development stage of the crop.
+        DNR (Series[float]): Day number.
         CF (Series[float]): Crop factor.
     """
 
     DVS: Series[float] | None = pa.Field(**DVSRANGE)
     DNR: Series[float] | None = pa.Field(**YEARRANGE)
     CF: Series[float] | None
-    CH: Series[float] | None
 
 
 class CHTB(BaseTableModel):
@@ -154,13 +154,16 @@ class CHTB(BaseTableModel):
 
     Attributes:
         DVS (Series[float]): Development stage of the crop.
-        CF (Series[float]): Crop height.
+        DNR (Series[float]): Day number.
+        CH (Series[float]): Crop height.
     """
 
     DVS: Series[float] | None = pa.Field(**DVSRANGE)
     DNR: Series[float] | None = pa.Field(**YEARRANGE)
+    CF: (
+        Series[float] | None
+    )  # Added for compatibility with example grass files in original SWAP distribution that are used for testing this package. CF is only stated but not used there.
     CH: Series[float] | None
-    CF: Series[float] | None
 
 
 class INTERTB(BaseTableModel):
