@@ -5,3 +5,4 @@ nav:
     - run-parallel.md
     - to-classic-swap.md
     - hdf5.md
+    - docker.md
