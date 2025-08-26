@@ -8,6 +8,10 @@ from pyswap.log import _setup_logger, set_log_level
 from pyswap.model.model import Model, run_parallel
 from pyswap.utils.loaders import load_bbc, load_crp, load_dra, load_swp
 
+# Version information
+import importlib.metadata
+__version__ = importlib.metadata.version("pyswap")
+
 __all__ = [
     "components",
     "gis",
