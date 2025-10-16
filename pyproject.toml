@@ -1,6 +1,6 @@
 [project]
 name = "pyswap"
-version = "0.2.7"
+version = "0.2.8"
 description = "Python wrapper for SWAP hydrological model."
 authors = [{name = "Mateusz", email = "zawadzkimat@outlook.com"}]
 license = "MIT"

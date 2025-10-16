@@ -37,3 +37,5 @@ crop_params: Traversable = libs / "WOFOST_crop_parameters"
 
 plotting: Traversable = libs / "plotting"
 """The directory of plotting resources."""
+
+co2concentration: Traversable = libs / "co2-concentration" / "Atmospheric.co2"

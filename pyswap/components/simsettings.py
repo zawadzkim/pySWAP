@@ -78,41 +78,64 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         pathcrop (str): Path to folder with crop files. Immutable attribute.
         pathdrain (str): Path to folder with drainage files. Immutable attribute.
         swscre (Literal[0, 1, 3]): Switch, display progression of simulation
-            run to screen
-        swerror (Literal[0, 1]): Switch for printing errors to screen
-        tstart (d): Start date of simulation run.
-        tend (d): End date of simulation run.
+            run to screen:
+            * 0 - no display to screen
+            * 1 - display water balance components
+            * 2 - display daynumber
+        swerror (Literal[0, 1]): Switch for printing errors to screen:
+            * 0 - no error messages
+            * 1 - print error messages
+        tstart (str): Start date of simulation run.
+        tend (str): End date of simulation run.
         nprintday (int): Number of output times during a day
-        swmonth (Literal[0, 1]): Switch, output each month
+        swmonth (Literal[0, 1]): Switch, output each month:
+            * 0 - output each month
+            * 1 - output via period, swres or swodat
+        period (Optional[int]): Fixed output interval in days
+        swres (Optional[Literal[0, 1]]): Switch, reset output interval counter
+            each year:
+            * 0 - No
+            * 1 - Yes
+        swodat (Optional[Literal[0, 1]]): Switch, extra output dates.
+            * 0 - No extra output dates
+            * 1 - Extra output dates (outdatin)
+        outdatin (Optional[DateList]): list of specific dates.
         swyrvar (Literal[0, 1]): Output times for overall water and solute
             balances in *.BAL and *.BLC file: choose output at a fixed date
             each year or at different dates
-        period (Optional[int]): Fixed output interval
-        swres (Optional[Literal[0, 1]]): Switch, reset output interval counter
-            each year
-        swodat (Optional[Literal[0, 1]]): Switch, extra output dates are given
-            in table below
-        outdatin (Optional[DateList]): list of specific dates
-        datefix (Optional[DayMonth]): fixed date for output
-        outdat (Optional[DateList]): specify all output dates
+            * 0 - each year output at the same date (datefix)
+            * 1 - output at specific dates (outdat)
+        datefix (Optional[DayMonth]): Fixed date for output
+        outdat (Optional[DateList]): Specify all output dates
         outfil (str): Generic file name of output files. Immutable attribute.
         swheader (Literal[0, 1]): Print header at the start of each
-            balance period
-        extensions (list): list of file extensions SWAP should return.
+            balance period:
+            * 0 - No header
+            * 1 - Print header
+        extensions (list): List of file extensions SWAP should return.
             Available options are: ["wba", "end", "vap", "bal", "blc", "sba", "ate",
             "bma", "drf", "swb", "ini", "inc", "crp", "str", "irg", "csv", "csv_tz"]
-        inlist_csv (Optional[StringList]): list of variables for the csv output
-        inlist_csv_tz (Optional[StringList]): list of variables for
-            the csv tz output
-        swafo (Literal[0, 1, 2]): Switch, output file with
-            formatted hydrological data
-        swaun (Literal[0, 1, 2]): Switch, output file with
-            unformatted hydrological data
+            TODO: Add description for each extension
+        inlist_csv (Optional[StringList]): List of variables for the csv output.
+            Available options are: TODO
+        inlist_csv_tz (Optional[StringList]): List of variables over depth for
+            the csv tz output. Available options are:
+            TODO
+        swafo (Literal[0, 1, 2]): Switch, output file with formatted hydrological data:
+            * 0 - no output
+            * 1 - output to a file named *.AFO
+            * 2 - output to a file named *.BFO
+        swaun (Literal[0, 1, 2]): Switch, output file with unformatted hydrological data:
+            * 0 - no output
+            * 1 - output to a file named *.AUN
+            * 2 - output to a file named *.BUN
         critdevmasbal (Optional[float]): Critical Deviation in
-            water balance during PERIOD
-        swdiscrvert (Literal[0, 1]): Switch to convert vertical discretization
-        numnodnew (Optional[int]): New number of nodes
-        dznew (Optional[FloatList]): Thickness of compartments
+            water balance during PERIOD [0.0 .. 1.0 cm]
+        swdiscrvert (Literal[0, 1]): Switch to convert vertical discretization:
+            * 0 - no conversion
+            * 1 - convert vertical discretization
+        numnodnew (Optional[int]): New number of nodes.
+        dznew (Optional[FloatList]): New thickness of compartments.
     """
 
     model_config = _ConfigDict(
@@ -178,16 +201,24 @@ class RichardsSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin
     """Settings for the Richards' equation.
 
     Attributes:
-        swkmean (Literal[1, 2, 3, 4, 5, 6]): Switch for averaging method of hydraulic conductivity
-        swkimpl (Literal[0, 1]): Switch for updating hydraulic conductivity during iteration
-        dtmin (float): Minimum timestep [1.d-7..0.1 d]
-        dtmax (float): Maximum timestep [dtmin..1 d]
-        gwlconv (float): Maximum difference of groundwater level between time steps [1.d-5..1000 cm]
-        critdevh1cp (float): Maximum relative difference in pressure heads per compartment [1.0d-10..1.d3]
-        critdevh2cp (float): Maximum absolute difference in pressure heads per compartment [1.0d-10..1.d3 cm]
-        critdevponddt (float): Maximum water balance error of ponding layer [1.0d-6..0.1 cm]
-        maxit (int): Maximum number of iteration cycles [5..100]
-        maxbacktr (int): Maximum number of back track cycles within an iteration cycle [1..10]
+        swkmean (Literal[1, 2, 3, 4, 5, 6]): Switch for averaging method of hydraulic conductivity:
+            * 1 - unweighted arithmic mean
+            * 2 - weighted arithmic mean
+            * 3 - unweighted geometric mean
+            * 4 - weighted geometric mean
+            * 5 - unweighted harmonic mean
+            * 6 - weighted harmonic mean
+        swkimpl (Literal[0, 1]): Switch for updating hydraulic conductivity during iteration:
+            * 0 - no update
+            * 1 - update
+        dtmin (float): Minimum timestep [1.0e-7 .. 0.1 d]
+        dtmax (float): Maximum timestep [dtmin .. 1 d]
+        gwlconv (float): Maximum difference of groundwater level between time steps [1.0e-5 .. 1.0e3 cm]
+        critdevh1cp (float): Maximum relative difference in pressure heads per compartment [1.0e-10 .. 1.0e3]
+        critdevh2cp (float): Maximum absolute difference in pressure heads per compartment [1.0e-10 .. 1.0e3 cm]
+        critdevponddt (float): Maximum water balance error of ponding layer [1.0e-6 .. 0.1 cm]
+        maxit (int): Maximum number of iteration cycles [5 .. 100]
+        maxbacktr (int): Maximum number of back track cycles within an iteration cycle [1 .. 10]
     """
 
     swkmean: _Literal[1, 2, 3, 4, 5, 6] | None = None

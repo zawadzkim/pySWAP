@@ -87,7 +87,7 @@ def _make_hupselbrook():
         "LAI": [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20],
     })
 
-    maize_cftb = psp.components.crop.CFTB.create({
+    maize_chtb = psp.components.crop.CHTB.create({
         "DVS": DVS,
         "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
     })
@@ -110,7 +110,7 @@ def _make_hupselbrook():
         swgc=1,
         gctb=maize_gctb,
         swcf=2,
-        cftb=maize_cftb,
+        chtb=maize_chtb,
         albedo=0.23,
         rsc=61.0,
         rsw=0.0,
@@ -167,7 +167,7 @@ def _make_hupselbrook():
         swharv=0,
     )
 
-    potato_chtb = psp.components.crop.CFTB.create({
+    potato_chtb = psp.components.crop.CHTB.create({
         "DVS": [0.0, 1.0, 2.0],
         "CH": [
             1.0,
@@ -189,7 +189,7 @@ def _make_hupselbrook():
     potato_cropdev_settings = psp.components.crop.CropDevelopmentSettingsWOFOST(
         wofost_variety=potato_params,
         swcf=2,
-        cftb=potato_chtb,
+        chtb=potato_chtb,
         idsl=0,
         albedo=0.19,
         laiem=0.0589,
@@ -239,7 +239,7 @@ def _make_hupselbrook():
     )
 
     # %% Grass crp file
-    grass_cftb = psp.components.crop.CFTB.create({
+    grass_chtb = psp.components.crop.CHTB.create({
         "DNR": [0.0, 180.0, 366.0],
         "CH": [12.0, 12.0, 12.0],
     })
@@ -305,7 +305,7 @@ def _make_hupselbrook():
 
     grass_settings = psp.components.crop.CropDevelopmentSettingsGrass(
         swcf=2,
-        cftb=grass_cftb,
+        chtb=grass_chtb,
         albedo=0.23,
         rsc=100.0,
         rsw=0.0,

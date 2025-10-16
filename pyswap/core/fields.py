@@ -86,7 +86,6 @@ from pyswap.core.parsers import (
 )
 from pyswap.core.serializers import (
     serialize_arrays,
-    serialize_csv_table,
     serialize_day_month,
     serialize_decimal,
     serialize_table,
@@ -95,7 +94,6 @@ from pyswap.core.serializers import (
 __all__ = [
     "Table",
     "Arrays",
-    "CSVTable",
     "DayMonth",
     "StringList",
     "FloatList",
@@ -120,14 +118,6 @@ Arrays = Annotated[
     DataFrame, PlainSerializer(serialize_arrays, return_type=str, when_used="json")
 ]
 """Serialize pd.DataFrame without headers to a string with leading variable name."""
-
-CSVTable = Annotated[
-    DataFrame,
-    PlainSerializer(
-        lambda x: serialize_csv_table(x), return_type=str, when_used="json"
-    ),
-]
-"""Serialize pd.DataFrame to a string in CSV format."""
 
 DayMonth = Annotated[
     date | str,

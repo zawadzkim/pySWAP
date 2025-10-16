@@ -5,6 +5,7 @@ from .hupselbrook import _make_hupselbrook
 from .macroporeflow import _make_macroporeflow
 from .oxygenstress import _make_oxygenstress
 from .salinitystress import _make_salinitystress
+from .simple_test_model import _make_simple_test_model
 from .surfacewater import _make_surfacewater
 
 
@@ -16,6 +17,7 @@ def get(
         "macroporeflow",
         "salinitystress",
         "surfacewater",
+        "simple_test_model",
     ],
 ):
     cases = {
@@ -25,6 +27,7 @@ def get(
         "macroporeflow": _make_macroporeflow,
         "salinitystress": _make_salinitystress,
         "surfacewater": _make_surfacewater,
+        "simple_test_model": _make_simple_test_model,
     }
 
     return cases[case]()
