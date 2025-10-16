@@ -2072,6 +2072,16 @@ INLIST_CSV = 'rain,irrig,interc,runoff,drainage,dstor,epot,eact,tpot,tact,qbotto
 SWAFO = 0
 SWAUN = 0
 SWDISCRVERT = 0
+SWKMEAN = 1
+SWKIMPL = 0
+DTMIN = 1e-06
+DTMAX = 0.04
+GWLCONV = 100.0
+CRITDEVH1CP = 0.01
+CRITDEVH2CP = 0.1
+CRITDEVPONDDT = 0.0001
+MAXIT = 30
+MAXBACKTR = 3
 LAT = 52.00
 SWETR = 0
 SWDIVIDE = 1
@@ -2125,16 +2135,6 @@ TAU = 0.20
 
 SWSNOW = 0
 SWFROST = 0
-SWKMEAN = 1
-SWKIMPL = 0
-DTMIN = 1e-06
-DTMAX = 0.04
-GWLCONV = 100.0
-CRITDEVH1CP = 0.01
-CRITDEVH2CP = 0.1
-CRITDEVPONDDT = 0.0001
-MAXIT = 30
-MAXBACKTR = 3
 SWDRA = 1
 DRFIL = 'swap'
 SWBBCFILE = 0
@@ -2231,7 +2231,7 @@ SWSOLU = 0
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>dict_keys(['csv', 'blc', 'vap', 'inc'])</pre>
+<pre>dict_keys(['csv', 'vap', 'blc', 'inc'])</pre>
 </div>
 </div>
 </div>
@@ -2408,7 +2408,7 @@ SWSOLU = 0
 * File content:  detailed overview of water balance components (cm)
 * File name:     ./result.blc
 * Model version: Swap 4.2.0
-* Generated at:  2025-02-17 18:26:18
+* Generated at:  2025-10-16 14:14:11
 
 Period             :  2002-01-01  until  2002-12-31 
 Depth soil profile :  200.00 cm

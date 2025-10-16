@@ -2163,8 +2163,8 @@ print(cropfile.varieties)</div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2289,43 +2289,6 @@ potato_dr_stress = psp.components.crop.DroughtStress(
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[7], line 19</span>
-<span class="ansi-green-intense-fg ansi-bold">     16</span> scheduled_irrigation <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>irrigation<span style="color: rgb(98,98,98)">.</span>ScheduledIrrigation(schedule<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0</span>)
-<span class="ansi-green-intense-fg ansi-bold">     17</span> interception <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>Interception(swinter<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>, cofab<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.25</span>)
-<span class="ansi-green-fg">---&gt; 19</span> potato_chtb <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">psp</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">components</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">crop</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">CHTB</span><span style="color: rgb(98,98,98)">.</span>create({
-<span class="ansi-green-intense-fg ansi-bold">     20</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">DVS</span><span style="color: rgb(175,0,0)">"</span>: [<span style="color: rgb(98,98,98)">0.0</span>, <span style="color: rgb(98,98,98)">1.0</span>, <span style="color: rgb(98,98,98)">2.0</span>],
-<span class="ansi-green-intense-fg ansi-bold">     21</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">CH</span><span style="color: rgb(175,0,0)">"</span>: [
-<span class="ansi-green-intense-fg ansi-bold">     22</span>         <span style="color: rgb(98,98,98)">1.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     23</span>         <span style="color: rgb(98,98,98)">40.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     24</span>         <span style="color: rgb(98,98,98)">50.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     25</span>     ],
-<span class="ansi-green-intense-fg ansi-bold">     26</span> })
-<span class="ansi-green-intense-fg ansi-bold">     28</span> potato_rdctb <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>RDCTB<span style="color: rgb(98,98,98)">.</span>create({
-<span class="ansi-green-intense-fg ansi-bold">     29</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">RRD</span><span style="color: rgb(175,0,0)">"</span>: [<span style="color: rgb(98,98,98)">0.0</span>, <span style="color: rgb(98,98,98)">1.0</span>],
-<span class="ansi-green-intense-fg ansi-bold">     30</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">RDENS</span><span style="color: rgb(175,0,0)">"</span>: [<span style="color: rgb(98,98,98)">1.0</span>, <span style="color: rgb(98,98,98)">0.0</span>],
-<span class="ansi-green-intense-fg ansi-bold">     31</span> })
-<span class="ansi-green-intense-fg ansi-bold">     33</span> potato_ox_stress <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>OxygenStress(
-<span class="ansi-green-intense-fg ansi-bold">     34</span>     swoxygen<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>,
-<span class="ansi-green-intense-fg ansi-bold">     35</span>     swwrtnonox<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>,
-<span class="ansi-green-fg">   (...)</span>
-<span class="ansi-green-intense-fg ansi-bold">     41</span>     root_radiuso2<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.00015</span>,
-<span class="ansi-green-intense-fg ansi-bold">     42</span> )
-
-<span class="ansi-red-fg">AttributeError</span>: module 'pyswap.components.crop' has no attribute 'CHTB'</pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
@@ -2338,8 +2301,8 @@ Cell <span class="ansi-green-fg">In[7], line 19</span>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2414,46 +2377,6 @@ potato_cropdev_settings.update_from_wofost()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[8], line 8</span>
-<span class="ansi-green-intense-fg ansi-bold">      2</span> potato <span style="color: rgb(98,98,98)">=</span> db<span style="color: rgb(98,98,98)">.</span>load_crop_file(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">potato</span><span style="color: rgb(175,0,0)">"</span>)
-<span class="ansi-green-intense-fg ansi-bold">      3</span> potato_params <span style="color: rgb(98,98,98)">=</span> potato<span style="color: rgb(98,98,98)">.</span>get_variety(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">Potato_701</span><span style="color: rgb(175,0,0)">"</span>)
-<span class="ansi-green-intense-fg ansi-bold">      5</span> potato_cropdev_settings <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>CropDevelopmentSettingsWOFOST(
-<span class="ansi-green-intense-fg ansi-bold">      6</span>     wofost_variety<span style="color: rgb(98,98,98)">=</span>potato_params,
-<span class="ansi-green-intense-fg ansi-bold">      7</span>     swcf<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">2</span>,
-<span class="ansi-green-fg">----&gt; 8</span>     dvs_ch<span style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">potato_chtb</span>,
-<span class="ansi-green-intense-fg ansi-bold">      9</span>     albedo<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.19</span>,
-<span class="ansi-green-intense-fg ansi-bold">     10</span>     laiem<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.0589</span>,
-<span class="ansi-green-intense-fg ansi-bold">     11</span>     ssa<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     12</span>     kdif<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     13</span>     rsc<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">207.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     14</span>     rsw<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     15</span>     kdir<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.75</span>,
-<span class="ansi-green-intense-fg ansi-bold">     16</span>     eff<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">0.45</span>,
-<span class="ansi-green-intense-fg ansi-bold">     17</span>     swrd<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">2</span>,
-<span class="ansi-green-intense-fg ansi-bold">     18</span>     rdc<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">50.0</span>,
-<span class="ansi-green-intense-fg ansi-bold">     19</span>     swdmi2rd<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>,
-<span class="ansi-green-intense-fg ansi-bold">     20</span>     rdctb<span style="color: rgb(98,98,98)">=</span>potato_rdctb,
-<span class="ansi-green-intense-fg ansi-bold">     21</span> )
-<span class="ansi-green-intense-fg ansi-bold">     23</span> <span style="color: rgb(95,135,135)"># By calling the `update_from_wofost method`, the CropDevelopmentSettingsWOFOST object</span>
-<span class="ansi-green-intense-fg ansi-bold">     24</span> <span style="color: rgb(95,135,135)"># will be updated with the values from the WOFOST crop file and the model will be evaluated,</span>
-<span class="ansi-green-intense-fg ansi-bold">     25</span> <span style="color: rgb(95,135,135)"># to make sure that some of the required settings are not missing.</span>
-<span class="ansi-green-intense-fg ansi-bold">     26</span> potato_cropdev_settings<span style="color: rgb(98,98,98)">.</span>update_from_wofost()
-
-<span class="ansi-red-fg">NameError</span>: name 'potato_chtb' is not defined</pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
@@ -2466,8 +2389,8 @@ Cell <span class="ansi-green-fg">In[8], line 8</span>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2508,32 +2431,6 @@ Cell <span class="ansi-green-fg">In[8], line 8</span>
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[9], line 4</span>
-<span class="ansi-green-intense-fg ansi-bold">      1</span> crppotato <span style="color: rgb(98,98,98)">=</span> psp<span style="color: rgb(98,98,98)">.</span>components<span style="color: rgb(98,98,98)">.</span>crop<span style="color: rgb(98,98,98)">.</span>CropFile(
-<span class="ansi-green-intense-fg ansi-bold">      2</span>     name<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">potatod</span><span style="color: rgb(175,0,0)">"</span>,
-<span class="ansi-green-intense-fg ansi-bold">      3</span>     prep<span style="color: rgb(98,98,98)">=</span>potato_prep,
-<span class="ansi-green-fg">----&gt; 4</span>     cropdev_settings<span style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">potato_cropdev_settings</span>,
-<span class="ansi-green-intense-fg ansi-bold">      5</span>     oxygenstress<span style="color: rgb(98,98,98)">=</span>potato_ox_stress,
-<span class="ansi-green-intense-fg ansi-bold">      6</span>     droughtstress<span style="color: rgb(98,98,98)">=</span>potato_dr_stress,
-<span class="ansi-green-intense-fg ansi-bold">      7</span>     interception<span style="color: rgb(98,98,98)">=</span>interception,
-<span class="ansi-green-intense-fg ansi-bold">      8</span>     scheduledirrigation<span style="color: rgb(98,98,98)">=</span>scheduled_irrigation,
-<span class="ansi-green-intense-fg ansi-bold">      9</span> )
-
-<span class="ansi-red-fg">NameError</span>: name 'potato_cropdev_settings' is not defined</pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
 <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
@@ -2567,14 +2464,150 @@ Cell <span class="ansi-green-fg">In[9], line 4</span>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[10], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> <span style="color: rgb(0,135,0)">print</span>(<span class="ansi-yellow-bg">crppotato</span><span style="color: rgb(98,98,98)">.</span>crp)
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SWPREP = 0
+SWSOW = 0
+SWGERM = 2
+SWHARV = 0
+DVSEND = 2.0
+TSUMEMEOPT = 170.0
+TBASEM = 3.0
+TEFFMX = 18.0
+HDRYGERM = -500.0
+HWETGERM = -100.0
+ZGERM = -10.0
+AGERM = 203.0
+SWCF = 2
+ALBEDO = 0.19
+RSC = 207.00
+RSW = 0.00
+TSUMEA = 150.00
+TSUMAM = 1550.00
+TBASE = 2.00
+KDIF = 1.00
+KDIR = 0.75
+SWRD = 2
+RDI = 10.00
+RRI = 1.20
+RDC = 50.00
+SWDMI2RD = 1
+RDCTB = 
+0.0 1.0
+1.0 0.0
 
-<span class="ansi-red-fg">NameError</span>: name 'crppotato' is not defined</pre>
+IDSL = 0
+DTSMTB = 
+ 0.0  0.0
+ 2.0  0.0
+13.0 11.0
+30.0 28.0
+
+VERNSAT = 70.0
+VERNBASE = 14.0
+VERNDVS = 0.3
+TDWI = 75.0
+LAIEM = 0.0589
+RGRLAI = 0.012
+SPA = 0.0
+SSA = 0.0
+SPAN = 37.0
+SLATB = 
+0.0 0.0030
+1.1 0.0030
+2.0 0.0015
+
+EFF = 0.45
+AMAXTB = 
+0.00 30.0
+1.57 30.0
+2.00  0.0
+
+TMPFTB = 
+ 0.0 0.01
+ 3.0 0.01
+10.0 0.75
+15.0 1.00
+20.0 1.00
+26.0 0.75
+33.0 0.01
+
+TMNFTB = 
+0.0 0.0
+3.0 1.0
+
+CVO = 0.85
+CVL = 0.72
+CVR = 0.72
+CVS = 0.69
+Q10 = 2.0
+RML = 0.03
+RMO = 0.0045
+RMR = 0.01
+RMS = 0.015
+RFSETB = 
+0.0 1.0
+2.0 1.0
+
+FRTB = 
+0.00 0.2
+1.00 0.2
+1.36 0.0
+2.00 0.0
+
+FLTB = 
+0.00 0.8
+1.00 0.8
+1.27 0.0
+1.36 0.0
+2.00 0.0
+
+FSTB = 
+0.00 0.20
+1.00 0.20
+1.27 0.25
+1.36 0.00
+2.00 0.00
+
+FOTB = 
+0.00 0.00
+1.00 0.00
+1.27 0.75
+1.36 1.00
+2.00 1.00
+
+PERDL = 0.03
+RDRRTB = 
+0.00 0.00
+1.50 0.00
+1.51 0.02
+2.00 0.02
+
+RDRSTB = 
+0.00 0.00
+1.50 0.00
+1.51 0.02
+2.00 0.02
+
+SWOXYGEN = 1
+SWWRTNONOX = 1
+AERATECRIT = 0.5
+HLIM1 = -10.0
+HLIM2U = -25.0
+HLIM2L = -25.0
+SWROOTRADIUS = 2
+ROOT_RADIUSO2 = 0.00015
+SWDROUGHT = 1
+HLIM3H = -300.0
+HLIM3L = -500.0
+HLIM4 = -10000.0
+ADCRH = 0.5
+ADCRL = 0.1
+SWSALINITY = 0
+SWCOMPENSATE = 0
+SWINTER = 1
+COFAB = 0.25
+SCHEDULE = 0
+</pre>
 </div>
 </div>
 </div>
@@ -2626,11 +2659,34 @@ Cell <span class="ansi-green-fg">In[10], line 1</span>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
 <pre>
 <span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
 Cell <span class="ansi-green-fg">In[11], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> potato_cropdev_settings_tsum1_up <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">potato_cropdev_settings</span><span style="color: rgb(98,98,98)">.</span>update({<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">tsum1</span><span style="color: rgb(175,0,0)">"</span>: <span style="color: rgb(98,98,98)">900</span>})
+<span class="ansi-green-fg">----&gt; 1</span> potato_cropdev_settings_tsum1_up <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">potato_cropdev_settings</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">update</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">{</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">"</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">tsum1</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">"</span><span class="ansi-yellow-bg">:</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">900</span><span class="ansi-yellow-bg">}</span><span class="ansi-yellow-bg">)</span>
 
-<span class="ansi-red-fg">NameError</span>: name 'potato_cropdev_settings' is not defined</pre>
+File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/core/basemodel.py:88</span>, in <span class="ansi-cyan-fg">PySWAPBaseModel.update</span><span class="ansi-blue-fg">(self, new, inplace, no_validate)</span>
+<span class="ansi-green-intense-fg ansi-bold">     86</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
+<span class="ansi-green-intense-fg ansi-bold">     87</span>         updated_model<span style="color: rgb(98,98,98)">.</span>_validation <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">True</span>
+<span class="ansi-green-fg">---&gt; 88</span>     <span class="ansi-yellow-bg">updated_model</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">validate_with_yaml</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">hasattr</span>(
+<span class="ansi-green-intense-fg ansi-bold">     89</span>         updated_model, <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">validate_with_yaml</span><span style="color: rgb(175,0,0)">"</span>
+<span class="ansi-green-intense-fg ansi-bold">     90</span>     ) <span class="ansi-bold" style="color: rgb(0,135,0)">else</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>
+<span class="ansi-green-intense-fg ansi-bold">     91</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> updated_model<span style="color: rgb(98,98,98)">.</span>model_copy(deep<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>)
+<span class="ansi-green-intense-fg ansi-bold">     93</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
+
+File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/utils/mixins.py:280</span>, in <span class="ansi-cyan-fg">YAMLValidatorMixin.validate_with_yaml</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    278</span>     switch_value <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(0,135,0)">getattr</span>(<span style="color: rgb(0,135,0)">self</span>, switch_name, <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>)
+<span class="ansi-green-intense-fg ansi-bold">    279</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> switch_value <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> <span class="ansi-bold" style="color: rgb(175,0,255)">not</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>:  <span style="color: rgb(95,135,135)"># Only validate if the switch is set</span>
+<span class="ansi-green-fg">--&gt; 280</span>         <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">validate_parameters</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-intense-fg ansi-bold">    281</span> <span class="ansi-yellow-bg">            </span><span class="ansi-yellow-bg">switch_name</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">switch_value</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg" style="color: rgb(0,0,135)">__dict__</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">rules</span>
+<span class="ansi-green-intense-fg ansi-bold">    282</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    284</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_validation <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">False</span>
+<span class="ansi-green-intense-fg ansi-bold">    285</span> <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span>
+
+File <span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/utils/mixins.py:259</span>, in <span class="ansi-cyan-fg">YAMLValidatorMixin.validate_parameters</span><span class="ansi-blue-fg">(switch_name, switch_value, params, rules)</span>
+<span class="ansi-green-intense-fg ansi-bold">    257</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> missing_params:
+<span class="ansi-green-intense-fg ansi-bold">    258</span>     msg <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">The following parameters are required for </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>switch_name<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">=</span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>switch_value<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">: </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span><span style="color: rgb(175,0,0)">'</span><span style="color: rgb(175,0,0)">, </span><span style="color: rgb(175,0,0)">'</span><span style="color: rgb(98,98,98)">.</span>join(missing_params)<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">"</span>
+<span class="ansi-green-fg">--&gt; 259</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">ValueError</span>(msg)
+
+<span class="ansi-red-fg">ValueError</span>: The following parameters are required for swcf=2: chtb</pre>
 </div>
 </div>
 </div>
@@ -2676,12 +2732,12 @@ Cell <span class="ansi-green-fg">In[11], line 1</span>
 <pre>
 <span class="ansi-red-fg">---------------------------------------------------------------------------</span>
 <span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[12], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> crppotato_tsum1_up <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">crppotato</span><span style="color: rgb(98,98,98)">.</span>update({
-<span class="ansi-green-intense-fg ansi-bold">      2</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">cropdev_settings</span><span style="color: rgb(175,0,0)">"</span>: potato_cropdev_settings_tsum1_up
+Cell <span class="ansi-green-fg">In[12], line 2</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> crppotato_tsum1_up <span style="color: rgb(98,98,98)">=</span> crppotato<span style="color: rgb(98,98,98)">.</span>update({
+<span class="ansi-green-fg">----&gt; 2</span>     <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">cropdev_settings</span><span style="color: rgb(175,0,0)">"</span>: <span class="ansi-yellow-bg">potato_cropdev_settings_tsum1_up</span>
 <span class="ansi-green-intense-fg ansi-bold">      3</span> })
 
-<span class="ansi-red-fg">NameError</span>: name 'crppotato' is not defined</pre>
+<span class="ansi-red-fg">NameError</span>: name 'potato_cropdev_settings_tsum1_up' is not defined</pre>
 </div>
 </div>
 </div>
