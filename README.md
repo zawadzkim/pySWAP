@@ -35,3 +35,15 @@ git clone --recurse-submodules https://github.com/zawadzkim/pySWAP.git
 ```
 
 Notice, that there is the recurse-submodules flag that makes sure additional libraries are also cloned.
+
+## Docker
+
+For consistent execution across different systems, you can use Docker:
+
+```shell
+docker build -t pyswap .
+docker run -it --rm -v "$PWD":/workspace pyswap
+python your-script.py
+```
+
+For detailed Docker instructions, see the [Docker documentation](docs/user-guide/docker.md).
