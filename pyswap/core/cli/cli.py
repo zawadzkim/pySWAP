@@ -63,6 +63,10 @@ def copy_readme(templates_path, project_root):
     shutil.copy(template_file, project_root)
     return "Successfully created README in the root directory."
 
+def copy_crop_parameter_yaml(templates_path, models_dir):
+    template_file = templates_path / "crop_tables_template.yaml"
+    shutil.copy(template_file, models_dir)
+    return "Successfully created crop_tables_template.yaml in the models directory."
 
 def create_inits(project_root, models_dir, scripts_dir):
     (project_root / "__init__.py").touch()
