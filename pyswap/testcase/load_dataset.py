@@ -15,8 +15,11 @@ RESOURCES: dict[str, dict[str, Path]] = {
         "swp": Path(BASE_PATH, "1-hupselbrook/swap.swp"),
         "dra": Path(BASE_PATH, "1-hupselbrook/swap.dra"),
         "maizes": Path(BASE_PATH, "1-hupselbrook/maizes.crp"),
+        "maizes_tables_yaml": Path(BASE_PATH, "1-hupselbrook/maizes_swap.yaml"),
         "potatod": Path(BASE_PATH, "1-hupselbrook/potatod.crp"),
+        "potatod_tables_yaml": Path(BASE_PATH, "1-hupselbrook/potatod_swap.yaml"),
         "grassd": Path(BASE_PATH, "1-hupselbrook/grassd.crp"),
+        "grassd_tables_yaml": Path(BASE_PATH, "1-hupselbrook/grassd_swap.yaml")
     },
     "grassgrowth": {
         "met": Path(BASE_PATH, "2-grassgrowth/260.csv"),
