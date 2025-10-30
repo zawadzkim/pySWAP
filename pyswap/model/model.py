@@ -221,9 +221,12 @@ class ModelRunner:
             builder.copy_executable().write_inputs()
 
             stdout = self.run_swap(tempdir)
+            reader = ResultReader(self.model, tempdir)
 
             if "normal completion" not in stdout:
                 msg = f"Model run failed. \n {stdout}"
+                log = reader.read_swap_log()
+                logger.error(log)
                 raise RuntimeError(msg)
 
             logger.info(stdout)
@@ -231,7 +234,6 @@ class ModelRunner:
             # --- Handle the results ---
             result: Result = Result()
 
-            reader = ResultReader(self.model, tempdir)
 
             log = reader.read_swap_log()
             result.log = log
