@@ -1,13 +1,14 @@
 # ruff: noqa: F401
 # Version information
 import importlib.metadata
+import logging
 
 from pyswap import components, db, gis, testcase
 
 # # This will be better if called as `from pyswap.db import HDF5`, makes it clear
 # # where it is coming from
 from pyswap.core import io, plot
-from pyswap.log import _setup_logger, set_log_level
+from pyswap.log import setup_logging, set_log_level
 from pyswap.model.model import Model, run_parallel
 from pyswap.utils.loaders import load_bbc, load_crp, load_dra, load_swp
 
@@ -30,4 +31,4 @@ __all__ = [
 ]
 
 
-_setup_logger()
+logging.getLogger("pyswap").addHandler(logging.NullHandler())
