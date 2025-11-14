@@ -39,27 +39,10 @@ from pyswap.components.transport import HeatFlow, SoluteTransport
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.defaults import EXTENSION_SWITCHES
 from pyswap.core.io.io_ascii import open_ascii
-from pyswap.utils.old_swap import (
-    create_array_objects,
-    create_table_objects,
-    parse_ascii_file,
-    remove_comments,
-)
+from pyswap.core.io.process_ascii import parse_ascii_file
+
 
 __all__ = ["load_swp"]
-
-
-def _parse_ascii_file(path: Path, grass_crp: bool = False):
-    """Parse the .swp file and return the parameters."""
-    swp = open_ascii(path)
-    text = remove_comments(swp)
-    pairs, arrays, tables = parse_ascii_file(text)
-    table_objects = create_table_objects(tables)
-    array_objects = create_array_objects(arrays, grass_crp)
-
-    params = pairs | table_objects | array_objects
-
-    return params
 
 
 def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
@@ -74,7 +57,9 @@ def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
     # finish this one up. Essentialle you need to pop the extension switches
     # from the main dictionary and then create the extension list. The names
     # have to be handled properly.
-    params = _parse_ascii_file(path)
+    # params = _parse_ascii_file(path)
+    swp = open_ascii(path)
+    params = parse_ascii_file(swp)
     # from among the parameters parsed from the ascii file, pop the switches
     extension_switches = {
         key: params.pop(key) for key in EXTENSION_SWITCHES if key in params
@@ -112,7 +97,8 @@ def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
 
 
 def load_dra(path: Path):
-    params = _parse_ascii_file(path)
+    dra = open_ascii(path)
+    params = parse_ascii_file(dra)
 
     flux_objects_startwith = [
         "drares",
@@ -138,8 +124,10 @@ def load_dra(path: Path):
 
 
 def load_crp(path: Path, crptype: _Literal["fixed", "wofost", "grass"], name: str):
-    params = _parse_ascii_file(path, grass_crp=True if crptype == "grass" else False)
 
+    crp = open_ascii(path)
+    params = parse_ascii_file(crp, grass=True if crptype == "grass" else False)
+    
     cropfile_setup = {
         "name": name,
         "prep": Preparation(),
@@ -178,7 +166,8 @@ def load_bbc(path: Path, bottomboundary: BottomBoundary | None = None):
     function can either return a new instance of the class or update an existing
     one.
     """
-    params = _parse_ascii_file(path)
+    bbc = open_ascii(path)
+    params = parse_ascii_file(bbc)
 
     if bottomboundary is None:
         bottomboundary = BottomBoundary()

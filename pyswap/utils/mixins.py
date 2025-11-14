@@ -294,7 +294,7 @@ class WOFOSTUpdateMixin:
 
     def update_from_wofost(self) -> None:
         """Update the model with the WOFOST variety settings."""
-        from pyswap.utils.old_swap import create_array_objects
+        from pyswap.core.io.processors import TableProcessor
 
         # parameters attribute returns a dictionary with the key-value pairs and
         # tables as list of lists. Before updating, the tables should be
@@ -304,6 +304,13 @@ class WOFOSTUpdateMixin:
             raise AttributeError(msg)
 
         variety_params = self.wofost_variety.parameters
-        new_arrays = create_array_objects(variety_params)
-        new = variety_params | new_arrays
+
+        arrays = {}
+        for name, v_param in variety_params.items():
+            tp = TableProcessor()
+            processed = tp.process("array", data=v_param, columns=name)
+            if processed is not None:
+                arrays.update(processed)
+
+        new = variety_params | arrays
         self.update(new, inplace=True)
