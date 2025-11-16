@@ -26,6 +26,7 @@ __all__ = [
     "load_crp",
     "load_bbc",
     "set_log_level",
+    "setup_logging",
     "Model",
     "run_parallel",
 ]

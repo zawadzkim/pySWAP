@@ -11,17 +11,12 @@ Processors in this module:
 - TableProcessor
 """
 
-from typing import Optional, Literal
+import inspect
+import logging
 from functools import cache
 import pandera as pa
 import pyswap.components.tables as tables
 from pyswap.core.basemodel import BaseTableModel
-import logging
-
-import pandas as pd
-
-
-import inspect
 
 logger = logging.getLogger(__name__)
 

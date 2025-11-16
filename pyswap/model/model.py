@@ -225,6 +225,7 @@ class ModelRunner:
 
             if "normal completion" not in stdout:
                 msg = f"Model run failed. \n {stdout}"
+                logger.error(msg)
                 log = reader.read_swap_log()
                 logger.error(log)
                 raise RuntimeError(msg)

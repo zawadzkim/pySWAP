@@ -5,7 +5,7 @@ Steps to process SWAP format ASCII files:
 2. Parse the remaining content into key-value pairs, tables and arrays.
 """
 
-
+import logging
 import re
 from pyswap.core.io.processors import TableProcessor
 import logging
