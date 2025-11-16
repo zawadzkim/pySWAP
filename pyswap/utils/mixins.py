@@ -34,6 +34,8 @@ from pydantic import BaseModel, PrivateAttr, model_serializer, model_validator
 from pydantic.fields import FieldInfo
 
 from pyswap.core.defaults import VALIDATIONRULES
+from pyswap.core.io.io_yaml import load_yaml
+from pyswap.core.io.processors import TableProcessor
 from pyswap.log import logging
 
 logger = logging.getLogger(__name__)
@@ -285,7 +287,7 @@ class YAMLValidatorMixin(BaseModel):
         return self
 
 
-class WOFOSTUpdateMixin:
+class YAMLUpdateMixin:
     """Interface for the WOFOST crop parameters database for pySWAP.
 
     This mixin should be inherited by classes that share parameters with the
@@ -294,7 +296,6 @@ class WOFOSTUpdateMixin:
 
     def update_from_wofost(self) -> None:
         """Update the model with the WOFOST variety settings."""
-        from pyswap.core.io.processors import TableProcessor
 
         # parameters attribute returns a dictionary with the key-value pairs and
         # tables as list of lists. Before updating, the tables should be
@@ -304,13 +305,99 @@ class WOFOSTUpdateMixin:
             raise AttributeError(msg)
 
         variety_params = self.wofost_variety.parameters
+        logger.debug(f"Updating from WOFOST variety parameters: {variety_params}")
 
-        arrays = {}
-        for name, v_param in variety_params.items():
-            tp = TableProcessor()
-            processed = tp.process("array", data=v_param, columns=name)
-            if processed is not None:
-                arrays.update(processed)
+        # Create a copy to work with
+        params_copy = variety_params.copy()
 
-        new = variety_params | arrays
-        self.update(new, inplace=True)
+        tp = TableProcessor()
+        for name, value in variety_params.items():
+            if isinstance(value, list) and value and isinstance(value[0], list):
+                # This is an array parameter - try to process it
+                processed = tp.process("array", data=value, columns=name)
+                if processed is not None:
+                    # Replace the raw array with the processed dataframe
+                    params_copy.update(processed)
+                    logger.debug(f"Processed array parameter: {name}")
+                else:
+                    # Remove unmatched array parameters
+                    params_copy.pop(name, None)
+                    logger.warning(
+                        f"Failed to process array parameter: {name}, removing from update"
+                    )
+
+        self.update(params_copy, inplace=True)
+
+    def update_from_yaml(self, yaml_path: str | Path) -> None:
+        """Update the model with parameters from a YAML file.
+
+        Parameters:
+            yaml_path (str | Path): Path to the YAML file containing parameters.
+        """
+
+        yaml_path = Path(yaml_path)
+        if not yaml_path.exists():
+            msg = f"YAML file not found: {yaml_path}"
+            raise FileNotFoundError(msg)
+
+        yaml_content = load_yaml(yaml_path)
+        logger.debug(f"Loaded YAML content from: {yaml_path}")
+
+        # Extract parameters from the YAML structure
+        # Assuming the YAML has a structure like: CropParameters -> SWAPInput -> parameters
+        params = None
+        if (
+            "CropParameters" in yaml_content
+            and "SWAPInput" in yaml_content["CropParameters"]
+        ):
+            params = yaml_content["CropParameters"]["SWAPInput"]
+        elif isinstance(yaml_content, dict):
+            # If it's a flat dictionary, use it directly
+            params = yaml_content
+        else:
+            msg = f"Could not find parameters in YAML structure: {yaml_content.keys()}"
+            raise ValueError(msg)
+
+        logger.debug(f"Extracted parameters from YAML: {list(params.keys())}")
+
+        # Create a copy to work with
+        params_copy = params.copy()
+
+        tp = TableProcessor()
+        for name, value in params.items():
+            if isinstance(value, dict) and len(value) == 2:
+                # This looks like a table with two columns (e.g., DNR/CH, TAVD/TMPF)
+                # Convert dict format to list of lists format expected by TableProcessor
+                keys = list(value.keys())
+                if len(keys) == 2:
+                    array_data = [
+                        [x, y]
+                        for x, y in zip(value[keys[0]], value[keys[1]], strict=True)
+                    ]
+                    processed = tp.process("array", data=array_data, columns=name)
+                    if processed is not None:
+                        # Replace the raw dict with the processed dataframe
+                        params_copy.update(processed)
+                        logger.debug(f"Processed table parameter from YAML: {name}")
+                    else:
+                        # Remove unmatched table parameters
+                        params_copy.pop(name, None)
+                        logger.warning(
+                            f"Failed to process table parameter from YAML: {name}, removing from update"
+                        )
+            elif isinstance(value, list) and value and isinstance(value[0], list):
+                # This is an array parameter in list of lists format
+                processed = tp.process("array", data=value, columns=name)
+                if processed is not None:
+                    # Replace the raw array with the processed dataframe
+                    params_copy.update(processed)
+                    logger.debug(f"Processed array parameter from YAML: {name}")
+                else:
+                    # Remove unmatched array parameters
+                    params_copy.pop(name, None)
+                    logger.warning(
+                        f"Failed to process array parameter from YAML: {name}, removing from update"
+                    )
+            # Scalar parameters are left as-is
+
+        self.update(params_copy, inplace=True)

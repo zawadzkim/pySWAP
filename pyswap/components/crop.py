@@ -88,7 +88,7 @@ from pyswap.db.cropdb import CropVariety as _CropVariety
 from pyswap.utils.mixins import (
     FileMixin as _FileMixin,
     SerializableMixin as _SerializableMixin,
-    WOFOSTUpdateMixin as _WOFOSTUpdateMixin,
+    YAMLUpdateMixin as _YAMLUpdateMixin,
     YAMLValidatorMixin as _YAMLValidatorMixin,
 )
 
@@ -138,7 +138,7 @@ __all__ = [
 
 
 class _CropDevelopmentSettings(
-    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _WOFOSTUpdateMixin
+    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _YAMLUpdateMixin
 ):
     """Crop development settings.
 
@@ -601,7 +601,7 @@ class Interception(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
 
 
 class CO2Correction(
-    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _WOFOSTUpdateMixin
+    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _YAMLUpdateMixin
 ):
     """CO2 correction settings for WOFOST-type .crp file.
 

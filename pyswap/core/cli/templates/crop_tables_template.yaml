@@ -30,25 +30,24 @@
 #
 Version: 1.0.0
 Metadata: &meta
-    Creator:
-    Contributor:
-    Contact:
-    Publisher:
-    Title: Complementary parameters for {crop_type} for SWAP model 
-    Date:
-    Language: EN
-    Format: YAML
-    Subject:
-    Description:
-    Identifier:
-    Relation:
-    Source:
-    Type:
-    Coverage:
-       Region: No specific region
-    Rights: European Union Public License (EUPL)
-    Keyword: "{crop_type}, SWAP, WOFOST"
+  Creator:
+  Contributor:
+  Contact:
+  Publisher:
+  Title: Complementary parameters for {crop_type} for SWAP model
+  Date:
+  Language: EN
+  Format: YAML
+  Subject:
+  Description:
+  Identifier:
+  Relation:
+  Source:
+  Type:
+  Coverage:
+    Region: No specific region
+  Rights: European Union Public License (EUPL)
+  Keyword: "{crop_type}, SWAP, WOFOST"
 
 CropParameters:
   SWAPInput: &swap_input
-
