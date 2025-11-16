@@ -21,21 +21,24 @@ GitHub repository of Allard de Wit
 """
 
 from importlib import resources
-from importlib.abc import Traversable
+from pathlib import Path
 
-libs: Traversable = resources.files(__name__)
+libs: Path = resources.files(__name__)
 """Libs module directory."""
 
-swap_linux: Traversable = libs / "swap420-linux" / "swap420"
+swap: Path = libs / "swap"
+"""The directory of the SWAP executable."""
+
+swap_linux: Path = swap / "swap420"
 """The directory of the SWAP420 Linux executable."""
 
-swap_windows: Traversable = libs / "swap420-exe" / "swap.exe"
+swap_windows: Path = swap / "swap.exe"
 """The directory of the SWAP420 Windows executable."""
 
-crop_params: Traversable = libs / "WOFOST_crop_parameters"
+crop_params: Path = libs / "WOFOST_crop_parameters"
 """The directory of WOFOST crop parameters."""
 
-plotting: Traversable = libs / "plotting"
+plotting: Path = libs / "plotting"
 """The directory of plotting resources."""
 
-co2concentration: Traversable = libs / "co2-concentration" / "Atmospheric.co2"
+co2concentration: Path = libs / "co2-concentration" / "Atmospheric.co2"
