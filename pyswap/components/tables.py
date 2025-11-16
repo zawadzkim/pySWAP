@@ -573,6 +573,13 @@ class CO2AMAXTB(BaseTableModel):
     FACTOR: Series[float]
 
 
+class VERNRTB(BaseTableModel):
+    """Vernalization rate as a function of average air temperature."""
+
+    TAV: Series[float]
+    VERNRATE: Series[float]
+
+
 # %% ++++++++++++++++++++++++++++ METEO TABLES ++++++++++++++++++++++++++++
 
 meteo_tables = [

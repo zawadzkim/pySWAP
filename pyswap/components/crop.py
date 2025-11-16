@@ -69,6 +69,7 @@ from pyswap.components.tables import (
     SLATB,
     TMNFTB,
     TMPFTB,
+    VERNRTB,
     WRTB,
 )
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
@@ -132,6 +133,7 @@ __all__ = [
     "RLWTB",
     "DMMOWTB",
     "DMMOWDELAY",
+    "VERNRTB",
 ]
 
 
@@ -260,7 +262,8 @@ class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
         vernsat (Optional[float]): Saturated vernalisation requirement.
         vernbase (Optional[float]): Base vernalisation requirement.
         verndvs (Optional[float]): Critical development stage after which the effect of vernalisation is halted.
-        verntb (Optional [_Arrays]): _Table with rate of vernalisation as function of average air temperature.
+        vernrtb (Optional [_Arrays]): _Table with rate of vernalisation as function of average air temperature. In WOFOST it's called this way. Aliased
+            to verntb for SWAP.
         tdwi (float): Initial total crop dry weight [0..10000 kg/ha].
         laiem (float): Leaf area index at emergence [0..10 m2/m2].
         rgrlai (float): Maximum relative increase in LAI [0..1 m2/m2/d].
@@ -298,7 +301,7 @@ class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
     vernsat: float | None = _Field(default=None, ge=0.0, le=100.0)
     vernbase: float | None = _Field(default=None, ge=0.0, le=100.0)
     verndvs: float | None = _Field(default=None, ge=0.0, le=0.3)
-    verntb: _Arrays | None = None
+    vernrtb: _Arrays | None = _Field(default=None, alias="verntb")
     tdwi: float | None = _Field(default=None, ge=0.0, le=10_000)
     laiem: float | None = _Field(default=None, ge=0.0, le=10)
     rgrlai: float | None = _Field(default=None, **_UNITRANGE)
