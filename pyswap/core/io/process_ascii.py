@@ -7,10 +7,11 @@ Steps to process SWAP format ASCII files:
 
 import logging
 import re
+
 from pyswap.core.io.processors import TableProcessor
-import logging
 
 logger = logging.getLogger(__name__)
+
 
 def remove_comments(text: str) -> str:
     """Remove comments from a SWAP input file.
@@ -35,7 +36,7 @@ def remove_comments(text: str) -> str:
     return text.strip()
 
 
-def parse_ascii_file(file_content, grass = False) -> dict[str, dict]:
+def parse_ascii_file(file_content, grass=False) -> dict[str, dict]:
     """Parse an ASCII file in SWAP format.
 
     !!! note "Assumptions"
@@ -103,13 +104,15 @@ def parse_ascii_file(file_content, grass = False) -> dict[str, dict]:
                 data.append(line.strip().split())
             else:
                 break
-        processed = tp.process(type=type, data=data, columns=tuple(key.strip().split()), grass=grass)
+        processed = tp.process(
+            type=type, data=data, columns=tuple(key.strip().split()), grass=grass
+        )
         logger.debug(f"Processed {len(data)} rows for {key.strip()}")
         return processed, len(data)
 
     i = 0
     # loop over the list of lines, stripping each
-    
+
     while i < len(lines):
         line = lines[i].strip()
 

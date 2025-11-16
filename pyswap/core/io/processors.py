@@ -14,11 +14,16 @@ Processors in this module:
 import inspect
 import logging
 from functools import cache
+from typing import Literal
+
+import pandas as pd
 import pandera as pa
+
 import pyswap.components.tables as tables
 from pyswap.core.basemodel import BaseTableModel
 
 logger = logging.getLogger(__name__)
+
 
 class TableProcessor:
     def __init__(self):
@@ -56,7 +61,11 @@ class TableProcessor:
         """Create a list of dictionaries with table names, classes and columns names."""
         members = inspect.getmembers(tables, TableProcessor.is_dataframe_schema)
         return [
-            {"name": v[0], "class": v[1], "cols": tuple(v[1].to_schema().columns.keys())}
+            {
+                "name": v[0],
+                "class": v[1],
+                "cols": tuple(v[1].to_schema().columns.keys()),
+            }
             for v in members
         ]
 
@@ -81,10 +90,13 @@ class TableProcessor:
             logger.debug(f"Successfully validated {schema.__name__}")
             return schema_object
 
-    def process(self, 
-                type: Literal["table", "array"], 
-                data: dict | list[dict], 
-                columns: list[str] | tuple[str], grass = False) -> dict[str, pd.DataFrame] | None:
+    def process(
+        self,
+        type: Literal["table", "array"],
+        data: dict | list[dict],
+        columns: list[str] | tuple[str],
+        grass=False,
+    ) -> dict[str, pd.DataFrame] | None:
         """Process the data and return a DataFrame.
 
         Parameters:
@@ -107,33 +119,33 @@ class TableProcessor:
                     )
                     if schema_obj is not None:
                         return {schema["name"].lower(): schema_obj}
-            
+
             logger.warning(f"No matching table schema found for columns: {columns}")
             return None
-        
+
         else:
             array_name = columns[0] if isinstance(columns, (list, tuple)) else columns
             for schema in self.schemas:
-                    # if the array is a grass crop, remove DVS column from the set.
-                    # Otherwise remocve DNR column. This is done to still provide
-                    # data validation and sustain the idea of matching the schema
-                    # with the parameter by schema name.
+                # if the array is a grass crop, remove DVS column from the set.
+                # Otherwise remocve DNR column. This is done to still provide
+                # data validation and sustain the idea of matching the schema
+                # with the parameter by schema name.
 
                 if schema["name"].lower() == array_name.lower():
                     logger.debug(f"Matched array schema: {schema['name']}")
-                    
+
                     # Create a copy of columns to avoid mutating cached schema
                     filtered_cols = tuple(
-                        col for col in schema["cols"] 
+                        col
+                        for col in schema["cols"]
                         if col.upper() != ("DVS" if grass else "DNR")
                     )
-                    
+
                     schema_obj = self.create_schema_object(
                         schema["class"], filtered_cols, data
                     )
                     if schema_obj is not None:
                         return {schema["name"].lower(): schema_obj}
-            
+
             logger.warning(f"No matching array schema found for: {array_name}")
             return None
-

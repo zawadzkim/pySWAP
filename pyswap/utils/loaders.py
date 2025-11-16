@@ -41,7 +41,6 @@ from pyswap.core.defaults import EXTENSION_SWITCHES
 from pyswap.core.io.io_ascii import open_ascii
 from pyswap.core.io.process_ascii import parse_ascii_file
 
-
 __all__ = ["load_swp"]
 
 
@@ -124,10 +123,9 @@ def load_dra(path: Path):
 
 
 def load_crp(path: Path, crptype: _Literal["fixed", "wofost", "grass"], name: str):
-
     crp = open_ascii(path)
     params = parse_ascii_file(crp, grass=True if crptype == "grass" else False)
-    
+
     cropfile_setup = {
         "name": name,
         "prep": Preparation(),
