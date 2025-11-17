@@ -184,6 +184,38 @@ def get_swap(
 
 
 @app.command()
+def upload_swap(
+    file_path: str = typer.Argument(
+        help="Path to the SWAP executable file to install"
+    ),
+    version: str = typer.Argument(
+        help="Version identifier for the uploaded executable"
+    ),
+    force: bool = typer.Option(
+        False, "--force", "-f", help="Force replace existing executable"
+    ),
+    verbose: bool = typer.Option(
+        True, "--verbose/--quiet", help="Enable verbose output"
+    ),
+):
+    """Install SWAP executable from a local file."""
+    from pyswap.utils.executables import upload_swap as _upload_swap
+
+    try:
+        exe_path = _upload_swap(
+            file_path=file_path, 
+            version=version, 
+            force=force, 
+            verbose=verbose
+        )
+        if verbose:
+            typer.echo(f"Success! SWAP executable installed at: {exe_path}")
+    except Exception as e:
+        typer.echo(f"Error: {e}", err=True)
+        raise typer.Exit(1)
+
+
+@app.command()
 def check_swap(
     verbose: bool = typer.Option(
         True, "--verbose/--quiet", help="Enable verbose output"

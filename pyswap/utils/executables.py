@@ -277,6 +277,126 @@ def check_swap(exe_path: Optional[str] = None, verbose: bool = True) -> bool:
         return False
 
 
+def upload_swap(
+    file_path: str,
+    version: str,
+    force: bool = False,
+    verbose: bool = True,
+) -> str:
+    """Install SWAP executable from a local file.
+    
+    Args:
+        file_path: Path to the local SWAP executable file to install.
+        version: Version identifier for the uploaded executable. Defaults to "custom".
+        force: Force replace existing executable. Defaults to False.
+        verbose: Print installation progress and information. Defaults to True.
+        
+    Returns:
+        Path to the installed SWAP executable.
+        
+    Examples:
+        >>> import pyswap as psp
+        >>> # Install from a local executable
+        >>> swap_exe = psp.upload_swap("/path/to/my/swap", version="4.2.1-custom")
+        >>> print(f"SWAP executable installed at: {swap_exe}")
+        
+        >>> # Force replace existing installation
+        >>> swap_exe = psp.upload_swap("./swap420", force=True, verbose=True)
+    """
+    from pathlib import Path
+    
+    source_path = Path(file_path)
+    target_path = get_swap_executable_path()
+    
+    # Validate source file
+    if not source_path.exists():
+        raise FileNotFoundError(f"Source file not found: {source_path}")
+    
+    if not source_path.is_file():
+        raise ValueError(f"Source path is not a file: {source_path}")
+    
+    # Check if target already exists
+    if target_path.exists() and not force:
+        current_version = read_swap_version()
+        raise FileExistsError(
+            f"SWAP executable already exists at: {target_path}\n"
+            f"Current version: {current_version or 'unknown'}\n"
+            f"Use force=True to replace it."
+        )
+    
+    if verbose:
+        typer.echo(f"Installing SWAP executable from: {source_path}")
+        typer.echo(f"Target location: {target_path}")
+        if target_path.exists():
+            typer.echo("Replacing existing executable...")
+    
+    try:
+        # Create target directory if it doesn't exist
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Copy the file
+        shutil.copy2(source_path, target_path)
+        
+        # Make executable (Unix systems)
+        if not IS_WINDOWS:
+            os.chmod(target_path, 0o755)
+        
+        # Verify the copied file
+        if not _verify_executable(target_path, verbose=verbose):
+            # Clean up on failure
+            target_path.unlink(missing_ok=True)
+            raise RuntimeError("Uploaded file does not appear to be a valid executable")
+        
+        # Write version info
+        write_version_info(version)
+        
+        if verbose:
+            typer.echo(f"✓ Your SWAP executable successfully installed!")
+            typer.echo(f"Version: {version}")
+            typer.echo(f"Executable path: {target_path}")
+            
+        return str(target_path)
+        
+    except Exception as e:
+        if verbose:
+            typer.echo(f"✗ Failed to install SWAP executable: {e}")
+        raise
+
+
+def _verify_executable(exe_path: Path, verbose: bool = False) -> bool:
+    """Verify that the uploaded file is a valid executable.
+    
+    This could be expanded if we could make sure there --version always works on swap.
+    For now it seems it spits out the version output to a file instead of just stdout.
+
+    Args:
+        exe_path: Path to the executable to verify.
+        verbose: Print verification details.
+        
+    Returns:
+        True if the file appears to be a valid executable.
+    """
+    try:
+        # Check if file is executable
+        if not os.access(exe_path, os.X_OK):
+            if verbose:
+                typer.echo("File is not executable")
+            return False
+        
+        typer.echo("Warning: Uploading unverified executable.")
+
+        return True
+        
+    except subprocess.TimeoutExpired:
+        if verbose:
+            typer.echo("Warning: Executable test timed out, but installing anyway")
+        return True
+    except Exception as e:
+        if verbose:
+            typer.echo(f"Warning: Could not verify executable: {e}")
+        return True  # Allow installation
+
+
 def remove_swap(verbose: bool = True) -> bool:
     """Remove the SWAP executable from the package directory.
     
