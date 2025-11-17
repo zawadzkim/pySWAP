@@ -84,6 +84,7 @@ crop_tables = [
     "CO2EFFTB",
     "CO2TRATB",
     "CO2AMAXTB",
+    "LSDA",
 ]
 
 
@@ -578,6 +579,21 @@ class VERNRTB(BaseTableModel):
 
     TAV: Series[float]
     VERNRATE: Series[float]
+
+class LSDA(BaseTableModel):
+    """Actual livestock density of each grazing period
+
+    !!! note
+
+        total number of periods should be equal to number of periods in SEQGRAZMOW
+
+    Attributes:
+        SEQNR (Series[int]): number of the sequence period with mowing/grazing [0..366 d, I]
+        LSDA (Series[float]): Actual Live Stock Density of the grazing period [0.0..1000.0 LS/ha, R]
+    """
+
+    SEQNR: Series[int] = pa.Field(**YEARRANGE)
+    LSDA: Series[float] = pa.Field(ge=0.0, le=1000.0)
 
 
 # %% ++++++++++++++++++++++++++++ METEO TABLES ++++++++++++++++++++++++++++

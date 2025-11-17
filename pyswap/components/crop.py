@@ -71,6 +71,7 @@ from pyswap.components.tables import (
     TMPFTB,
     VERNRTB,
     WRTB,
+    LSDA,
 )
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.fields import (
@@ -134,6 +135,7 @@ __all__ = [
     "DMMOWTB",
     "DMMOWDELAY",
     "VERNRTB",
+    "LSDA"
 ]
 
 
