@@ -118,6 +118,7 @@ def get_swap(
     version: str = "4.2.0",
     force: bool = False,
     verbose: bool = True,
+    auto_install: bool = False
 ) -> str:
     """Download and setup SWAP executable for the current platform.
     
@@ -125,7 +126,7 @@ def get_swap(
         version: SWAP version to download. Defaults to "4.2.0".
         force: Force re-download even if executable already exists. Defaults to False.
         verbose: Print download progress and information. Defaults to True.
-        
+        auto_install: Automatically install SWAP if not found during the model run. Defaults to False.
     Returns:
         Path to the SWAP executable.
         
@@ -156,11 +157,11 @@ def get_swap(
         _download_swap_executable(
             version=version,
             target_path=exe_path,
-            verbose=verbose
+            verbose=verbose or auto_install
         )
         
         write_version_info(version)
-        if verbose:
+        if verbose or auto_install:
             typer.echo(f"✓ SWAP {version} successfully installed!")
             typer.echo(f"Executable path: {exe_path}")
             typer.echo("Updated version info file.")
