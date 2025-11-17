@@ -120,7 +120,7 @@ class TestYAMLUpdateMixin:
     def test_integration_with_real_grassd_yaml_file(self, mock_model):
         """Integration test with the actual grassd_swap.yaml file."""
         # Path to the real grassd_swap.yaml file
-        real_yaml_path = Path(__file__).parent.parent / "pyswap" / "testcase" / "data" / "1-hupselbrook" / "grassd_swap.yaml"
+        real_yaml_path = Path(__file__).parent.parent / "pyswap" / "testcase" / "data" / "1-hupselbrook" / "grass_swap.yaml"
         
         if not real_yaml_path.exists():
             pytest.skip(f"Real YAML file not found at {real_yaml_path}")
