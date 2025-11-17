@@ -11,6 +11,7 @@ dist/
 
 # Virtual Environments
 venv/
+.venv/
 env/
 env.bak/
 env1/
@@ -50,3 +51,10 @@ node_modules/
 .ruff_cache/
 .pytest_cache/
 .logs/
+
+# Coverage reports
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+coverage_html_report/

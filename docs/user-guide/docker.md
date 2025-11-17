@@ -49,13 +49,15 @@ docker run -it --rm -v "$PWD":/workspace pyswap
 ```
 
 **Command breakdown:**
+
 - `-it`: Interactive terminal
-- `--rm`: Remove container after stopping  
+- `--rm`: Remove container after stopping
 - `-v "$PWD":/workspace`: Mount current directory to `/workspace` in container
 
 ### 3. Run your scripts
 
 With volume mounting, you can:
+
 - **Edit code locally** using your preferred editor (VS Code, PyCharm, etc.)
 - **Run scripts immediately** in the container: `python your-script.py`
 - **Iterate quickly** - changes are instantly available without rebuilding
@@ -70,11 +72,13 @@ python your-script.py
 When you're finished with your analysis, you can exit the container:
 
 **If you're inside the container:**
+
 ```bash
 exit
 ```
 
 **If you're in a different terminal and want to stop a running container:**
+
 ```shell
 # List running containers and find pySWAP
 docker ps

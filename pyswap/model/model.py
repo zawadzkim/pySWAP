@@ -29,7 +29,6 @@ from __future__ import annotations
 
 import logging
 import os
-import shutil
 import subprocess
 import tempfile
 from multiprocessing import Pool
@@ -55,12 +54,11 @@ from pyswap.components.soilwater import (
 )
 from pyswap.components.transport import HeatFlow, SoluteTransport
 from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.defaults import IS_WINDOWS
 from pyswap.core.fields import Subsection
 from pyswap.core.io.io_ascii import open_ascii
 from pyswap.db.co2concentration import CO2concentration
-from pyswap.libs import swap_linux, swap_windows
 from pyswap.model.result import Result
+from pyswap.utils.executables import get_swap
 from pyswap.utils.mixins import FileMixin, SerializableMixin
 
 logger = logging.getLogger(__name__)
@@ -75,28 +73,12 @@ class ModelBuilder:
         model (Model): The model to build.
         tempdir (str): The temporary directory to store the input files.
 
-    Methods:
-        copy_executable: Copy the appropriate SWAP executable to the
-            temporary directory.
         write_inputs: Write the input files to the temporary directory.
     """
 
     def __init__(self, model: Model, tempdir: str):
         self.model = model
         self.tempdir = tempdir
-
-    def copy_executable(self) -> None:
-        """Copy the appropriate SWAP executable to the temporary directory."""
-        if IS_WINDOWS:
-            shutil.copy(swap_windows, self.tempdir)
-            logger.info(
-                "Copying the windows version of SWAP into temporary directory..."
-            )
-        else:
-            shutil.copy(swap_linux, self.tempdir)
-            logger.info("Copying linux executable into temporary directory...")
-
-        return self
 
     def get_inputs(self) -> dict:
         """Get the inpup files in a dictionary."""
@@ -174,11 +156,15 @@ class ModelRunner:
         Run the exacutable in the tempdirectory and pass the newline to the
         stdin when the executable asks for input (upon termination).
 
+        get_swap will now automatically install the SWAP executable if it is not found and
+        return the path to the executable.
+
         Parameters:
             tempdir (Path): The temporary directory where the executable
                 is stored.
         """
-        swap_path = Path(tempdir, "swap.exe") if IS_WINDOWS else "./swap420"
+        swap_path = get_swap(verbose=False, auto_install=True)
+
         p = subprocess.Popen(
             swap_path,
             stdout=subprocess.PIPE,
@@ -218,20 +204,23 @@ class ModelRunner:
 
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
             builder = ModelBuilder(self.model, tempdir)
-            builder.copy_executable().write_inputs()
+
+            builder.write_inputs()
 
             stdout = self.run_swap(tempdir)
+            reader = ResultReader(self.model, tempdir)
 
             if "normal completion" not in stdout:
                 msg = f"Model run failed. \n {stdout}"
+                logger.error(msg)
+                log = reader.read_swap_log()
+                logger.error(log)
                 raise RuntimeError(msg)
 
             logger.info(stdout)
 
             # --- Handle the results ---
             result: Result = Result()
-
-            reader = ResultReader(self.model, tempdir)
 
             log = reader.read_swap_log()
             result.log = log
@@ -540,7 +529,6 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         builder = ModelBuilder(model=self, tempdir=path)
 
         builder.write_inputs()
-        builder.copy_executable()
 
         logger.info(f"Model files written to {path}")
 

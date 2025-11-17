@@ -71,9 +71,6 @@ class PySWAPBaseModel(BaseModel):
             inplace (bool): If True, update the model in place.
         """
 
-        # filtered = {k: v for k, v in new.items() if k in self.model_fields}
-
-        # updated_model = self.model_validate(dict(self) | filtered)
         updated_model = self.model_validate(dict(self) | new)
 
         if not inplace:
@@ -111,6 +108,10 @@ class PySWAPBaseModel(BaseModel):
         This method was necessary to ensure that loading models from ASCII files
         would work. It could be improved to include literals that do not start
         with "sw" as well.
+
+        !!! note:
+            This should be eventually replaced by a custom Switch field type handling
+            serialization and deserialization.
         """
         if (
             (info.field_name.startswith("sw") or info.field_name in ADDITIONAL_SWITCHES)

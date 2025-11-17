@@ -126,3 +126,83 @@ def test_git_initialization_and_gitignore(setup_and_teardown):
             assert pattern in gitignore_content, (
                 f"Expected pattern '{pattern}' not found in .gitignore file."
             )
+
+
+def test_upload_swap_success(tmp_path, monkeypatch):
+    """Uploading a local executable should copy it to the package location and write version info."""
+    import pyswap.utils.executables as exe_mod
+    from pyswap.core.cli.cli import app
+
+    runner = CliRunner()
+
+    # Create a fake source executable
+    src = tmp_path / "my_swap"
+    src.write_text("#!/bin/sh\necho SWAP")
+    src.chmod(0o755)
+
+    # Prepare a fake install location and monkeypatch the getter
+    install_dir = tmp_path / "install"
+    install_dir.mkdir()
+    target_path = install_dir / ("swap.exe" if exe_mod.IS_WINDOWS else "swap420")
+
+    monkeypatch.setattr(exe_mod, "get_swap_executable_path", lambda: target_path)
+
+    result = runner.invoke(app, ["upload-swap", str(src), "4.2.0", "--force"])
+    assert result.exit_code == 0, result.stdout + str(result.exception)
+
+    # Check file copied
+    assert target_path.exists(), "Uploaded executable was not copied to target location"
+
+    # Check version file
+    version_file = target_path.parent / "version.yaml"
+    assert version_file.exists(), "version.yaml was not written"
+    version_txt = version_file.read_text()
+    assert "4.2.0" in version_txt
+
+
+def test_upload_swap_source_missing(tmp_path, monkeypatch):
+    """Uploading a non-existent source should return an error."""
+    import pyswap.utils.executables as exe_mod
+    from pyswap.core.cli.cli import app
+
+    runner = CliRunner()
+
+    missing = tmp_path / "does_not_exist"
+
+    install_dir = tmp_path / "install2"
+    install_dir.mkdir()
+    target_path = install_dir / ("swap.exe" if exe_mod.IS_WINDOWS else "swap420")
+    monkeypatch.setattr(exe_mod, "get_swap_executable_path", lambda: target_path)
+
+    result = runner.invoke(app, ["upload-swap", str(missing), "custom"])
+    assert result.exit_code != 0
+    assert "Source file not found" in result.stdout or "Error" in result.stdout
+
+
+def test_upload_swap_target_exists_without_force(tmp_path, monkeypatch):
+    """If target exists and --force not provided, upload should fail."""
+    import pyswap.utils.executables as exe_mod
+    from pyswap.core.cli.cli import app
+
+    runner = CliRunner()
+
+    src = tmp_path / "my_swap2"
+    src.write_text("#!/bin/sh\necho SWAP")
+    src.chmod(0o755)
+
+    install_dir = tmp_path / "install3"
+    install_dir.mkdir()
+    target_path = install_dir / ("swap.exe" if exe_mod.IS_WINDOWS else "swap420")
+    # create existing target
+    target_path.write_text("existing")
+    target_path.chmod(0o755)
+
+    monkeypatch.setattr(exe_mod, "get_swap_executable_path", lambda: target_path)
+
+    result = runner.invoke(app, ["upload-swap", str(src), "custom"])
+    assert result.exit_code != 0
+    assert (
+        "already exists" in result.stdout
+        or "Use force=True" in result.stdout
+        or "Use --force" in result.stdout
+    )

@@ -84,6 +84,7 @@ crop_tables = [
     "CO2EFFTB",
     "CO2TRATB",
     "CO2AMAXTB",
+    "LSDA",
 ]
 
 
@@ -160,9 +161,10 @@ class CHTB(BaseTableModel):
 
     DVS: Series[float] | None = pa.Field(**DVSRANGE)
     DNR: Series[float] | None = pa.Field(**YEARRANGE)
-    CF: (
-        Series[float] | None
-    )  # Added for compatibility with example grass files in original SWAP distribution that are used for testing this package. CF is only stated but not used there.
+    # # CF was added for compatibility with example grass files in original SWAP distribution
+    # # that are used for testing this package. CF is only stated but not used there. I
+    # removed it because it was conflicting with other settings. Input files for the examples
+    # should be adjusted.
     CH: Series[float] | None
 
 
@@ -571,6 +573,29 @@ class CO2AMAXTB(BaseTableModel):
 
     CO2PPM: Series[float]
     FACTOR: Series[float]
+
+
+class VERNRTB(BaseTableModel):
+    """Vernalization rate as a function of average air temperature."""
+
+    TAV: Series[float]
+    VERNRATE: Series[float]
+
+
+class LSDA(BaseTableModel):
+    """Actual livestock density of each grazing period
+
+    !!! note
+
+        total number of periods should be equal to number of periods in SEQGRAZMOW
+
+    Attributes:
+        SEQNR (Series[int]): number of the sequence period with mowing/grazing [0..366 d, I]
+        LSDA (Series[float]): Actual Live Stock Density of the grazing period [0.0..1000.0 LS/ha, R]
+    """
+
+    SEQNR: Series[int] = pa.Field(**YEARRANGE)
+    LSDA: Series[float] = pa.Field(ge=0.0, le=1000.0)
 
 
 # %% ++++++++++++++++++++++++++++ METEO TABLES ++++++++++++++++++++++++++++
