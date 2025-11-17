@@ -10,7 +10,7 @@ Variables:
 
 import platform
 from importlib import resources
-from importlib.abc import Traversable
+from pathlib import Path
 
 from pyswap.core.io.io_yaml import load_yaml
 
@@ -20,10 +20,10 @@ IS_WINDOWS = platform.system() == "Windows"
 BASE_PATH = ".\\" if IS_WINDOWS else "./"
 """Representation of file path depending on the system."""
 
-root: Traversable = resources.files("pyswap")
+root: Path = resources.files("pyswap")
 """Root directory of the package."""
 
-validation_rules: Traversable = root / "core" / "validation.yaml"
+validation_rules: Path = root / "core" / "validation.yaml"
 VALIDATIONRULES = load_yaml(validation_rules)
 
 FNAME_IN: str = "swap"

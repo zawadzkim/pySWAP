@@ -11,6 +11,7 @@ dist/
 
 # Virtual Environments
 venv/
+.venv/
 env/
 env.bak/
 env1/

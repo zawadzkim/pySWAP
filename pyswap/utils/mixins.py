@@ -34,6 +34,8 @@ from pydantic import BaseModel, PrivateAttr, model_serializer, model_validator
 from pydantic.fields import FieldInfo
 
 from pyswap.core.defaults import VALIDATIONRULES
+from pyswap.core.io.io_yaml import load_yaml
+from pyswap.core.io.processors import TableProcessor
 from pyswap.log import logging
 
 logger = logging.getLogger(__name__)
@@ -274,6 +276,8 @@ class YAMLValidatorMixin(BaseModel):
 
         rules = VALIDATIONRULES.get(self.__class__.__name__, {})
 
+        logger.debug(f"Validating {self.__class__.__name__} with rules: {rules}")
+
         for switch_name in rules:
             switch_value = getattr(self, switch_name, None)
             if switch_value is not None:  # Only validate if the switch is set
@@ -285,16 +289,59 @@ class YAMLValidatorMixin(BaseModel):
         return self
 
 
-class WOFOSTUpdateMixin:
+class YAMLUpdateMixin:
     """Interface for the WOFOST crop parameters database for pySWAP.
 
     This mixin should be inherited by classes that share parameters with the
     WOFOST crop database.
     """
 
+    def _process_parameters(self, params: dict, source_name: str, grass: bool = False) -> dict:
+        """Process parameters by converting tables/arrays using TableProcessor.
+        
+        Args:
+            params: Dictionary of parameters to process
+            source_name: Name of the parameter source (for logging)
+            
+        Returns:
+            Processed parameters dictionary with tables converted to dataframes
+        """
+        params_copy = params.copy()
+        tp = TableProcessor()
+        
+        for name, value in params.items():
+            processed = None
+            
+            # Handle YAML dict format (two-column tables)
+            if isinstance(value, dict) and len(value) == 2:
+                keys = list(value.keys())
+                logger.debug(f"Processing YAML dict format for parameter: {name} with keys: {keys}")
+                if len(keys) == 2:
+                    array_data = [
+                        [x, y]
+                        for x, y in zip(value[keys[0]], value[keys[1]], strict=True)
+                    ]
+                    processed = tp.process("array", data=array_data, columns=name, grass=grass)
+                    
+            # Handle list of lists format (array parameters)
+            elif isinstance(value, list) and value and isinstance(value[0], list):
+                processed = tp.process("array", data=value, columns=name, grass=grass)
+            
+            # Update or remove parameter based on processing result
+            if processed is not None:
+                params_copy.update(processed)
+                logger.debug(f"Processed parameter from {source_name}: {name}")
+            elif isinstance(value, (list, dict)) and not isinstance(value, str):
+                # Remove unmatched complex parameters (but keep scalars)
+                params_copy.pop(name, None)
+                logger.warning(
+                    f"Failed to process parameter from {source_name}: {name}, removing from update"
+                )
+                
+        return params_copy
+
     def update_from_wofost(self) -> None:
         """Update the model with the WOFOST variety settings."""
-        from pyswap.utils.old_swap import create_array_objects
 
         # parameters attribute returns a dictionary with the key-value pairs and
         # tables as list of lists. Before updating, the tables should be
@@ -304,6 +351,47 @@ class WOFOSTUpdateMixin:
             raise AttributeError(msg)
 
         variety_params = self.wofost_variety.parameters
-        new_arrays = create_array_objects(variety_params)
-        new = variety_params | new_arrays
-        self.update(new, inplace=True)
+        logger.debug(f"Updating from WOFOST variety parameters: {variety_params}")
+
+        processed_params = self._process_parameters(variety_params, "WOFOST")
+        self.update(processed_params, inplace=True)
+
+    def update_from_yaml(self, yaml_path: str | Path, grass: bool = False) -> None:
+        """Update the model with parameters from a YAML file.
+
+        Parameters:
+            yaml_path (str | Path): Path to the YAML file containing parameters.
+        """
+
+        yaml_path = Path(yaml_path)
+        if not yaml_path.exists():
+            msg = f"YAML file not found: {yaml_path}"
+            raise FileNotFoundError(msg)
+
+        yaml_content = load_yaml(yaml_path)
+        logger.debug(f"Loaded YAML content from: {yaml_path}")
+
+        # Extract parameters from the YAML structure
+        # Assuming the YAML has a structure like: CropParameters -> SWAPInput -> parameters
+        params = None
+        if (
+            isinstance(yaml_content, dict)
+            and "CropParameters" in yaml_content
+            and isinstance(yaml_content["CropParameters"], dict)
+            and "SWAPInput" in yaml_content["CropParameters"]
+        ):
+            params = yaml_content["CropParameters"]["SWAPInput"]
+        elif isinstance(yaml_content, dict):
+            # If it's a flat dictionary, use it directly
+            params = yaml_content
+        else:
+            structure_info = str(type(yaml_content).__name__)
+            if hasattr(yaml_content, 'keys'):
+                structure_info = f"{structure_info} with keys: {list(yaml_content.keys())}"
+            msg = f"Could not find parameters in YAML structure: {structure_info}"
+            raise ValueError(msg)
+
+        logger.debug(f"Extracted parameters from YAML: {list(params.keys())}")
+
+        processed_params = self._process_parameters(params, "YAML", grass)
+        self.update(processed_params, inplace=True)

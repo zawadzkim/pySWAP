@@ -145,12 +145,14 @@ GrasslandManagement:
   swharvest:
     2:
       - dateharvest
+  # This is difficult to validate since seqgrazmow is a list of integers specified by the user
+  # and whether this is required of not, depends on its content.
   swdmgrz:
     1:
       - dmgrazing
+    2:
       - dmgrztb
       - maxdaygrz
-    2:
       - tagprest
       - dewrest
       - lsda

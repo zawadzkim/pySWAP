@@ -64,6 +64,12 @@ def copy_readme(templates_path, project_root):
     return "Successfully created README in the root directory."
 
 
+def copy_crop_parameter_yaml(templates_path, models_dir):
+    template_file = templates_path / "crop_tables_template.yaml"
+    shutil.copy(template_file, models_dir)
+    return "Successfully created crop_tables_template.yaml in the models directory."
+
+
 def create_inits(project_root, models_dir, scripts_dir):
     (project_root / "__init__.py").touch()
     (models_dir / "__init__.py").touch()
@@ -151,6 +157,108 @@ def init(script: bool = False, notebook: bool = True):
 @app.command()
 def modify(script: bool = False, notebook: bool = True):
     print("Executing modify routine...")
+
+
+@app.command()
+def get_swap(
+    version: str = typer.Option(
+        "4.2.0", "--version", "-v", help="SWAP version to download"
+    ),
+    force: bool = typer.Option(
+        False, "--force", "-f", help="Force re-download even if executable exists"
+    ),
+    verbose: bool = typer.Option(
+        True, "--verbose/--quiet", help="Enable verbose output"
+    ),
+):
+    """Download and install SWAP executable."""
+    from pyswap.utils.executables import get_swap as _get_swap
+
+    try:
+        exe_path = _get_swap(version=version, force=force, verbose=verbose)
+        if verbose:
+            typer.echo(f"Success! SWAP executable ready at: {exe_path}")
+    except Exception as e:
+        typer.echo(f"Error: {e}", err=True)
+        raise typer.Exit(1)
+
+
+@app.command()
+def upload_swap(
+    file_path: str = typer.Argument(
+        help="Path to the SWAP executable file to install"
+    ),
+    version: str = typer.Argument(
+        help="Version identifier for the uploaded executable"
+    ),
+    force: bool = typer.Option(
+        False, "--force", "-f", help="Force replace existing executable"
+    ),
+    verbose: bool = typer.Option(
+        True, "--verbose/--quiet", help="Enable verbose output"
+    ),
+):
+    """Install SWAP executable from a local file."""
+    from pyswap.utils.executables import upload_swap as _upload_swap
+
+    try:
+        exe_path = _upload_swap(
+            file_path=file_path, 
+            version=version, 
+            force=force, 
+            verbose=verbose
+        )
+        if verbose:
+            typer.echo(f"Success! SWAP executable installed at: {exe_path}")
+    except Exception as e:
+        typer.echo(f"Error: {e}", err=True)
+        raise typer.Exit(1)
+
+
+@app.command()
+def check_swap(
+    verbose: bool = typer.Option(
+        True, "--verbose/--quiet", help="Enable verbose output"
+    ),
+):
+    """Check if SWAP executable is available and working."""
+    from pyswap.utils.executables import check_swap as _check_swap
+
+    if _check_swap(verbose=verbose):
+        typer.echo("✓ SWAP is ready to use!")
+    else:
+        typer.echo(
+            "✗ SWAP is not available. Run 'pyswap get-swap' to install.", err=True
+        )
+        raise typer.Exit(1)
+
+
+@app.command()
+def remove_swap(
+    verbose: bool = typer.Option(
+        True, "--verbose/--quiet", help="Enable verbose output"
+    ),
+):
+    """Remove SWAP executable from package directory."""
+    from pyswap.utils.executables import remove_swap as _remove_swap
+
+    if _remove_swap(verbose=verbose):
+        typer.echo("SWAP executable removed successfully")
+    else:
+        typer.echo("Failed to remove SWAP executable", err=True)
+        raise typer.Exit(1)
+
+
+@app.command()
+def info(
+    verbose: bool = typer.Option(
+        True, "--verbose/--quiet", help="Enable verbose output"
+    ),
+):
+    """Display information about pySWAP and SWAP setup."""
+    from pyswap.utils.executables import show_info
+
+    show_info(verbose=verbose)
 
 
 if __name__ == "__main__":

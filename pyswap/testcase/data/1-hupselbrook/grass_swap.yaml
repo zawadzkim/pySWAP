@@ -1,0 +1,99 @@
+# Crop parameter file containing information needed for SWAP simulations, complementary
+# to the WOFOST crop simulation model input.
+# Format of the arrays is slightly different from the WOFOST format. We use
+# an array of objects here instead of a simple array with alternating column values.
+#
+# For example:
+# WOFOST format:
+#   CO2EFFTB:
+#     - [40., 0.00,
+#       360., 1.00,
+#       720., 1.11,
+#       1000., 1.11,
+#       2000., 1.11]
+#     - multiplication factor for EFF to account for an increasing CO2 concentration
+#     - ['PPM', '-']
+# pyswap format:
+#   CO2EFFTB:
+#     ppm: [40., 360., 720., 1000., 2000.]
+#     eff: [0.00, 1.00, 1.11, 1.11, 1.11]
+# Provide the data you want to load into pyswap classes under the SWAPInput tag
+#
+# Example:
+# CropParameters:
+#   SWAPInput: &swap_input
+#     CO2EFFTB:
+#       ppm: [40., 360., 720., 1000., 2000.]
+#       eff: [0.00, 1.00, 1.11, 1.11, 1.11]
+#
+# More information: - http://zawadzkim.github.io/pySWAP
+#
+Version: 1.0.0
+Metadata: &meta
+  Creator:
+  Contributor:
+  Contact:
+  Publisher:
+  Title: Complementary parameters for {crop_type} for SWAP model
+  Date:
+  Language: EN
+  Format: YAML
+  Subject:
+  Description:
+  Identifier:
+  Relation:
+  Source:
+  Type:
+  Coverage:
+    Region: No specific region
+  Rights: European Union Public License (EUPL)
+  Keyword: "{crop_type}, SWAP, WOFOST"
+PredefinedArrays:
+  DVS: &dws [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
+CropParameters:
+  SWAPInput: &swap_input
+    CHTB:
+      DNR: [0.0, 180.0, 366.0]
+      CH: [12.0, 12.0, 12.0]
+    SLATB:
+      DNR: [1.00, 80.00, 300.00, 366.00]
+      SLA: [0.0015, 0.0015, 0.0020, 0.0020]
+    AMAXTB:
+      DNR: [1.00, 95.00, 200.00, 275.00, 366.00]
+      AMAX: [40.00, 40.00, 35.00, 25.00, 25.00]
+    TMPFTB:
+      TAVD: [0.00, 5.00, 15.00, 25.00, 40.00]
+      TMPF: [0.00, 0.70, 1.00, 1.00, 0.00]
+    TMNFTB:
+      TMNR: [0.0, 4.0]
+      TMNF: [0.0, 1.0]
+    RFSETB:
+      DNR: [1.00, 366.00]
+      RFSE: [1.0000, 1.0000]
+    FRTB:
+      DNR: [1.00, 366.00]
+      FR: [0.3000, 0.3000]
+    FLTB:
+      DNR: [1.00, 366.00]
+      FL: [0.6000, 0.6000]
+    FSTB:
+      DNR: [1.00, 366.00]
+      FS: [0.4000, 0.4000]
+    RDRRTB:
+      DNR: [1.0, 180.0, 366.0]
+      RDRR: [0.0, 0.02, 0.02]
+    RDRSTB:
+      DNR: [1.0, 180.0, 366.0]
+      RDRS: [0.0, 0.02, 0.02]
+    RLWTB:
+      RW: [300.00, 2500.00]
+      RL: [20.0, 40.0]
+    RDCTB:
+      RRD: [0.0, 1.0]
+      RDENS: [1.0, 0.0]
+    DMMOWTB:
+      DNR: [120.0, 152.0, 182.0, 213.0, 366.0]
+      DMMOW: [4700.0, 3700.0, 3200.0, 2700.0, 2700.0]
+    DMMOWDELAY:
+      DMMOWDELAY: [0.0, 2000.0, 4000.0]
+      DAYDELAY: [2, 3, 4]

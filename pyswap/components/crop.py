@@ -69,7 +69,9 @@ from pyswap.components.tables import (
     SLATB,
     TMNFTB,
     TMPFTB,
+    VERNRTB,
     WRTB,
+    LSDA,
 )
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.fields import (
@@ -87,7 +89,7 @@ from pyswap.db.cropdb import CropVariety as _CropVariety
 from pyswap.utils.mixins import (
     FileMixin as _FileMixin,
     SerializableMixin as _SerializableMixin,
-    WOFOSTUpdateMixin as _WOFOSTUpdateMixin,
+    YAMLUpdateMixin as _YAMLUpdateMixin,
     YAMLValidatorMixin as _YAMLValidatorMixin,
 )
 
@@ -132,11 +134,13 @@ __all__ = [
     "RLWTB",
     "DMMOWTB",
     "DMMOWDELAY",
+    "VERNRTB",
+    "LSDA"
 ]
 
 
 class _CropDevelopmentSettings(
-    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _WOFOSTUpdateMixin
+    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _YAMLUpdateMixin
 ):
     """Crop development settings.
 
@@ -260,7 +264,8 @@ class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
         vernsat (Optional[float]): Saturated vernalisation requirement.
         vernbase (Optional[float]): Base vernalisation requirement.
         verndvs (Optional[float]): Critical development stage after which the effect of vernalisation is halted.
-        verntb (Optional [_Arrays]): _Table with rate of vernalisation as function of average air temperature.
+        vernrtb (Optional [_Arrays]): _Table with rate of vernalisation as function of average air temperature. In WOFOST it's called this way. Aliased
+            to verntb for SWAP.
         tdwi (float): Initial total crop dry weight [0..10000 kg/ha].
         laiem (float): Leaf area index at emergence [0..10 m2/m2].
         rgrlai (float): Maximum relative increase in LAI [0..1 m2/m2/d].
@@ -298,7 +303,7 @@ class CropDevelopmentSettingsWOFOST(_CropDevelopmentSettings):
     vernsat: float | None = _Field(default=None, ge=0.0, le=100.0)
     vernbase: float | None = _Field(default=None, ge=0.0, le=100.0)
     verndvs: float | None = _Field(default=None, ge=0.0, le=0.3)
-    verntb: _Arrays | None = None
+    vernrtb: _Arrays | None = _Field(default=None, alias="verntb")
     tdwi: float | None = _Field(default=None, ge=0.0, le=10_000)
     laiem: float | None = _Field(default=None, ge=0.0, le=10)
     rgrlai: float | None = _Field(default=None, **_UNITRANGE)
@@ -598,7 +603,7 @@ class Interception(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
 
 
 class CO2Correction(
-    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _WOFOSTUpdateMixin
+    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _YAMLUpdateMixin
 ):
     """CO2 correction settings for WOFOST-type .crp file.
 
@@ -681,7 +686,7 @@ class Preparation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     agerm: float | None = _Field(default=None, ge=0.0, le=1000.0)
 
 
-class GrasslandManagement(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
+class GrasslandManagement(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _YAMLUpdateMixin):
     """Settings specific to the dynamic grass growth module.
 
     Attributes:
@@ -812,11 +817,19 @@ class CropFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
 
     @property
     def crp(self) -> str:
-        """Return the model string of the .crp file."""
+        """Return the model string of the .crp file.
+        
+        The addition validates all the crop files in the dictionary.
+        """
+        for comp in self.model_fields:
+            item = getattr(self, comp)
+            if hasattr(item, "validate_with_yaml"):
+                item._validation = True
+                item.validate_with_yaml()
         return self.model_string()
 
 
-class Crop(_PySWAPBaseModel, _SerializableMixin, _FileMixin, _YAMLValidatorMixin):
+class Crop(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Crop settings of the simulation.
 
     Attributes:

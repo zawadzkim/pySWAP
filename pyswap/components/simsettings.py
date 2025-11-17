@@ -89,8 +89,8 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         tend (str): End date of simulation run.
         nprintday (int): Number of output times during a day
         swmonth (Literal[0, 1]): Switch, output each month:
-            * 0 - output each month
-            * 1 - output via period, swres or swodat
+            * 0 - No output each month, choose period, swres or swodat
+            * 1 - Output each month
         period (Optional[int]): Fixed output interval in days
         swres (Optional[Literal[0, 1]]): Switch, reset output interval counter
             each year:
@@ -115,12 +115,10 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         extensions (list): List of file extensions SWAP should return.
             Available options are: ["wba", "end", "vap", "bal", "blc", "sba", "ate",
             "bma", "drf", "swb", "ini", "inc", "crp", "str", "irg", "csv", "csv_tz"]
-            TODO: Add description for each extension
         inlist_csv (Optional[StringList]): List of variables for the csv output.
             Available options are: TODO
         inlist_csv_tz (Optional[StringList]): List of variables over depth for
             the csv tz output. Available options are:
-            TODO
         swafo (Literal[0, 1, 2]): Switch, output file with formatted hydrological data:
             * 0 - no output
             * 1 - output to a file named *.AFO
@@ -156,8 +154,8 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
     tend: _date | None = None
 
     nprintday: int = _Field(default=1, ge=1, le=1440)
-    swmonth: _Literal[0, 1] | None = None  # 1
-    swyrvar: _Literal[0, 1] | None = None  # 0
+    swmonth: _Literal[0, 1] = 1
+    swyrvar: _Literal[0, 1] = 0
     period: int | None = _Field(default=None, **_YEARRANGE)
     swres: _Literal[0, 1] | None = None
     swodat: _Literal[0, 1] | None = None
