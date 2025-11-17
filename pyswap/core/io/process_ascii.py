@@ -89,7 +89,7 @@ def parse_ascii_file(file_content, grass=False) -> dict[str, dict]:
 
         return line.strip().endswith("=")
 
-    def parse_table(lines, start_index, key, type):
+    def parse_table(lines, start_index, key, param_type):
         """Parse a table from the list of lines.
 
         This function is triggered if a line is detected as an empty tag or a table. It will
@@ -105,7 +105,10 @@ def parse_ascii_file(file_content, grass=False) -> dict[str, dict]:
             else:
                 break
         processed = tp.process(
-            type=type, data=data, columns=tuple(key.strip().split()), grass=grass
+            data_type=param_type,
+            data=data,
+            columns=tuple(key.strip().split()),
+            grass=grass,
         )
         logger.debug(f"Processed {len(data)} rows for {key.strip()}")
         return processed, len(data)
@@ -121,13 +124,17 @@ def parse_ascii_file(file_content, grass=False) -> dict[str, dict]:
 
         elif is_empty_tag(line):
             key = line[:-1].strip()
-            array = parse_table(lines=lines, start_index=i + 1, key=key, type="array")
+            array = parse_table(
+                lines=lines, start_index=i + 1, key=key, param_type="array"
+            )
             arrays.update(array[0])
             i += array[1] + 1  # Skip the tag data
 
         elif is_table(line):
             # The table header is the line itself (de facto dictionary key)
-            table = parse_table(lines=lines, start_index=i + 1, key=line, type="table")
+            table = parse_table(
+                lines=lines, start_index=i + 1, key=line, param_type="table"
+            )
             tables.update(table[0])
             i += table[1] + 1  # Skip the table rows
         i += 1  # Move to the next line

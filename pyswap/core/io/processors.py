@@ -72,7 +72,7 @@ class TableProcessor:
     @staticmethod
     def create_schema_object(
         schema: BaseTableModel, columns: list, data: list
-    ) -> BaseTableModel:
+    ) -> pd.DataFrame | None:
         """Create a schema object from a list of data.
 
         Parameters:
@@ -83,8 +83,8 @@ class TableProcessor:
         df = pd.DataFrame(data, columns=columns)
         try:
             schema_object = schema.validate(df)
-        except pa.errors.SchemaError as e:
-            logger.error(f"Validation error for {schema.__name__}: {e!s}")
+        except pa.errors.SchemaError:
+            logger.exception(f"Validation error for {schema.__name__}")
             return None
         else:
             logger.debug(f"Successfully validated {schema.__name__}")
@@ -92,7 +92,7 @@ class TableProcessor:
 
     def process(
         self,
-        type: Literal["table", "array"],
+        data_type: Literal["table", "array"],
         data: dict | list[dict],
         columns: list[str] | tuple[str],
         grass=False,
@@ -110,7 +110,7 @@ class TableProcessor:
             logger.warning("No data provided to process")
             return None
 
-        if type == "table":
+        if data_type == "table":
             for schema in self.schemas:
                 if self.match_schema_by_columns(columns, schema):
                     logger.debug(f"Matched table schema: {schema['name']}")
@@ -124,7 +124,7 @@ class TableProcessor:
             return None
 
         else:
-            array_name = columns[0] if isinstance(columns, (list, tuple)) else columns
+            array_name = columns[0] if isinstance(columns, list | tuple) else columns
             for schema in self.schemas:
                 # if the array is a grass crop, remove DVS column from the set.
                 # Otherwise remocve DNR column. This is done to still provide

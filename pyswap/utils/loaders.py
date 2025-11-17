@@ -66,7 +66,9 @@ def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
     # create the extension list with only those switches that are = 1. get rid of the "sw" prefix
 
     extension_list = [
-        key[2:] for key, value in extension_switches.items() if int(value) == 1
+        key[2:]
+        for key, value in extension_switches.items()
+        if isinstance(value, int | str) and int(value) == 1
     ]
 
     # model definition

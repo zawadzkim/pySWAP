@@ -529,7 +529,6 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         builder = ModelBuilder(model=self, tempdir=path)
 
         builder.write_inputs()
-        builder.copy_executable()
 
         logger.info(f"Model files written to {path}")
 

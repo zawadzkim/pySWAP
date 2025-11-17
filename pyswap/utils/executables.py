@@ -46,7 +46,7 @@ def read_swap_version() -> str | None:
         try:
             with version_file.open("r") as f:
                 data = yaml.safe_load(f)
-                return data.get("version_swap")
+                return data.get("version_swap")  # type: ignore[no-any-return]
         except Exception:
             return None
     return None
@@ -172,10 +172,11 @@ def get_swap(
             typer.echo(f"✓ SWAP {version} successfully installed!")
             typer.echo(f"Executable path: {exe_path}")
             typer.echo("Updated version info file.")
-        return exe_path
-
     except Exception as e:
-        raise typer.Exit(f"Failed to download SWAP executable: {e}")
+        msg = f"Failed to download SWAP executable: {e}"
+        raise typer.Exit(msg) from e
+    else:
+        return exe_path
 
 
 def _download_swap_executable(
@@ -198,9 +199,11 @@ def _download_swap_executable(
     try:
         # Download with progress
         if verbose:
-            with typer.progressbar(length=100, label="Downloading") as progress:
+            with typer.progressbar(length=100, label="Downloading") as progress:  # type: ignore[var-annotated]
 
-                def progress_hook(block_num, block_size, total_size):
+                def progress_hook(
+                    block_num: int, block_size: int, total_size: int
+                ) -> None:
                     downloaded = block_num * block_size
                     if total_size > 0:
                         percent = min(100, (downloaded * 100) // total_size)
@@ -213,14 +216,17 @@ def _download_swap_executable(
     except urllib.error.HTTPError as e:
         if e.code == 404:
             platform_name = "windows" if IS_WINDOWS else "linux"
-            raise RuntimeError(
+            msg = (
                 f"SWAP version {version} not found for platform {platform_name}. "
                 f"Check available releases at: https://github.com/SWAP-model/SWAP/releases"
             )
+            raise RuntimeError(msg) from e
         else:
-            raise RuntimeError(f"Download failed: HTTP {e.code}")
+            msg = f"Download failed: HTTP {e.code}"
+            raise RuntimeError(msg) from e
     except Exception as e:
-        raise RuntimeError(f"Download failed: {e}")
+        msg = f"Download failed: {e}"
+        raise RuntimeError(msg) from e
 
     # Make executable (Unix systems)
     if not IS_WINDOWS:
@@ -238,7 +244,7 @@ def check_swap(exe_path: str | None = None, verbose: bool = True) -> bool:
         True if SWAP is available and working.
     """
     if exe_path is None:
-        exe_path = get_swap_executable_path()
+        exe_path = str(get_swap_executable_path())
 
     if not os.path.exists(exe_path):
         if verbose:
@@ -315,19 +321,22 @@ def upload_swap(
 
     # Validate source file
     if not source_path.exists():
-        raise FileNotFoundError(f"Source file not found: {source_path}")
+        msg = f"Source file not found: {source_path}"
+        raise FileNotFoundError(msg)
 
     if not source_path.is_file():
-        raise ValueError(f"Source path is not a file: {source_path}")
+        msg = f"Source path is not a file: {source_path}"
+        raise ValueError(msg)
 
     # Check if target already exists
     if target_path.exists() and not force:
         current_version = read_swap_version()
-        raise FileExistsError(
+        msg = (
             f"SWAP executable already exists at: {target_path}\n"
             f"Current version: {current_version or 'unknown'}\n"
             f"Use force=True to replace it."
         )
+        raise FileExistsError(msg)
 
     if verbose:
         typer.echo(f"Installing SWAP executable from: {source_path}")
@@ -350,7 +359,8 @@ def upload_swap(
         if not _verify_executable(target_path, verbose=verbose):
             # Clean up on failure
             target_path.unlink(missing_ok=True)
-            raise RuntimeError("Uploaded file does not appear to be a valid executable")
+            msg = "Uploaded file does not appear to be a valid executable"
+            raise RuntimeError(msg)
 
         # Write version info
         write_version_info(version)
@@ -390,16 +400,18 @@ def _verify_executable(exe_path: Path, verbose: bool = False) -> bool:
 
         typer.echo("Warning: Uploading unverified executable.")
 
-        return True
-
     except subprocess.TimeoutExpired:
         if verbose:
             typer.echo("Warning: Executable test timed out, but installing anyway")
         return True
     except Exception as e:
         if verbose:
-            typer.echo(f"Warning: Could not verify executable: {e}")
-        return True  # Allow installation
+            typer.echo(
+                f"Warning: Could not verify executable ({e}), but installing anyway"
+            )
+        return True
+    else:
+        return True
 
 
 def remove_swap(verbose: bool = True) -> bool:
@@ -426,8 +438,9 @@ def remove_swap(verbose: bool = True) -> bool:
             typer.echo(
                 f"✓ version.yaml removed from: {exe_path.parent / 'version.yaml'}"
             )
-        return True
     except Exception as e:
         if verbose:
             typer.echo(f"✗ Failed to remove SWAP executable: {e}")
         return False
+    else:
+        return True

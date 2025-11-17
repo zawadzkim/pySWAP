@@ -337,7 +337,7 @@ class YAMLUpdateMixin:
             if processed is not None:
                 params_copy.update(processed)
                 logger.debug(f"Processed parameter from {source_name}: {name}")
-            elif isinstance(value, (list, dict)) and not isinstance(value, str):
+            elif isinstance(value, list | dict) and not isinstance(value, str):
                 # Remove unmatched complex parameters (but keep scalars)
                 params_copy.pop(name, None)
                 logger.warning(

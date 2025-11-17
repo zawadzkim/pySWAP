@@ -180,7 +180,7 @@ def get_swap(
             typer.echo(f"Success! SWAP executable ready at: {exe_path}")
     except Exception as e:
         typer.echo(f"Error: {e}", err=True)
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -207,7 +207,7 @@ def upload_swap(
             typer.echo(f"Success! SWAP executable installed at: {exe_path}")
     except Exception as e:
         typer.echo(f"Error: {e}", err=True)
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
