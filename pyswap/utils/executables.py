@@ -96,7 +96,8 @@ def show_info(verbose: bool = True) -> dict:
         typer.echo(f"pySWAP Setup Information:")
         typer.echo(f"  pySWAP version: {pyswap_version}")
         if swap_version:
-            typer.echo(f"  SWAP version: {swap_version}")
+            version_label = "custom/uploaded" if swap_version == "custom" else swap_version
+            typer.echo(f"  SWAP version: {version_label}")
         else:
             typer.echo(f"  SWAP version: Not installed")
         
@@ -110,7 +111,9 @@ def show_info(verbose: bool = True) -> dict:
         
         if not swap_available:
             typer.echo("")
-            typer.echo("To install SWAP, run: pyswap get-swap")
+            typer.echo("To install SWAP:")
+            typer.echo("  - Download: pyswap get-swap")
+            typer.echo("  - Upload local file: pyswap upload-swap <path-to-executable>")
     
     return info
 
@@ -149,8 +152,9 @@ def get_swap(
         return exe_path
     
     # Download and install
-    if verbose:
-        typer.echo(f"Downloading SWAP {version} for {"windows" if IS_WINDOWS else "linux"}...")
+    if verbose or auto_install:
+        platform_name = "windows" if IS_WINDOWS else "linux"
+        typer.echo(f"Downloading SWAP {version} for {platform_name}...")
         typer.echo(f"Installing to: {exe_path.parent}")
     
     try:
@@ -180,7 +184,8 @@ def _download_swap_executable(
     
     # Construct download URL
     base_url = "https://github.com/SWAP-model/SWAP/releases/download"
-    filename = f"swap{version}-{"windows" if IS_WINDOWS else "linux"}"
+    platform_name = "windows" if IS_WINDOWS else "linux"
+    filename = f"swap{version}-{platform_name}"
     if IS_WINDOWS:
         filename += ".exe"
         
@@ -205,8 +210,9 @@ def _download_swap_executable(
             
     except urllib.error.HTTPError as e:
         if e.code == 404:
+            platform_name = "windows" if IS_WINDOWS else "linux"
             raise RuntimeError(
-                f"SWAP version {version} not found for platform {"windows" if IS_WINDOWS else "linux"}. "
+                f"SWAP version {version} not found for platform {platform_name}. "
                 f"Check available releases at: https://github.com/SWAP-model/SWAP/releases"
             )
         else:
