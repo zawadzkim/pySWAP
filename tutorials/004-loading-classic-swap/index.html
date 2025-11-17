@@ -1274,6 +1274,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../contributing/conventional-commits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conventional Commits Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../contributing/documentation/" class="md-nav__link">
         
   
@@ -2340,10 +2362,10 @@ SWSOLU = 0
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>
 SWCF = 2
-  DNR   CH  CF
-  0.0 12.0 1.0
-180.0 12.0 1.0
-366.0 12.0 1.0
+  DNR   CH
+  0.0 12.0
+180.0 12.0
+366.0 12.0
 
 ALBEDO = 0.23
 RSC = 100.00
@@ -2504,6 +2526,28 @@ MAXDAYGRZ = 28
 SWLOSSGRZ = 0
 TAGPREST = 700.00
 DEWREST = 850.00
+ SEQNR  LSDA
+     1 21.25
+     2 21.25
+     3 21.25
+     4 21.25
+     5 21.25
+     6 21.25
+     7 21.25
+     8 21.25
+     9 21.25
+    10 21.25
+    11 21.25
+    12 21.25
+    13 21.25
+    14 21.25
+    15 21.25
+    16 21.25
+    17 21.25
+    18 21.25
+    19 21.25
+    20 21.25
+
 SWDMMOW = 2
 DMHARVEST = 4200.00
 DAYLASTHARVEST = 289
@@ -2625,17 +2669,17 @@ SWCO2 = 0
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>{'swp': "PROJECT = 'pySWAP test - hupselbrook'\nSWWBA = 0\nSWEND = 0\nSWVAP = 0\nSWBAL = 0\nSWBLC = 0\nSWSBA = 0\nSWATE = 0\nSWBMA = 0\nSWDRF = 0\nSWSWB = 0\nSWINI = 0\nSWINC = 0\nSWCRP = 0\nSWSTR = 0\nSWIRG = 0\nSWCSV = 1\nSWCSV_TZ = 0\nPATHWORK = './'\nPATHATM = './'\nPATHCROP = './'\nPATHDRAIN = './'\nSWSCRE = 0\nSWERROR = 0\nTSTART = 1980-01-01\nTEND = 1984-12-31\nNPRINTDAY = 1\nSWMONTH = 0\nSWYRVAR = 0\nPERIOD = 1\nSWRES = 0\nSWODAT = 0\nDATEFIX = 31 12\nOUTFIL = 'result'\nSWHEADER = 0\nINLIST_CSV = 'pgrassdm,grassdm,pmowdm,mowdm'\nSWAFO = 0\nSWAUN = 0\nSWDISCRVERT = 0\nSWKMEAN = 1\nSWKIMPL = 0\nDTMIN = 1e-06\nDTMAX = 0.04\nGWLCONV = 100.0\nCRITDEVH1CP = 0.01\nCRITDEVH2CP = 0.1\nCRITDEVPONDDT = 0.0001\nMAXIT = 30\nMAXBACKTR = 3\nLAT = 52.10\nSWETR = 0\nSWDIVIDE = 1\nSWRAIN = 2\nSWETSINE = 0\nMETFIL = '260.met'\nALT = 1.90\nALTW = 10.00\nANGSTROMA = 0.25\nANGSTROMB = 0.50\nSWMETDETAIL = 0\nSWCROP = 1\nRDS = 200.0\n CROPSTART    CROPEND  CROPFIL  CROPTYPE\n1980-01-01 1980-12-31 'grassd'         3\n1981-01-01 1981-12-31 'grassd'         3\n1982-01-01 1982-12-31 'grassd'         3\n1983-01-01 1983-12-31 'grassd'         3\n1984-01-01 1984-12-31 'grassd'         3\n\nSWIRFIX = 0\nIRGFIL = 'swap'\nSWINCO = 2\nGWLI = -75.00\nSWPONDMX = 0\nSWRUNON = 0\nRSRO = 0.500\nRSROEXP = 1.00\nPONDMX = 0.20\nSWCFBS = 0\nSWREDU = 1\nCFEVAPPOND = 1.25\nRSOIL = 600.00\nCOFREDBL = 0.35\nRSIGNI = 0.50\nSWSOPHY = 0\nSWHYST = 0\nSWMACRO = 0\n ISUBLAY  ISOILLAY  HSUBLAY  HCOMP  NCOMP\n       1         1      5.0    1.0      5\n       2         1     10.0    2.5      4\n       3         2     10.0    5.0      2\n       4         3      5.0    5.0      1\n       5         3     20.0   10.0      2\n       6         4     50.0   10.0      5\n       7         4     20.0   20.0      1\n       8         5    100.0   20.0      5\n       9         5    120.0   40.0      3\n\n ORES  OSAT   ALFA  NPAR  KSATFIT   LEXP  H_ENPR  KSATEXM  BDENS\n 0.02  0.40 0.0227 1.548     9.65 -0.983     0.0     9.65 1300.0\n 0.02  0.40 0.0227 1.548     9.65 -0.983     0.0     9.65 1300.0\n 0.02  0.40 0.0227 1.548     9.65 -0.983     0.0     9.65 1300.0\n 0.01  0.36 0.0216 1.540    13.10 -0.520     0.0    13.10 1300.0\n 0.01  0.36 0.0216 1.540    13.10 -0.520     0.0    13.10 1300.0\n\nSWSNOW = 0\nSWFROST = 0\nSWDRA = 1\nDRFIL = 'swap'\nSWBBCFILE = 1\nBBCFIL = 'swap'\nSWHEA = 1\nSWCALT = 2\nSWTOPBHEA = 1\nSWBOTBHEA = 1\n PSAND  PSILT  PCLAY  ORGMAT\n  0.68   0.27   0.05   0.113\n  0.68   0.28   0.04   0.053\n  0.77   0.19   0.04   0.018\n  0.86   0.08   0.06   0.019\n  0.88   0.09   0.03   0.011\n\n   ZH  TSOIL\n-10.0   15.0\n-40.0   12.0\n-70.0   10.0\n-95.0    9.0\n\nSWSOLU = 0",
  'dra': 'DRAMET = 3\nSWDIVD = 1\nCOFANI = 1.00 1.00 1.00 1.00 1.00\nSWDISLAY = 0\nNRLEVS = 1\nSWINTFL = 0\nDRARES1 = 750.0\nINFRES1 = 2000.0\nSWALLO1 = 1\nL1 = 500.0\nZBOTDR1 = -55.0\nSWDTYP1 = 2\n   DATOWL1  LEVEL1\n1980-01-01   -60.0\n1984-12-31   -60.0\n',
- 'crop': {'grassd': CropFile(name='grassd', path=None, prep=Preparation(swprep=None, swsow=None, swgerm=None, swharv=None, dvsend=None, zprep=None, hprep=None, maxprepdelay=None, zsow=None, hsow=None, ztempsow=None, tempsow=None, maxsowdelay=None, tsumemeopt=None, tbasem=None, teffmx=None, hdrygerm=None, hwetgerm=None, zgerm=None, agerm=None), cropdev_settings=CropDevelopmentSettingsGrass(wofost_variety=None, swcf=2, cftb=None, chtb=     DNR    CH   CF
-  0    0.0  12.0  1.0
-  1  180.0  12.0  1.0
-  2  366.0  12.0  1.0, albedo=0.23, rsc=100.0, rsw=0.0, tsum1=None, tsum2=None, tbase=0.0, kdif=0.6, kdir=0.75, swrd=2, rdtb=     DNR    RD
+ 'crop': {'grassd': CropFile(name='grassd', path=None, prep=Preparation(swprep=None, swsow=None, swgerm=None, swharv=None, dvsend=None, zprep=None, hprep=None, maxprepdelay=None, zsow=None, hsow=None, ztempsow=None, tempsow=None, maxsowdelay=None, tsumemeopt=None, tbasem=None, teffmx=None, hdrygerm=None, hwetgerm=None, zgerm=None, agerm=None), cropdev_settings=CropDevelopmentSettingsGrass(wofost_variety=None, swcf=2, cftb=None, chtb=     DNR    CH
+  0    0.0  12.0
+  1  180.0  12.0
+  2  366.0  12.0, albedo=0.23, rsc=100.0, rsw=0.0, tsum1=None, tsum2=None, tbase=0.0, kdif=0.6, kdir=0.75, swrd=2, rdtb=     DNR    RD
   0    1.0  10.0
   1  180.0  40.0
   2  366.0  40.0, rdi=10.0, rri=1.0, rdc=40.0, swdmi2rd=1, rlwtb=       RW    RL
   0   300.0  10.0
   1  2500.0  40.0, wrtmax=3000.0, swrdc=0, rdctb=   RRD  RDENS
   0  0.0    1.0
-  1  1.0    0.0, idsl=None, dtsmtb=None, dlo=None, dlc=None, vernsat=None, vernbase=None, verndvs=None, verntb=None, tdwi=1000.0, laiem=0.63, rgrlai=0.007, spa=None, ssa=0.0004, span=30.0, slatb=     DNR     SLA
+  1  1.0    0.0, idsl=None, dtsmtb=None, dlo=None, dlc=None, vernsat=None, vernbase=None, verndvs=None, vernrtb=None, tdwi=1000.0, laiem=0.63, rgrlai=0.007, spa=None, ssa=0.0004, span=30.0, slatb=     DNR     SLA
   0    1.0  0.0015
   1   80.0  0.0015
   2  300.0  0.0020
@@ -2698,7 +2742,27 @@ SWCO2 = 0
   29  1984-11-07, swdmgrz=2, dmgrazing=2400.0, dmgrztb=     DNR   DMGRZ
   0  152.0  2400.0
   1  244.0  1800.0
-  2  366.0  1800.0, maxdaygrz=28, swlossgrz=0, tagprest=700.0, dewrest=850.0, lsda=None, lsdb=None, swdmmow=2, dmharvest=4200.0, daylastharvest=289, dmlastharvest=2700.0, dmmowtb=     DNR   DMMOW
+  2  366.0  1800.0, maxdaygrz=28, swlossgrz=0, tagprest=700.0, dewrest=850.0, lsda=    SEQNR   LSDA
+  0       1  21.25
+  1       2  21.25
+  2       3  21.25
+  3       4  21.25
+  4       5  21.25
+  5       6  21.25
+  6       7  21.25
+  7       8  21.25
+  8       9  21.25
+  9      10  21.25
+  10     11  21.25
+  11     12  21.25
+  12     13  21.25
+  13     14  21.25
+  14     15  21.25
+  15     16  21.25
+  16     17  21.25
+  17     18  21.25
+  18     19  21.25
+  19     20  21.25, lsdb=None, swdmmow=2, dmharvest=4200.0, daylastharvest=289, dmlastharvest=2700.0, dmmowtb=     DNR   DMMOW
   0  120.0  4700.0
   1  152.0  3700.0
   2  182.0  3200.0

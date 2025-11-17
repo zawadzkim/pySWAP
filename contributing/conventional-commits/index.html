@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../documentation/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../makefile/">
+        <link rel="next" href="../documentation/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Importing - pySWAP documentation</title>
+        <title>Conventional Commits Guide - pySWAP documentation</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#importing" class="md-skip">
+        <a href="#conventional_commits_guide" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Importing
+              Conventional Commits Guide
             
           </span>
         </div>
@@ -1261,10 +1261,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../conventional-commits/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Conventional Commits Guide
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1274,6 +1295,89 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#commit_message_format" class="md-nav__link">
+    <span class="md-ellipsis">
+      Commit Message Format
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Types
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#breaking_changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Breaking Changes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scopes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scopes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automated_processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automated Processing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preview_changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preview Changelog
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1305,31 +1409,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Importing
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../imports/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1339,53 +1422,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1_components" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Components
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2_special_modules" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Special modules
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3_testcase" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Testcase
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1447,27 +1483,63 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1_components" class="md-nav__link">
+  <a href="#commit_message_format" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Components
+      Commit Message Format
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#2_special_modules" class="md-nav__link">
+  <a href="#types" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Special modules
+      Types
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3_testcase" class="md-nav__link">
+  <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Testcase
+      Examples
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#breaking_changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Breaking Changes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scopes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scopes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automated_processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automated Processing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preview_changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preview Changelog
     </span>
   </a>
   
@@ -1492,62 +1564,75 @@
   
 
 
-<h1 id="importing">Importing<a class="headerlink" href="#importing" title="Permanent link">&para;</a></h1>
-<p>When it comes to imports, there's a balance between keeping them concise and clearly organized. On one hand, it's convenient to type <code>package.</code> and access anything from that package. However, as the project grows, it can become overwhelming to find what you need. In pySWAP, we've chosen to limit import shortcuts, making module calls more explicit.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To ensure clarity and maintainability, we have structured our imports thoughtfully.</p>
-</div>
-<h2 id="1_components">1. Components<a class="headerlink" href="#1_components" title="Permanent link">&para;</a></h2>
-<p>Individual classes from the components library are not exposed directly at the package level. To access them, use the following approach:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">pyswap</span> <span class="k">as</span> <span class="nn">psp</span>
+<h1 id="conventional_commits_guide">Conventional Commits Guide<a class="headerlink" href="#conventional_commits_guide" title="Permanent link">&para;</a></h1>
+<p>This project follows the <a href="https://www.conventionalcommits.org/">Conventional Commits</a> specification to enable automated changelog generation.</p>
+<h2 id="commit_message_format">Commit Message Format<a class="headerlink" href="#commit_message_format" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>&lt;type&gt;[optional scope]: &lt;description&gt;
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">simset</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">simsettings</span><span class="o">.</span><span class="n">GeneralSettings</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>[optional body]
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>[optional footer(s)]
 </span></code></pre></div>
-<p>While some modules may contain only one or two classes, others include many tables, which would clutter the hinting.</p>
-<h2 id="2_special_modules">2. Special modules<a class="headerlink" href="#2_special_modules" title="Permanent link">&para;</a></h2>
-<p>Special modules such as <code>model</code>, <code>db</code>, <code>io</code>, <code>gis</code>, and <code>plot</code> can be accessed directly from the package level:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">pyswap</span> <span class="k">as</span> <span class="nn">psp</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">location</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">gis</span><span class="o">.</span><span class="n">Location</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">model</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">psp</span><span class="o">.</span><span class="n">plot_evapotranspiration</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>feat</strong>: A new feature</li>
+<li><strong>fix</strong>: A bug fix</li>
+<li><strong>docs</strong>: Documentation only changes</li>
+<li><strong>style</strong>: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)</li>
+<li><strong>refactor</strong>: A code change that neither fixes a bug nor adds a feature</li>
+<li><strong>perf</strong>: A code change that improves performance</li>
+<li><strong>test</strong>: Adding missing tests or correcting existing tests</li>
+<li><strong>build</strong>: Changes that affect the build system or external dependencies</li>
+<li><strong>ci</strong>: Changes to our CI configuration files and scripts</li>
+<li><strong>chore</strong>: Other changes that don't modify src or test files</li>
+</ul>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>feat:<span class="w"> </span>add<span class="w"> </span>support<span class="w"> </span><span class="k">for</span><span class="w"> </span>SWAP<span class="w"> </span>version<span class="w"> </span><span class="m">4</span>.3.0
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>feat<span class="o">(</span>cli<span class="o">)</span>:<span class="w"> </span>add<span class="w"> </span>--in-place<span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>init<span class="w"> </span><span class="nb">command</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>feat<span class="o">(</span>models<span class="o">)</span>!:<span class="w"> </span>breaking<span class="w"> </span>change<span class="w"> </span>to<span class="w"> </span>Model<span class="w"> </span>API
 </span></code></pre></div>
-<h2 id="3_testcase">3. Testcase<a class="headerlink" href="#3_testcase" title="Permanent link">&para;</a></h2>
-<p>Testcases can be imported for training and experimentation like this:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">pyswap</span> <span class="kn">import</span> <span class="n">testcase</span>
+<h3 id="bug_fixes">Bug Fixes<a class="headerlink" href="#bug_fixes" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>fix:<span class="w"> </span>handle<span class="w"> </span>missing<span class="w"> </span>crop<span class="w"> </span>parameters<span class="w"> </span>gracefully
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>fix<span class="o">(</span>parser<span class="o">)</span>:<span class="w"> </span>resolve<span class="w"> </span>issue<span class="w"> </span>with<span class="w"> </span>date<span class="w"> </span>parsing<span class="w"> </span><span class="k">in</span><span class="w"> </span>SWAP<span class="w"> </span>files
 </span></code></pre></div>
-<h1 id="third-party_and_non-reexported_imports">Third-party and non-reexported imports<a class="headerlink" href="#third-party_and_non-reexported_imports" title="Permanent link">&para;</a></h1>
-<p>To keep third-party imports and other imports that are not meant to be reexported organized, contributors should use aliases with an underscore prefix in modules that users normally call (e.g., <code>pyswap.components</code>). This ensures that important imports appear at the top of IDE hints. Here's an example:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">_pd</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">_plt</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># internally defined objects that are not meant to be reexported should also be</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># aliased with an underscore</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kn">from</span> <span class="nn">pyswap.core.basemodel</span> <span class="kn">import</span> <span class="n">PySWAPBaseModel</span> <span class="k">as</span> <span class="n">_PySWAPBaseModel</span>
+<h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docs:<span class="w"> </span>add<span class="w"> </span>installation<span class="w"> </span>guide<span class="w"> </span><span class="k">for</span><span class="w"> </span>Windows
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>docs<span class="o">(</span>api<span class="o">)</span>:<span class="w"> </span>update<span class="w"> </span>docstrings<span class="w"> </span><span class="k">for</span><span class="w"> </span>Model<span class="w"> </span>class
 </span></code></pre></div>
-<p>It is not essential in modules from which the important classes are accessible directly from the package level.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Note that we also prefer explicit (full) import paths instead of relative imports, so:</p>
-<div class="language-Python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">db</span>  <span class="c1"># Not good</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">pyswap.core</span> <span class="kn">import</span> <span class="n">db</span>  <span class="c1"># Good</span>
+<h3 id="refactoring">Refactoring<a class="headerlink" href="#refactoring" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>refactor:<span class="w"> </span>simplify<span class="w"> </span>database<span class="w"> </span>connection<span class="w"> </span>logic
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>refactor<span class="o">(</span>utils<span class="o">)</span>:<span class="w"> </span>extract<span class="w"> </span>common<span class="w"> </span>validation<span class="w"> </span>functions
 </span></code></pre></div>
-</div>
-<h1 id="importing_style">importing style<a class="headerlink" href="#importing_style" title="Permanent link">&para;</a></h1>
-<p>Ruff linting tool is set to force one line imports, and also wrap aliases, so the preferred style is as follows:</p>
-<div class="language-Python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">pyswap.core.valueranges</span> <span class="kn">import</span> <span class="n">UNITRANGE</span> <span class="k">as</span> <span class="n">_UNITRANGE</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">pyswap.core.fields</span> <span class="kn">import</span> <span class="p">(</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">Decimal2f</span> <span class="k">as</span> <span class="n">_Decimal2f</span><span class="p">,</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">Decimal3f</span> <span class="k">as</span> <span class="n">_Decimal3f</span><span class="p">,</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">String</span> <span class="k">as</span> <span class="n">_String</span><span class="p">,</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">Table</span> <span class="k">as</span> <span class="n">_Table</span><span class="p">,</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">)</span>
+<h2 id="breaking_changes">Breaking Changes<a class="headerlink" href="#breaking_changes" title="Permanent link">&para;</a></h2>
+<p>For breaking changes, add <code>!</code> after the type/scope:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>feat!:<span class="w"> </span>change<span class="w"> </span>default<span class="w"> </span>output<span class="w"> </span>format<span class="w"> </span>to<span class="w"> </span>JSON
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>fix<span class="o">(</span>api<span class="o">)</span>!:<span class="w"> </span>remove<span class="w"> </span>deprecated<span class="w"> </span>methods
 </span></code></pre></div>
-<h1 id="use_of_all">use of <strong>all</strong><a class="headerlink" href="#use_of_all" title="Permanent link">&para;</a></h1>
-<p>for consistency, at the top of each module, there should be the <strong>all</strong> variable defining which objects are meant to be imported with the * wildcard.</p>
+<h2 id="scopes">Scopes<a class="headerlink" href="#scopes" title="Permanent link">&para;</a></h2>
+<p>Common scopes in this project:</p>
+<ul>
+<li><code>cli</code> - Command line interface</li>
+<li><code>models</code> - Core model classes</li>
+<li><code>utils</code> - Utility functions</li>
+<li><code>parser</code> - File parsing logic</li>
+<li><code>db</code> - Database operations</li>
+<li><code>api</code> - Public API</li>
+<li><code>docs</code> - Documentation</li>
+<li><code>tests</code> - Test files</li>
+</ul>
+<h2 id="automated_processing">Automated Processing<a class="headerlink" href="#automated_processing" title="Permanent link">&para;</a></h2>
+<p>When you push to <code>main</code>, the following happens automatically:</p>
+<ol>
+<li><strong>Changelog Generation</strong>: Commits are analyzed and grouped by type</li>
+<li><strong>Version Bumping</strong>: Based on commit types (feat = minor, fix = patch, breaking = major)</li>
+<li><strong>Release Creation</strong>: GitHub release with generated changelog</li>
+<li><strong>PyPI Publishing</strong>: Package uploaded to PyPI</li>
+</ol>
+<h2 id="preview_changelog">Preview Changelog<a class="headerlink" href="#preview_changelog" title="Permanent link">&para;</a></h2>
+<p>Before pushing, you can preview what the changelog will look like:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>python<span class="w"> </span>scripts/preview_changelog.py<span class="w"> </span>--since<span class="o">=</span>v0.2.8
+</span></code></pre></div>
 
 
 
@@ -1585,7 +1670,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../documentation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Documentation is critical">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Welcome Contributors!">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1595,20 +1680,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Documentation is critical
+                Welcome Contributors!
               </div>
             </div>
           </a>
         
         
           
-          <a href="../makefile/" class="md-footer__link md-footer__link--next" aria-label="Next: Makefile">
+          <a href="../documentation/" class="md-footer__link md-footer__link--next" aria-label="Next: Documentation is critical">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Makefile
+                Documentation is critical
               </div>
             </div>
             <div class="md-footer__button md-icon">

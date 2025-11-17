@@ -1359,6 +1359,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../contributing/conventional-commits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conventional Commits Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../contributing/documentation/" class="md-nav__link">
         
   
@@ -1559,24 +1581,28 @@
 <p>For development, mount your local workspace to the container:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">&quot;</span>:/workspace<span class="w"> </span>pyswap
 </span></code></pre></div>
-<p><strong>Command breakdown:</strong>
-- <code>-it</code>: Interactive terminal
-- <code>--rm</code>: Remove container after stopping<br />
-- <code>-v "$PWD":/workspace</code>: Mount current directory to <code>/workspace</code> in container</p>
+<p><strong>Command breakdown:</strong></p>
+<ul>
+<li><code>-it</code>: Interactive terminal</li>
+<li><code>--rm</code>: Remove container after stopping</li>
+<li><code>-v "$PWD":/workspace</code>: Mount current directory to <code>/workspace</code> in container</li>
+</ul>
 <h3 id="3_run_your_scripts">3. Run your scripts<a class="headerlink" href="#3_run_your_scripts" title="Permanent link">&para;</a></h3>
-<p>With volume mounting, you can:
-- <strong>Edit code locally</strong> using your preferred editor (VS Code, PyCharm, etc.)
-- <strong>Run scripts immediately</strong> in the container: <code>python your-script.py</code>
-- <strong>Iterate quickly</strong> - changes are instantly available without rebuilding
-- <strong>Maintain your workflow</strong> with Git and other tools on your local system</p>
+<p>With volume mounting, you can:</p>
+<ul>
+<li><strong>Edit code locally</strong> using your preferred editor (VS Code, PyCharm, etc.)</li>
+<li><strong>Run scripts immediately</strong> in the container: <code>python your-script.py</code></li>
+<li><strong>Iterate quickly</strong> - changes are instantly available without rebuilding</li>
+<li><strong>Maintain your workflow</strong> with Git and other tools on your local system</li>
+</ul>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python<span class="w"> </span>your-script.py
 </span></code></pre></div>
 <h3 id="4_shutdown_docker">4. Shutdown Docker<a class="headerlink" href="#4_shutdown_docker" title="Permanent link">&para;</a></h3>
 <p>When you're finished with your analysis, you can exit the container:</p>
-<p><strong>If you're inside the container:</strong>
+<p><strong>If you're inside the container:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">exit</span>
-</span></code></pre></div></p>
-<p><strong>If you're in a different terminal and want to stop a running container:</strong>
+</span></code></pre></div>
+<p><strong>If you're in a different terminal and want to stop a running container:</strong></p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># List running containers and find pySWAP</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>docker<span class="w"> </span>ps
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
@@ -1587,7 +1613,7 @@
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1"># Stop the specific pySWAP container</span>
 </span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>docker<span class="w"> </span>stop<span class="w"> </span>&lt;container_name_or_id&gt;
-</span></code></pre></div></p>
+</span></code></pre></div>
 <h2 id="alternative_usage_patterns">Alternative Usage Patterns<a class="headerlink" href="#alternative_usage_patterns" title="Permanent link">&para;</a></h2>
 <p>For quick testing without entering the container:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">&quot;</span>:/workspace<span class="w"> </span>pyswap<span class="w"> </span>python<span class="w"> </span>your-script.py
