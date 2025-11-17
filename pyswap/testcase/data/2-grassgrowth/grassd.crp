@@ -29,10 +29,10 @@
 * If SWCF = 1, list crop factor CF [0..2 -, R],     as function of day number DNR [0..366 -, R]:
 * If SWCF = 2, list crop height CH [0..1.d4 cm, R], as function of day number DNR [0..366 -, R]:
 
-    DNR       CH     CF
-    0.0     12.0    1.0
-  180.0     12.0    1.0
-  366.0     12.0    1.0
+    DNR       CH
+    0.0     12.0
+  180.0     12.0
+  366.0     12.0
 * End of table
 
 * If SWCF = 2, in addition to crop height list crop specific values for:
