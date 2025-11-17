@@ -829,7 +829,7 @@ class CropFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
         return self.model_string()
 
 
-class Crop(_PySWAPBaseModel, _SerializableMixin, _FileMixin, _YAMLValidatorMixin):
+class Crop(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     """Crop settings of the simulation.
 
     Attributes:

@@ -161,9 +161,10 @@ class CHTB(BaseTableModel):
 
     DVS: Series[float] | None = pa.Field(**DVSRANGE)
     DNR: Series[float] | None = pa.Field(**YEARRANGE)
-    CF: (
-        Series[float] | None
-    )  # Added for compatibility with example grass files in original SWAP distribution that are used for testing this package. CF is only stated but not used there.
+    # # CF was added for compatibility with example grass files in original SWAP distribution
+    # # that are used for testing this package. CF is only stated but not used there. I
+    # removed it because it was conflicting with other settings. Input files for the examples
+    # should be adjusted.
     CH: Series[float] | None
 
 
