@@ -19,5 +19,6 @@ A clear and concise description of any alternative solutions or features you've 
 Add any other context or screenshots about the feature request here.
 
 **Suggested scope / priority** (optional)
+
 - Use-case: e.g., authoring workflows, packaging, testing
 - Impact: low / medium / high

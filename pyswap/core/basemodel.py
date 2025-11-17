@@ -70,7 +70,7 @@ class PySWAPBaseModel(BaseModel):
             new (dict): Dictionary with new values.
             inplace (bool): If True, update the model in place.
         """
-        
+
         updated_model = self.model_validate(dict(self) | new)
 
         if not inplace:

@@ -29,7 +29,6 @@ from __future__ import annotations
 
 import logging
 import os
-import shutil
 import subprocess
 import tempfile
 from multiprocessing import Pool
@@ -55,14 +54,12 @@ from pyswap.components.soilwater import (
 )
 from pyswap.components.transport import HeatFlow, SoluteTransport
 from pyswap.core.basemodel import PySWAPBaseModel
-from pyswap.core.defaults import IS_WINDOWS
 from pyswap.core.fields import Subsection
 from pyswap.core.io.io_ascii import open_ascii
 from pyswap.db.co2concentration import CO2concentration
-from pyswap.libs import swap_linux, swap_windows
 from pyswap.model.result import Result
-from pyswap.utils.mixins import FileMixin, SerializableMixin
 from pyswap.utils.executables import get_swap
+from pyswap.utils.mixins import FileMixin, SerializableMixin
 
 logger = logging.getLogger(__name__)
 
@@ -210,7 +207,6 @@ class ModelRunner:
 
             builder.write_inputs()
 
-
             stdout = self.run_swap(tempdir)
             reader = ResultReader(self.model, tempdir)
 
@@ -225,7 +221,6 @@ class ModelRunner:
 
             # --- Handle the results ---
             result: Result = Result()
-
 
             log = reader.read_swap_log()
             result.log = log

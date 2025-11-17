@@ -130,8 +130,8 @@ def test_git_initialization_and_gitignore(setup_and_teardown):
 
 def test_upload_swap_success(tmp_path, monkeypatch):
     """Uploading a local executable should copy it to the package location and write version info."""
-    from pyswap.core.cli.cli import app
     import pyswap.utils.executables as exe_mod
+    from pyswap.core.cli.cli import app
 
     runner = CliRunner()
 
@@ -162,8 +162,8 @@ def test_upload_swap_success(tmp_path, monkeypatch):
 
 def test_upload_swap_source_missing(tmp_path, monkeypatch):
     """Uploading a non-existent source should return an error."""
-    from pyswap.core.cli.cli import app
     import pyswap.utils.executables as exe_mod
+    from pyswap.core.cli.cli import app
 
     runner = CliRunner()
 
@@ -181,8 +181,8 @@ def test_upload_swap_source_missing(tmp_path, monkeypatch):
 
 def test_upload_swap_target_exists_without_force(tmp_path, monkeypatch):
     """If target exists and --force not provided, upload should fail."""
-    from pyswap.core.cli.cli import app
     import pyswap.utils.executables as exe_mod
+    from pyswap.core.cli.cli import app
 
     runner = CliRunner()
 
@@ -201,4 +201,8 @@ def test_upload_swap_target_exists_without_force(tmp_path, monkeypatch):
 
     result = runner.invoke(app, ["upload-swap", str(src), "custom"])
     assert result.exit_code != 0
-    assert "already exists" in result.stdout or "Use force=True" in result.stdout or "Use --force" in result.stdout
+    assert (
+        "already exists" in result.stdout
+        or "Use force=True" in result.stdout
+        or "Use --force" in result.stdout
+    )

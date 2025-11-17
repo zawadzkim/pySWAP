@@ -185,9 +185,7 @@ def get_swap(
 
 @app.command()
 def upload_swap(
-    file_path: str = typer.Argument(
-        help="Path to the SWAP executable file to install"
-    ),
+    file_path: str = typer.Argument(help="Path to the SWAP executable file to install"),
     version: str = typer.Argument(
         help="Version identifier for the uploaded executable"
     ),
@@ -203,10 +201,7 @@ def upload_swap(
 
     try:
         exe_path = _upload_swap(
-            file_path=file_path, 
-            version=version, 
-            force=force, 
-            verbose=verbose
+            file_path=file_path, version=version, force=force, verbose=verbose
         )
         if verbose:
             typer.echo(f"Success! SWAP executable installed at: {exe_path}")

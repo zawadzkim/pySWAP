@@ -581,6 +581,7 @@ class VERNRTB(BaseTableModel):
     TAV: Series[float]
     VERNRATE: Series[float]
 
+
 class LSDA(BaseTableModel):
     """Actual livestock density of each grazing period
 

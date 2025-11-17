@@ -296,37 +296,43 @@ class YAMLUpdateMixin:
     WOFOST crop database.
     """
 
-    def _process_parameters(self, params: dict, source_name: str, grass: bool = False) -> dict:
+    def _process_parameters(
+        self, params: dict, source_name: str, grass: bool = False
+    ) -> dict:
         """Process parameters by converting tables/arrays using TableProcessor.
-        
+
         Args:
             params: Dictionary of parameters to process
             source_name: Name of the parameter source (for logging)
-            
+
         Returns:
             Processed parameters dictionary with tables converted to dataframes
         """
         params_copy = params.copy()
         tp = TableProcessor()
-        
+
         for name, value in params.items():
             processed = None
-            
+
             # Handle YAML dict format (two-column tables)
             if isinstance(value, dict) and len(value) == 2:
                 keys = list(value.keys())
-                logger.debug(f"Processing YAML dict format for parameter: {name} with keys: {keys}")
+                logger.debug(
+                    f"Processing YAML dict format for parameter: {name} with keys: {keys}"
+                )
                 if len(keys) == 2:
                     array_data = [
                         [x, y]
                         for x, y in zip(value[keys[0]], value[keys[1]], strict=True)
                     ]
-                    processed = tp.process("array", data=array_data, columns=name, grass=grass)
-                    
+                    processed = tp.process(
+                        "array", data=array_data, columns=name, grass=grass
+                    )
+
             # Handle list of lists format (array parameters)
             elif isinstance(value, list) and value and isinstance(value[0], list):
                 processed = tp.process("array", data=value, columns=name, grass=grass)
-            
+
             # Update or remove parameter based on processing result
             if processed is not None:
                 params_copy.update(processed)
@@ -337,7 +343,7 @@ class YAMLUpdateMixin:
                 logger.warning(
                     f"Failed to process parameter from {source_name}: {name}, removing from update"
                 )
-                
+
         return params_copy
 
     def update_from_wofost(self) -> None:
@@ -386,8 +392,10 @@ class YAMLUpdateMixin:
             params = yaml_content
         else:
             structure_info = str(type(yaml_content).__name__)
-            if hasattr(yaml_content, 'keys'):
-                structure_info = f"{structure_info} with keys: {list(yaml_content.keys())}"
+            if hasattr(yaml_content, "keys"):
+                structure_info = (
+                    f"{structure_info} with keys: {list(yaml_content.keys())}"
+                )
             msg = f"Could not find parameters in YAML structure: {structure_info}"
             raise ValueError(msg)
 

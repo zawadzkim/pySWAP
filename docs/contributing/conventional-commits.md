@@ -28,6 +28,7 @@ This project follows the [Conventional Commits](https://www.conventionalcommits.
 ## Examples
 
 ### Features
+
 ```bash
 feat: add support for SWAP version 4.3.0
 feat(cli): add --in-place option to init command
@@ -35,18 +36,21 @@ feat(models)!: breaking change to Model API
 ```
 
 ### Bug Fixes
+
 ```bash
 fix: handle missing crop parameters gracefully
 fix(parser): resolve issue with date parsing in SWAP files
 ```
 
 ### Documentation
+
 ```bash
 docs: add installation guide for Windows
 docs(api): update docstrings for Model class
 ```
 
 ### Refactoring
+
 ```bash
 refactor: simplify database connection logic
 refactor(utils): extract common validation functions
@@ -64,6 +68,7 @@ fix(api)!: remove deprecated methods
 ## Scopes
 
 Common scopes in this project:
+
 - `cli` - Command line interface
 - `models` - Core model classes
 - `utils` - Utility functions

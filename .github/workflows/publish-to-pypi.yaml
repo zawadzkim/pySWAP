@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to release (optional, will use pyproject.toml if empty)'
+        description: "Version to release (optional, will use pyproject.toml if empty)"
         required: false
         type: string
 
@@ -68,7 +68,7 @@ jobs:
           else
             changelog_section=""
           fi
-          
+
           gh release create "v$version" \
             --title "Release $version" \
             --notes "${changelog_section:-Auto-generated release notes}" \

@@ -57,6 +57,7 @@ from pyswap.components.tables import (
     FSTB,
     GCTB,
     KYTB,
+    LSDA,
     LSDATB,
     LSDBTB,
     MRFTB,
@@ -71,7 +72,6 @@ from pyswap.components.tables import (
     TMPFTB,
     VERNRTB,
     WRTB,
-    LSDA,
 )
 from pyswap.core.basemodel import PySWAPBaseModel as _PySWAPBaseModel
 from pyswap.core.fields import (
@@ -135,7 +135,7 @@ __all__ = [
     "DMMOWTB",
     "DMMOWDELAY",
     "VERNRTB",
-    "LSDA"
+    "LSDA",
 ]
 
 
@@ -686,7 +686,9 @@ class Preparation(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
     agerm: float | None = _Field(default=None, ge=0.0, le=1000.0)
 
 
-class GrasslandManagement(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _YAMLUpdateMixin):
+class GrasslandManagement(
+    _PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin, _YAMLUpdateMixin
+):
     """Settings specific to the dynamic grass growth module.
 
     Attributes:
@@ -818,7 +820,7 @@ class CropFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     @property
     def crp(self) -> str:
         """Return the model string of the .crp file.
-        
+
         The addition validates all the crop files in the dictionary.
         """
         for comp in self.model_fields:
