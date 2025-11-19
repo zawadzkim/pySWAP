@@ -11,6 +11,7 @@ on:
 permissions:
   contents: write
   packages: write
+  pages: write
   id-token: write
 
 jobs:
