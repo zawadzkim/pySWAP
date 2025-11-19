@@ -52,6 +52,7 @@ plugins:
         - tutorials/
   - mkdocs-jupyter:
       execute: true
+      kernel_name: python3
   - mkdocstrings:
       handlers:
         python:
