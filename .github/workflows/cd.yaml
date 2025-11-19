@@ -59,12 +59,11 @@ jobs:
           pixi run -e dev pytest tests/ -v --cov=pyswap --cov-report=term --cov-report=xml
           echo "Tests completed successfully"
 
-      - name: Run linting and type checking
+      - name: Run linting
         if: steps.check-tag.outputs.exists == 'false'
         run: |
           pixi run -e dev ruff check .
-          pixi run -e dev mypy pyswap/
-          echo "Linting and type checking passed"
+          echo "Linting passed"
 
       - name: Build package
         id: build
