@@ -17,7 +17,7 @@ from functools import cache
 from typing import Literal
 
 import pandas as pd
-import pandera as pa
+import pandera.pandas as pa
 
 import pyswap.components.tables as tables
 from pyswap.core.basemodel import BaseTableModel

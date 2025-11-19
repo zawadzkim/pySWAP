@@ -25,7 +25,7 @@ from __future__ import annotations
 from typing import Any
 
 import pandas as pd
-import pandera as pa
+import pandera.pandas as pa
 from pandera.typing import DataFrame
 from pydantic import BaseModel, ConfigDict, field_validator
 
@@ -54,8 +54,9 @@ class PySWAPBaseModel(BaseModel):
         This method is overridden to silently ignore assignment of frozen fields
         to avoid errors when an old swp files is read.
         """
+        _class = type(self)
 
-        if name in self.model_fields and self.model_fields[name].frozen:
+        if name in _class.model_fields and _class.model_fields[name].frozen:
             return
         super().__setattr__(name, value)
 

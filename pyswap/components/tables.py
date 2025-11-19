@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-import pandera as pa
+import pandera.pandas as pa
 from pandera.typing import Series
 
 from pyswap.core.basemodel import BaseTableModel

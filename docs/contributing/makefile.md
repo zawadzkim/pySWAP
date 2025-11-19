@@ -1,17 +1,63 @@
-# Makefile
+# Pixi Tasks
 
-Make file is particularily useful when a certain workflow, for example for testing code or docs has to be repeatadly executed. It allows you to define a set of tasks that can be run with simple commands, e.g., `make <some-command-name>`. In this project, the Makefile provides several useful options:
+This project uses [Pixi](https://pixi.sh) for dependency management and task automation. Pixi provides a more modern, cross-platform alternative to Makefiles with built-in environment isolation.
 
-- **test-hupsel**: Installs the poetry environment and pre-commit hooks, then runs a specific test case.
-- **testcheck**: Runs code quality tools in a test configuration, including checking the Poetry lock file, linting code, performing static type checking, and checking for obsolete dependencies. Saves the results from the QC tools to log files.
-- **check**: Similar to `testcheck`, but runs the tools without saving the output to log files.
-- **test**: Runs the test suite with pytest, including coverage reporting.
-- **build**: Cleans build artifacts and creates a wheel file using Poetry.
-- **clean-build**: Removes the `dist` directory to clean up build artifacts.
-- **publish**: Publishes a release to PyPI, with a dry run first to ensure everything is set up correctly.
-- **build-and-publish**: Combines the build and publish steps into one command.
-- **docs-test**: Tests if the documentation can be built without warnings or errors.
-- **docs**: Builds and serves the documentation locally.
-- **help**: Lists all available make commands with descriptions.
+## Available Tasks
 
-These commands are also used to simplify CI workflows in GitHub. You are more than welcome to define more commands when you contribute to the project.
+Run any task with `pixi run <task-name>` or `pixi run -e <environment> <task-name>`:
+
+### Development Tasks
+
+- **test**: `pixi run test` - Run basic tests
+- **test-cov**: `pixi run test-cov` - Run tests with coverage reporting
+- **test-verbose**: `pixi run test-verbose` - Run tests with verbose output
+
+### Code Quality
+
+- **lint**: `pixi run lint` - Check code with ruff
+- **lint-fix**: `pixi run lint-fix` - Auto-fix linting issues
+- **format**: `pixi run format` - Format code with ruff
+- **format-check**: `pixi run format-check` - Check if code is formatted
+- **mypy**: `pixi run mypy` - Run static type checking
+- **check-deps**: `pixi run check-deps` - Check for obsolete dependencies
+- **check-all**: `pixi run check-all` - Run all quality checks
+- **fix-all**: `pixi run fix-all` - Auto-fix formatting and linting
+
+### Documentation
+
+- **docs-serve**: `pixi run -e docs docs-serve` - Serve docs locally
+- **docs-build**: `pixi run -e docs docs-build` - Build documentation
+- **docs-deploy**: `pixi run -e docs docs-deploy` - Deploy docs to GitHub Pages
+
+### Project Management
+
+- **install-package**: `pixi run install-package` - Install package in development mode
+- **clean-cache**: `pixi run clean-cache` - Clean pytest/mypy caches
+- **clean-build**: `pixi run clean-build` - Clean build artifacts
+- **clean-all**: `pixi run clean-all` - Clean everything
+
+### Pre-commit
+
+- **pre-commit-install**: `pixi run pre-commit-install` - Install pre-commit hooks
+- **pre-commit-run**: `pixi run pre-commit-run` - Run pre-commit on all files
+
+## Environment-Specific Tasks
+
+Pixi supports multiple environments for different use cases:
+
+- **default**: Core dependencies only
+- **dev**: Development tools (testing, linting, etc.)
+- **docs**: Documentation building
+- **full**: All dependencies combined
+
+Example: `pixi run -e dev test-cov` runs tests with coverage in the dev environment.
+
+## Why Pixi Instead of Make?
+
+- **Cross-platform**: Works identically on Windows, macOS, and Linux
+- **Environment isolation**: Each task runs with the correct dependencies
+- **Integrated dependency management**: No need to manage separate virtual environments
+- **Modern tooling**: Built-in support for conda-forge and PyPI packages
+- **No duplication**: Single source of truth in `pixi.toml`
+
+You are welcome to add new tasks to `pixi.toml` when contributing to the project!

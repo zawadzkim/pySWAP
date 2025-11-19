@@ -188,9 +188,12 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         object.__setattr__(
             self,
             "exts",
-            _ExtensionMixin(**{
-                ext: 1 if ext in self.extensions else 0 for ext in self._all_extensions
-            }),
+            _ExtensionMixin(
+                **{
+                    ext: 1 if ext in self.extensions else 0
+                    for ext in self._all_extensions
+                }
+            ),
         )
         return self
 

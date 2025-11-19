@@ -1,0 +1,4 @@
+# act configuration
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+--container-daemon-socket -
+--verbose

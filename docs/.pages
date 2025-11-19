@@ -1,5 +1,5 @@
 nav:
-    - index.md
+    - Home: index.md
     - user-guide
     - tutorials
     - wiki
