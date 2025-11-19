@@ -1,20 +1,6 @@
 name: Documentation
 
 on:
-  push:
-    branches: [main, dev]
-    paths:
-      - "docs/**"
-      - "pyswap/**"
-      - "*.md"
-      - "mkdocs.yml"
-  pull_request:
-    branches: [main, dev]
-    paths:
-      - "docs/**"
-      - "pyswap/**"
-      - "*.md"
-      - "mkdocs.yml"
   workflow_call:
     # Called by CD workflow after release creation
   workflow_dispatch:
