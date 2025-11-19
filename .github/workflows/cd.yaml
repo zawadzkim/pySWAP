@@ -45,9 +45,14 @@ jobs:
         run: |
           version="${{ steps.version.outputs.version }}"
           tag="v$version"
-          if git rev-parse "$tag" >/dev/null 2>&1; then
+          # Check both local and remote tags
+          git fetch --tags
+          if git tag -l "$tag" | grep -q "$tag"; then
             echo "exists=true" >> $GITHUB_OUTPUT
-            echo "Tag $tag already exists"
+            echo "Tag $tag already exists locally"
+          elif git ls-remote --tags origin "$tag" | grep -q "$tag"; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag $tag already exists on remote"
           else
             echo "exists=false" >> $GITHUB_OUTPUT
             echo "Tag $tag does not exist"
@@ -148,8 +153,13 @@ jobs:
           pixi run -e dev python -m twine upload dist/*
           echo "Successfully published to PyPI"
 
-  rollback:
+  build-docs:
     needs: [test-and-build, create-release, publish-pypi]
+    if: needs.create-release.outputs.release-created == 'true' && needs.publish-pypi.result == 'success'
+    uses: ./.github/workflows/docs.yaml
+
+  rollback:
+    needs: [test-and-build, create-release, publish-pypi, build-docs]
     if: failure() && needs.create-release.outputs.release-created == 'true'
     runs-on: ubuntu-latest
     
