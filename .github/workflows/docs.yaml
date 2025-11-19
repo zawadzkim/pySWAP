@@ -1,21 +1,10 @@
 name: Documentation
 
 on:
-  push:
-    branches: [main, dev]
-    paths:
-      - "docs/**"
-      - "pyswap/**"
-      - "*.md"
-      - "mkdocs.yml"
-  pull_request:
-    branches: [main, dev]
-    paths:
-      - "docs/**"
-      - "pyswap/**"
-      - "*.md"
-      - "mkdocs.yml"
+  workflow_call:
+    # Called by CD workflow after release creation
   workflow_dispatch:
+    # Allow manual documentation builds
 
 permissions:
   contents: read
@@ -47,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: docs-${{ github.sha }}
-          path: docs/site
+          path: site
           retention-days: 7
 
   # Deploy documentation (only on main branch pushes)
