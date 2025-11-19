@@ -101,26 +101,30 @@ def _make_simple_test_model():
     )
     ml.evaporation = evaporation
 
-    soil_profile = psp.components.soilwater.SOILPROFILE.create({
-        "ISUBLAY": [1, 2, 3, 4],
-        "ISOILLAY": [1, 1, 2, 2],
-        "HSUBLAY": [10.0, 20.0, 30.0, 140.0],
-        "HCOMP": [1.0, 5.0, 5.0, 10.0],
-        "NCOMP": [10, 4, 6, 14],
-    })
+    soil_profile = psp.components.soilwater.SOILPROFILE.create(
+        {
+            "ISUBLAY": [1, 2, 3, 4],
+            "ISOILLAY": [1, 1, 2, 2],
+            "HSUBLAY": [10.0, 20.0, 30.0, 140.0],
+            "HCOMP": [1.0, 5.0, 5.0, 10.0],
+            "NCOMP": [10, 4, 6, 14],
+        }
+    )
 
-    soil_hydraulic_functions = psp.components.soilwater.SOILHYDRFUNC.create({
-        "ORES": [0.01, 0.02],
-        "OSAT": [0.42, 0.38],
-        "ALFA": [0.0276, 0.0213],
-        "NPAR": [1.491, 1.951],
-        "KSATFIT": [12.52, 12.68],
-        "LEXP": [-1.060, 0.168],
-        "ALFAW": [0.0542, 0.0426],
-        "H_ENPR": [0.0, 0.0],
-        "KSATEXM": [12.52, 12.68],
-        "BDENS": [1315.0, 1315.0],
-    })
+    soil_hydraulic_functions = psp.components.soilwater.SOILHYDRFUNC.create(
+        {
+            "ORES": [0.01, 0.02],
+            "OSAT": [0.42, 0.38],
+            "ALFA": [0.0276, 0.0213],
+            "NPAR": [1.491, 1.951],
+            "KSATFIT": [12.52, 12.68],
+            "LEXP": [-1.060, 0.168],
+            "ALFAW": [0.0542, 0.0426],
+            "H_ENPR": [0.0, 0.0],
+            "KSATEXM": [12.52, 12.68],
+            "BDENS": [1315.0, 1315.0],
+        }
+    )
 
     soilprofile = psp.components.soilwater.SoilProfile(
         swsophy=0,
@@ -150,16 +154,20 @@ def _make_simple_test_model():
     dvs = [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
 
     ## Crop height
-    maize_chtb = psp.components.crop.CHTB.create({
-        "DVS": dvs,
-        "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
-    })
+    maize_chtb = psp.components.crop.CHTB.create(
+        {
+            "DVS": dvs,
+            "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
+        }
+    )
 
     ## Root density as function of depth
-    maize_rdctb = psp.components.crop.RDCTB.create({
-        "RRD": [0.0, 1.0],
-        "RDENS": [1.0, 0.0],
-    })
+    maize_rdctb = psp.components.crop.RDCTB.create(
+        {
+            "RRD": [0.0, 1.0],
+            "RDENS": [1.0, 0.0],
+        }
+    )
 
     ### Get WOFOST parameters for maize from database
     db_wofost = psp.db.WOFOSTCropDB()
@@ -234,12 +242,14 @@ def _make_simple_test_model():
     )
 
     ## Crop rotation
-    croprotation = psp.components.crop.CROPROTATION.create({
-        "CROPSTART": ["2000-05-01"],
-        "CROPEND": ["2000-10-15"],
-        "CROPFIL": ["'maizes'"],
-        "CROPTYPE": [2],
-    })
+    croprotation = psp.components.crop.CROPROTATION.create(
+        {
+            "CROPSTART": ["2000-05-01"],
+            "CROPEND": ["2000-10-15"],
+            "CROPFIL": ["'maizes'"],
+            "CROPTYPE": [2],
+        }
+    )
 
     # ## No irrigation
     # irrigation = psp.components.crop.Irrigation(
@@ -257,10 +267,12 @@ def _make_simple_test_model():
 
     # Lateral drainage
     ## Freeboard over time
-    datowltb1 = psp.components.drainage.DATOWLTB1.create({
-        "DATOWL1": ["2000-01-01", "2000-12-31"],
-        "LEVEL1": [-80.0, -80.0],
-    })
+    datowltb1 = psp.components.drainage.DATOWLTB1.create(
+        {
+            "DATOWL1": ["2000-01-01", "2000-12-31"],
+            "LEVEL1": [-80.0, -80.0],
+        }
+    )
 
     ## Drainage flux
     flux = psp.components.drainage.Flux(
@@ -294,18 +306,22 @@ def _make_simple_test_model():
 
     # Heat flow
     # Soil textures for each physical layer
-    soiltextures = psp.components.transport.SOILTEXTURES.create({
-        "PSAND": [0.87, 0.89],
-        "PSILT": [0.1, 0.08],
-        "PCLAY": [0.03, 0.03],
-        "ORGMAT": [0.057, 0.022],
-    })
+    soiltextures = psp.components.transport.SOILTEXTURES.create(
+        {
+            "PSAND": [0.87, 0.89],
+            "PSILT": [0.1, 0.08],
+            "PCLAY": [0.03, 0.03],
+            "ORGMAT": [0.057, 0.022],
+        }
+    )
 
     # Initial soil temperatures; source: WWL
-    initsoiltemp = psp.components.transport.INITSOILTEMP.create({
-        "ZH": [-10.0, -40.0, -70.0, -95.0],
-        "TSOIL": [12.0, 12.0, 10.0, 9.0],
-    })
+    initsoiltemp = psp.components.transport.INITSOILTEMP.create(
+        {
+            "ZH": [-10.0, -40.0, -70.0, -95.0],
+            "TSOIL": [12.0, 12.0, 10.0, 9.0],
+        }
+    )
 
     heatflow = psp.components.transport.HeatFlow(
         swhea=1,  # Simulate heat flow in soil

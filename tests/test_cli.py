@@ -31,15 +31,17 @@ def setup_and_teardown():
 def test_cli_init_script(setup_and_teardown):
     folder_path = setup_and_teardown
 
-    inputs = "\n".join([
-        "TestProject",
-        "1.0",
-        "John Doe",
-        "XYZ University",
-        "john.doe@example.com",
-        "No comments",
-        "TestProjectFolder",
-    ])
+    inputs = "\n".join(
+        [
+            "TestProject",
+            "1.0",
+            "John Doe",
+            "XYZ University",
+            "john.doe@example.com",
+            "No comments",
+            "TestProjectFolder",
+        ]
+    )
 
     result = runner.invoke(app, ["init", "--script"], input=inputs)
     assert result.exit_code == 0
@@ -49,23 +51,25 @@ def test_cli_init_script(setup_and_teardown):
 
     with open(main_script_path) as f:
         content = f.read()
-        assert "metadata = psp.components.Metadata(" in content, (
-            "Content of main.py is incorrect."
-        )
+        assert (
+            "metadata = psp.components.Metadata(" in content
+        ), "Content of main.py is incorrect."
 
 
 def test_cli_init_notebook(setup_and_teardown):
     folder_path = setup_and_teardown
 
-    inputs = "\n".join([
-        "TestProject",
-        "1.0",
-        "John Doe",
-        "XYZ University",
-        "john.doe@example.com",
-        "No comments",
-        "TestProjectFolder",
-    ])
+    inputs = "\n".join(
+        [
+            "TestProject",
+            "1.0",
+            "John Doe",
+            "XYZ University",
+            "john.doe@example.com",
+            "No comments",
+            "TestProjectFolder",
+        ]
+    )
 
     result = runner.invoke(app, ["init", "--notebook"], input=inputs)
     assert result.exit_code == 0
@@ -78,31 +82,33 @@ def test_cli_init_notebook(setup_and_teardown):
 
         code_cell_source = notebook_content["cells"][2]["source"]
         full_code_content = "".join(code_cell_source)
-        assert "metadata = ps.Metadata(" in full_code_content, (
-            "Content of main.ipynb is incorrect."
-        )
+        assert (
+            "metadata = ps.Metadata(" in full_code_content
+        ), "Content of main.ipynb is incorrect."
 
 
 def test_git_initialization_and_gitignore(setup_and_teardown):
     folder_path = setup_and_teardown
 
-    inputs = "\n".join([
-        "TestProject",
-        "1.0",
-        "John Doe",
-        "XYZ University",
-        "john.doe@example.com",
-        "No comments",
-        "TestProjectFolder",
-    ])
+    inputs = "\n".join(
+        [
+            "TestProject",
+            "1.0",
+            "John Doe",
+            "XYZ University",
+            "john.doe@example.com",
+            "No comments",
+            "TestProjectFolder",
+        ]
+    )
 
     result = runner.invoke(app, ["init", "--script", "--notebook"], input=inputs)
     assert result.exit_code == 0
 
     git_dir_path = folder_path / ".git"
-    assert git_dir_path.exists() and git_dir_path.is_dir(), (
-        ".git directory was not created, Git repo not initialized."
-    )
+    assert (
+        git_dir_path.exists() and git_dir_path.is_dir()
+    ), ".git directory was not created, Git repo not initialized."
 
     gitignore_path = folder_path / ".gitignore"
     assert gitignore_path.exists(), ".gitignore file was not created."
@@ -123,9 +129,9 @@ def test_git_initialization_and_gitignore(setup_and_teardown):
         ]
 
         for pattern in expected_patterns:
-            assert pattern in gitignore_content, (
-                f"Expected pattern '{pattern}' not found in .gitignore file."
-            )
+            assert (
+                pattern in gitignore_content
+            ), f"Expected pattern '{pattern}' not found in .gitignore file."
 
 
 def test_upload_swap_success(tmp_path, monkeypatch):
@@ -176,7 +182,7 @@ def test_upload_swap_source_missing(tmp_path, monkeypatch):
 
     result = runner.invoke(app, ["upload-swap", str(missing), "custom"])
     assert result.exit_code != 0
-    assert "Source file not found" in result.stdout or "Error" in result.stdout
+    assert "Source file not found" in result.stderr or "Error" in result.stderr
 
 
 def test_upload_swap_target_exists_without_force(tmp_path, monkeypatch):
@@ -202,7 +208,7 @@ def test_upload_swap_target_exists_without_force(tmp_path, monkeypatch):
     result = runner.invoke(app, ["upload-swap", str(src), "custom"])
     assert result.exit_code != 0
     assert (
-        "already exists" in result.stdout
-        or "Use force=True" in result.stdout
-        or "Use --force" in result.stdout
+        "already exists" in result.stderr
+        or "Use force=True" in result.stderr
+        or "Use --force" in result.stderr
     )

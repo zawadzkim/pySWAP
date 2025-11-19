@@ -82,25 +82,33 @@ def _make_hupselbrook():
 
     DVS = [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
 
-    maize_gctb = psp.components.crop.GCTB.create({
-        "DVS": DVS,
-        "LAI": [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20],
-    })
+    maize_gctb = psp.components.crop.GCTB.create(
+        {
+            "DVS": DVS,
+            "LAI": [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20],
+        }
+    )
 
-    maize_chtb = psp.components.crop.CHTB.create({
-        "DVS": DVS,
-        "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
-    })
+    maize_chtb = psp.components.crop.CHTB.create(
+        {
+            "DVS": DVS,
+            "CH": [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0],
+        }
+    )
 
-    maize_rdtb = psp.components.crop.RDTB.create({
-        "DVS": [0.0, 0.3, 0.5, 0.7, 1.0, 2.0],
-        "RD": [5.0, 20.0, 50.0, 80.0, 90.0, 100.0],
-    })
+    maize_rdtb = psp.components.crop.RDTB.create(
+        {
+            "DVS": [0.0, 0.3, 0.5, 0.7, 1.0, 2.0],
+            "RD": [5.0, 20.0, 50.0, 80.0, 90.0, 100.0],
+        }
+    )
 
-    maize_rdctb = psp.components.crop.RDCTB.create({
-        "RRD": [0.0, 1.0],
-        "RDENS": [1.0, 0.0],
-    })
+    maize_rdctb = psp.components.crop.RDCTB.create(
+        {
+            "RRD": [0.0, 1.0],
+            "RDENS": [1.0, 0.0],
+        }
+    )
 
     maize_cropdev_settings = psp.components.crop.CropDevelopmentSettingsFixed(
         idev=1,
@@ -167,19 +175,23 @@ def _make_hupselbrook():
         swharv=0,
     )
 
-    potato_chtb = psp.components.crop.CHTB.create({
-        "DVS": [0.0, 1.0, 2.0],
-        "CH": [
-            1.0,
-            40.0,
-            50.0,
-        ],
-    })
+    potato_chtb = psp.components.crop.CHTB.create(
+        {
+            "DVS": [0.0, 1.0, 2.0],
+            "CH": [
+                1.0,
+                40.0,
+                50.0,
+            ],
+        }
+    )
 
-    potato_rdctb = psp.components.crop.RDCTB.create({
-        "RRD": [0.0, 1.0],
-        "RDENS": [1.0, 0.0],
-    })
+    potato_rdctb = psp.components.crop.RDCTB.create(
+        {
+            "RRD": [0.0, 1.0],
+            "RDENS": [1.0, 0.0],
+        }
+    )
 
     # Load the crop database
     db = WOFOSTCropDB()
@@ -239,69 +251,95 @@ def _make_hupselbrook():
     )
 
     # %% Grass crp file
-    grass_chtb = psp.components.crop.CHTB.create({
-        "DNR": [0.0, 180.0, 366.0],
-        "CH": [12.0, 12.0, 12.0],
-    })
+    grass_chtb = psp.components.crop.CHTB.create(
+        {
+            "DNR": [0.0, 180.0, 366.0],
+            "CH": [12.0, 12.0, 12.0],
+        }
+    )
 
-    grass_slatb = psp.components.crop.SLATB.create({
-        "DNR": [1.00, 80.00, 300.00, 366.00],
-        "SLA": [0.0015, 0.0015, 0.0020, 0.0020],
-    })
+    grass_slatb = psp.components.crop.SLATB.create(
+        {
+            "DNR": [1.00, 80.00, 300.00, 366.00],
+            "SLA": [0.0015, 0.0015, 0.0020, 0.0020],
+        }
+    )
 
-    grass_amaxtb = psp.components.crop.AMAXTB.create({
-        "DNR": [1.00, 95.00, 200.00, 275.00, 366.00],
-        "AMAX": [40.00, 40.00, 35.00, 25.00, 25.00],
-    })
+    grass_amaxtb = psp.components.crop.AMAXTB.create(
+        {
+            "DNR": [1.00, 95.00, 200.00, 275.00, 366.00],
+            "AMAX": [40.00, 40.00, 35.00, 25.00, 25.00],
+        }
+    )
 
-    grass_tmpftb = psp.components.crop.TMPFTB.create({
-        "TAVD": [0.00, 5.00, 15.00, 25.00, 40.00],
-        "TMPF": [0.00, 0.70, 1.00, 1.00, 0.00],
-    })
-    grass_tmnftb = psp.components.crop.TMNFTB.create({
-        "TMNR": [0.0, 4.0],
-        "TMNF": [0.0, 1.0],
-    })
+    grass_tmpftb = psp.components.crop.TMPFTB.create(
+        {
+            "TAVD": [0.00, 5.00, 15.00, 25.00, 40.00],
+            "TMPF": [0.00, 0.70, 1.00, 1.00, 0.00],
+        }
+    )
+    grass_tmnftb = psp.components.crop.TMNFTB.create(
+        {
+            "TMNR": [0.0, 4.0],
+            "TMNF": [0.0, 1.0],
+        }
+    )
 
-    grass_rfsetb = psp.components.crop.RFSETB.create({
-        "DNR": [1.00, 366.00],
-        "RFSE": [1.0000, 1.0000],
-    })
+    grass_rfsetb = psp.components.crop.RFSETB.create(
+        {
+            "DNR": [1.00, 366.00],
+            "RFSE": [1.0000, 1.0000],
+        }
+    )
 
-    grass_frtb = psp.components.crop.FRTB.create({
-        "DNR": [1.00, 366.00],
-        "FR": [0.3000, 0.3000],
-    })
+    grass_frtb = psp.components.crop.FRTB.create(
+        {
+            "DNR": [1.00, 366.00],
+            "FR": [0.3000, 0.3000],
+        }
+    )
 
-    grass_fltb = psp.components.crop.FLTB.create({
-        "DNR": [1.00, 366.00],
-        "FL": [0.6000, 0.6000],
-    })
+    grass_fltb = psp.components.crop.FLTB.create(
+        {
+            "DNR": [1.00, 366.00],
+            "FL": [0.6000, 0.6000],
+        }
+    )
 
-    grass_fstb = psp.components.crop.FSTB.create({
-        "DNR": [1.00, 366.00],
-        "FS": [0.4000, 0.4000],
-    })
+    grass_fstb = psp.components.crop.FSTB.create(
+        {
+            "DNR": [1.00, 366.00],
+            "FS": [0.4000, 0.4000],
+        }
+    )
 
-    grass_rdrrtb = psp.components.crop.RDRRTB.create({
-        "DNR": [1.0, 180.0, 366.0],
-        "RDRR": [0.0, 0.02, 0.02],
-    })
+    grass_rdrrtb = psp.components.crop.RDRRTB.create(
+        {
+            "DNR": [1.0, 180.0, 366.0],
+            "RDRR": [0.0, 0.02, 0.02],
+        }
+    )
 
-    grass_rdrstb = psp.components.crop.RDRSTB.create({
-        "DNR": [1.0, 180.0, 366.0],
-        "RDRS": [0.0, 0.02, 0.02],
-    })
+    grass_rdrstb = psp.components.crop.RDRSTB.create(
+        {
+            "DNR": [1.0, 180.0, 366.0],
+            "RDRS": [0.0, 0.02, 0.02],
+        }
+    )
 
-    grass_rlwtb = psp.components.crop.RLWTB.create({
-        "RW": [300.00, 2500.00],
-        "RL": [20.0, 40.0],
-    })
+    grass_rlwtb = psp.components.crop.RLWTB.create(
+        {
+            "RW": [300.00, 2500.00],
+            "RL": [20.0, 40.0],
+        }
+    )
 
-    grass_rdctb = psp.components.crop.RDCTB.create({
-        "RRD": [0.0, 1.0],
-        "RDENS": [1.0, 0.0],
-    })
+    grass_rdctb = psp.components.crop.RDCTB.create(
+        {
+            "RRD": [0.0, 1.0],
+            "RDENS": [1.0, 0.0],
+        }
+    )
 
     grass_settings = psp.components.crop.CropDevelopmentSettingsGrass(
         swcf=2,
@@ -366,15 +404,19 @@ def _make_hupselbrook():
 
     grass_co2 = psp.components.crop.CO2Correction(swco2=0)
 
-    grass_dmmowtb = psp.components.crop.DMMOWTB.create({
-        "DNR": [120.0, 152.0, 182.0, 213.0, 366.0],
-        "DMMOW": [4700.0, 3700.0, 3200.0, 2700.0, 2700.0],
-    })
+    grass_dmmowtb = psp.components.crop.DMMOWTB.create(
+        {
+            "DNR": [120.0, 152.0, 182.0, 213.0, 366.0],
+            "DMMOW": [4700.0, 3700.0, 3200.0, 2700.0, 2700.0],
+        }
+    )
 
-    grass_dmmowdelay = psp.components.crop.DMMOWDELAY.create({
-        "DMMOWDELAY": [0.0, 2000.0, 4000.0],
-        "DAYDELAY": [2, 3, 4],
-    })
+    grass_dmmowdelay = psp.components.crop.DMMOWDELAY.create(
+        {
+            "DMMOWDELAY": [0.0, 2000.0, 4000.0],
+            "DAYDELAY": [2, 3, 4],
+        }
+    )
 
     grass_management = psp.components.crop.GrasslandManagement(
         seqgrazmow=[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
@@ -405,12 +447,14 @@ def _make_hupselbrook():
 
     # %% Creating the main Crop object
 
-    croprotation = psp.components.crop.CROPROTATION.create({
-        "CROPSTART": [dt(2002, 5, 1), dt(2003, 5, 10), dt(2004, 1, 1)],
-        "CROPEND": [dt(2002, 10, 15), dt(2003, 9, 29), dt(2004, 12, 31)],
-        "CROPFIL": ["'maizes'", "'potatod'", "'grassd'"],
-        "CROPTYPE": [1, 2, 3],
-    })
+    croprotation = psp.components.crop.CROPROTATION.create(
+        {
+            "CROPSTART": [dt(2002, 5, 1), dt(2003, 5, 10), dt(2004, 1, 1)],
+            "CROPEND": [dt(2002, 10, 15), dt(2003, 9, 29), dt(2004, 12, 31)],
+            "CROPFIL": ["'maizes'", "'potatod'", "'grassd'"],
+            "CROPTYPE": [1, 2, 3],
+        }
+    )
 
     crop = psp.components.crop.Crop(
         swcrop=1,
@@ -423,12 +467,14 @@ def _make_hupselbrook():
 
     # %% irrigation setup
 
-    irrig_events = psp.components.irrigation.IRRIGEVENTS.create({
-        "IRDATE": ["2002-01-05"],
-        "IRDEPTH": [5.0],
-        "IRCONC": [1000.0],
-        "IRTYPE": [1],
-    })
+    irrig_events = psp.components.irrigation.IRRIGEVENTS.create(
+        {
+            "IRDATE": ["2002-01-05"],
+            "IRDEPTH": [5.0],
+            "IRCONC": [1000.0],
+            "IRTYPE": [1],
+        }
+    )
 
     fixed_irrigation = psp.components.irrigation.FixedIrrigation(
         swirfix=1, swirgfil=0, irrigevents=irrig_events
@@ -459,26 +505,30 @@ def _make_hupselbrook():
 
     # %% setting soil profile
 
-    soil_profile = psp.components.soilwater.SOILPROFILE.create({
-        "ISUBLAY": [1, 2, 3, 4],
-        "ISOILLAY": [1, 1, 2, 2],
-        "HSUBLAY": [10.0, 20.0, 30.0, 140.0],
-        "HCOMP": [1.0, 5.0, 5.0, 10.0],
-        "NCOMP": [10, 4, 6, 14],
-    })
+    soil_profile = psp.components.soilwater.SOILPROFILE.create(
+        {
+            "ISUBLAY": [1, 2, 3, 4],
+            "ISOILLAY": [1, 1, 2, 2],
+            "HSUBLAY": [10.0, 20.0, 30.0, 140.0],
+            "HCOMP": [1.0, 5.0, 5.0, 10.0],
+            "NCOMP": [10, 4, 6, 14],
+        }
+    )
 
-    soil_hydraulic_functions = psp.components.soilwater.SOILHYDRFUNC.create({
-        "ORES": [0.01, 0.02],
-        "OSAT": [0.42, 0.38],
-        "ALFA": [0.0276, 0.0213],
-        "NPAR": [1.491, 1.951],
-        "KSATFIT": [12.52, 12.68],
-        "LEXP": [-1.060, 0.168],
-        "ALFAW": [0.0542, 0.0426],
-        "H_ENPR": [0.0, 0.0],
-        "KSATEXM": [12.52, 12.68],
-        "BDENS": [1315.0, 1315.0],
-    })
+    soil_hydraulic_functions = psp.components.soilwater.SOILHYDRFUNC.create(
+        {
+            "ORES": [0.01, 0.02],
+            "OSAT": [0.42, 0.38],
+            "ALFA": [0.0276, 0.0213],
+            "NPAR": [1.491, 1.951],
+            "KSATFIT": [12.52, 12.68],
+            "LEXP": [-1.060, 0.168],
+            "ALFAW": [0.0542, 0.0426],
+            "H_ENPR": [0.0, 0.0],
+            "KSATEXM": [12.52, 12.68],
+            "BDENS": [1315.0, 1315.0],
+        }
+    )
 
     soilprofile = psp.components.soilwater.SoilProfile(
         swsophy=0,

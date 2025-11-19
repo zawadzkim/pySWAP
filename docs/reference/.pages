@@ -3,4 +3,5 @@ nav:
     - pyswap-model.md
     - integrations.md
     - visualization.md
+    - pixi-migration.md
     - developer.md
