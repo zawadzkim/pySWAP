@@ -60,14 +60,14 @@ jobs:
           echo "Package built successfully"
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: package-dist-${{ github.sha }}
           path: dist/
           retention-days: 7
 
       - name: Upload coverage reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage-${{ github.sha }}
           path: coverage.xml
