@@ -823,7 +823,7 @@ class CropFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
 
         The addition validates all the crop files in the dictionary.
         """
-        for comp in self.model_fields:
+        for comp in CropFile.model_fields:
             item = getattr(self, comp)
             if hasattr(item, "validate_with_yaml"):
                 item._validation = True

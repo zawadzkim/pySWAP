@@ -488,7 +488,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         if not self._validate_on_run:
             return self
 
-        for comp in self.model_fields:
+        for comp in Model.model_fields:
             item = getattr(self, comp)
             if hasattr(item, "validate_with_yaml"):
                 item._validation = True

@@ -145,7 +145,8 @@ class SerializableMixin(BaseModel):
         json_schema_extra is None, return False.
         """
         # Every special field will have a FieldInfo object
-        field_info = self.model_fields.get(field_name, None)
+        _class = type(self)
+        field_info = _class.model_fields.get(field_name, None)
 
         if field_info is None:
             return False
