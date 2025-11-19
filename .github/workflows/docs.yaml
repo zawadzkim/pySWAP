@@ -1,0 +1,78 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "docs/**"
+      - "pyswap/**"
+      - "*.md"
+      - "mkdocs.yml"
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - "docs/**"
+      - "pyswap/**"
+      - "*.md"
+      - "mkdocs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  # Build and validate documentation (runs on all branches/PRs)
+  build-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0.9.2
+        with:
+          pixi-version: v0.59.0
+          cache: true
+
+      - name: Build documentation
+        run: pixi run -e docs docs-build
+
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-${{ github.sha }}
+          path: docs/site
+          retention-days: 7
+
+  # Deploy documentation (only on main branch pushes)
+  deploy-docs:
+    needs: build-docs
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Download docs artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-${{ github.sha }}
+          path: docs-site
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs-site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
