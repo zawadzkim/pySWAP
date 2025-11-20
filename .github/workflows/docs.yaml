@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
   id-token: write
+  pages: write
 
 jobs:
   # Build and validate documentation (runs on all branches/PRs)
