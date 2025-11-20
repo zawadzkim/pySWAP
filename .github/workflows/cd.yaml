@@ -191,12 +191,20 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
-          python -m twine upload dist/*
-          echo "published=true" >> $GITHUB_OUTPUT
-          echo "Successfully published to PyPI"
+          if python -m twine upload dist/* 2>&1 | tee upload_output.log; then
+            echo "published=true" >> $GITHUB_OUTPUT
+            echo "Successfully published new version to PyPI"
+          elif grep -q "File already exists" upload_output.log || grep -q "already exists" upload_output.log; then
+            echo "published=true" >> $GITHUB_OUTPUT
+            echo "Version already exists on PyPI - treating as success"
+          else
+            echo "published=false" >> $GITHUB_OUTPUT
+            echo "PyPI upload failed for unknown reason"
+            exit 1
+          fi
 
   deploy-docs:
-    needs: [check-version, create-release, publish-pypi]
+    needs: [check-version, create-release, publish-pypi, build-docs]
     if: needs.create-release.outputs.release-created == 'true' && needs.publish-pypi.outputs.published == 'true'
     runs-on: ubuntu-latest
     environment:
