@@ -3,6 +3,10 @@ name: Documentation
 on:
   workflow_call:
     # Called by CD workflow after release creation
+    outputs:
+      artifact-name:
+        description: "Name of the generated docs artifact"
+        value: ${{ jobs.build-docs.outputs.artifact-name }}
   workflow_dispatch:
     # Allow manual documentation builds
 
@@ -15,6 +19,8 @@ jobs:
   # Build and validate documentation (runs on all branches/PRs)
   build-docs:
     runs-on: ubuntu-latest
+    outputs:
+      artifact-name: ${{ steps.artifact.outputs.name }}
     
     steps:
       - name: Checkout code
@@ -33,16 +39,20 @@ jobs:
         run: pixi run -e docs docs-build
 
       - name: Upload docs artifact
+        id: artifact
         uses: actions/upload-artifact@v5
         with:
           name: docs-${{ github.sha }}
           path: site
           retention-days: 7
+        
+      - name: Set artifact name output
+        run: echo "name=docs-${{ github.sha }}" >> $GITHUB_OUTPUT
 
-  # Deploy documentation (only on main branch pushes)
+  # Deploy documentation (only when called for deployment)
   deploy-docs:
     needs: build-docs
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -52,7 +62,7 @@ jobs:
       - name: Download docs artifact
         uses: actions/download-artifact@v6
         with:
-          name: docs-${{ github.sha }}
+          name: ${{ needs.build-docs.outputs.artifact-name }}
           path: docs-site
 
       - name: Setup Pages
