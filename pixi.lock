@@ -7049,8 +7049,8 @@ packages:
   timestamp: 1733217331982
 - pypi: ./
   name: pyswap
-  version: 0.3.0
-  sha256: dbec4011e24c150bf322c34884b105e7dc6d55330a6882be498cc3ecd8a49460
+  version: 0.3.1
+  sha256: fcd92bdb928e73e9e55cfe905980b41b5e78f16ce4253f8306a22eea40461124
   editable: true
 - conda: https://conda.anaconda.org/conda-forge/noarch/pytest-9.0.1-pyhcf101f3_0.conda
   sha256: 7f25f71e4890fb60a4c4cb4563d10acf2d741804fec51e9b85a6fd97cd686f2f
