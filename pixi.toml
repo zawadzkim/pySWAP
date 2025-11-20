@@ -22,6 +22,12 @@ pyyaml = ">=6.0.3,<7"
 [pypi-dependencies]
 knmi-py = ">=0.2.0, <0.3"
 
+[feature.test.dependencies]
+jupyter = "*"
+
+[feature.test.pypi-dependencies]
+pyswap = { path = ".", editable = true }
+
 [feature.dev.dependencies]
 jupyter = "*"
 pytest = ">=8.2.2"
@@ -55,12 +61,14 @@ pyswap = { path = ".", editable = true }
 
 [environments]
 default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "test" }
 dev = { features = ["dev"], solve-group = "default" }
 docs = { features = ["docs"], solve-group = "default" }
 full = { features = ["dev", "docs"], solve-group = "default" }
 
 [tasks]
 # Development tasks
+install-test = "pixi install -e test"
 install-dev = "pixi install -e dev"
 install-docs = "pixi install -e docs"
 install-full = "pixi install -e full"
