@@ -15,12 +15,11 @@ permissions:
   id-token: write
 
 jobs:
-  test-and-build:
+  check-version:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
       tag-exists: ${{ steps.check-tag.outputs.exists }}
-      build-success: ${{ steps.build.outcome }}
     
     steps:
       - name: Checkout code
@@ -59,35 +58,69 @@ jobs:
             echo "Tag $tag does not exist"
           fi
 
+  test:
+    needs: check-version
+    if: needs.check-version.outputs.tag-exists == 'false'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0.9.2
+        with:
+          pixi-version: v0.59.0
+          cache: true
+
       - name: Run tests
-        if: steps.check-tag.outputs.exists == 'false'
         run: |
           pixi run -e dev pytest tests/ -v --cov=pyswap --cov-report=term --cov-report=xml
           echo "Tests completed successfully"
 
       - name: Run linting
-        if: steps.check-tag.outputs.exists == 'false'
         run: |
           pixi run -e dev ruff check .
           echo "Linting passed"
 
+  build-package:
+    needs: check-version
+    if: needs.check-version.outputs.tag-exists == 'false'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0.9.2
+        with:
+          pixi-version: v0.59.0
+          cache: true
+
       - name: Build package
-        id: build
-        if: steps.check-tag.outputs.exists == 'false'
         run: |
           pixi run -e dev python -m build
           echo "Package built successfully"
 
       - name: Upload build artifacts
-        if: steps.check-tag.outputs.exists == 'false'
         uses: actions/upload-artifact@v4
         with:
           name: package-dist-${{ github.sha }}
           path: dist/
 
+  build-docs:
+    needs: check-version
+    if: needs.check-version.outputs.tag-exists == 'false'
+    uses: ./.github/workflows/docs.yaml
+
   create-release:
-    needs: test-and-build
-    if: needs.test-and-build.outputs.tag-exists == 'false' && needs.test-and-build.outputs.build-success == 'success'
+    needs: [check-version, test, build-package, build-docs]
+    if: needs.check-version.outputs.tag-exists == 'false'
     runs-on: ubuntu-latest
     outputs:
       release-created: ${{ steps.release_flag.outputs.created }}
@@ -102,7 +135,7 @@ jobs:
       - name: Create and push tag
         id: create_tag
         run: |
-          version="${{ needs.test-and-build.outputs.version }}"
+          version="${{ needs.check-version.outputs.version }}"
           tag="v$version"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -116,7 +149,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.create_tag.outputs.tag }}
-          name: Release ${{ needs.test-and-build.outputs.version }}
+          name: Release ${{ needs.check-version.outputs.version }}
           generate_release_notes: true
           draft: false
           prerelease: false
@@ -126,12 +159,14 @@ jobs:
         run: echo "created=true" >> $GITHUB_OUTPUT
 
   publish-pypi:
-    needs: [test-and-build, create-release]
+    needs: [check-version, create-release]
     if: needs.create-release.outputs.release-created == 'true'
     runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/p/pyswap
+    outputs:
+      published: ${{ steps.publish.outputs.published }}
     
     steps:
       - name: Download build artifacts
@@ -151,21 +186,45 @@ jobs:
           python -m pip install twine
 
       - name: Publish to PyPI
+        id: publish
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
           python -m twine upload dist/*
+          echo "published=true" >> $GITHUB_OUTPUT
           echo "Successfully published to PyPI"
 
-  build-docs:
-    needs: [test-and-build, create-release, publish-pypi]
-    if: needs.create-release.outputs.release-created == 'true' && needs.publish-pypi.result == 'success'
-    uses: ./.github/workflows/docs.yaml
+  deploy-docs:
+    needs: [check-version, create-release, publish-pypi]
+    if: needs.create-release.outputs.release-created == 'true' && needs.publish-pypi.outputs.published == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Download docs artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: docs-${{ github.sha }}
+          path: docs-site
 
-  rollback:
-    needs: [test-and-build, create-release, publish-pypi, build-docs]
-    if: failure() && needs.create-release.outputs.release-created == 'true'
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs-site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  rollback-on-failure:
+    needs: [check-version, create-release, publish-pypi]
+    if: failure() && needs.create-release.outputs.release-created == 'true' && needs.publish-pypi.outputs.published != 'true'
     runs-on: ubuntu-latest
     
     steps:
@@ -174,14 +233,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Delete release and tag on failure
+      - name: Rollback GitHub release and tag (PyPI upload failed)
         run: |
           tag="${{ needs.create-release.outputs.tag-name }}"
           if [ -n "$tag" ]; then
-            echo "Deleting release and tag: $tag"
+            echo "PyPI publication failed, rolling back GitHub release and tag: $tag"
             gh release delete "$tag" --cleanup-tag -y || echo "Release deletion failed or release doesn't exist"
             git push --delete origin "$tag" || echo "Tag deletion failed or tag doesn't exist"
-            echo "Rollback completed"
+            echo "Complete rollback completed (PyPI upload failed)"
           else
             echo "No tag to rollback"
           fi
