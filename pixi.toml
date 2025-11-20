@@ -3,7 +3,6 @@ authors = ["zawadzkim <zawadzkimat@outlook.com>"]
 channels = ["conda-forge", "pyviz"]
 name = "pyswap"
 platforms = ["linux-64", "win-64"]
-version = "0.3.0"
 
 [dependencies]
 python = ">=3.11.0,<3.14"
