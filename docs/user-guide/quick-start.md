@@ -34,6 +34,17 @@ pySWAP provides an `init` method to scaffold your project with a well-organized 
 pyswap init
 ```
 
+### CLI init Options
+
+```bash
+# Create with specific components
+pyswap init --script          # Include Python script instead of notebook
+pyswap init --notebook        # Include Jupyter notebook (default)
+
+# Disable pixi (use traditional pip/conda)
+pyswap init --no-pixi
+```
+
 This will prompt you for some project details and create a complete project structure with a pixi.toml configuration, initialized git gepo and README.
 
 ```text
@@ -68,6 +79,14 @@ user@user-Workstation:~/Code/pySWAP$ pixi shell
 (pyswap) user@user-Workstation:~/Code/pySWAP$
 ```
 
+### Test installation
+To star with, you have to obtain the SWAP executable. Then check the installation.
+
+```bash
+(pyswap) user@user-Workstation:~/Code/pySWAP$ pyswap get-swap
+(pyswap) user@user-Workstation:~/Code/pySWAP$ pyswap check-swap
+```
+
 Some other commands you can try out of the box:
 
 ```bash
@@ -76,9 +95,12 @@ pixi run jupyter
 
 # Run tests  
 pixi run test
+
+# Run Hupselbrook testcase
+pixi run testcase
 ```
 
-#### Install additional dependencies and add tasks
+### Install additional dependencies and add tasks
 Check out pixi documentation to learn how to:
 
 - install dependencies, e.g.,
@@ -99,23 +121,28 @@ Welcome to your pySWAP project
 
 More complex tasks you can define directly in the `pixi.toml` file under `[tasks]`
 
-Default tasks include:
+### Run a test case
+Once the environment is installed, you can run a test to see if everything is working correctly. Note that SWAP executable was not detected and was automatically installed.
 
-```text
-test = "pytest"           # run pytest
-jupyter = "jupyter lab"   # open jupyter lab
+```shell
+user@user-Workstation:~/Code/pySWAP/proj$ pixi run testcase
+✨ Pixi task (testcase): python -c "from pyswap import testcase; hupselbrook = testcase.get('hupselbrook'); result = hupselbrook.run(); print('Test completed successfully!'); print(result.yearly_summary)"                                                                                                                                                                                                  
+Downloading SWAP 4.2.0 for linux...
+Installing to: /home/user/Code/pySWAP/proj/.pixi/envs/default/lib/python3.13/site-packages/pyswap/libs/swap
+Downloading from: https://github.com/SWAP-model/SWAP/releases/download/v4.2.0/swap4.2.0-linux
+Downloading  [####################################]  100%
+✓ SWAP 4.2.0 successfully installed!
+Executable path: /home/user/Code/pySWAP/proj/.pixi/envs/default/lib/python3.13/site-packages/pyswap/libs/swap/swap420
+Updated version info file.
+Test completed successfully!
+             RAIN  IRRIG   INTERC  RUNOFF      EPOT      EACT  DRAINAGE  QBOTTOM         GWL      TPOT      TACT    DSTOR
+DATETIME                                                                                                                 
+2002-12-31  84.18    0.5  3.74188     0.0  33.10679  16.68715  22.11357      0.0 -1107.65824  38.71198  38.17328  3.96418
+2003-12-31  71.98    0.0  2.05788     0.0  35.99241  17.17961  26.44815      0.0 -1154.37603  29.41787  29.21504 -2.92064
+2004-12-31  80.55    0.0  4.91521     0.0  29.89227  17.88916  24.76607      0.0 -1036.76085  32.57266  32.56927  0.41030
 ```
-### CLI Options
 
-```bash
-# Create with specific components
-pyswap init --script          # Include Python script instead of notebook
-pyswap init --notebook        # Include Jupyter notebook (default)
-
-# Disable pixi (use traditional pip/conda)
-pyswap init --no-pixi
-```
-
+For detailed information about all CLI commands and options, see the [CLI Reference](/user-guide/cli/).
 
 ## Install manually and and start from scratch
 
@@ -125,7 +152,7 @@ pySWAP can be simply installed through pip. Creation of a separate virtual envir
 pip install pyswap
 ```
 
-## Run a test case
+### Run a test case
 
 After installation, you can test if everthing is OK by running a testcase:
 
@@ -145,7 +172,3 @@ DATETIME
 2004-12-31  80.55    0.0  4.91521     0.0  29.89227  17.88916  24.76607      0.0 -1036.76085  32.57266  32.56927  0.41030
 ```
 
-
-## Turn on the exploration mode
-
-You can play around with the model and result in the terminal, or go to the [tutorial section](/tutorials/) for hands-on exercises or move on to the [next page](/user-guide/ascii-vs-classes/) of the user guide.
