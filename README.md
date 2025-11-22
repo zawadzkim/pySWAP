@@ -1,13 +1,12 @@
 # pySWAP - Python wraper for SWAP hydrological model
 
-[![Tests](https://github.com/zawadzkim/pySWAP/actions/workflows/tests.yaml/badge.svg)](https://github.com/zawadzkim/pySWAP/actions/workflows/tests.yaml)
+[![CD](https://github.com/zawadzkim/pySWAP/actions/workflows/cd.yaml/badge.svg)](https://github.com/zawadzkim/pySWAP/actions/workflows/cd.yaml)
+[![CI](https://github.com/zawadzkim/pySWAP/actions/workflows/ci.yaml/badge.svg)](https://github.com/zawadzkim/pySWAP/actions/workflows/ci.yaml)
+[![Docs](https://github.com/zawadzkim/pySWAP/actions/workflows/docs.yaml/badge.svg)](https://github.com/zawadzkim/pySWAP/actions/workflows/docs.yaml)
 [![codecov](https://codecov.io/gh/zawadzkim/pySWAP/graph/badge.svg?token=TG8KU0S6PM)](https://codecov.io/gh/zawadzkim/pySWAP)
 [![pypi](https://img.shields.io/pypi/v/pySWAP.svg)](https://pypi.python.org/pypi/pySWAP)
-
 [![downloads](https://static.pepy.tech/badge/pySWAP/month)](https://pepy.tech/project/pySWAP)
-[![versions](https://img.shields.io/pypi/pyversions/pySWAP.svg)](https://pypi.python.org/pypi/pySWAP)
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/zawadzkim/pySWAP/notebooks)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SWAP-model/pyswap-tutorials)
 [![DOI](https://zenodo.org/badge/757418278.svg)](https://doi.org/10.5281/zenodo.14884487)
 
 pySWAP is a Python wrapper (not Python implementation) for the SWAP hydrological model ([link to the model website](https://www.swap.alterra.nl/)). It simplifies the creation of input files, execution of the SWAP model, and analysis and visualization of results. Users can set up and document their models in Jupyter notebooks, enhancing transparency, collaboration, and facilitating community-supported debugging.
