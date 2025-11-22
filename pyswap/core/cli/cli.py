@@ -67,7 +67,7 @@ def copy_readme(templates_path, project_root, use_pixi=True, attrs=None):
         readme_content = template_file.read_text()
         pixi_instructions = pixi_instructions_file.read_text()
 
-        pixi_structure = "\n├── pixi.toml"
+        pixi_structure = "\n├── pixi.toml               # Pixi dependency management"
 
         readme_content = readme_content.format(
             project=attrs.get("project", "Project"),
@@ -79,7 +79,16 @@ def copy_readme(templates_path, project_root, use_pixi=True, attrs=None):
         readme_path.write_text(readme_content)
     else:
         template_file = templates_path / "README"
-        shutil.copy(template_file, project_root)
+        readme_content = template_file.read_text()
+        
+        readme_content = readme_content.format(
+            project=attrs.get("project", "Project"),
+            pixi_structure="",
+            pixi_instructions=""
+        )
+        
+        readme_path = project_root / "README"
+        readme_path.write_text(readme_content)
 
     return "Successfully created README in the root directory."
 
