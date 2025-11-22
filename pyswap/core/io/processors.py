@@ -1,4 +1,3 @@
-# ruff: noqa: C901
 # mypy: disable-error-code="call-overload, attr-defined"
 # error C901 was raised for the parse_ascii_file function. The function indeed
 # could use refactoring, but for now we keep it as it is.

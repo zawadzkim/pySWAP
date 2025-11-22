@@ -49,22 +49,22 @@ from pyswap.utils.mixins import (
 )
 
 __all__ = [
-    "Flux",
-    "DraFile",
-    "Drainage",
-    "DRNTB",
-    "DRAINAGELEVELTOPPARAMS",
     "DATOWLTB1",
     "DATOWLTB2",
     "DATOWLTB3",
     "DATOWLTB4",
     "DATOWLTB5",
-    "SECWATLVL",
+    "DRAINAGELEVELTOPPARAMS",
+    "DRNTB",
     "MANSECWATLVL",
-    "QWEIR",
-    "QWEIRTB",
     "PRIWATLVL",
     "QDRNTB",
+    "QWEIR",
+    "QWEIRTB",
+    "SECWATLVL",
+    "DraFile",
+    "Drainage",
+    "Flux",
 ]
 
 

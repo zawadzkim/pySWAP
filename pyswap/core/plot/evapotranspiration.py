@@ -18,7 +18,7 @@ def evapotranspiration(
 
     sns.set_context("poster")
 
-    fig, ax = plt.subplots(figsize=(34, 8))
+    _fig, ax = plt.subplots(figsize=(34, 8))
     sns.lineplot(data=potential, ax=ax, label="Potential", color="black", linewidth=1)
     sns.lineplot(
         data=actual, ax=ax, label="Actual", color="orange", linewidth=1, linestyle="--"

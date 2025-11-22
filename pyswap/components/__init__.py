@@ -19,14 +19,14 @@ from pyswap.components import (
 from pyswap.components.metadata import Metadata
 
 __all__ = [
+    "Metadata",
     "boundary",
     "crop",
     "drainage",
     "irrigation",
+    "metadata",
     "meteorology",
     "simsettings",
     "soilwater",
     "transport",
-    "metadata",
-    "Metadata",
 ]
