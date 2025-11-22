@@ -52,11 +52,8 @@ def read_swap_version() -> str | None:
     return None
 
 
-def show_info(verbose: bool = True) -> dict:
+def show_info() -> dict:
     """Display information about pySWAP and SWAP versions and installation.
-
-    Args:
-        verbose: Whether to print the information to stdout. Defaults to True.
 
     Returns:
         Information dictionary with version and status details.
@@ -94,30 +91,32 @@ def show_info(verbose: bool = True) -> dict:
         "package_location": str(Path(pyswap.__file__).parent),
     }
 
-    if verbose:
-        typer.echo("pySWAP Setup Information:")
-        typer.echo(f"  pySWAP version: {pyswap_version}")
-        if swap_version:
-            version_label = (
-                "custom/uploaded" if swap_version == "custom" else swap_version
-            )
-            typer.echo(f"  SWAP version: {version_label}")
-        else:
-            typer.echo("  SWAP version: Not installed")
+    typer.echo("=" * 40)
+    typer.echo("pySWAP Setup Information:")
+    typer.echo(f"  pySWAP version: {pyswap_version}")
+    if swap_version:
+        version_label = (
+            "custom/uploaded" if swap_version == "custom" else swap_version
+        )
+        typer.echo(f"  SWAP version: {version_label}")
+    else:
+        typer.echo("  SWAP version: Not installed")
 
-        if swap_available:
-            typer.echo(f"  SWAP executable: ✓ Available at {swap_exe_path}")
-        else:
-            typer.echo(f"  SWAP executable: ✗ Not found at {swap_exe_path}")
+    if swap_available:
+        typer.echo(f"  SWAP executable: ✓ Available at {swap_exe_path}")
+    else:
+        typer.echo(f"  SWAP executable: ✗ Not found at {swap_exe_path}")
 
-        typer.echo(f"  Platform: {system}")
-        typer.echo(f"  Package location: {info['package_location']}")
+    typer.echo(f"  Platform: {system}")
+    typer.echo(f"  Package location: {info['package_location']}")
 
-        if not swap_available:
-            typer.echo("")
-            typer.echo("To install SWAP:")
-            typer.echo("  - Download: pyswap get-swap")
-            typer.echo("  - Upload local file: pyswap upload-swap <path-to-executable>")
+    if not swap_available:
+        typer.echo("")
+        typer.echo("To install SWAP:")
+        typer.echo("  - Download: pyswap get-swap")
+        typer.echo("  - Upload local file: pyswap upload-swap <path-to-executable>")
+    
+    typer.echo("=" * 40)
 
     return info
 
