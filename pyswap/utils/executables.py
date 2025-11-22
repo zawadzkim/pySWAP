@@ -52,11 +52,8 @@ def read_swap_version() -> str | None:
     return None
 
 
-def show_info(verbose: bool = True) -> dict:
+def show_info() -> dict:
     """Display information about pySWAP and SWAP versions and installation.
-
-    Args:
-        verbose: Whether to print the information to stdout. Defaults to True.
 
     Returns:
         Information dictionary with version and status details.
@@ -94,30 +91,32 @@ def show_info(verbose: bool = True) -> dict:
         "package_location": str(Path(pyswap.__file__).parent),
     }
 
-    if verbose:
-        typer.echo("pySWAP Setup Information:")
-        typer.echo(f"  pySWAP version: {pyswap_version}")
-        if swap_version:
-            version_label = (
-                "custom/uploaded" if swap_version == "custom" else swap_version
-            )
-            typer.echo(f"  SWAP version: {version_label}")
-        else:
-            typer.echo("  SWAP version: Not installed")
+    typer.echo("=" * 40)
+    typer.echo("pySWAP Setup Information:")
+    typer.echo(f"  pySWAP version: {pyswap_version}")
+    if swap_version:
+        version_label = (
+            "custom/uploaded" if swap_version == "custom" else swap_version
+        )
+        typer.echo(f"  SWAP version: {version_label}")
+    else:
+        typer.echo("  SWAP version: Not installed")
 
-        if swap_available:
-            typer.echo(f"  SWAP executable: ✓ Available at {swap_exe_path}")
-        else:
-            typer.echo(f"  SWAP executable: ✗ Not found at {swap_exe_path}")
+    if swap_available:
+        typer.echo(f"  SWAP executable: ✓ Available at {swap_exe_path}")
+    else:
+        typer.echo(f"  SWAP executable: ✗ Not found at {swap_exe_path}")
 
-        typer.echo(f"  Platform: {system}")
-        typer.echo(f"  Package location: {info['package_location']}")
+    typer.echo(f"  Platform: {system}")
+    typer.echo(f"  Package location: {info['package_location']}")
 
-        if not swap_available:
-            typer.echo("")
-            typer.echo("To install SWAP:")
-            typer.echo("  - Download: pyswap get-swap")
-            typer.echo("  - Upload local file: pyswap upload-swap <path-to-executable>")
+    if not swap_available:
+        typer.echo("")
+        typer.echo("To install SWAP:")
+        typer.echo("  - Download: pyswap get-swap")
+        typer.echo("  - Upload local file: pyswap upload-swap <path-to-executable>")
+
+    typer.echo("=" * 40)
 
     return info
 
@@ -234,7 +233,7 @@ def _download_swap_executable(
 
 
 def check_swap(exe_path: str | None = None, verbose: bool = True) -> bool:
-    """Check if SWAP executable is available and working.
+    """Check if SWAP executable is available and working by running a testcase.
 
     Args:
         exe_path: Path to SWAP executable. If None, uses default package location.
@@ -252,42 +251,38 @@ def check_swap(exe_path: str | None = None, verbose: bool = True) -> bool:
             typer.echo("Run get_swap() to download and install SWAP")
         return False
 
-    # Try to run SWAP to check if it works
+    # Try to run SWAP by executing a simple testcase
     try:
-        result = subprocess.run(
-            [exe_path, "--version"], capture_output=True, text=True, timeout=10
-        )
+        from pyswap import testcase
 
-        if result.returncode == 0:
-            if verbose:
-                typer.echo(f"✓ SWAP executable working: {exe_path}")
-                if result.stdout.strip():
-                    typer.echo(f"Version info: {result.stdout.strip()}")
-            return True
-        else:
-            # Some SWAP executables might not support --version, try running without args
-            result = subprocess.run(
-                [exe_path],
-                capture_output=True,
-                text=True,
-                timeout=5,
-                input="\n",  # Provide empty input to exit quickly
-            )
-
-            if verbose:
-                typer.echo(f"✓ SWAP executable working: {exe_path}")
-            return True
-
-    except subprocess.TimeoutExpired:
         if verbose:
-            typer.echo(f"✗ SWAP executable timed out: {exe_path}")
-        return False
+            show_info()
+            typer.echo(f"Running testcase to verify SWAP executable: {exe_path}")
+            typer.echo("Loading hupselbrook testcase...")
+
+        # Get the testcase and run it
+        hupselbrook = testcase.get("hupselbrook")
+        result = hupselbrook.run()
+        print(result)
+
+        if verbose:
+            typer.echo("✓ SWAP testcase completed successfully!")
+            typer.echo(f"✓ SWAP executable working: {exe_path}")
+            # Show a brief summary
+            yearly_data = result.yearly_summary
+            if not yearly_data.empty:
+                total_years = len(yearly_data)
+                avg_rain = yearly_data['RAIN'].mean()
+                avg_drainage = yearly_data['DRAINAGE'].mean()
+                typer.echo(f"Testcase summary: {total_years} years, avg rainfall: {avg_rain:.1f}mm, avg drainage: {avg_drainage:.1f}mm")
+
     except Exception as e:
         if verbose:
-            typer.echo(f"✗ Error checking SWAP executable: {e}")
+            typer.echo(f"✗ Error running SWAP testcase: {e}")
+            typer.echo("This could indicate a problem with the SWAP executable or installation")
         return False
-
-
+    else:
+        return True
 def upload_swap(
     file_path: str,
     version: str,

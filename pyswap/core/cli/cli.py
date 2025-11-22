@@ -80,13 +80,13 @@ def copy_readme(templates_path, project_root, use_pixi=True, attrs=None):
     else:
         template_file = templates_path / "README"
         readme_content = template_file.read_text()
-        
+
         readme_content = readme_content.format(
             project=attrs.get("project", "Project"),
             pixi_structure="",
             pixi_instructions=""
         )
-        
+
         readme_path = project_root / "README"
         readme_path.write_text(readme_content)
 
@@ -306,16 +306,11 @@ def remove_swap(
 
 
 @app.command()
-def info(
-    verbose: bool = typer.Option(
-        True, "--verbose/--quiet", help="Enable verbose output"
-    ),
-):
+def info():
     """Display information about pySWAP and SWAP setup."""
     from pyswap.utils.executables import show_info
 
-    show_info(verbose=verbose)
-
+    show_info()
 
 if __name__ == "__main__":
     app()

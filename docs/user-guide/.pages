@@ -1,5 +1,6 @@
 nav:
     - quick-start.md
+    - cli.md
     - ascii-vs-classes.md
     - data-structures.md
     - run-parallel.md
