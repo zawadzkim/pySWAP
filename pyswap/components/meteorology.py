@@ -54,14 +54,14 @@ from pyswap.utils.mixins import (
 )
 
 __all__ = [
+    "DAILYMETEODATA",
+    "DETAILEDRAINFALL",
+    "RAINFLUX",
+    "SHORTINTERVALMETEODATA",
     "MetFile",
     "Meteorology",
     "metfile_from_csv",
     "metfile_from_knmi",
-    "DAILYMETEODATA",
-    "SHORTINTERVALMETEODATA",
-    "DETAILEDRAINFALL",
-    "RAINFLUX",
 ]
 
 

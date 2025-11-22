@@ -23,13 +23,13 @@ from pyswap.utils.mixins import (
 )
 
 __all__ = [
+    "SOILHYDRFUNC",
+    "SOILPROFILE",
     "Evaporation",
     "SnowAndFrost",
     "SoilMoisture",
     "SoilProfile",
     "SurfaceFlow",
-    "SOILPROFILE",
-    "SOILHYDRFUNC",
 ]
 
 

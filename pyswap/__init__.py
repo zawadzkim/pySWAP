@@ -1,4 +1,3 @@
-# ruff: noqa: F401
 # Version information
 import importlib.metadata
 import logging
@@ -16,23 +15,23 @@ from pyswap.utils.loaders import load_bbc, load_crp, load_dra, load_swp
 __version__ = importlib.metadata.version("pyswap")
 
 __all__ = [
+    "Model",
+    "check_swap",
     "components",
-    "gis",
     "db",
-    "plot",
-    "testcase",
+    "get_swap",
+    "gis",
     "io",
-    "load_swp",
-    "load_dra",
-    "load_crp",
     "load_bbc",
+    "load_crp",
+    "load_dra",
+    "load_swp",
+    "plot",
+    "run_parallel",
     "set_log_level",
     "setup_logging",
-    "Model",
-    "run_parallel",
-    "get_swap",
-    "check_swap",
     "show_info",
+    "testcase",
 ]
 
 

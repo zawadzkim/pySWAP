@@ -38,12 +38,12 @@ def test_cli_init_script(setup_and_teardown):
             "John Doe",
             "XYZ University",
             "john.doe@example.com",
-            "No comments",
+            "",  # Empty comment (user just presses enter)
             "TestProjectFolder",
         ]
     )
 
-    result = runner.invoke(app, ["init", "--script"], input=inputs)
+    result = runner.invoke(app, ["init", "--script", "--no-pixi"], input=inputs)
     assert result.exit_code == 0
 
     main_script_path = folder_path / "models" / "main.py"
@@ -66,12 +66,12 @@ def test_cli_init_notebook(setup_and_teardown):
             "John Doe",
             "XYZ University",
             "john.doe@example.com",
-            "No comments",
+            "",  # Empty comment (user just presses enter)
             "TestProjectFolder",
         ]
     )
 
-    result = runner.invoke(app, ["init", "--notebook"], input=inputs)
+    result = runner.invoke(app, ["init", "--notebook", "--no-pixi"], input=inputs)
     assert result.exit_code == 0
 
     notebook_path = folder_path / "models" / "main.ipynb"
@@ -97,7 +97,7 @@ def test_git_initialization_and_gitignore(setup_and_teardown):
             "John Doe",
             "XYZ University",
             "john.doe@example.com",
-            "No comments",
+            "",  # Empty comment (user just presses enter)
             "TestProjectFolder",
         ]
     )
@@ -126,12 +126,94 @@ def test_git_initialization_and_gitignore(setup_and_teardown):
             "*.env",
             "*.ipynb_checkpoints/",
             "data/",
+            ".pixi/",
+            "pixi.lock",
         ]
 
         for pattern in expected_patterns:
             assert (
                 pattern in gitignore_content
             ), f"Expected pattern '{pattern}' not found in .gitignore file."
+
+
+def test_pixi_default_behavior(setup_and_teardown):
+    """Test that pixi is enabled by default and creates appropriate files."""
+    folder_path = setup_and_teardown
+
+    inputs = "\n".join(
+        [
+            "TestProject",
+            "1.0",
+            "John Doe",
+            "XYZ University",
+            "john.doe@example.com",
+            "",  # Empty comment (user just presses enter)
+            "TestProjectFolder",
+        ]
+    )
+
+    result = runner.invoke(app, ["init", "--notebook"], input=inputs)
+    assert result.exit_code == 0
+
+    # Check that pixi.toml was created
+    pixi_toml_path = folder_path / "pixi.toml"
+    assert pixi_toml_path.exists(), "pixi.toml was not created by default."
+
+    # Check that README.md was created with pixi instructions
+    readme_path = folder_path / "README.md"
+    assert readme_path.exists(), "README.md was not created."
+
+    with open(readme_path) as f:
+        readme_content = f.read()
+        assert "## Environment Setup with Pixi" in readme_content
+        assert "pixi install" in readme_content
+        assert "pixi run jupyter" in readme_content
+
+    # Check pixi.toml content
+    with open(pixi_toml_path) as f:
+        pixi_content = f.read()
+        assert "TestProject" in pixi_content
+        assert "John Doe" in pixi_content
+        assert "john.doe@example.com" in pixi_content
+        assert "pyswap = \"*\"" in pixi_content
+
+
+def test_no_pixi_option(setup_and_teardown):
+    """Test that --no-pixi disables pixi and creates basic README."""
+    folder_path = setup_and_teardown
+
+    inputs = "\n".join(
+        [
+            "TestProject",
+            "1.0",
+            "John Doe",
+            "XYZ University",
+            "john.doe@example.com",
+            "",  # Empty comment (user just presses enter)
+            "TestProjectFolder",
+        ]
+    )
+
+    result = runner.invoke(app, ["init", "--notebook", "--no-pixi"], input=inputs)
+    assert result.exit_code == 0
+
+    # Check that pixi.toml was NOT created
+    pixi_toml_path = folder_path / "pixi.toml"
+    assert not pixi_toml_path.exists(), "pixi.toml should not be created with --no-pixi."
+
+    # Check that basic README was created (not README.md)
+    readme_path = folder_path / "README"
+    assert readme_path.exists(), "Basic README was not created."
+
+    readme_md_path = folder_path / "README.md"
+    assert not readme_md_path.exists(), "README.md should not exist with --no-pixi."
+
+    # Check .gitignore doesn't have pixi entries
+    gitignore_path = folder_path / ".gitignore"
+    with open(gitignore_path) as f:
+        gitignore_content = f.read()
+        assert ".pixi/" not in gitignore_content
+        assert "pixi.lock" not in gitignore_content
 
 
 def test_upload_swap_success(tmp_path, monkeypatch):

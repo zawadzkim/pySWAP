@@ -17,7 +17,7 @@ from pyswap.utils.mixins import (
     YAMLValidatorMixin as _YAMLValidatorMixin,
 )
 
-__all__ = ["HeatFlow", "SoluteTransport", "SOILTEXTURES", "INITSOILTEMP"]
+__all__ = ["INITSOILTEMP", "SOILTEXTURES", "HeatFlow", "SoluteTransport"]
 
 
 class HeatFlow(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):

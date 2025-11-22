@@ -35,7 +35,7 @@ from pyswap.utils.mixins import (
     YAMLValidatorMixin as _YAMLValidatorMixin,
 )
 
-__all__ = ["FixedIrrigation", "ScheduledIrrigation", "IRRIGEVENTS"]
+__all__ = ["IRRIGEVENTS", "FixedIrrigation", "ScheduledIrrigation"]
 
 
 class FixedIrrigation(

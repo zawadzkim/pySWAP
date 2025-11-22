@@ -1,4 +1,3 @@
-# ruff: noqa: S603
 # mypy: disable-error-code="override, func-returns-value, call-overload, operator, no-any-return"
 # Override error is related to the validate method, must have somethiong to do
 # with Pydantic.

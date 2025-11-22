@@ -92,19 +92,19 @@ from pyswap.core.serializers import (
 )
 
 __all__ = [
-    "Table",
     "Arrays",
-    "DayMonth",
-    "StringList",
-    "FloatList",
-    "IntList",
     "DateList",
-    "String",
-    "File",
-    "Subsection",
+    "DayMonth",
     "Decimal2f",
     "Decimal3f",
     "Decimal4f",
+    "File",
+    "FloatList",
+    "IntList",
+    "String",
+    "StringList",
+    "Subsection",
+    "Table",
 ]
 
 Table = Annotated[

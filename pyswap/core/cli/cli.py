@@ -1,4 +1,4 @@
-# ruff: noqa: S603, S607
+# ruff: noqa: S607
 # Those rules are not really useful in this package.
 
 """The cli module is supposed to help in structuring the direcotries of created models and enforce
@@ -58,10 +58,57 @@ def make_notebook(models_dir, basic_code_to_write, templates_path, attrs) -> Non
     return None
 
 
-def copy_readme(templates_path, project_root):
-    template_file = templates_path / "README"
-    shutil.copy(template_file, project_root)
+def copy_readme(templates_path, project_root, use_pixi=True, attrs=None):
+    """Copy and customize README template based on whether pixi is used."""
+    if use_pixi:
+        template_file = templates_path / "README_template"
+        pixi_instructions_file = templates_path / "pixi_instructions.md"
+
+        readme_content = template_file.read_text()
+        pixi_instructions = pixi_instructions_file.read_text()
+
+        pixi_structure = "\n├── pixi.toml               # Pixi dependency management"
+
+        readme_content = readme_content.format(
+            project=attrs.get("project", "Project"),
+            pixi_structure=pixi_structure,
+            pixi_instructions=pixi_instructions
+        )
+
+        readme_path = project_root / "README.md"
+        readme_path.write_text(readme_content)
+    else:
+        template_file = templates_path / "README"
+        readme_content = template_file.read_text()
+        
+        readme_content = readme_content.format(
+            project=attrs.get("project", "Project"),
+            pixi_structure="",
+            pixi_instructions=""
+        )
+        
+        readme_path = project_root / "README"
+        readme_path.write_text(readme_content)
+
     return "Successfully created README in the root directory."
+
+
+def create_pixi_toml(templates_path, project_root, attrs):
+    """Create pixi.toml file from template."""
+    template_file = templates_path / "pixi.toml"
+    pixi_content = template_file.read_text()
+
+    # Format the template with user attributes
+    pixi_content = pixi_content.format(
+        author=attrs.get("author", "Unknown"),
+        email=attrs.get("email", "unknown@example.com"),
+        project=attrs.get("project", "pyswap-project")
+    )
+
+    pixi_path = project_root / "pixi.toml"
+    pixi_path.write_text(pixi_content)
+
+    return "Successfully created pixi.toml file."
 
 
 def copy_crop_parameter_yaml(templates_path, models_dir):
@@ -76,7 +123,7 @@ def create_inits(project_root, models_dir, scripts_dir):
     (scripts_dir / "__init__.py").touch()
 
 
-def init_git_repo(project_root):
+def init_git_repo(project_root, use_pixi=False):
     try:
         result = subprocess.run(
             ["git", "init", str(project_root)],
@@ -102,13 +149,22 @@ def init_git_repo(project_root):
             f.write("*.ipynb_checkpoints/\n")
             f.write("data/\n")
 
+            if use_pixi:
+                f.write("\n# Pixi\n")
+                f.write(".pixi/\n")
+                f.write("pixi.lock\n")
+
         print(f"Created .gitignore file at {gitignore_path}")
     except Exception as e:
         print(f"Error initializing Git repository or creating .gitignore: {e}")
 
 
 @app.command()
-def init(script: bool = False, notebook: bool = True):
+def init(
+    script: bool = False,
+    notebook: bool = True,
+    pixi: bool = typer.Option(True, "--pixi/--no-pixi", help="Include Pixi configuration for dependency management (default: True)")
+):
     """Prompt the user to enter their information and create a User class."""
     attrs = {
         "project": typer.prompt("Project name"),
@@ -116,7 +172,7 @@ def init(script: bool = False, notebook: bool = True):
         "author": typer.prompt("Author first/last name"),
         "institution": typer.prompt("Your last institution"),
         "email": typer.prompt("Your email address"),
-        "comment": typer.prompt("Any comments?", default=None),
+        "comment": typer.prompt("Any comments?", default=""),
     }
 
     folder_name = typer.prompt("Choose a folder name", default=attrs.get("project"))
@@ -128,18 +184,23 @@ def init(script: bool = False, notebook: bool = True):
     basic_code_to_write_path = templates_path / "script.txt"
     basic_code_to_write = dict_to_custom_string(attrs)
 
-    folders_to_create = ["models", "scripts", "data"]
+    folders_to_create = ["models", "scripts", "data", "tests"]
     folders_to_create_paths = [project_root / folder for folder in folders_to_create]
 
     [folder.mkdir(parents=True, exist_ok=True) for folder in folders_to_create_paths]
 
     # Dealing with files.
-    copy_readme(templates_path, project_root)
+    copy_readme(templates_path, project_root, use_pixi=pixi, attrs=attrs)
     create_inits(
         project_root=project_root,
         models_dir=folders_to_create_paths[0],
         scripts_dir=folders_to_create_paths[1],
     )
+
+    # Create pixi.toml if requested
+    if pixi:
+        create_pixi_toml(templates_path, project_root, attrs)
+        print("Created pixi.toml for dependency management.")
 
     if script:
         make_script(
@@ -151,7 +212,7 @@ def init(script: bool = False, notebook: bool = True):
             folders_to_create_paths[0], basic_code_to_write, templates_path, attrs
         )
 
-    init_git_repo(project_root)
+    init_git_repo(project_root, use_pixi=pixi)
 
 
 @app.command()
