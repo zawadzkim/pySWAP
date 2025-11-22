@@ -5,11 +5,54 @@ description = "Python wrapper for SWAP hydrological model."
 authors = [{name = "Mateusz", email = "zawadzkimat@outlook.com"}]
 license = "MIT"
 readme = "README.md"
-dynamic = ["dependencies"]
+requires-python = ">=3.11"
 
-[tool.setuptools.packages.find]
-include = ["pyswap*"]
-exclude = ["tests*", "docs*", "site*", "paper*", "node_modules*"]
+dependencies = [
+    "pandas>=2.3.3,<3",
+    "numpy>=2.3.5,<3", 
+    "chardet>=5.2.0,<6",
+    "h5py>=3.15.1,<4",
+    "shapely>=2.1.2,<3",
+    "pyproj>=3.7.2,<4",
+    "pydantic>=2.12.4,<3",
+    "pandera>=0.26.1,<0.27",
+    "matplotlib>=3.8.0,<4",
+    "typer>=0.20.0,<0.21",
+    "seaborn>=0.13.2,<0.14",
+    "pyyaml>=6.0.3,<7",
+    "knmi-py>=0.2.0,<0.3",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.2.2",
+    "pytest-cov>=5.0.0",
+    "jupyter",
+]
+dev = [
+    "pytest>=8.2.2",
+    "pytest-cov>=5.0.0",
+    "mypy>=1.11.0",
+    "nbstripout>=0.7.1",
+    "pre-commit>=3.8.0",
+    "ruff>=0.7.4",
+    "deptry>=0.16.2",
+    "types-pyyaml>=6.0.12",
+    "pandas-stubs>=2.2.3",
+    "h5py-stubs>=0.1.1",
+    "build",
+    "twine",
+    "jupyter",
+]
+docs = [
+    "mkdocs-material>=9.7.0",
+    "mkdocs-jupyter",
+    "mkdocs-include-markdown-plugin>=6.2.0",
+    "mkdocs-autorefs>=1.0.1",
+    "mkdocstrings-python>=1.10.3",
+    "mkdocs-awesome-pages-plugin>=2.10.1",
+    "mkdocs-exclude-search>=0.6.6",
+]
 
 [project.urls]
 Repository = "https://github.com/zawadzkim/pyswap"
@@ -21,3 +64,158 @@ pyswap = "pyswap.core.cli.cli:app"
 [build-system]
 requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
+
+# =============================================================================
+# Pixi Configuration
+# =============================================================================
+
+[tool.pixi.workspace]
+channels = ["conda-forge", "pyviz"]
+platforms = ["linux-64", "win-64"]
+
+[tool.pixi.pypi-dependencies]
+pyswap = { path = ".", editable = true }
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "test" }
+dev = { features = ["dev"], solve-group = "default" }
+docs = { features = ["docs"], solve-group = "default" }
+full = { features = ["dev", "docs"], solve-group = "default" }
+
+# =============================================================================
+# Pixi Tasks
+# =============================================================================
+
+[tool.pixi.tasks]
+
+# === Installation tasks ===
+install-test = "pixi install -e test"
+install-dev = "pixi install -e dev"
+install-docs = "pixi install -e docs"
+install-full = "pixi install -e full"
+
+# === Testing tasks ===
+test = "pytest"
+test-cov = "pytest --cov=pyswap --cov-report=xml --cov-report=term"
+test-verbose = "pytest -v"
+
+# === Code quality tasks ===
+lint = "ruff check pyswap tests"
+lint-fix = "ruff check --fix pyswap tests"
+format = "ruff format pyswap tests"
+format-check = "ruff format --check pyswap tests"
+mypy = "mypy pyswap"
+check-deps = "deptry pyswap"
+
+# === Pre-commit tasks ===
+pre-commit-install = "pre-commit install"
+pre-commit-run = "pre-commit run --all-files"
+
+# === Documentation tasks ===
+docs-serve = "mkdocs serve"
+docs-build = "mkdocs build"
+docs-deploy = "mkdocs gh-deploy"
+
+# === Notebook tasks ===
+jupyter = "jupyter lab"
+jupyter-notebook = "jupyter notebook"
+nbstripout-install = "nbstripout --install"
+
+# === Clean tasks ===
+clean-cache = "rm -rf .pytest_cache .coverage htmlcov .mypy_cache .ruff_cache"
+clean-build = "rm -rf build dist *.egg-info"
+clean-all = { depends-on = ["clean-cache", "clean-build"] }
+
+# === Combined quality checks ===
+check-all = { depends-on = ["lint", "mypy", "test-cov", "check-deps"] }
+fix-all = { depends-on = ["format", "lint-fix"] }
+
+# === Development workflow ===
+dev-setup = { depends-on = ["install-dev", "pre-commit-install", "nbstripout-install"] }
+
+# === Package installation ===
+install-package = "pip install -e ."
+
+# =============================================================================
+# Tool Configuration
+# =============================================================================
+
+[tool.setuptools.packages.find]
+include = ["pyswap*"]
+exclude = ["tests*", "docs*", "site*", "paper*", "node_modules*"]
+
+[tool.setuptools.package-data]
+pyswap = [
+    "core/validation.yaml",
+    "core/cli/templates/*",
+    "libs/**/*",
+    "testcase/data/**/*"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+files = ["pyswap"]
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+ignore_missing_imports = true
+disable_error_code = ["union-attr", "no-untyped-def", "return-value", "arg-type", "assignment", "call-arg"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+fix = true
+exclude = ["*.csv", "*.txt", "*.h5", "*.swp", "*.bbc", "*.crp", "*.dra", "*.irg"]
+
+[tool.ruff.lint]
+select = [
+    "YTT", # flake8-2020
+    "S",   # flake8-bandit
+    "B",   # flake8-bugbear
+    "A",   # flake8-builtins
+    "C4",  # flake8-comprehensions
+    "T10", # flake8-debugger
+    "SIM", # flake8-simplify
+    "I",   # isort
+    "C90", # mccabe
+    "E", "W", # pycodestyle
+    "F",   # pyflakes
+    "PGH", # pygrep-hooks
+    "UP",  # pyupgrade
+    "RUF", # ruff
+    "TRY", # tryceratops
+]
+ignore = [
+    "E501", # LineTooLong
+    "E731", # DoNotAssignLambda
+    "C901", # Complex function structure
+    "S103", # Bad file permissions
+    "S310", # Suspicious URL open usage
+    "S603", # Subprocess without shell equals true
+    "TRY301", # Raise within try
+]
+
+[tool.ruff.lint.isort]
+force-wrap-aliases = true
+combine-as-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[tool.ruff.format]
+quote-style = "double"
+preview = true
+
+[tool.coverage.report]
+skip_empty = true
+
+[tool.coverage.run]
+branch = true
+source = ["pyswap"]
