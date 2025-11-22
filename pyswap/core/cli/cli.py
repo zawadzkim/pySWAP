@@ -80,13 +80,13 @@ def copy_readme(templates_path, project_root, use_pixi=True, attrs=None):
     else:
         template_file = templates_path / "README"
         readme_content = template_file.read_text()
-        
+
         readme_content = readme_content.format(
             project=attrs.get("project", "Project"),
             pixi_structure="",
             pixi_instructions=""
         )
-        
+
         readme_path = project_root / "README"
         readme_path.write_text(readme_content)
 

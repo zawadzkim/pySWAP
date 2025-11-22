@@ -115,7 +115,7 @@ def show_info() -> dict:
         typer.echo("To install SWAP:")
         typer.echo("  - Download: pyswap get-swap")
         typer.echo("  - Upload local file: pyswap upload-swap <path-to-executable>")
-    
+
     typer.echo("=" * 40)
 
     return info
@@ -254,17 +254,17 @@ def check_swap(exe_path: str | None = None, verbose: bool = True) -> bool:
     # Try to run SWAP by executing a simple testcase
     try:
         from pyswap import testcase
-        
+
         if verbose:
             show_info()
             typer.echo(f"Running testcase to verify SWAP executable: {exe_path}")
             typer.echo("Loading hupselbrook testcase...")
-        
+
         # Get the testcase and run it
         hupselbrook = testcase.get("hupselbrook")
         result = hupselbrook.run()
         print(result)
-        
+
         if verbose:
             typer.echo("✓ SWAP testcase completed successfully!")
             typer.echo(f"✓ SWAP executable working: {exe_path}")
@@ -275,15 +275,14 @@ def check_swap(exe_path: str | None = None, verbose: bool = True) -> bool:
                 avg_rain = yearly_data['RAIN'].mean()
                 avg_drainage = yearly_data['DRAINAGE'].mean()
                 typer.echo(f"Testcase summary: {total_years} years, avg rainfall: {avg_rain:.1f}mm, avg drainage: {avg_drainage:.1f}mm")
-        return True
 
     except Exception as e:
         if verbose:
             typer.echo(f"✗ Error running SWAP testcase: {e}")
             typer.echo("This could indicate a problem with the SWAP executable or installation")
         return False
-
-
+    else:
+        return True
 def upload_swap(
     file_path: str,
     version: str,
