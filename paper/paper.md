@@ -1,19 +1,18 @@
 ---
-
 title: "Bracing the SWAP hydrological model for the future with the pySWAP Python package."
-
 tags:
-  - Python
-  - hydrology
-  - 1D model
-  - vadose zone
-  - WOFOST
-  - SWAP
+  - Python
+  - hydrology
+  - 1D model
+  - vadose zone
+  - WOFOST
+  - SWAP
   - crop modelling
 authors:
-  - name: Mateusz Zawadzki [corresponding author]
-    orcid: 0000-0001-9524-4208
-    affiliation: 1
+  - name: Mateusz Zawadzki
+    orcid: 0000-0001-9524-4208
+    corresponding: true
+    affiliation: 1
   - name: Mark van de Brink
     orcid: 0009-0007-7642-0852
     affiliation: 2
@@ -25,7 +24,7 @@ affiliations:
     index: 1
   - name: Wageningen University and Research, the Netherlands
     index: 2
-date: November 2025
+date: "28 November 2025"
 bibliography: paper.bib
 
 ---
@@ -59,7 +58,7 @@ Opening this new interaction pathway could expand the user community and improve
 
 # Package architecture and functionality
 
-pySWAP's object-oriented design is inspired by flopy, a Python package for handling MODFLOW models [@bakker_flopy_2025], with functionality split into modules for intuitive access.
+pySWAP's object-oriented design is inspired by flopy, a Python package for handling MODFLOW models [@bakker_flopy_2025; @hughes_flopy_2024], with functionality split into modules for intuitive access.
 Users primarily interact with the `components` and `model` modules.
 Each component (e.g., `meteorology`, `crop`) groups together co-dependent attributes, similar to sections of the original input files.
 After definition, components are grouped into a `Model`.
