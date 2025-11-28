@@ -13,12 +13,12 @@ authors:
     orcid: 0000-0001-9524-4208
     corresponding: true
     affiliation: 1
-  - name: Mark van de Brink
-    orcid: 0009-0007-7642-0852
-    affiliation: 2
-  - name: Marijke Huysmans
-    orcid: 0000-0002-8499-8933
-    affiliation: 1
+  - name: Mark van de Brink
+    orcid: 0009-0007-7642-0852
+    affiliation: 2
+  - name: Marijke Huysmans
+    orcid: 0000-0002-8499-8933
+    affiliation: 1
 affiliations:
   - name: Vrije Universiteit Brussel, Belgium
     index: 1
