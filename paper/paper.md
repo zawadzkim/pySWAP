@@ -142,6 +142,7 @@ The package implements robust continuous integration and deployment. Package and
 There is no such thing as "finished software" and feature creep is extremely hard to shake off. While `pyswap` is production-ready, we acknowledge open issues (tracked on GitHub) and continue active development. However, at this stage we wish to see what users consider as priorities. Beyond the software itself, we aim to provide a platform for community engagement to accelerate development.
 
 Key future features we are currently developing as plugins around `pyswap`:
+
 - spatial context support (netCDF integration),
 - sensitivity analysis and parameter estimation integration,
 - improved multicore processing and plotting,
