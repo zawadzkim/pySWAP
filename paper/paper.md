@@ -20,11 +20,11 @@ authors:
     orcid: 0000-0002-8499-8933
     affiliation: 1
 affiliations:
-  - name: Vrije Universiteit Brussel, Belgium
-    index: 1
-  - name: Wageningen University and Research, the Netherlands
-    index: 2
-date: "28 November 2025"
+ - name: Vrije Universiteit Brussel, Belgium
+   index: 1
+ - name: Wageningen University and Research, the Netherlands
+   index: 2
+date: 8 December 2025
 bibliography: paper.bib
 
 ---
