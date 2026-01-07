@@ -58,3 +58,4 @@ node_modules/
 coverage.xml
 htmlcov/
 coverage_html_report/
+/pyswap/libs/swap
