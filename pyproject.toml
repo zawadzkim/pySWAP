@@ -1,6 +1,6 @@
 [project]
 name = "pyswap"
-version = "0.3.3"
+version = "0.3.4"
 description = "Python wrapper for SWAP hydrological model."
 authors = [{name = "Mateusz", email = "zawadzkimat@outlook.com"}]
 license = "MIT"
@@ -15,7 +15,7 @@ dependencies = [
     "shapely>=2.1.2,<3",
     "pyproj>=3.7.2,<4",
     "pydantic>=2.12.4,<3",
-    "pandera>=0.26.1,<0.27",
+    "pandera[strategies]>=0.28,<0.29",
     "matplotlib>=3.8.0,<4",
     "typer>=0.20.0,<0.21",
     "seaborn>=0.13.2,<0.14",
