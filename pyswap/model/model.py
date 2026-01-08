@@ -239,6 +239,17 @@ class ModelRunner:
                 if returncode != 0:
                     error_parts.append(f"\nReturn code: {returncode}")
 
+                    # Check for specific Windows error codes
+                    if returncode == 3221225781 or returncode == -1073741515:
+                        # 0xC0000135 = STATUS_DLL_NOT_FOUND
+                        error_parts.append(
+                            "\nThis error indicates MISSING DLL FILES (Windows error 0xC0000135)."
+                            "\nThe SWAP executable cannot find required runtime libraries."
+                            "\nRun 'pyswap check-swap' to diagnose which DLLs are missing."
+                            "\n\nCommon solution: Install Microsoft Visual C++ Redistributable:"
+                            "\n  https://aka.ms/vs/17/release/vc_redist.x64.exe"
+                        )
+
                 if stderr:
                     error_parts.append(f"\nStderr output:\n{stderr}")
 
