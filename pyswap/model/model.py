@@ -149,7 +149,7 @@ class ModelRunner:
         self.model = model
 
     @staticmethod
-    def run_swap(tempdir: Path) -> str:
+    def run_swap(tempdir: Path) -> tuple[str, str, int]:
         """Run the SWAP executable.
 
         Run the exacutable in the tempdirectory and pass the newline to the
@@ -161,19 +161,42 @@ class ModelRunner:
         Parameters:
             tempdir (Path): The temporary directory where the executable
                 is stored.
+        
+        Returns:
+            tuple[str, str, int]: stdout, stderr, and return code
+        
+        Raises:
+            RuntimeError: If the executable cannot be run (e.g., wrong architecture,
+                not executable, corrupt file).
         """
         swap_path = get_swap(verbose=False, auto_install=True)
 
-        p = subprocess.Popen(
-            swap_path,
-            stdout=subprocess.PIPE,
-            stdin=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            cwd=tempdir,
-        )
-        stdout = p.communicate(input=b"\n")[0]
-
-        return stdout.decode()
+        try:
+            p = subprocess.Popen(
+                swap_path,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=tempdir,
+            )
+            stdout, stderr = p.communicate(input=b"\n")
+            return stdout.decode(), stderr.decode(), p.returncode
+        except OSError as e:
+            # This catches issues like: permission denied, exec format error (wrong architecture),
+            # file not found, etc.
+            msg = (
+                f"Failed to execute SWAP binary at {swap_path}.\n"
+                f"Error: {e}\n"
+                f"This may indicate:\n"
+                f"  - Wrong executable architecture (e.g., Windows binary on Linux)\n"
+                f"  - Corrupted executable file\n"
+                f"  - Missing executable permissions\n"
+                f"  - Incompatible SWAP version"
+            )
+            raise RuntimeError(msg) from e
+        except Exception as e:
+            msg = f"Unexpected error while running SWAP executable: {e}"
+            raise RuntimeError(msg) from e
 
     def raise_swap_warning(self, warnings: list):
         """Log the warnings form the model run.
@@ -206,14 +229,41 @@ class ModelRunner:
 
             builder.write_inputs()
 
-            stdout = self.run_swap(tempdir)
+            stdout, stderr, returncode = self.run_swap(tempdir)
             reader = ResultReader(self.model, tempdir)
 
-            if "normal completion" not in stdout:
-                msg = f"Model run failed. \n {stdout}"
+            if "normal completion" not in stdout.lower():
+                # Build a comprehensive error message
+                error_parts = ["SWAP model run failed."]
+                
+                if returncode != 0:
+                    error_parts.append(f"\nReturn code: {returncode}")
+                
+                if stderr:
+                    error_parts.append(f"\nStderr output:\n{stderr}")
+                
+                if stdout:
+                    error_parts.append(f"\nStdout output:\n{stdout}")
+                
+                # Try to read error file
+                err_content = reader.read_error_file()
+                if err_content:
+                    error_parts.append(f"\nError file (.err):\n{err_content}")
+                
+                # Try to read log file
+                try:
+                    log = reader.read_swap_log()
+                    error_parts.append(f"\nLog file (.log):\n{log}")
+                except FileNotFoundError:
+                    error_parts.append("\nLog file (.log): Not found - executable may have crashed before writing log file")
+                
+                # Try to read warning file
+                wrn_content = reader.read_warning_file()
+                if wrn_content:
+                    error_parts.append(f"\nWarning file (.wrn):\n{wrn_content}")
+                
+                msg = "\n".join(error_parts)
                 logger.error(msg)
-                log = reader.read_swap_log()
-                logger.error(log)
                 raise RuntimeError(msg)
 
             logger.info(stdout)
@@ -322,6 +372,53 @@ class ResultReader:
             log_content = file.read()
 
         return log_content
+    
+    def read_error_file(self) -> str | None:
+        """Read the SWAP error file (.err).
+        
+        SWAP writes error messages to a .err file when it encounters
+        fatal errors.
+        
+        Returns:
+            str | None: The content of the error file, or None if not found.
+        """
+        err_files = list(Path(self.tempdir).glob("*.err"))
+        
+        if len(err_files) == 0:
+            return None
+        
+        err_file = err_files[0]
+        
+        try:
+            with open(err_file) as file:
+                content = file.read()
+            # Only return if file has content
+            return content.strip() if content.strip() else None
+        except Exception:
+            return None
+    
+    def read_warning_file(self) -> str | None:
+        """Read the SWAP warning file (.wrn).
+        
+        SWAP writes warning messages to a .wrn file during execution.
+        
+        Returns:
+            str | None: The content of the warning file, or None if not found.
+        """
+        wrn_files = list(Path(self.tempdir).glob("*.wrn"))
+        
+        if len(wrn_files) == 0:
+            return None
+        
+        wrn_file = wrn_files[0]
+        
+        try:
+            with open(wrn_file) as file:
+                content = file.read()
+            # Only return if file has content
+            return content.strip() if content.strip() else None
+        except Exception:
+            return None
 
     @staticmethod
     def identify_warnings(log: str) -> list:
