@@ -161,10 +161,10 @@ class ModelRunner:
         Parameters:
             tempdir (Path): The temporary directory where the executable
                 is stored.
-        
+
         Returns:
             tuple[str, str, int]: stdout, stderr, and return code
-        
+
         Raises:
             RuntimeError: If the executable cannot be run (e.g., wrong architecture,
                 not executable, corrupt file).
@@ -235,33 +235,33 @@ class ModelRunner:
             if "normal completion" not in stdout.lower():
                 # Build a comprehensive error message
                 error_parts = ["SWAP model run failed."]
-                
+
                 if returncode != 0:
                     error_parts.append(f"\nReturn code: {returncode}")
-                
+
                 if stderr:
                     error_parts.append(f"\nStderr output:\n{stderr}")
-                
+
                 if stdout:
                     error_parts.append(f"\nStdout output:\n{stdout}")
-                
+
                 # Try to read error file
                 err_content = reader.read_error_file()
                 if err_content:
                     error_parts.append(f"\nError file (.err):\n{err_content}")
-                
+
                 # Try to read log file
                 try:
                     log = reader.read_swap_log()
                     error_parts.append(f"\nLog file (.log):\n{log}")
                 except FileNotFoundError:
                     error_parts.append("\nLog file (.log): Not found - executable may have crashed before writing log file")
-                
+
                 # Try to read warning file
                 wrn_content = reader.read_warning_file()
                 if wrn_content:
                     error_parts.append(f"\nWarning file (.wrn):\n{wrn_content}")
-                
+
                 msg = "\n".join(error_parts)
                 logger.error(msg)
                 raise RuntimeError(msg)
@@ -372,23 +372,23 @@ class ResultReader:
             log_content = file.read()
 
         return log_content
-    
+
     def read_error_file(self) -> str | None:
         """Read the SWAP error file (.err).
-        
+
         SWAP writes error messages to a .err file when it encounters
         fatal errors.
-        
+
         Returns:
             str | None: The content of the error file, or None if not found.
         """
         err_files = list(Path(self.tempdir).glob("*.err"))
-        
+
         if len(err_files) == 0:
             return None
-        
+
         err_file = err_files[0]
-        
+
         try:
             with open(err_file) as file:
                 content = file.read()
@@ -396,22 +396,22 @@ class ResultReader:
             return content.strip() if content.strip() else None
         except Exception:
             return None
-    
+
     def read_warning_file(self) -> str | None:
         """Read the SWAP warning file (.wrn).
-        
+
         SWAP writes warning messages to a .wrn file during execution.
-        
+
         Returns:
             str | None: The content of the warning file, or None if not found.
         """
         wrn_files = list(Path(self.tempdir).glob("*.wrn"))
-        
+
         if len(wrn_files) == 0:
             return None
-        
+
         wrn_file = wrn_files[0]
-        
+
         try:
             with open(wrn_file) as file:
                 content = file.read()
