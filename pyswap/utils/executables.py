@@ -6,6 +6,7 @@ similar to how flopy handles MODFLOW executables.
 """
 
 import os
+import platform
 import shutil
 import subprocess
 import urllib.request
@@ -16,6 +17,53 @@ import yaml
 
 import pyswap
 from pyswap.core.defaults import IS_WINDOWS
+
+
+def check_missing_dlls_windows(exe_path: str) -> list[str]:
+    """Check for missing DLL dependencies on Windows.
+
+    Uses dumpbin (if available) to list dependencies, then checks which are missing.
+
+    Args:
+        exe_path: Path to the executable to check.
+
+    Returns:
+        List of missing DLL names, or empty list if all found or cannot check.
+    """
+    if platform.system() != "Windows":
+        return []
+
+    missing = []
+
+    # Try to use dumpbin (comes with Visual Studio)
+    dumpbin = shutil.which("dumpbin")
+    if dumpbin:
+        try:
+            result = subprocess.run(
+                [dumpbin, "/dependents", exe_path],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            # Parse dumpbin output to find DLL names
+            in_section = False
+            for line in result.stdout.splitlines():
+                if "Image has the following dependencies:" in line:
+                    in_section = True
+                    continue
+                if in_section:
+                    line = line.strip()
+                    if line and line.endswith(".dll"):
+                        # Check if DLL exists in PATH
+                        if not shutil.which(line):
+                            missing.append(line)
+                    elif line == "Summary":
+                        break
+        except Exception:
+            print("Warning: Could not run dumpbin to check DLL dependencies.")
+            pass
+
+    return missing
 
 
 def get_swap_executable_path() -> Path:
@@ -250,6 +298,18 @@ def check_swap(exe_path: str | None = None, verbose: bool = True) -> bool:
             typer.echo(f"SWAP executable not found at: {exe_path}")
             typer.echo("Run get_swap() to download and install SWAP")
         return False
+
+    # Check for missing DLLs on Windows before running testcase
+    if IS_WINDOWS and verbose:
+        missing_dlls = check_missing_dlls_windows(exe_path)
+        if missing_dlls:
+            typer.echo(f"⚠ Warning: Missing DLL dependencies detected: {', '.join(missing_dlls)}")
+            typer.echo("This will likely cause the executable to fail.")
+            typer.echo("\nRecommended solutions:")
+            typer.echo("  1. Install Microsoft Visual C++ Redistributable:")
+            typer.echo("     https://aka.ms/vs/17/release/vc_redist.x64.exe")
+            typer.echo("  2. Or try an older SWAP version: pyswap get-swap --version 4.1.0")
+            typer.echo("")
 
     # Try to run SWAP by executing a simple testcase
     try:
