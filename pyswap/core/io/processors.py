@@ -119,7 +119,11 @@ class TableProcessor:
                     if schema_obj is not None:
                         return {schema["name"].lower(): schema_obj}
 
-            logger.warning(f"No matching table schema found for columns: {columns}")
+            available_schemas = [s['name'] for s in self.schemas]
+            logger.warning(
+                f"No matching table schema found for columns: {columns}. "
+                f"Available table schemas: {', '.join(available_schemas[:10])}..."
+            )
             return None
 
         else:
@@ -132,6 +136,20 @@ class TableProcessor:
 
                 if schema["name"].lower() == array_name.lower():
                     logger.debug(f"Matched array schema: {schema['name']}")
+
+                    # For schemas with no defined columns (like DZNEW), create
+                    # DataFrame with auto-generated integer column names
+                    # The validation is not really necessary for now, but we keep it
+                    # for consistency and future-proofing.
+                    if not schema["cols"]:
+                        df = pd.DataFrame(data)
+                        # Validate using the schema (will just pass through for flexible schemas)
+                        try:
+                            schema_obj = schema["class"].validate(df)
+                        except Exception:
+                            logger.exception(f"Validation error for {schema['name']}")
+                            return None
+                        return {schema["name"].lower(): schema_obj}
 
                     # Create a copy of columns to avoid mutating cached schema
                     filtered_cols = tuple(
@@ -146,5 +164,9 @@ class TableProcessor:
                     if schema_obj is not None:
                         return {schema["name"].lower(): schema_obj}
 
-            logger.warning(f"No matching array schema found for: {array_name}")
+            available_schemas = [s['name'] for s in self.schemas]
+            logger.warning(
+                f"No matching array schema found for: {array_name}. "
+                f"Available array schemas: {', '.join(available_schemas[:10])}..."
+            )
             return None

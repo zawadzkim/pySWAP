@@ -1,6 +1,6 @@
 [project]
 name = "pyswap"
-version = "0.3.7"
+version = "0.3.8"
 description = "Python wrapper for SWAP hydrological model."
 authors = [{name = "Mateusz", email = "zawadzkimat@outlook.com"}]
 license = "MIT"
@@ -219,3 +219,6 @@ skip_empty = true
 [tool.coverage.run]
 branch = true
 source = ["pyswap"]
+
+[tool.deptry]
+ignore = ["DEP002", "DEP003"]
