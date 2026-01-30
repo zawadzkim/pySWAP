@@ -200,7 +200,7 @@ def _download_swap_executable(
     try:
         # Download with progress
         if verbose:
-            with typer.progressbar(length=100, label="Downloading") as progress:  # type: ignore[var-annotated]
+            with typer.progressbar(length=100, label="Downloading") as progress:
 
                 def progress_hook(
                     block_num: int, block_size: int, total_size: int

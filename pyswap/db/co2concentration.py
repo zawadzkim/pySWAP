@@ -1,4 +1,6 @@
-from pandas import DataFrame, to_datetime
+from typing import Any
+
+from pandas import to_datetime
 from pydantic import BaseModel as _BaseModel
 
 from pyswap.core.io.io_csv import load_csv
@@ -10,7 +12,7 @@ class CO2concentration(_BaseModel, _FileMixin):
     path: str = co2concentration
     _extension: str = "co2"
 
-    def get_filtered_co2file(self, period) -> DataFrame:
+    def get_filtered_co2file(self, period) -> Any:
         """Get CO2 concentration data for a given period.
 
         Parameters

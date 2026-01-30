@@ -19,6 +19,7 @@ __all__ = [
     "DMMOWDELAY",
     "DMMOWTB",
     "DTSMTB",
+    "DZNEW",
     "FLTB",
     "FOTB",
     "FRTB",
@@ -1073,24 +1074,49 @@ class QDRNTB(BaseTableModel):
 
 # %% ++++++++++++++++++++++++++++ GENERAL SETTINGS TABLES ++++++++++++++++++++++++++++
 
-general_settings_tables = ["OUTDATIN", "OUTDAT"]
+general_settings_tables = ["OUTDATIN", "OUTDATINT", "OUTDAT"]
 
 
 class OUTDATIN(BaseTableModel):
     """OUTDATIN table
 
     Attributes:
-        OUTDAT: Series[str]: Name of the output file.
+        OUTDATIN: Series[pa.DateTime]: Output dates for specific intervals.
     """
 
     OUTDATIN: Series[pa.DateTime]
+
+
+class OUTDATINT(BaseTableModel):
+    """OUTDATINT table
+
+    Attributes:
+        OUTDATINT: Series[pa.DateTime]: Output dates for interval-based output.
+    """
+
+    OUTDATINT: Series[pa.DateTime]
 
 
 class OUTDAT(BaseTableModel):
     """OUTDAT table
 
     Attributes:
-        OUTDAT: Series[str]: Name of the output file.
+        OUTDAT: Series[pa.DateTime]: Output dates for general output.
     """
 
     OUTDAT: Series[pa.DateTime]
+
+
+class DZNEW(BaseTableModel):
+    """DZNEW array - new thickness of compartments
+
+    This is a flexible array that accepts numeric values without predefined column names.
+    Column names will be auto-generated as integers (0, 1, 2, ...).
+    """
+
+    class Config:
+        """Allow any columns in the DataFrame."""
+
+        # This schema accepts DataFrames with any numeric columns
+        # The column names are not validated
+        pass

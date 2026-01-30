@@ -127,7 +127,10 @@ def parse_ascii_file(file_content, grass=False) -> dict[str, dict]:
             array = parse_table(
                 lines=lines, start_index=i + 1, key=key, param_type="array"
             )
-            arrays.update(array[0])
+            if array[0] is not None:
+                arrays.update(array[0])
+            else:
+                logger.debug(f"Skipping unrecognized array: {key} ({array[1]} rows)")
             i += array[1] + 1  # Skip the tag data
 
         elif is_table(line):
@@ -135,7 +138,10 @@ def parse_ascii_file(file_content, grass=False) -> dict[str, dict]:
             table = parse_table(
                 lines=lines, start_index=i + 1, key=line, param_type="table"
             )
-            tables.update(table[0])
+            if table[0] is not None:
+                tables.update(table[0])
+            else:
+                logger.debug(f"Skipping unrecognized table: {line} ({table[1]} rows)")
             i += table[1] + 1  # Skip the table rows
         i += 1  # Move to the next line
 
