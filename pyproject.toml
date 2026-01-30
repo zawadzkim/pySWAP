@@ -8,18 +8,18 @@ readme = "README.md"
 requires-python = ">=3.11"
 
 dependencies = [
-    "pandas>=2.3.3,<3",
-    "numpy>=2.3.5,<3", 
-    "chardet>=5.2.0,<6",
-    "h5py>=3.15.1,<4",
-    "shapely>=2.1.2,<3",
-    "pyproj>=3.7.2,<4",
-    "pydantic>=2.12.4,<3",
-    "pandera[strategies]>=0.28,<0.29",
-    "matplotlib>=3.8.0,<4",
-    "typer>=0.20.0,<0.21",
-    "seaborn>=0.13.2,<0.14",
-    "pyyaml>=6.0.3,<7",
+    "pandas>=2.0,<3",
+    "numpy>=1.26,<3", 
+    "chardet>=5.0,<6",
+    "h5py>=3.10,<4",
+    "shapely>=2.0,<3",
+    "pyproj>=3.6,<4",
+    "pydantic>=2.0,<3",
+    "pandera[strategies]>=0.20,<1",
+    "matplotlib>=3.8,<4",
+    "typer>=0.9,<1",
+    "seaborn>=0.13,<1",
+    "pyyaml>=6.0,<7",
     "knmi-py>=0.2.0,<0.3",
 ]
 

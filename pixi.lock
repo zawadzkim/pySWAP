@@ -4461,20 +4461,20 @@ packages:
 - pypi: ./
   name: pyswap
   version: 0.3.8
-  sha256: 4bc0de4e8d5e0b9603a6ea4ae0a2ac02262311d80472b206e7b51709b09e8432
+  sha256: 3faffd88ce4844991bc9640c4f10cbdc2426ea8daff30ecedd7f582615e5e895
   requires_dist:
-  - pandas>=2.3.3,<3
-  - numpy>=2.3.5,<3
-  - chardet>=5.2.0,<6
-  - h5py>=3.15.1,<4
-  - shapely>=2.1.2,<3
-  - pyproj>=3.7.2,<4
-  - pydantic>=2.12.4,<3
-  - pandera[strategies]>=0.28,<0.29
-  - matplotlib>=3.8.0,<4
-  - typer>=0.20.0,<0.21
-  - seaborn>=0.13.2,<0.14
-  - pyyaml>=6.0.3,<7
+  - pandas>=2.0,<3
+  - numpy>=1.26,<3
+  - chardet>=5.0,<6
+  - h5py>=3.10,<4
+  - shapely>=2.0,<3
+  - pyproj>=3.6,<4
+  - pydantic>=2.0,<3
+  - pandera[strategies]>=0.20,<1
+  - matplotlib>=3.8,<4
+  - typer>=0.9,<1
+  - seaborn>=0.13,<1
+  - pyyaml>=6.0,<7
   - knmi-py>=0.2.0,<0.3
   - pytest>=8.2.2 ; extra == 'test'
   - pytest-cov>=5.0.0 ; extra == 'test'
