@@ -4460,8 +4460,8 @@ packages:
   requires_python: '>=3.7'
 - pypi: ./
   name: pyswap
-  version: 0.3.8
-  sha256: 3faffd88ce4844991bc9640c4f10cbdc2426ea8daff30ecedd7f582615e5e895
+  version: 0.3.9
+  sha256: 9d6c83810523ce83c3beb895ca2dba54de94bc485bb0e89e3c2b0bf7f4cd3cef
   requires_dist:
   - pandas>=2.0,<3
   - numpy>=1.26,<3
