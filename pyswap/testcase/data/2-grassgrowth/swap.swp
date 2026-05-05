@@ -1,0 +1,452 @@
+**********************************************************************************
+* Filename: swap.swp
+* Contents: SWAP 4 - Main input data
+**********************************************************************************
+* Comment area:
+* Testbank of SWAP: build with template of swp-file
+*
+**********************************************************************************
+
+*   The main input file .swp contains the following sections:
+*           - General section
+*           - Meteorology section
+*           - Crop section
+*           - Soil water section
+*           - Lateral drainage section
+*           - Bottom boundary section
+*           - Heat flow section
+*           - Solute transport section
+
+**********************************************************************************
+
+*** GENERAL SECTION ***
+
+**********************************************************************************
+* Part 1: Environment
+
+  PROJECT = 'ruurlo'         ! Project description [A80]
+  PATHWORK = './'            ! Path to work folder [A80]
+  PATHATM = './'             ! Path to folder with weather files [A80]
+  PATHCROP = './'            ! Path to folder with crop files [A80]
+  PATHDRAIN = './'           ! Path to folder with drainage files [A80]
+
+* Switch, display progression of simulation run to screen:
+  SWSCRE = 0                 ! 0 = no display to screen
+                             ! 1 = display water balance components
+                             ! 2 = display daynumber
+
+* Switch for printing errors to screen:
+  SWERROR = 0                ! 0 = no display to screen
+                             ! 1 = display error to screen
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 2: Simulation period
+
+  TSTART = 1980-01-01        ! Start date of simulation run [YYYY-MM-DD]
+  TEND = 1984-12-31            ! End date of simulation run [YYYY-MM-DD]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 3: Output dates
+
+* Number of output times during a day
+  NPRINTDAY = 1              ! Number of output times during a day [1..1440, I]
+
+* Specify dates for output of state variables and fluxes
+  SWMONTH = 0                ! Switch, output each month [Y=1, N=0]
+
+* If SWMONTH = 0, choose output interval and/or specific dates
+  PERIOD = 1                 ! Fixed output interval, ignore = 0 [0..366, I]
+  SWRES = 0                  ! Switch, reset output interval counter each year [Y=1, N=0]
+  SWODAT = 0                 ! Switch, extra output dates are given in table below [Y=1, N=0]
+
+* Output times for overall water and solute balances in *.BAL and *.BLC file: choose output
+* at a fixed date each year or at different dates:
+  SWYRVAR = 0                ! 0 = each year output at the same date
+                             ! 1 = output at different dates
+
+* If SWYRVAR = 0 specify fixed date:
+  DATEFIX = 31 12            ! Specify day and month for output of yearly balances [dd mm]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 4: Output files
+
+* General information
+  OUTFIL = 'result'          ! Generic file name of output files, [A16]
+  SWHEADER = 0               ! Print header at the start of each balance period [Y=1, N=0]
+
+* Optional files
+  SWWBA = 0                  ! Switch, output cumulative water balance [Y=1, N=0]
+  SWEND = 0                  ! Switch, output end-conditions [Y=1, N=0]
+  SWVAP = 0                  ! Switch, output soil profiles of moisture, solute and temperature [Y=1, N=0]
+  SWBAL = 0                  ! Switch, output file with yearly water balance [Y=1, N=0]
+  SWBLC = 0                  ! Switch, output file with detailed yearly water balance [Y=1, N=0]
+  SWSBA = 0                  ! Switch, output file of cumulative solute balance [Y=1, N=0]
+  SWATE = 0                  ! Switch, output file with soil temperature profiles [Y=1, N=0]
+  SWBMA = 0                  ! Switch, output file with water fluxes, only for macropore flow [Y=1, N=0]
+  SWDRF = 0                  ! Switch, output of drainage fluxes, only for extended drainage [Y=1, N=0]
+  SWSWB = 0                  ! Switch, output surface water reservoir, only for extended drainage [Y=1, N=0]
+  SWINI = 0                  ! Switch, output of initial SoilPhysParam and HeatParam [Y=1, N=0]
+  SWINC = 0                  ! Switch, output of water balance increments [Y=1, N=0]
+  SWCRP = 0                  ! Switch, output of simple or detailed crop growth model [Y=1, N=0]
+  SWSTR = 0                  ! Switch, output of stress values for wetness, drought, salinity and frost [Y=1, N=0]
+  SWIRG = 0                  ! Switch, output of irrigation gifts [Y=1, N=0]
+
+* Specific CSV output file? (default: no)
+  SWCSV = 1                  ! Switch, output of variables to be specified [Y=1, N=0]
+
+  INLIST_CSV = 'pgrassdm,grassdm,pmowdm,mowdm'
+
+* Specific CSV output file? (default: no)
+  SWCSV_TZ = 0               ! Switch, output of variables to be specified [Y=1, N=0]
+
+* Optional output files for water quality models or other specific use
+
+* Switch, output file with formatted hydrological data:
+  SWAFO = 0                  ! 0 = no output
+                             ! 1 = output to a file named *.AFO
+                             ! 2 = output to a file named *.BFO
+
+* Switch, output file with unformatted hydrological data:
+  SWAUN = 0                  ! 0 = no output
+                             ! 1 = output to a file named *.AUN
+                             ! 2 = output to a file named *.BUN
+
+**********************************************************************************
+
+*** METEOROLOGY SECTION ***
+
+**********************************************************************************
+* General data
+
+* File name
+  METFIL = '260.met'         ! File name of meteorological data, in case of yearly files without extension .YYY, [A200]
+                             ! Extension is equal to last 3 digits of year, e.g. 022 denotes year 2022
+                             ! In case of meteorological in one file use extension .met
+
+* Details of meteo station:
+  LAT = 52.1                 ! Latitude of meteo station [-90..90 degrees, R, North = +]
+
+* Type of weather data for potential evapotranspiration
+  SWETR = 0                  ! 0 = Use basic weather data and apply Penman-Monteith equation
+                             ! 1 = Use reference evapotranspiration data in combination with crop factors
+
+* In case of Penman-Monteith (SWETR = 0), specify:
+  ALT = 1.9                  ! Altitude of meteo station [-400..3000 m, R]
+  ALTW = 10.0                ! Height of wind speed measurement above soil surface (10 m is default) [0..99 m, R]
+  ANGSTROMA = 0.25           ! Fraction of extraterrestrial radiation reaching the earth on overcast days [0..1 -, R]
+  ANGSTROMB = 0.5            ! Additional fraction of extraterrestrial radiation reaching the earth on clear days [0..1 -, R]
+
+* Switch for distribution of E and T:
+  SWDIVIDE = 1               ! 0 = Based on crop and soil factors
+                             ! 1 = Based on direct application of Penman-Monteith
+
+* In case of SWETR = 0, specify time interval of evapotranspiration and rainfall weather data
+  SWMETDETAIL = 0            ! 0 = time interval is equal to one day
+                             ! 1 = time interval is less than one day
+
+* In case of daily meteorological weather records (SWMETDETAIL = 0):
+  SWETSINE = 0               ! Switch, distribute daily Tp and Ep according to sinus wave [Y=1, N=0]
+
+* Switch for use of actual rainfall intensity (only if SWMETDETAIL = 0):
+  SWRAIN = 2                 ! 0 = Use daily rainfall amounts
+                             ! 1 = Use daily rainfall amounts + mean intensity
+                             ! 2 = Use daily rainfall amounts + duration
+                             ! 3 = Use detailed rainfall records (dt < 1 day), as supplied in separate file
+
+
+**********************************************************************************
+
+*** CROP SECTION ***
+
+**********************************************************************************
+* Part 1: Crop rotation scheme
+
+* Switch for bare soil or cultivated soil:
+  SWCROP = 1                 ! 0 = Bare soil
+                             ! 1 = Cultivated soil
+
+* Specify for each crop (maximum MACROP):
+* CROPSTART = date of crop emergence [YYYY-MM-DD]
+* CROPEND = date of crop harvest [YYYY-MM-DD]
+* CROPFIL = name of file with crop input parameters without extension .CRP, [A40]
+* CROPTYPE = growth module: 1 = simple; 2 = detailed, WOFOST general; 3 = detailed, WOFOST grass
+
+  CROPSTART     CROPEND   CROPFIL  CROPTYPE
+ 1980-01-01  1980-12-31  'grassd'         3
+ 1981-01-01  1981-12-31  'grassd'         3
+ 1982-01-01  1982-12-31  'grassd'         3
+ 1983-01-01  1983-12-31  'grassd'         3
+ 1984-01-01  1984-12-31  'grassd'         3
+* End of table
+
+  RDS = 200.0                ! Maximum rooting depth allowed by the soil profile, [1..5000 cm, R]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 2: Fixed irrigation applications
+
+* Switch for fixed irrigation applications
+  SWIRFIX = 0                ! 0 = no irrigation applications are prescribed
+                             ! 1 = irrigation applications are prescribed
+
+
+**********************************************************************************
+
+*** SOIL WATER SECTION ***
+
+**********************************************************************************
+* Part 1: Initial soil moisture condition
+
+* Switch, type of initial soil moisture condition:
+  SWINCO = 2                 ! 1 = pressure head as function of soil depth
+                             ! 2 = pressure head of each compartment is in hydrostatic equilibrium with initial groundwater level
+                             ! 3 = read final pressure heads from output file of previous Swap simulation
+
+* If SWINCO = 2, specify initial groundwater level:
+  GWLI   = -75.0             ! Initial groundwater level, [-10000..100 cm, R]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 2: Ponding, runoff and runon
+
+* Ponding
+* Switch for variation ponding threshold for runoff
+  SWPONDMX = 0               ! 0 = Ponding threshold for runoff is constant
+                             ! 1 = Ponding threshold for runoff varies in time
+
+* If SWPONDMX = 0, specify
+  PONDMX = 0.2               ! In case of ponding, minimum thickness for runoff [0..1000 cm, R]
+
+* Runoff
+  RSRO = 0.5                 ! Drainage resistance for surface runoff [0.001..1.0 d, R]
+  RSROEXP = 1.0              ! Exponent in drainage equation of surface runoff [0.01..10.0 -, R]
+
+* Runon
+  SWRUNON = 0                ! Switch, use of runon data [Y=1, N=0]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 3: Soil evaporation
+
+  CFEVAPPOND = 1.25          ! When ETref is used, evaporation coefficient in case of ponding  [0..3 -, R]
+
+* Switch for use of soil factor CFBS to calculate Epot from ETref:
+  SWCFBS = 0                 ! 0 = soil factor is not used
+                             ! 1 = soil factor is used
+
+* If SWDIVIDE = 1 (partitioning according to PMdirect) specify minimum soil resistance
+  RSOIL  =  600.0            ! Soil resistance of wet soil [0..1000.0 s/m, R]
+
+* Switch, method for reduction of potential soil evaporation:
+  SWREDU = 1                 ! 0 = reduction to maximum Darcy flux
+                             ! 1 = reduction to maximum Darcy flux and to maximum Black (1969)
+                             ! 2 = reduction to maximum Darcy flux and to maximum Boesten/Stroosnijder (1986)
+
+* If SWREDU = 1, specify:
+ COFREDBL = 0.35             ! Soil evaporation coefficient of Black [0..1 cm/d1/2, R]
+ RSIGNI = 0.5                ! Minimum rainfall to reset method of Black [0..1 cm/d, R]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 4: Vertical discretization of soil profile
+
+* Specify the following data (maximum MACP lines):
+* ISUBLAY  = number of sub layer, start with 1 at soil surface [1..MACP, I]
+* ISOILLAY = number of soil physical layer, start with 1 at soil surface [1..MAHO, I]
+* HSUBLAY  = height of sub layer [0..1.d4 cm, R]
+* HCOMP    = height of compartments in the sub layer [0.0..1000.0 cm, R]
+* NCOMP    = number of compartments in the sub layer (Mind NCOMP = HSUBLAY/HCOMP) [1..MACP, I]
+
+ ISUBLAY  ISOILLAY  HSUBLAY  HCOMP  NCOMP
+       1         1      5.0    1.0      5
+       2         1     10.0    2.5      4
+       3         2     10.0    5.0      2
+       4         3      5.0    5.0      1
+       5         3     20.0   10.0      2
+       6         4     50.0   10.0      5
+       7         4     20.0   20.0      1
+       8         5    100.0   20.0      5
+       9         5    120.0   40.0      3
+* End of table
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 5: Soil hydraulic functions
+
+* Switch for analytical functions or tabular input:
+  SWSOPHY = 0                ! 0 = Analytical functions with input of Mualem - van Genuchten parameters
+                             ! 1 = Soil physical tables
+
+* If SWSOPHY = 0, specify MvG parameters for each soil physical layer:
+* ORES = Residual water content [0..1 cm3/cm3, R]
+* OSAT = Saturated water content [0..1 cm3/cm3, R]
+* ALFA = Parameter alfa of main drying curve [0.0001..100 /cm, R]
+* NPAR = Parameter n [1.001..9 -, R]
+* KSATFIT = Fitting parameter Ksat of hydraulic conductivity function [1.d-5..1d5 cm/d, R]
+* LEXP = Exponent in hydraulic conductivity function [-25..25 -, R]
+* H_ENPR = Air entry pressure head [-40.0..0.0 cm, R]
+* KSATEXM = Measured hydraulic conductivity at saturated conditions [1.d-5..1d5 cm/d, R]
+* BDENS = Dry soil bulk density [100..1d4 mg/cm3, R]
+
+ ORES  OSAT    ALFA   NPAR  KSATFIT    LEXP  H_ENPR  KSATEXM   BDENS
+ 0.02  0.40  0.0227  1.548     9.65  -0.983     0.0     9.65  1300.0
+ 0.02  0.40  0.0227  1.548     9.65  -0.983     0.0     9.65  1300.0
+ 0.02  0.40  0.0227  1.548     9.65  -0.983     0.0     9.65  1300.0
+ 0.01  0.36  0.0216  1.540    13.10  -0.520     0.0    13.10  1300.0
+ 0.01  0.36  0.0216  1.540    13.10  -0.520     0.0    13.10  1300.0
+* End of table
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 6: Hysteresis of soil water retention function
+
+* Switch for hysteresis:
+  SWHYST = 0                 ! 0 = no hysteresis
+                             ! 1 = hysteresis, initial condition wetting
+                             ! 2 = hysteresis, initial condition drying
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 7: Preferential flow due to macropores
+
+* Switch for macropore flow [0..2, I]:
+  SWMACRO = 0                ! 0 = no macropore flow
+                             ! 1 = macropore flow
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 8: Snow and frost
+
+* Switch, calculate snow accumulation and melt:
+  SWSNOW = 0                 ! 0 = no simulation of snow
+                             ! 1 = simulation of snow accumulation and melt
+
+* Switch, in case of frost reduce soil water flow:
+  SWFROST = 0                ! 0 = no simulation of frost
+                             ! 1 = simulation of reduction soil water flow due to frost
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 9: Numerical solution of Richards' equation for soil water flow
+
+  DTMIN = 0.000001           ! Minimum timestep [1.d-7..0.1 d, R]
+  DTMAX = 0.04               ! Maximum timestep [dtmin..1 d, R]
+  GWLCONV = 100.0            ! Maximum difference of groundwater level between time steps [1.d-5..1000 cm, R]
+  CRITDEVH1CP = 0.01         ! Maximum relative difference in pressure heads per compartment [1.0d-10..1.d3 -, R]
+  CRITDEVH2CP = 0.1          ! Maximum absolute difference in pressure heads per compartment [1.0d-10..1.d3 cm, R]
+  CRITDEVPONDDT = 0.0001     ! Maximum water balance error of ponding layer [1.0d-6..0.1 cm, R]
+  MAXIT = 30                 ! Maximum number of iteration cycles [5..100 -, I]
+  MAXBACKTR = 3              ! Maximum number of back track cycles within an iteration cycle [1..10 -,I]
+
+* Switch for averaging method of hydraulic conductivity [1..4 -, I]:
+  SWKMEAN = 1                ! 1 = unweighted arithmic mean
+                             ! 2 = weighted arithmic mean
+                             ! 3 = unweighted geometric mean
+                             ! 4 = weighted geometric mean
+                             ! 5 = unweighted harmonic mean
+                             ! 6 = weighted harmonic mean
+
+* Switch for updating hydraulic conductivity during iteration [0..1 -, I]:
+  SWKIMPL = 0                ! 0 = no update
+                             ! 1 = update
+
+**********************************************************************************
+
+*** LATERAL DRAINAGE SECTION ***
+
+**********************************************************************************
+* Specify whether lateral drainage to surface water should be included
+
+* Switch, simulation of lateral drainage:
+  SWDRA = 1                  ! 0 = no simulation of drainage
+                             ! 1 = simulation with basic drainage routine
+                             ! 2 = simulation of drainage with surface water management
+
+* If SWDRA = 1 specify name of file with drainage input data:
+  DRFIL = 'swap'             ! File name with drainage input data without extension .DRA [A16]
+
+**********************************************************************************
+
+*** BOTTOM BOUNDARY SECTION ***
+
+**********************************************************************************
+* Bottom boundary condition
+
+* Switch for file with bottom boundary data:
+  SWBBCFILE = 1              ! 0 = data are specified in current file
+                             ! 1 = data are specified in a separate file
+
+**********************************************************************************
+* If SWBBCFILE = 1 specify name of file with bottom boundary data:
+  BBCFIL = 'swap'            ! File name without extension .BBC [A32]
+
+**********************************************************************************
+
+*** HEAT FLOW SECTION ***
+
+**********************************************************************************
+* Switch for simulation of heat transport:
+  SWHEA = 1                  ! 0 = no simulation of heat transport
+                             ! 1 = simulation of heat transport
+
+* Switch for calculation method:
+  SWCALT = 2                 ! 1 = analytical method
+                             ! 2 = numerical method
+
+* In case of the numerical method (SWCALT = 2) specify:
+* Specify for each physical soil layer the soil texture (g/g mineral parts) and the organic matter content (g/g dry soil):
+
+ PSAND  PSILT  PCLAY  ORGMAT
+  0.68   0.27   0.05   0.113
+  0.68   0.28   0.04   0.053
+  0.77   0.19   0.04   0.018
+  0.86   0.08   0.06   0.019
+  0.88   0.09   0.03   0.011
+* End of table
+
+* If SWINCO = 1 or 2, list initial temperature TSOIL [-50..50 degree C, R] as function of soil depth ZH [-100000..0 cm, R]:
+
+    ZH  TSOIL
+ -10.0   15.0
+ -40.0   12.0
+ -70.0   10.0
+ -95.0    9.0
+* End of table
+
+* Define top boundary condition:
+  SWTOPBHEA = 1              ! 1 = use air temperature of meteo input file as top boundary
+                             ! 2 = use measured top soil temperature as top boundary
+
+* Define bottom boundary condition:
+  SWBOTBHEA = 1              ! 1 = no heat flux
+                             ! 2 = prescribe bottom temperature
+
+**********************************************************************************
+
+*** SOLUTE SECTION ***
+
+**********************************************************************************
+* Part 0: Specify whether simulation includes solute transport
+
+* Switch for simulation of solute transport
+  SWSOLU = 0                 ! 0 = no simulation of solute transport
+                             ! 1 = simulation of solute transport
+
+**********************************************************************************
+
+* End of the main input file .SWP!

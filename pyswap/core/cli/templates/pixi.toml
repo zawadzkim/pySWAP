@@ -1,0 +1,21 @@
+[workspace]
+authors = ["{author} <{email}>"]
+channels = ["conda-forge"]
+name = "{project}"
+platforms = ["linux-64", "win-64", "osx-64"]
+
+[dependencies]
+python = ">=3.11.0,<3.14"
+jupyter = "*"
+pytest = ">=8.0.0"
+
+[pypi-dependencies]
+pyswap = "*"
+
+[environments]
+default = {{ solve-group = "default" }}
+
+[tasks]
+test = "pytest"
+jupyter = "jupyter lab"
+testcase = "python -c \"from pyswap import testcase; hupselbrook = testcase.get('hupselbrook'); result = hupselbrook.run(); print('Test completed successfully!'); print(result.yearly_summary)\""

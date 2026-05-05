@@ -1,0 +1,78 @@
+name: Documentation
+
+on:
+  workflow_call:
+    # Called by CD workflow after release creation
+    outputs:
+      artifact-name:
+        description: "Name of the generated docs artifact"
+        value: ${{ jobs.build-docs.outputs.artifact-name }}
+  workflow_dispatch:
+    # Allow manual documentation builds
+
+permissions:
+  contents: read
+  id-token: write
+  pages: write
+
+jobs:
+  # Build and validate documentation (runs on all branches/PRs)
+  build-docs:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-name: ${{ steps.artifact.outputs.name }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0.9.2
+        with:
+          pixi-version: v0.59.0
+          cache: true
+
+      - name: Build documentation
+        run: pixi run -e docs docs-build
+
+      - name: Upload docs artifact
+        id: artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: docs-${{ github.sha }}
+          path: site
+          retention-days: 7
+        
+      - name: Set artifact name output
+        run: echo "name=docs-${{ github.sha }}" >> $GITHUB_OUTPUT
+
+  # Deploy documentation (only when called for deployment)
+  deploy-docs:
+    needs: build-docs
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Download docs artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: ${{ needs.build-docs.outputs.artifact-name }}
+          path: docs-site
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs-site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

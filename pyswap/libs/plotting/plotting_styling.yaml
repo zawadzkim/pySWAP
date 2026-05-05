@@ -1,0 +1,9 @@
+# This YAML file contains parameters for styling plots of the variables shared between R and Python packages handling SWAP
+
+metadata:
+  description: "Styling parameters for SWAP plots shared between R and Python packages."
+  authors:
+    - Martin Mulder
+    - Mateusz Zawadzki
+  date: "2023-10-05"
+  version: "1.0"

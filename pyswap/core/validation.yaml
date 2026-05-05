@@ -1,0 +1,500 @@
+CropDevelopmentSettings: &CropDevelopmentSettings
+  swcf:
+    1:
+      - cftb
+    2:
+      - chtb
+      - albedo
+      - rsc
+      - rsw
+  swrd:
+    1:
+      - rdtb
+    2:
+      - rdi
+      - rri
+      - rdc
+      - swdmi2rd
+    3:
+      - rlwtb
+      - wrtmax
+
+CropDevelopmentSettingsWOFOST:
+  <<: *CropDevelopmentSettings
+  idsl:
+    1:
+      - dlc
+      - dlo
+    2:
+      - dlc
+      - dlo
+      - vernsat
+      - vernbase
+      - verndvs
+      - verntb
+
+OxygenStress:
+  swoxygen:
+    1:
+      - hlim1
+      - hlim2u
+      - hlim2l
+    2:
+      - q10_microbial
+      - specific_resp_humus
+      - srl
+      - swrootradius
+      - dry_mat_cont_roots
+      - air_filled_root_por
+      - spec_weight_root_tissue
+      - var_a
+      - root_radiuso2
+  swrootradius:
+    1:
+      - dry_mat_cont_roots
+      - air_filled_root_por
+      - spec_weight_root_tissue
+      - var_a
+    2:
+      - root_radiuso2
+  swwrtnonox:
+    1:
+      - aeratecrit
+
+DroughtStress:
+  swdrought:
+    1:
+      - hlim3h
+      - hlim3l
+      - hlim4
+      - adcrh
+      - adcrl
+    2:
+      - wiltpoint
+      - kstem
+      - rxylem
+      - rootradius
+      - kroot
+      - rootcoefa
+      - swhydrlift
+      - rooteff
+      - stephr
+      - criterhr
+      - taccur
+
+SaltStress:
+  swsalinity:
+    1:
+      - saltmax
+      - saltslope
+    2:
+      - salthead
+
+CompensateRWUStress:
+  swcompensate:
+    1:
+      - swstressor
+      - alphacrit
+    2:
+      - swstressor
+      - dcritrtz
+
+Interception:
+  swinter:
+    1:
+      - cofab
+    2:
+      - intertb
+
+CO2Correction:
+  swco2:
+    1:
+      - atmofil
+      - co2amaxtb
+      - co2efftb
+      - co2tratb
+
+Preparation:
+  swprep:
+    1:
+      - zprep
+      - hprep
+      - maxprepdelay
+  swsow:
+    1:
+      - zsow
+      - hsow
+      - ztempsow
+      - tempsow
+      - maxsowdelay
+  swgerm:
+    1:
+      - tsumemeopt
+      - tbasem
+      - teffmx
+    2:
+      - tsumemeopt
+      - tbasem
+      - teffmx
+      - hdrygerm
+      - hwetgerm
+      - zgerm
+      - agerm
+
+GrasslandManagement:
+  swharvest:
+    2:
+      - dateharvest
+  # This is difficult to validate since seqgrazmow is a list of integers specified by the user
+  # and whether this is required of not, depends on its content.
+  swdmgrz:
+    1:
+      - dmgrazing
+    2:
+      - dmgrztb
+      - maxdaygrz
+      - tagprest
+      - dewrest
+      - lsda
+  swdmmow:
+    1:
+      - dmharvest
+      - daylastharvest
+      - dmlastharvest
+      - maxdaymow
+    2:
+      - dmmowtb
+      - dmmowdelay
+
+Meteorology:
+  swetr:
+    1:
+      - swetsine
+      # - swrain  # optional, not required
+      # - rainflux  # optional, not required
+    0:
+      - alt
+      - altw
+      - angstroma
+      - angstromb
+      - swmetdetail
+  swrain:
+    0:
+    1:
+      - rainflux
+    3:
+      - rainfil
+  swmetdetail:
+    1:
+      - nmetdetail
+
+BottomBoundaryBase:
+  swbotb:
+    1:
+      - gwlevel
+    2:
+      - sw2
+    3:
+      - sw3
+    4:
+      - swqhbot
+    5:
+      - hbot5
+  sw2:
+    1:
+      - sinave
+      - sinamp
+      - sinmax
+    2:
+      - qbot
+  sw3:
+    1:
+      - aqave
+      - aqamp
+      - aqtmax
+      - aqper
+    2:
+      - haquif
+  swqhbot:
+    1:
+      - cofqha
+      - cofqhb
+      - cofqhc
+    2:
+      - qtab
+
+DraFile:
+  ipos:
+    3:
+      - khbot
+      - zintf
+    4:
+      - khbot
+      - zintf
+      - kvtop
+      - kvbot
+    5:
+      - khbot
+      - zintf
+      - kvtop
+      - kvbot
+      - geofac
+
+  swintfl:
+    1:
+      - cofintflb
+      - expintflb
+
+Flux:
+  swallo:
+    1:
+      - l
+
+Drainage:
+  swdra:
+    1:
+      - drafile
+    2:
+      - drafile
+
+HeatFlow:
+  swhea:
+    1:
+      - swcalt
+      - swtopbhea
+      - swbotbhea
+  swcalt:
+    1:
+      - tampli
+      - tmean
+      - timref
+      - ddamp
+    2:
+      - soiltextures
+      - initsoiltemp
+      - swtopbhea
+      - swbotbhea
+  swtopbhea:
+    2:
+      - tsoilfile
+  swbotbhea:
+    2:
+      - bbctsoil
+
+# Needs a thorough revision and further improvement. Alsoome parameters rely on SWINCO paramaters from
+# the soilmoisture section and are not validated.
+SoluteTransport:
+  swsolu:
+    1:
+      - cpre
+      - cdrain
+      - swbotbc
+      - swsp # determines the table_miscellaneous columns contant
+      - misc
+      - ddif
+      - tscf
+      - swdc
+      - swbr
+  swbotbc:
+    1:
+      - cseep
+    2:
+      - cseeparrtb
+  swsp:
+    1:
+      - frexp
+      - cref
+  swdc:
+    1:
+      - gampar
+      - rtheta
+      - bexp
+  swbr:
+    1:
+      - daquif
+      - poros
+      - kfsat
+      - decsat
+      - cdraini
+      - inissoil
+
+FixedIrrigation:
+  swirfix:
+    1:
+      - swirgfil
+    swirgfil:
+      0:
+        - irrigevents
+      1:
+        - irgfile
+
+Crop:
+  swcrop:
+    1:
+      - rds
+      - croprotation
+      - cropfiles
+  # Need to add cropfile validation as well, but since this is a dict with keys that can be specified by the user, this is hard to check
+  prep:
+
+GeneralSettings:
+  swscre:
+    0:
+    1:
+    3:
+  swerror:
+    0:
+    1:
+  swmonth:
+    0:
+      - period
+      - swres
+      - swodat
+    1:
+  swdat:
+    0:
+    1:
+      - outdatin
+  swheader:
+    0:
+    1:
+  swyrvar:
+    0:
+      - datefix
+    1:
+      - outdat
+  swafo:
+    0:
+    1:
+      - critdevmasbal
+      - swdiscrvert
+    2:
+      - critdevmasbal
+      - swdiscrvert
+  swaun:
+    0:
+    1:
+      - critdevmasbal
+      - swdiscrvert
+    2:
+      - critdevmasbal
+      - swdiscrvert
+  swdiscrvert:
+    0:
+    1:
+      - numnodnew
+      - dznew
+
+  swcsv:
+    1:
+      - inlist_csv
+
+  swcsv_tz:
+    1:
+      - inlist_csv_tz
+
+Evaporation:
+  swcfbs:
+    1:
+      - cfbs
+  swredu:
+    1:
+      - cofredbl
+      - rsigni
+    2:
+      - cofredbo
+
+SnowAndFrost:
+  swsnow:
+    1:
+      - snowinco
+      - teprrain
+      - teprsnow
+      - snowcoef
+  swfrost:
+    1:
+      - tfrostst
+      - tfrostend
+
+SoilProfile:
+  swsophy:
+    0:
+      - soilhydrfunc
+    1:
+      - filenamesophy
+  swhyst:
+    1:
+      - tau
+    2:
+      - tau
+
+SoilMoisture:
+  swinco:
+    1:
+      - head_soildepth
+    2:
+      - gwli
+    3:
+      - inifil
+
+SurfaceFlow:
+  swpondmx:
+    0:
+      - pondmx
+    1:
+      - pondmxtb
+  swrunon:
+    1:
+      - rufil
+
+ScheduledIrrigation:
+  schedule:
+    1:
+      - startirr
+      - endirr
+      - cirrs
+      - isuas
+      - tcs
+      - dcs
+      - dcslim
+      - tcsfix
+  tcs:
+    1:
+      - tc1tb
+    2:
+      - tc2tb
+      - phfieldcapacity
+    3:
+      - tc3tb
+      - phfieldcapacity
+    4:
+      - tc4tb
+      - phfieldcapacity
+    6:
+      - irgthreshold
+    7:
+      - tc7tb
+      - dcrit
+      - swcirrthres
+    8:
+      - tc8tb
+      - dcrit
+      - swcirrthres
+  swcirrthres:
+    1:
+      - cirrthres
+      - perirrsurp
+  tcsfix:
+    1:
+      - irgdayfix
+  dcs:
+    1:
+      - phfieldcapacity
+      - tc1tb
+      - raithreshold
+    2:
+      - tc2tb
+  dcslim:
+    1:
+      - irgdepmin
+      - irgdepmax

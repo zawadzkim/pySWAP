@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "Create an issue"
+    url: "https://github.com/your-org/your-repo/issues/new"
+    about: "Open a new issue using one of the provided templates."
+# Prevent blank issues by default and promote use of templates. The two templates
+# above (bug_report.md and feature_request.md) will show as selectable options
+# when creating a new issue on GitHub. Update the URL above to point to this
+# repository's issue creation page.

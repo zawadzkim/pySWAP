@@ -1,0 +1,7 @@
+nav:
+    - Home: index.md
+    - user-guide
+    - tutorials
+    - wiki
+    - reference
+    - contributing

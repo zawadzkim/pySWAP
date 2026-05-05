@@ -1,0 +1,22 @@
+{
+  "types": [
+    { "type": "feat", "section": "Features" },
+    { "type": "fix", "section": "Bug Fixes" },
+    { "type": "chore", "hidden": true },
+    { "type": "docs", "section": "Documentation" },
+    { "type": "style", "hidden": true },
+    { "type": "refactor", "section": "Code Refactoring" },
+    { "type": "perf", "section": "Performance Improvements" },
+    { "type": "test", "hidden": true },
+    { "type": "build", "section": "Build System" },
+    { "type": "ci", "hidden": true }
+  ],
+  "releaseCommitMessageFormat": "chore(release): {{currentTag}}",
+  "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
+  "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}",
+  "userUrlFormat": "{{host}}/{{user}}",
+  "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
+  "gitRawCommitsOpts": {
+    "format": "%B%n-hash-%n%H%n-gitTags-%n%d%n-committerDate-%n%ci"
+  }
+}

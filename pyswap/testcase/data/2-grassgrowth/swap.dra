@@ -1,0 +1,70 @@
+**********************************************************************************
+* Filename: swap.dra
+* Contents: SWAP 4 - Input data for basic drainage
+**********************************************************************************
+* Comment area:
+* Testbank of SWAP: build with template of dra-file
+*
+**********************************************************************************
+
+*** BASIC DRAINAGE SECTION ***
+
+**********************************************************************************
+* Part 0: General
+
+* Switch, method of lateral drainage calculation:
+  DRAMET = 3                 ! 1 = Use table of drainage flux - groundwater level relation
+                             ! 2 = Use drainage formula of Hooghoudt or Ernst
+                             ! 3 = Use drainage/infiltration resistance, multi-level if needed
+
+  SWDIVD = 1                 ! Calculate vertical distribution of drainage flux in groundwater [Y=1, N=0]
+
+* If SWDIVD = 1, specify anisotropy factor COFANI (horizontal/vertical saturated hydraulic
+* conductivity) for each soil layer (maximum MAHO), [0.0001..1000 -, R]:
+  COFANI = 1.0 1.0 1.0 1.0 1.0
+
+* Switch to adjust upper boundary of model discharge layer
+  SWDISLAY = 0               ! 0 = No adjustment
+                             ! 1 = Adjusment based on depth of top of model discharge
+                             ! 2 = Adjusment based on factor of top of model discharge
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 3: Drainage and infiltration resistance (DRAMET = 3)
+
+  NRLEVS = 1                 ! Number of drainage levels, [1..5, I]
+
+* Option for interflow in highest drainage level (shallow system with short residence time)
+  SWINTFL = 0                ! Switch for interflow [0,1, I]
+
+**********************************************************************************
+
+**********************************************************************************
+* Part 3a: Drainage to level 1
+
+  DRARES1 = 750.0            ! Drainage resistance, [10..1d5 d, R]
+  INFRES1 = 2000.0           ! Infiltration resistance, [0..1d5 d, R]
+
+* Switch, for allowance drainage/infiltration:
+  SWALLO1 = 1                ! 1 = Drainage and infiltration are both allowed
+                             ! 2 = Drainage is not allowed
+                             ! 3 = Infiltration is not allowed
+
+* If SWDIVD = 1 (drainage flux vertically distributed), specify the drain spacing:
+  L1 = 500.0                 ! Drain spacing, [1..100000 m, R]
+
+  ZBOTDR1 = -55.0            ! Level of drainage medium bottom, [-10000..0 cm, R]
+  SWDTYP1 = 2                ! Type of drainage medium: 1 = drain tube, 2 = open channel
+
+* Specify date DATOWL1 [YYYY-MM-DD] and channel water level LEVEL1 [-10000..200, cm, R]
+* LEVEL1 is negative if below soil surface; maximum MAOWL records:
+
+    DATOWL1  LEVEL1
+ 1980-01-01   -60.0
+ 1984-12-31   -60.0
+* End of table
+
+**********************************************************************************
+
+* End of .dra file           !

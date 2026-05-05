@@ -1,0 +1,35 @@
+# {project}
+
+## How to proceed?
+I scaffolded this modelling project with `pyswap init`. Here is the structure of the repository:
+
+```text
+your-project/
+├── .git/                   # Git repository
+├── .gitignore              # Git ignore rules
+├── README.md               # Project documentation{pixi_structure}
+├── __init__.py
+├── data/                   # Data storage
+├── models/                 # Your SWAP models
+│   ├── __init__.py
+│   └── main.ipynb         # Main notebook to get started
+└── scripts/               # Helper scripts
+    └── __init__.py
+```
+
+## Getting Started
+
+1. Install [pyswap](https://pypi.org/project/pyswap/) if not already available:
+   ```bash
+   pip install pyswap
+   ```
+
+2. Start with the main notebook or script in the `models/` directory
+
+## Project Structure
+
+- `data/`: Store your input data files here
+- `models/`: Main modeling scripts and notebooks
+- `scripts/`: Helper scripts and utilities
+
+{pixi_instructions}

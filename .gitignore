@@ -1,1 +1,62 @@
 paper.pdf
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pyzw
+cache/
+dist/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+env.bak/
+env1/
+env2/
+.env
+
+# IDEs
+.vscode/
+.idea/
+
+# Compiled files
+*.dll
+*.so
+*.dylib
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
+
+# mkdocs site
+site
+
+*.egg-info
+/docs/build
+/docs/source
+*.bat
+.data
+.examples
+*.h5
+
+node_modules/
+.ruff_cache/
+.pytest_cache/
+.logs/
+
+# Coverage reports
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+coverage_html_report/
+/pyswap/libs/swap

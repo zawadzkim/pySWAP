@@ -1,0 +1,36 @@
+Version: 1.0.0
+Metadata: &meta
+  Creator:
+  Contributor:
+  Contact:
+  Publisher:
+  Title: Complementary parameters for {crop_type} for SWAP model
+  Date:
+  Language: EN
+  Format: YAML
+  Subject:
+  Description:
+  Identifier:
+  Relation:
+  Source:
+  Type:
+  Coverage:
+    Region: No specific region
+  Rights: European Union Public License (EUPL)
+  Keyword: "{crop_type}, SWAP, WOFOST"
+PredefinedArrays:
+  DVS: &dvs [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
+CropParameters:
+  SWAPInput: &swap_input
+    GCTB:
+      DVS: *dvs
+      LAI: [0.05, 0.14, 0.61, 4.10, 5.00, 5.80, 5.20]
+    CHTB:
+      DVS: *dvs
+      CH: [1.0, 15.0, 40.0, 140.0, 170.0, 180.0, 175.0]
+    RDTB:
+      DVS: [0.0, 0.3, 0.5, 0.7, 1.0, 2.0]
+      RD: [5.0, 20.0, 50.0, 80.0, 90.0, 100.0]
+    RDCTB:
+      RRD: [0.0, 1.0]
+      RDENS: [1.0, 0.0]

@@ -1,0 +1,20 @@
+# {project}
+
+## How to proceed?
+I scaffolded this modelling project with `pyswap init`. Here is the structure of the repository:
+
+```text
+your-project/
+├── .git/                   # Git repository
+├── .gitignore              # Git ignore rules{pixi_structure}
+├── README.md               # Project documentation with setup instructions  
+├── __init__.py
+├── data/                   # Data storage
+├── models/                 # Your SWAP models
+│   ├── __init__.py
+│   └── main.ipynb         # Main notebook to get started
+└── scripts/               # Helper scripts
+    └── __init__.py
+```
+
+{pixi_instructions}
