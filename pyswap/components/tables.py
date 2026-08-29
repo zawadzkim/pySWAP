@@ -74,6 +74,7 @@ crop_tables = [
     "DMMOWTB",
     "DMMOWDELAY",
     "IRRIGEVENTS",
+    "SSDIEVENTS",
     "TC1TB",
     "TC2TB",
     "TC3TB",
@@ -501,6 +502,20 @@ class IRRIGEVENTS(BaseTableModel):
     IRDEPTH: Series[float] | None = pa.Field(default=None, ge=0.0, le=1000.0)
     IRCONC: Series[float] = pa.Field(ge=0.0, le=1000.0)
     IRTYPE: Series[int] = pa.Field(ge=0, le=1)
+
+
+class SSDIEVENTS(BaseTableModel):
+    """Information for each fixed subsurface drip irrigation (SSDI) event.
+
+    Attributes:
+        SSDI_DATE (Series[datetime]): date of the SSDI application.
+        SSDI_RATE_F (Series[float]): application rate [0..100 mm/h, R].
+        SSDI_AMOUNT_F (Series[float]): application amount [0..100 mm, R].
+    """
+
+    SSDI_DATE: Series[pa.DateTime]
+    SSDI_RATE_F: Series[float] = pa.Field(ge=0.0, le=100.0)
+    SSDI_AMOUNT_F: Series[float] = pa.Field(ge=0.0, le=100.0)
 
 
 class TC1TB(BaseTableModel):
