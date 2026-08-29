@@ -37,6 +37,9 @@ from pyswap.utils.mixins import (
     YAMLValidatorMixin as _YAMLValidatorMixin,
 )
 
+# Fields that belong to the separate SSDI file, not to the .swp section.
+_SSDI_CONTENT = frozenset({"ssdi_schedule", "ssdievents", "ssdi_z"})
+
 __all__ = ["IRRIGEVENTS", "SSDIEVENTS", "FixedIrrigation", "ScheduledIrrigation"]
 
 
@@ -74,12 +77,11 @@ class FixedIrrigation(
     ssdievents: _Table | None = None
     ssdi_z: _Decimal2f | None = _Field(default=None, ge=-100.0, le=0.0)
 
-    # Fields that belong to the separate SSDI file, not to the .swp section.
-    _ssdi_content = {"ssdi_schedule", "ssdievents", "ssdi_z"}
-
     @_model_validator(mode="after")
     def _ssdi_defaults(self):
-        if self.swssdi == 1:
+        # getattr guards keep instances pickled before the SSDI fields existed
+        # (e.g. in HDF5 archives) usable.
+        if getattr(self, "swssdi", None) == 1:
             if self.ssdi_file is None:
                 self.ssdi_file = "swap.ssdi"
             if self.ssdi_schedule is None:
@@ -94,7 +96,7 @@ class FixedIrrigation(
         The SSDI content fields always go to the separate SSDI file; only the
         SWSSDI switch and the file name appear in the .swp section.
         """
-        exclude = set(self._ssdi_content)
+        exclude = set(_SSDI_CONTENT)
         if self.swirgfil == 1:
             exclude.add("irrigevents")
         return super().model_string(exclude=exclude, **kwargs)
@@ -106,7 +108,7 @@ class FixedIrrigation(
     @property
     def ssdi(self):
         """The content of the separate SSDI input file."""
-        return super().model_string(include=self._ssdi_content)
+        return super().model_string(include=set(_SSDI_CONTENT))
 
     def write_ssdi(self, path: _Path):
         """Write the SSDI events to the separate SSDI file.
