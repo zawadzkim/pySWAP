@@ -92,6 +92,8 @@ class ModelBuilder:
             inputs["met"] = self.model.meteorology.met
         if self.model.fixedirrigation.swirgfil == 1:
             inputs["irg"] = self.model.fixedirrigation.irg
+        if self.model.fixedirrigation.swssdi == 1:
+            inputs["ssdi"] = self.model.fixedirrigation.ssdi
         if self.model.bottomboundary.swbbcfile == 1:
             inputs["bbc"] = self.model.bottomboundary.bbc
 
@@ -124,6 +126,8 @@ class ModelBuilder:
             self.model.meteorology.write_met(self.tempdir)
         if self.model.fixedirrigation.swirgfil == 1:
             self.model.fixedirrigation.write_irg(self.tempdir)
+        if self.model.fixedirrigation.swssdi == 1:
+            self.model.fixedirrigation.write_ssdi(self.tempdir)
         if self.model.bottomboundary.swbbcfile == 1:
             self.model.bottomboundary.write_bbc(self.tempdir)
 
