@@ -27,6 +27,9 @@ dependencies = [
 sa = [
     "SALib>=1.5",
 ]
+pe = [
+    "scipy>=1.11",
+]
 test = [
     "pytest>=8.2.2",
     "pytest-cov>=5.0.0",
