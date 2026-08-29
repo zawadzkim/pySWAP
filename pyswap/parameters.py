@@ -158,7 +158,7 @@ class ParameterSet:
             msg = f"expected {len(self.params)} values, got {len(values)}"
             raise ValueError(msg)
 
-        for par, val in zip(self.params, values):
+        for par, val in zip(self.params, values, strict=True):
             segments = par.path.split(".")
             model = model.update({
                 segments[0]: _set_by_path(
