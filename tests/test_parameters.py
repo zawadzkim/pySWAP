@@ -108,3 +108,21 @@ def test_observation_residuals():
     vec = coll.residual_vector(None)
     assert vec.shape == (3,)
     assert coll.rmse(None)["h"] == pytest.approx(np.sqrt((0.5**2 + 0 + 1.0**2) / 3))
+
+
+def test_apply_compound_parameter(model):
+    """One factor drives several locations via `also` (e.g. tied FIT/EXM halves)."""
+    ps = ParameterSet([
+        Param(
+            "k_top", "soilprofile.soilhydrfunc.KSATFIT[0]", bounds=(0.5, 50),
+            also=("soilprofile.soilhydrfunc.KSATEXM[0]",),
+        )
+    ])
+    new = ps.apply(model, [7.25])
+
+    table = pd.DataFrame(new.soilprofile.soilhydrfunc)
+    assert table.loc[0, "KSATFIT"] == 7.25
+    assert table.loc[0, "KSATEXM"] == 7.25
+    assert table.loc[1, "KSATFIT"] == 12.68  # other rows untouched
+    old = pd.DataFrame(model.soilprofile.soilhydrfunc)
+    assert old.loc[0, "KSATFIT"] == 12.52  # original untouched

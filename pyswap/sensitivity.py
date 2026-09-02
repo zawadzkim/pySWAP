@@ -95,21 +95,32 @@ def run_morris(
     levels: int = 4,
     seed: int | None = None,
     silence_warnings: bool = True,
+    optimal_trajectories: int | None = None,
+    evaluator: Callable | None = None,
     _evaluator: Callable | None = None,
 ) -> pd.DataFrame:
     """Morris elementary-effects screening.
 
-    Cost: ``trajectories * (len(parameters) + 1)`` model runs.
+    Cost: ``trajectories * (len(parameters) + 1)`` model runs
+    (``optimal_trajectories * (len(parameters) + 1)`` when a Campolongo
+    subset is selected).
 
     Parameters:
         model: The base model every sample derives from.
         parameters: The parameters to screen.
-        response: Callable reducing a `Result` to a float or a dict of named
-            floats (one screening per name).
-        trajectories: Number of Morris trajectories.
+        response: Callable reducing an evaluation result to a float or a dict
+            of named floats (one screening per name).
+        trajectories: Number of Morris trajectories to draw.
         levels: Number of grid levels.
         seed: Random seed for the sampler.
         silence_warnings: Passed through to the runner.
+        optimal_trajectories: If set, keep this many trajectories out of the
+            drawn ``trajectories`` by Campolongo's spread-maximizing selection
+            (SALib; 2 < value < trajectories).
+        evaluator: Optional replacement for `pyswap.parameters.evaluate` with
+            the same signature — the hook for custom evaluation schemes such
+            as multi-model (multi-column) screening, where it may return any
+            objects the ``response`` callable understands.
 
     Returns:
         Tidy DataFrame with columns ``output, name, mu_star, mu_star_conf,
@@ -121,9 +132,11 @@ def run_morris(
 
     problem = _problem(parameters)
     sample = morris_sample.sample(
-        problem, N=trajectories, num_levels=levels, seed=seed
+        problem, N=trajectories, num_levels=levels, seed=seed,
+        optimal_trajectories=optimal_trajectories,
     )
-    ys = _responses(model, parameters, sample, response, silence_warnings, _evaluator)
+    ys = _responses(model, parameters, sample, response, silence_warnings,
+                    evaluator if evaluator is not None else _evaluator)
 
     frames = []
     for output, y in ys.items():
@@ -148,6 +161,7 @@ def run_sobol(
     n: int = 256,
     seed: int | None = None,
     silence_warnings: bool = True,
+    evaluator: Callable | None = None,
     _evaluator: Callable | None = None,
 ) -> pd.DataFrame:
     """Sobol variance decomposition with Saltelli sampling.
@@ -174,7 +188,8 @@ def run_sobol(
 
     problem = _problem(parameters)
     sample = sobol_sample.sample(problem, N=n, calc_second_order=False, seed=seed)
-    ys = _responses(model, parameters, sample, response, silence_warnings, _evaluator)
+    ys = _responses(model, parameters, sample, response, silence_warnings,
+                    evaluator if evaluator is not None else _evaluator)
 
     frames = []
     for output, y in ys.items():
