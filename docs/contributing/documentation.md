@@ -1,10 +1,10 @@
 # Documentation is **critical**
 
-Documentation is one of the most important part of the codebase; afterall, why bother writing and publishing software if no one else but the author knows how to use it.
+Documentation is one of the most important part of the codebase; after all, why bother writing and publishing software if no one else but the author knows how to use it.
 
 Quite a few times after picking up development of a project after some time I realised that I do not remember myself how to use certain parts of the code. This becomes even more tricky once the codebase and contributors group grows.
 
-I need to acknowledge however, that writing the documentation takes as long as coding. And it is not easy to keep up with changes nor it is easy, for the developer, to reaslise what has been explained poorly or not at all. Therefore, user experience and contribution is crutial.
+I need to acknowledge however, that writing the documentation takes as long as coding. And it is not easy to keep up with changes nor it is easy, for the developer, to reaslise what has been explained poorly or not at all. Therefore, user experience and contribution is crucial.
 
 Contributing to documentation is very easy, and takes the same step as contributing to code, but you can hardly break things. Moreover, it's a kind gesture, more than 90% of users will ever do.
 
@@ -43,7 +43,7 @@ Functions:
 """
 ```
 
-By reading this, we immediatelly know what can we import from this module. This also works in your code editor; when you do `from pyswap import irrigation` and you hoover over the `irrigation`, you will see that docstring in a popup window.
+By reading this, we immediately know what can we import from this module. This also works in your code editor; when you do `from pyswap import irrigation` and you hoover over the `irrigation`, you will see that docstring in a popup window.
 
 ### Classes and functions
 
@@ -77,7 +77,7 @@ To make sure the switch options are displayed as a list, you have to add a new l
 
 ### Other reusable elements
 
-For instance if tyou define a new type of field, the docstring for that goes directly under the definition of the varialbe like so:
+For instance if tyou define a new type of field, the docstring for that goes directly under the definition of the variable like so:
 
 ```Python
 Arrays = Annotated[
@@ -87,4 +87,4 @@ Arrays = Annotated[
 """Serialize pd.DataFrame without headers to a string with leading variable name."""
 ```
 
-That docstring is then used by inpecting tools in code editors, helping users understand what it does and is automatically pulled by mkdocs to generate online documentation.
+That docstring is then used by inspecting tools in code editors, helping users understand what it does and is automatically pulled by mkdocs to generate online documentation.

@@ -71,7 +71,7 @@ Enter the generated project directory and run
 pixi install
 ```
 
-That command will install a virtual environment located in .pixi folder. to enter the environemnt, run
+That command will install a virtual environment located in .pixi folder. to enter the environment, run
 
 ```bash
 user@user-Workstation:~/Code/pySWAP$ pixi shell
@@ -154,7 +154,7 @@ pip install pyswap
 
 ### Run a test case
 
-After installation, you can test if everthing is OK by running a testcase:
+After installation, you can test if everything is OK by running a testcase:
 
 ```py
 pyswap-py3.11vscode ➜ /workspaces/pySWAP (dev) $ python
@@ -163,7 +163,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> from pyswap import testcase
 >>> hupselbrook = testcase.get("hupselbrook")
 >>> result = hupselbrook.run()
-Warning from module Readswap : simulation with additonal Ksat value (Ksatexm)
+Warning from module Readswap : simulation with additional Ksat value (Ksatexm)
 >>> result.yearly_summary
              RAIN  IRRIG   INTERC  RUNOFF      EPOT      EACT  DRAINAGE  QBOTTOM         GWL      TPOT      TACT    DSTOR
 DATETIME

@@ -77,7 +77,7 @@ Decimal2f = Annotated[
 
 ## Tables
 
-Tabular data is defined the same way as the key-value pairs by assignmnet to a class attribute. Those attributes are either of type Arrays or Table, depending on what kind or serialization is needed for that particular variable. For both input and output, `pyswap` relies on pandas DataFrames.
+Tabular data is defined the same way as the key-value pairs by assignment to a class attribute. Those attributes are either of type Arrays or Table, depending on what kind or serialization is needed for that particular variable. For both input and output, `pyswap` relies on pandas DataFrames.
 
 ### Input
 
