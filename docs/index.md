@@ -42,7 +42,7 @@ The model variables are based on the original input files from SWAP developers, 
       ***
 
       pySWAP is open-source with MIT license and aims at improving
-      transparency and sharability of modelling work
+      transparency and shareability of modelling work
 
 </div>
 

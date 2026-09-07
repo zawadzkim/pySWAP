@@ -1,4 +1,4 @@
-# pySWAP - Python wraper for SWAP hydrological model
+# pySWAP - Python wrapper for SWAP hydrological model
 
 [![CD](https://github.com/zawadzkim/pySWAP/actions/workflows/cd.yaml/badge.svg)](https://github.com/zawadzkim/pySWAP/actions/workflows/cd.yaml)
 [![CI](https://github.com/zawadzkim/pySWAP/actions/workflows/ci.yaml/badge.svg)](https://github.com/zawadzkim/pySWAP/actions/workflows/ci.yaml)

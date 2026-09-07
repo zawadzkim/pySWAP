@@ -281,7 +281,7 @@ HeatFlow:
     2:
       - bbctsoil
 
-# Needs a thorough revision and further improvement. Alsoome parameters rely on SWINCO paramaters from
+# Needs a thorough revision and further improvement. Alsoome parameters rely on SWINCO parameters from
 # the soilmoisture section and are not validated.
 SoluteTransport:
   swsolu:
