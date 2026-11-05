@@ -49,6 +49,10 @@ jobs:
           pixi run -e dev pytest tests/ -v --cov=pyswap --cov-report=term --cov-report=xml
           echo "Tests completed successfully"
 
+      - name: Run tests on the oldest supported stack
+        run: |
+          pixi run -e test-legacy pytest tests/ -v
+
       - name: Run linting
         run: |
           pixi run -e dev ruff check .

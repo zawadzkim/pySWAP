@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from pandera.errors import SchemaError
+from pandera.errors import SchemaError, SchemaErrors
 
 import pyswap as psp
 import pyswap.components.meteorology as meteo
@@ -32,14 +32,15 @@ def test_metfile_from_csv():
     assert "not in dataframe. Columns in dataframe:" in str(exc_info.value)
 
     # Test csv file with string value instead of float
-    with pytest.raises(SchemaError) as exc_info:
+    # (pandera >= 0.31 raises SchemaErrors for failed coercions)
+    with pytest.raises((SchemaError, SchemaErrors)) as exc_info:
         table_test = meteo.metfile_from_csv(
             metfil="test_meteo_3.csv", csv_path="tests/test_meteo/test_meteo_3.csv"
         )
     assert "Error while coercing" in str(exc_info.value)
 
     # Test csv file with float value instead of string
-    with pytest.raises(SchemaError) as exc_info:
+    with pytest.raises((SchemaError, SchemaErrors)) as exc_info:
         table_test = meteo.metfile_from_csv(
             metfil="test_meteo_4.csv", csv_path="tests/test_meteo/test_meteo_4.csv"
         )
