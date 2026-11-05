@@ -227,9 +227,12 @@ class YAMLValidatorMixin(BaseModel):
 
         This method reads the rules for the model from the YAML file and checks
         if the required parameters are present. If not, it raises a ValueError.
+        Parameters listed under `required` must always be set.
 
         ```yaml
         SaltStress: # <--- Model name
+            required:  # <--- Always required parameters
+                - swsalinity
             swsalinity:  # <--- Switch name (switch_name)
                 1:  # <--- Switch value (switch_value)
                 - saltmax  # <---| Required parameters
@@ -279,7 +282,14 @@ class YAMLValidatorMixin(BaseModel):
 
         logger.debug(f"Validating {self.__class__.__name__} with rules: {rules}")
 
+        missing = [p for p in rules.get("required", []) if getattr(self, p) is None]
+        if missing:
+            msg = f"The following parameters are required: {', '.join(missing)}"
+            raise ValueError(msg)
+
         for switch_name in rules:
+            if switch_name == "required":
+                continue
             switch_value = getattr(self, switch_name, None)
             if switch_value is not None:  # Only validate if the switch is set
                 self.validate_parameters(
