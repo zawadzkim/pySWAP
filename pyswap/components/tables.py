@@ -126,15 +126,24 @@ class RDCTB(BaseTableModel):
 
 
 class GCTB(BaseTableModel):
-    """Leaf Area Index [0..12 (m2 leaf)/(m2 soil), R], as function of dev. stage [0..2 -, R]
+    """Leaf Area Index [0..12 (m2 leaf)/(m2 soil), R] (SWGC = 1) or Soil Cover
+    Fraction [0..1 (m2 cover)/(m2 soil), R] (SWGC = 2), as function of dev.
+    stage [0..2 -, R]
 
     Attributes:
         DVS (Series[float]): Development stage of the crop.
         LAI (Series[float]): Leaf Area Index of the crop.
+        SCF (Series[float]): Soil Cover Fraction of the crop.
     """
 
     DVS: Series[float] = pa.Field(**DVSRANGE)
-    LAI: Series[float] = pa.Field(ge=0.0, le=12.0)
+    LAI: Series[float] | None = pa.Field(ge=0.0, le=12.0)
+    SCF: Series[float] | None = pa.Field(**UNITRANGE)
+
+    @pa.dataframe_check
+    def lai_or_scf(cls, df) -> bool:
+        """The table holds either LAI or SCF."""
+        return ("LAI" in df.columns) != ("SCF" in df.columns)
 
 
 class CFTB(BaseTableModel):
