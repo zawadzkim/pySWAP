@@ -137,7 +137,7 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
     """
 
     model_config = _ConfigDict(
-        validate_assignment=True, use_enum_values=True, extra="ignore"
+        validate_assignment=True, use_enum_values=True, extra="forbid"
     )
     _all_extensions: _ClassVar[list[str]] = _EXTENSIONS
     extensions: list[str] = _Field(default_factory=list, exclude=True)

@@ -82,7 +82,7 @@ def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
         "evaporation": Evaporation(),
         "soilprofile": SoilProfile(),
         "snowandfrost": SnowAndFrost(),
-        "richards": RichardsSettings(),
+        "richardsettings": RichardsSettings(),
         "lateraldrainage": Drainage(),
         "bottomboundary": BottomBoundary(),
         "heatflow": HeatFlow(),
