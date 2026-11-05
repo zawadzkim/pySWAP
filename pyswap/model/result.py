@@ -28,8 +28,11 @@ class Result(BaseModel):
         log (str): The log file of the model run.
         output (DataFrame): The output file of the model run.
         warning (List[str]): The warnings of the model run.
+        error (str | None): Why the run failed, if it was run with
+            `run_parallel(..., on_error="capture")`.
 
     Properties:
+        success (bool): True if the run did not fail.
         ascii (dict): The output in ASCII format.
         csv (DataFrame): The output in CSV format.
         csv_tz (DataFrame): The output in CSV format with depth.
@@ -43,10 +46,16 @@ class Result(BaseModel):
     log: str | None = Field(default=None, repr=False)
     output: dict | None = Field(default_factory=dict, repr=False)
     warning: list[str] | None = Field(default=None, repr=False)
+    error: str | None = None
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True, validate_assignment=True, extra="forbid"
     )
+
+    @computed_field(return_type=bool)
+    def success(self) -> bool:
+        """Return True if the run did not fail."""
+        return self.error is None
 
     @computed_field(return_type=dict, repr=False)
     def ascii(self) -> dict:
