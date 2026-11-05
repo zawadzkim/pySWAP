@@ -149,7 +149,7 @@ class ModelRunner:
         self.model = model
 
     @staticmethod
-    def run_swap(tempdir: Path) -> tuple[str, str, int]:
+    def run_swap(tempdir: Path, timeout: float | None = None) -> tuple[str, str, int]:
         """Run the SWAP executable.
 
         Run the exacutable in the tempdirectory and pass the newline to the
@@ -161,13 +161,15 @@ class ModelRunner:
         Parameters:
             tempdir (Path): The temporary directory where the executable
                 is stored.
+            timeout (float | None): Maximum run time in seconds. None means
+                no limit.
 
         Returns:
             tuple[str, str, int]: stdout, stderr, and return code
 
         Raises:
             RuntimeError: If the executable cannot be run (e.g., wrong architecture,
-                not executable, corrupt file).
+                not executable, corrupt file) or does not finish within timeout.
         """
         swap_path = get_swap(verbose=False, auto_install=True)
 
@@ -179,8 +181,13 @@ class ModelRunner:
                 stderr=subprocess.PIPE,
                 cwd=tempdir,
             )
-            stdout, stderr = p.communicate(input=b"\n")
+            stdout, stderr = p.communicate(input=b"\n", timeout=timeout)
             return stdout.decode(), stderr.decode(), p.returncode
+        except subprocess.TimeoutExpired as e:
+            p.kill()
+            p.communicate()
+            msg = f"SWAP did not finish within {timeout} s."
+            raise RuntimeError(msg) from e
         except OSError as e:
             # This catches issues like: permission denied, exec format error (wrong architecture),
             # file not found, etc.
@@ -208,7 +215,12 @@ class ModelRunner:
         for message in warnings:
             logger.warning(message)
 
-    def run(self, path: str | Path, silence_warnings: bool = False) -> Result:
+    def run(
+        self,
+        path: str | Path,
+        silence_warnings: bool = False,
+        timeout: float | None = None,
+    ) -> Result:
         """Main function that runs the model.
 
         First ModelBuilder is used to prepare the environment for the model run.
@@ -219,6 +231,7 @@ class ModelRunner:
         Parameters:
             path (str | Path): The path to the temporary directory.
             silence_warnings (bool): If True, warnings are not raised.
+            timeout (float | None): Maximum SWAP run time in seconds.
 
         Returns:
             Result: The parsed model results.
@@ -229,7 +242,7 @@ class ModelRunner:
 
             builder.write_inputs()
 
-            stdout, stderr, returncode = self.run_swap(tempdir)
+            stdout, stderr, returncode = self.run_swap(tempdir, timeout)
             reader = ResultReader(self.model, tempdir)
 
             if "normal completion" not in stdout.lower():
@@ -640,24 +653,36 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         logger.info(f"Model files written to {path}")
 
     def run(
-        self, path: str | Path | None = None, silence_warnings: bool = False
+        self,
+        path: str | Path | None = None,
+        silence_warnings: bool = False,
+        timeout: float | None = None,
     ) -> Result:
         """Run the model using ModelRunner."""
         self.validate()
         path = Path.cwd() if path is None else path
-        return ModelRunner(self).run(path, silence_warnings)
+        return ModelRunner(self).run(path, silence_warnings, timeout)
 
 
 def _run_model_with_params(args) -> Result:
-    """Helper function to run a model with parameters."""
-    model, path, silence_warnings = args
-    return model.run(path=path, silence_warnings=silence_warnings)
+    """Helper function to run a model with parameters.
+
+    Errors are returned in the Result, so that one failed run does not discard
+    the results of the others.
+    """
+    model, path, silence_warnings, timeout = args
+    try:
+        return model.run(path=path, silence_warnings=silence_warnings, timeout=timeout)
+    except Exception as e:
+        return Result(error=str(e))
 
 
 def run_parallel(
     mls: list[Model],
     path: Path | str | None = None,
     silence_warnings: bool = False,
+    on_error: Literal["raise", "capture"] = "raise",
+    timeout: float | None = None,
     **kwargs,
 ) -> list[Result]:
     """Run multiple models in parallel.
@@ -666,14 +691,34 @@ def run_parallel(
         mls (list[Model]): List of models to run.
         path (Path | str): The path to the temporary directory.
         silence_warnings (bool): If True, warnings are not raised.
+        on_error (Literal["raise", "capture"]): What to do when runs fail.
+
+            * raise - Raise a RuntimeError naming the failed runs, after all
+                runs have finished.
+            * capture - Return a Result with `error` set for each failed run.
+
+        timeout (float | None): Maximum run time of each SWAP run in seconds.
         **kwargs (dict): Keyword arguments for Pool().
 
     Returns:
         list[Result]: List of results from the model runs.
     """
+    if on_error not in ("raise", "capture"):
+        msg = f"on_error must be 'raise' or 'capture', got {on_error!r}"
+        raise ValueError(msg)
+
     with Pool(**kwargs) as pool:
         results = pool.map(
-            _run_model_with_params, [(model, path, silence_warnings) for model in mls]
+            _run_model_with_params,
+            [(model, path, silence_warnings, timeout) for model in mls],
         )
+
+    failed = [i for i, result in enumerate(results) if not result.success]
+    if failed and on_error == "raise":
+        msg = (
+            f"{len(failed)} of {len(mls)} model runs failed (indices {failed}). "
+            f"Error of run {failed[0]}:\n{results[failed[0]].error}"
+        )
+        raise RuntimeError(msg)
 
     return results
