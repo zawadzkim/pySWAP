@@ -8,14 +8,14 @@ readme = "README.md"
 requires-python = ">=3.11"
 
 dependencies = [
-    "pandas>=2.0,<3",
+    "pandas>=2.0,<4",
     "numpy>=1.26,<3", 
     "chardet>=5.0,<6",
     "h5py>=3.10,<4",
     "shapely>=2.0,<3",
     "pyproj>=3.6,<4",
     "pydantic>=2.0,<3",
-    "pandera[strategies]>=0.20,<1",
+    "pandera[strategies]>=0.24,<1",
     "matplotlib>=3.8,<4",
     "typer>=0.9,<1",
     "seaborn>=0.13,<1",
@@ -76,11 +76,21 @@ platforms = ["linux-64", "win-64"]
 [tool.pixi.pypi-dependencies]
 pyswap = { path = ".", editable = true }
 
+# Oldest supported stack (Python 3.11, pandas 2, pandera < 0.31), kept under
+# test next to the default.
+[tool.pixi.feature.legacy-deps.dependencies]
+python = "3.11.*"
+
+[tool.pixi.feature.legacy-deps.pypi-dependencies]
+pandas = ">=2.0,<3"
+pandera = ">=0.24,<0.31"
+
 [tool.pixi.environments]
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "test" }
 dev = { features = ["dev"], solve-group = "default" }
 docs = { features = ["docs"], solve-group = "default" }
+test-legacy = { features = ["dev", "legacy-deps"], solve-group = "legacy" }
 full = { features = ["dev", "docs"], solve-group = "default" }
 
 # =============================================================================
