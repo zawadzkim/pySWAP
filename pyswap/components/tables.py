@@ -979,7 +979,7 @@ class DATOWLTB1(BaseTableModel):
 
     Attributes:
         DATOWL1 (Series[pa.DateTime]): Date of the drainage water level.
-        WLEVEL (Series[float]): Drainage water level.
+        LEVEL1 (Series[float]): Drainage water level.
     """
 
     DATOWL1: Series[pa.DateTime]
