@@ -149,11 +149,15 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
             * 2 - Use drainage formula of Hooghoudt or Ernst.
             * 3 - Use drainage/infiltration resistance, multi-level if needed.
 
-        swdivd (Literal[1, 2]): Calculate vertical distribution of
+        swdivd (Literal[0, 1]): Calculate vertical distribution of
             drainage flux in groundwater.
+
+            * 0 - No vertical distribution.
+            * 1 - Distribute the drainage flux over the soil profile.
+
         cofani (Optional[FloatList]): specify anisotropy factor COFANI
             (horizontal/vertical saturated hydraulic conductivity) for
-            each soil layer (maximum MAHO)
+            each soil layer (maximum MAHO). Required if swdivd = 1.
         swdislay (Literal[0, 1, 2, 3, '-']): Switch to adjust
             upper boundary of model discharge layer.
 
@@ -221,7 +225,7 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     _extension = _PrivateAttr("dra")
     # General
     dramet: _Literal[1, 2, 3] | None = None
-    swdivd: _Literal[1, 2] | None = None
+    swdivd: _Literal[0, 1] | None = None
     cofani: _FloatList | None = None
     swdislay: _Literal[0, 1, 2, 3, "-"] | None = None
     # Drainage flux table
