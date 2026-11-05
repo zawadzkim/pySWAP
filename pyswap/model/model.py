@@ -518,7 +518,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         default=None, repr=False
     )
     richardsettings: Subsection[RichardsSettings] | None = Field(
-        default=RichardsSettings(swkmean=1, swkimpl=0), repr=False
+        default=RichardsSettings(), repr=False
     )
     meteorology: Subsection[Meteorology] | None = Field(default=None, repr=False)
     crop: Subsection[Crop] | None = Field(default=None, repr=False)

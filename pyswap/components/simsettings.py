@@ -222,8 +222,8 @@ class RichardsSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin
         maxbacktr (int): Maximum number of back track cycles within an iteration cycle [1 .. 10]
     """
 
-    swkmean: _Literal[1, 2, 3, 4, 5, 6] | None = None
-    swkimpl: _Literal[0, 1] | None = None
+    swkmean: _Literal[1, 2, 3, 4, 5, 6] | None = 1
+    swkimpl: _Literal[0, 1] | None = 0
     dtmin: float | None = _Field(default=0.000001, ge=1e-7, le=0.1)
     dtmax: float | None = _Field(default=0.04, ge=0.000001, le=1.0)
     gwlconv: float | None = _Field(default=100.0, ge=1e-5, le=1000.0)
