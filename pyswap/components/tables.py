@@ -109,7 +109,7 @@ class RDTB(BaseTableModel):
 
     DVS: Series[float] | None = pa.Field(**DVSRANGE)
     DNR: Series[float] | None = pa.Field(**YEARRANGE)
-    RD: Series[float] = pa.Field(ge=0.0, le=100.0)
+    RD: Series[float] = pa.Field(ge=0.0, le=1000.0)
 
 
 class RDCTB(BaseTableModel):
