@@ -39,6 +39,7 @@ from typing import (
 from pydantic import (
     Field as _Field,
     PrivateAttr as _PrivateAttr,
+    model_validator as _model_validator,
 )
 
 from pyswap.components.irrigation import ScheduledIrrigation as _ScheduledIrrigation
@@ -380,7 +381,8 @@ class CropDevelopmentSettingsFixed(_CropDevelopmentSettings):
             * 1 - LAI
             * 2 - SCF
 
-        gctb  _Arrays): Soil Cover Fraction as a function of development stage
+        gctb (_Arrays): Leaf Area Index (column LAI, swgc = 1) or Soil Cover
+            Fraction (column SCF, swgc = 2) as a function of development stage
     """
 
     idev: _Literal[1, 2] | None = None
@@ -388,6 +390,15 @@ class CropDevelopmentSettingsFixed(_CropDevelopmentSettings):
     swgc: _Literal[1, 2] | None = None
     gctb: _Arrays | None = None
     kytb: _Arrays | None = None
+
+    @_model_validator(mode="after")
+    def _check_gctb_column(self):
+        if self.swgc is not None and self.gctb is not None:
+            column = {1: "LAI", 2: "SCF"}[self.swgc]
+            if column not in self.gctb.columns:
+                msg = f"gctb must have a {column} column for swgc = {self.swgc}"
+                raise ValueError(msg)
+        return self
 
 
 class CropDevelopmentSettingsGrass(CropDevelopmentSettingsWOFOST):
