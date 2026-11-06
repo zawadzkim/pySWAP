@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>pySWAP documentation</title>
+  <script>
+    // Links from before the docs were versioned (/pySWAP/<page>) are sent to
+    // the same page of the latest version (/pySWAP/latest/<page>).
+    var parts = window.location.pathname.split("/");
+    var base = "/" + parts[1] + "/";
+    var first = parts[2] || "";
+    if (!/^(latest|dev|\d+\.\d+)$/.test(first)) {
+      window.location.replace(
+        base + "latest/" + parts.slice(2).join("/") +
+        window.location.search + window.location.hash
+      );
+    }
+  </script>
+</head>
+<body>
+  <p>Page not found. Go to the <a href="/pySWAP/latest/">latest documentation</a>.</p>
+</body>
+</html>

@@ -52,6 +52,7 @@ docs = [
     "mkdocstrings-python>=1.10.3",
     "mkdocs-awesome-pages-plugin>=2.10.1",
     "mkdocs-exclude-search>=0.6.6",
+    "mike>=2.1",
 ]
 
 [project.urls]
@@ -125,7 +126,8 @@ pre-commit-run = "pre-commit run --all-files"
 # === Documentation tasks ===
 docs-serve = "mkdocs serve"
 docs-build = "mkdocs build"
-docs-deploy = "mkdocs gh-deploy"
+# Versions are deployed with mike by the docs workflow (docs.yaml).
+docs-versions = "mike list"
 
 # === Notebook tasks ===
 jupyter = "jupyter lab"

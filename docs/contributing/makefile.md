@@ -27,7 +27,7 @@ Run any task with `pixi run <task-name>` or `pixi run -e <environment> <task-nam
 
 - **docs-serve**: `pixi run -e docs docs-serve` - Serve docs locally
 - **docs-build**: `pixi run -e docs docs-build` - Build documentation
-- **docs-deploy**: `pixi run -e docs docs-deploy` - Deploy docs to GitHub Pages
+- **docs-versions**: `pixi run -e docs docs-versions` - List the deployed documentation versions. Versions are deployed by CI with mike: `dev` on every push to the dev branch, the minor version (e.g. `0.3`) with the `latest` alias on release.
 
 ### Project Management
 

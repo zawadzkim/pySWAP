@@ -1,27 +1,43 @@
 name: Documentation
 
+# Versioned documentation with mike on the gh-pages branch:
+# - push to dev: deploys the "dev" version
+# - release (called by cd.yaml with the version): deploys the minor version
+#   (e.g. 0.3) with the "latest" alias, which the site root redirects to
 on:
+  push:
+    branches: [dev]
   workflow_call:
-    # Called by CD workflow after release creation
-    outputs:
-      artifact-name:
-        description: "Name of the generated docs artifact"
-        value: ${{ jobs.build-docs.outputs.artifact-name }}
+    inputs:
+      version:
+        description: "Released version (e.g. 0.3.10); empty deploys dev"
+        type: string
+        required: false
+        default: ""
+      build-only:
+        description: "Only build the docs, do not deploy"
+        type: boolean
+        required: false
+        default: false
   workflow_dispatch:
-    # Allow manual documentation builds
+    inputs:
+      version:
+        description: "Released version (e.g. 0.3.10); run from the release tag. Empty deploys dev"
+        type: string
+        required: false
+        default: ""
 
 permissions:
-  contents: read
-  id-token: write
-  pages: write
+  contents: write
 
 jobs:
-  # Build and validate documentation (runs on all branches/PRs)
-  build-docs:
+  docs:
     runs-on: ubuntu-latest
-    outputs:
-      artifact-name: ${{ steps.artifact.outputs.name }}
-    
+    # Deployments push to gh-pages; never run two at once
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: false
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -36,43 +52,33 @@ jobs:
           cache: true
 
       - name: Build documentation
+        if: ${{ inputs.build-only }}
         run: pixi run -e docs docs-build
 
-      - name: Upload docs artifact
-        id: artifact
-        uses: actions/upload-artifact@v5
-        with:
-          name: docs-${{ github.sha }}
-          path: site
-          retention-days: 7
-        
-      - name: Set artifact name output
-        run: echo "name=docs-${{ github.sha }}" >> $GITHUB_OUTPUT
+      - name: Deploy documentation
+        if: ${{ !inputs.build-only }}
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages --depth=1
+          if [ -n "$VERSION" ]; then
+            minor="${VERSION%.*}"
+            pixi run -e docs mike deploy --push --update-aliases "$minor" latest
+            pixi run -e docs mike set-default --push latest
+          else
+            pixi run -e docs mike deploy --push dev
+          fi
 
-  # Deploy documentation (only when called for deployment)
-  deploy-docs:
-    needs: build-docs
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
-      - name: Download docs artifact
-        uses: actions/download-artifact@v6
-        with:
-          name: ${{ needs.build-docs.outputs.artifact-name }}
-          path: docs-site
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload to GitHub Pages
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: docs-site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Keep the 404 redirect for unversioned links
+        if: ${{ !inputs.build-only }}
+        run: |
+          git worktree add ../gh-pages gh-pages
+          cp .github/pages/404.html ../gh-pages/404.html
+          cd ../gh-pages
+          git add 404.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Update 404 redirect"
+            git push origin gh-pages
+          fi
