@@ -117,6 +117,8 @@ jobs:
     needs: check-version
     if: needs.check-version.outputs.tag-exists == 'false'
     uses: ./.github/workflows/docs.yaml
+    with:
+      build-only: true
 
   create-release:
     needs: [check-version, test, build-package, build-docs]
@@ -206,29 +208,9 @@ jobs:
   deploy-docs:
     needs: [check-version, create-release, publish-pypi, build-docs]
     if: needs.create-release.outputs.release-created == 'true' && needs.publish-pypi.outputs.published == 'true'
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
-      - name: Download docs artifact
-        uses: actions/download-artifact@v6
-        with:
-          name: docs-${{ github.sha }}
-          path: docs-site
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload to GitHub Pages
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: docs-site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    uses: ./.github/workflows/docs.yaml
+    with:
+      version: ${{ needs.check-version.outputs.version }}
 
   rollback-on-failure:
     needs: [check-version, create-release, publish-pypi]
