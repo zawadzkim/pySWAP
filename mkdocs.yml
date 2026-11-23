@@ -9,8 +9,15 @@ watch:
 extra_css:
   - stylesheets/extra.css
 
+# Versions are deployed with mike (see .github/workflows/docs.yaml).
+extra:
+  version:
+    provider: mike
+    default: latest
+
 theme:
   name: material
+  custom_dir: overrides
   logo: public/logo.webp
   navigation_depth: 2
   features:

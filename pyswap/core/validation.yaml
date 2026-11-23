@@ -19,6 +19,28 @@ CropDevelopmentSettings: &CropDevelopmentSettings
       - rlwtb
       - wrtmax
 
+CropDevelopmentSettingsFixed:
+  <<: *CropDevelopmentSettings
+  required:
+    - idev
+    - swcf
+    - kdif
+    - kdir
+    - swgc
+    - rdctb
+  idev:
+    1:
+      - lcc
+    2:
+      - tsum1
+      - tsum2
+      - tbase
+  swgc:
+    1:
+      - gctb
+    2:
+      - gctb
+
 CropDevelopmentSettingsWOFOST:
   <<: *CropDevelopmentSettings
   idsl:

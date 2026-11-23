@@ -83,7 +83,7 @@ pixi run fix-all        # Auto-fix formatting and linting issues
 ```bash
 pixi run docs-serve     # Serve docs locally
 pixi run docs-build     # Build docs
-pixi run docs-deploy    # Deploy to GitHub Pages
+pixi run docs-versions  # List deployed versions (CI deploys them)
 ```
 
 ### 5. Environment Variables

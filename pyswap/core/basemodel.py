@@ -44,7 +44,7 @@ class PySWAPBaseModel(BaseModel):
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
         validate_assignment=True,
-        extra="ignore",
+        extra="forbid",
         populate_by_name=True,
     )
 
@@ -72,6 +72,10 @@ class PySWAPBaseModel(BaseModel):
             inplace (bool): If True, update the model in place.
         """
 
+        fields = type(self).model_fields
+        names = {name: name for name in fields}
+        names |= {f.alias: name for name, f in fields.items() if f.alias}
+        new = {names[key]: value for key, value in new.items() if key in names}
         updated_model = self.model_validate(dict(self) | new)
 
         if not inplace:
