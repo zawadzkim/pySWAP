@@ -96,3 +96,24 @@ def test_failed_runs_raise(parameters):
     with pytest.raises(RuntimeError, match="runs failed"):
         run_morris(None, parameters, linear_response, trajectories=4, seed=1,
                    _evaluator=failing_evaluator)
+
+
+def test_public_evaluator_and_optimal_trajectories(parameters):
+    """The public `evaluator` hook and the Campolongo subset selection."""
+    calls = {"n": 0}
+
+    def counting_evaluator(model, parameters, samples, **kwargs):
+        rows = [np.asarray(row) for row in np.atleast_2d(samples)]
+        calls["n"] += len(rows)
+        return rows
+
+    out = run_morris(
+        None, parameters, linear_response,
+        trajectories=8, optimal_trajectories=4, seed=1,
+        evaluator=counting_evaluator,
+    )
+    # 4 kept trajectories x (2 params + 1) points
+    assert calls["n"] == 4 * (len(parameters) + 1)
+    strong = out.set_index("name").loc["strong", "mu_star"]
+    weak = out.set_index("name").loc["weak", "mu_star"]
+    assert strong > weak

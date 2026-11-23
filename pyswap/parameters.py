@@ -15,8 +15,10 @@ Paths address two kinds of locations:
 - table cells, with the column name and integer row index as the final
   segment, e.g. ``"soilprofile.soilhydrfunc.KSATFIT[2]"``.
 
-Compound parameters (one value driving several locations) are not expressible
-as a single path; list one parameter per location instead.
+Compound parameters (one value driving several locations) are expressed with
+the ``also`` attribute: the primary ``path`` plus any number of additional
+paths all receive the same physical value. The canonical use is tying the
+``KSATFIT``/``KSATEXM`` halves of a soil layer into one screening factor.
 
 Classes:
     Param: One named, bounded parameter addressing a location in the model.
@@ -60,12 +62,21 @@ class Param:
         transform: Optional sampling-space transform; samplers and optimizers
             work in transformed space, `ParameterSet.apply` always takes
             physical values.
+        also: Additional paths that receive the same value — a compound
+            parameter driving several locations with one factor (e.g. the
+            KSATFIT/KSATEXM halves of a layer).
     """
 
     name: str
     path: str
     bounds: tuple[float, float]
     transform: Literal["log10"] | None = None
+    also: tuple[str, ...] = ()
+
+    @property
+    def paths(self) -> tuple[str, ...]:
+        """Every path this parameter drives (primary first)."""
+        return (self.path, *self.also)
 
     def to_sample_space(self, value: float) -> float:
         """Physical value -> sampling/optimization space."""
@@ -159,12 +170,13 @@ class ParameterSet:
             raise ValueError(msg)
 
         for par, val in zip(self.params, values, strict=True):
-            segments = par.path.split(".")
-            model = model.update({
-                segments[0]: _set_by_path(
-                    getattr(model, segments[0]), segments[1:], float(val)
-                )
-            })
+            for path in par.paths:
+                segments = path.split(".")
+                model = model.update({
+                    segments[0]: _set_by_path(
+                        getattr(model, segments[0]), segments[1:], float(val)
+                    )
+                })
         return model
 
 
