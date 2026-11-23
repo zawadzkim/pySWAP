@@ -77,25 +77,28 @@ class Flux(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
         Simplicity over DRY. Anyway, the prefered way to set this up would be
         through the table from the extended section I guess.
 
+    Each attribute exists once per drainage level, with the level number
+    (1 to 5) as suffix, e.g. `drares1` ... `drares5`. Set the attributes for
+    levels 1 to `nrlevs` of the DraFile.
+
     Attributes:
-        drares (float): Drainage resistance [10 .. 1e5 d].
-        infres (float): Infiltration resistance [10 .. 1e5 d].
-        swallo (Literal[1, 2]): Switch to allow drainage from this level.
+        draresN (float): Drainage resistance [10 .. 1e5 d].
+        infresN (float): Infiltration resistance [10 .. 1e5 d].
+        swalloN (Literal[1, 2, 3]): Switch to allow drainage from this level.
 
             * 1 - Drainage and infiltration are both allowed.
             * 2 - Only infiltration is allowed.
             * 3 - Only drainage is allowed.
 
-        l (Optional[float]): Drain spacing [1 .. 1e5 m].
-        zbotdr (float): Level of the bottom of the drain [-1e4 .. 0 cm].
-        swdtyp (Literal[1, 2]): Drainage type.
+        lN (Optional[float]): Drain spacing [1 .. 1e5 m].
+        zbotdrN (float): Level of the bottom of the drain [-1e4 .. 0 cm].
+        swdtypN (Literal[1, 2]): Drainage type.
 
             * 1 - drain tube.
             * 2 - open channel.
 
-        datowltb (Table): date DATOWL [date] and channel water
-            level LEVEL. Add suffix to the dataframe headers
-            according to the level number.
+        datowltbN (Table): date DATOWLN [date] and channel water
+            level LEVELN (DATOWLTB1 ... DATOWLTB5).
     """
 
     drares1: float | None = _Field(default=None, ge=10.0, le=1.0e5)
@@ -149,11 +152,15 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
             * 2 - Use drainage formula of Hooghoudt or Ernst.
             * 3 - Use drainage/infiltration resistance, multi-level if needed.
 
-        swdivd (Literal[1, 2]): Calculate vertical distribution of
+        swdivd (Literal[0, 1]): Calculate vertical distribution of
             drainage flux in groundwater.
+
+            * 0 - No vertical distribution.
+            * 1 - Distribute the drainage flux over the soil profile.
+
         cofani (Optional[FloatList]): specify anisotropy factor COFANI
             (horizontal/vertical saturated hydraulic conductivity) for
-            each soil layer (maximum MAHO)
+            each soil layer (maximum MAHO). Required if swdivd = 1.
         swdislay (Literal[0, 1, 2, 3, '-']): Switch to adjust
             upper boundary of model discharge layer.
 
@@ -221,7 +228,7 @@ class DraFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     _extension = _PrivateAttr("dra")
     # General
     dramet: _Literal[1, 2, 3] | None = None
-    swdivd: _Literal[1, 2] | None = None
+    swdivd: _Literal[0, 1] | None = None
     cofani: _FloatList | None = None
     swdislay: _Literal[0, 1, 2, 3, "-"] | None = None
     # Drainage flux table

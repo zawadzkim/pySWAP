@@ -82,7 +82,7 @@ def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
         "evaporation": Evaporation(),
         "soilprofile": SoilProfile(),
         "snowandfrost": SnowAndFrost(),
-        "richards": RichardsSettings(),
+        "richardsettings": RichardsSettings(),
         "lateraldrainage": Drainage(),
         "bottomboundary": BottomBoundary(),
         "heatflow": HeatFlow(),
@@ -127,6 +127,9 @@ def load_dra(path: Path):
 def load_crp(path: Path, crptype: _Literal["fixed", "wofost", "grass"], name: str):
     crp = open_ascii(path)
     params = parse_ascii_file(crp, grass=True if crptype == "grass" else False)
+    # GCTB has no header in the file; it holds soil cover fractions if SWGC = 2.
+    if str(params.get("swgc")) == "2" and params.get("gctb") is not None:
+        params["gctb"] = params["gctb"].rename(columns={"LAI": "SCF"})
 
     cropfile_setup = {
         "name": name,

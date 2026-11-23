@@ -29,6 +29,7 @@ from numpy import exp as _exp
 from pydantic import (
     Field as _Field,
     PrivateAttr as _PrivateAttr,
+    field_validator as _field_validator,
 )
 
 from pyswap.components.tables import (
@@ -73,7 +74,8 @@ class MetFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     is formatted with a custom field serializer of the CSVTable field type.
 
     Attributes:
-        metfil (str): name of the .met file
+        metfil (str): name of the .met file, ending in .met. It is lowercased,
+            as SWAP lowercases METFIL before opening the file.
         content (CSVTable): meteorological data file
     """
 
@@ -82,6 +84,24 @@ class MetFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
 
     metfil: _String
     content: _Table | None = _Field(default=None, exclude=True)
+
+    @_field_validator("metfil")
+    @classmethod
+    def _check_metfil(cls, value: str) -> str:
+        value = value.lower()
+        if not value.endswith(".met"):
+            msg = f"metfil must end with .met (got {value!r})"
+            raise ValueError(msg)
+        return value
+
+    @_field_validator("content")
+    @classmethod
+    def _order_columns(cls, value):
+        # SWAP only accepts the daily columns in its own order.
+        columns = list(DAILYMETEODATA.to_schema().columns)
+        if value is not None and set(value.columns) == set(columns):
+            value = value[columns]
+        return value
 
 
 class Meteorology(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
@@ -201,11 +221,11 @@ def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
 
     !!! note
 
-        The CSV file must contain the following columns:
-        station, dd, mm, yyyy, tmin, tmax, hum, wet, wind, rain, etref, rad
+        The CSV file must contain the following columns, in any order:
+        station, dd, mm, yyyy, rad, tmin, tmax, hum, wind, rain, etref, wet
 
     Parameters:
-        metfil (str): name of the .met file
+        metfil (str): name of the .met file, ending in .met
         csv_path (str): path to the CSV file
         **kwargs (dict): keyword arguments for pandas.read_csv
 

@@ -82,7 +82,7 @@ class TableProcessor:
         df = pd.DataFrame(data, columns=columns)
         try:
             schema_object = schema.validate(df)
-        except pa.errors.SchemaError:
+        except (pa.errors.SchemaError, pa.errors.SchemaErrors):
             logger.exception(f"Validation error for {schema.__name__}")
             return None
         else:
@@ -157,6 +157,10 @@ class TableProcessor:
                         for col in schema["cols"]
                         if col.upper() != ("DVS" if grass else "DNR")
                     )
+                    # Schemas with alternative columns (GCTB: LAI or SCF) name
+                    # the data after the first ones.
+                    if data:
+                        filtered_cols = filtered_cols[: len(data[0])]
 
                     schema_obj = self.create_schema_object(
                         schema["class"], filtered_cols, data
