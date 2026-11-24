@@ -159,6 +159,7 @@ exclude = ["tests*", "docs*", "site*", "paper*", "node_modules*"]
 
 [tool.setuptools.package-data]
 pyswap = [
+    "py.typed",
     "core/validation.yaml",
     "core/cli/templates/*",
     "libs/**/*",
