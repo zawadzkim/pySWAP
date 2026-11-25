@@ -41,9 +41,19 @@ def test_load_crop_file_missing_raises():
         WOFOSTCropDB().load_crop_file("nonexistent_crop")
 
 
-def test_croptypes_prints_available_crops(capsys):
-    _ = WOFOSTCropDB().croptypes
-    assert "potato" in capsys.readouterr().out
+def test_croptypes_returns_available_crops(capsys):
+    croptypes = WOFOSTCropDB().croptypes
+    assert isinstance(croptypes, list)
+    assert "potato" in croptypes
+    assert capsys.readouterr().out == ""
+
+
+def test_inspecting_cropdb_prints_nothing(capsys):
+    db = WOFOSTCropDB()
+    repr(db)
+    db.model_dump()
+    assert capsys.readouterr().out == ""
+    assert "croptypes" not in db.model_dump()
 
 
 # --- WOFOSTCropFile ---------------------------------------------------------
