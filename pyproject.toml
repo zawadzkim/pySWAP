@@ -18,7 +18,6 @@ dependencies = [
     "pandera[strategies]>=0.24,<1",
     "matplotlib>=3.8,<4",
     "typer>=0.9,<1",
-    "seaborn>=0.13,<1",
     "pyyaml>=6.0,<7",
 ]
 
