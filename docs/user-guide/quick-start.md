@@ -159,6 +159,7 @@ Some features rely on packages that are not needed to build and run a model, and
 | Extra | Install | Enables |
 |-------|---------|---------|
 | `knmi` | `pip install "pyswap[knmi]"` | `metfile_from_knmi`: weather data from the Dutch KNMI service |
+| `gis` | `pip install "pyswap[gis]"` | `Location.to_crs`, `Location.point` and coordinate systems other than EPSG:4326 (pyproj, shapely). Plain latitude, longitude and altitude need no extra. |
 
 Calling a feature without its extra raises an `ImportError` that names the extra to install. The pixi environments of the repository (`test`, `dev`, `docs`, `full`) include all extras.
 

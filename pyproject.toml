@@ -11,8 +11,6 @@ dependencies = [
     "pandas>=2.0,<4",
     "numpy>=1.26,<3", 
     "h5py>=3.10,<4",
-    "shapely>=2.0,<3",
-    "pyproj>=3.6,<4",
     "pydantic>=2.0,<3",
     "pandera[strategies]>=0.24,<1",
     "matplotlib>=3.8,<4",
@@ -24,6 +22,12 @@ dependencies = [
 # Optional data sources: `pip install "pyswap[knmi]"`
 knmi = [
     "knmi-py>=0.2.0,<0.3",
+]
+# Coordinate reference systems and Shapely geometry for Location:
+# `pip install "pyswap[gis]"`
+gis = [
+    "shapely>=2.0,<3",
+    "pyproj>=3.6,<4",
 ]
 test = [
     "pytest>=8.2.2",
@@ -89,11 +93,11 @@ pandera = ">=0.24,<0.31"
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
-test = { features = ["test", "knmi"], solve-group = "test" }
-dev = { features = ["dev", "knmi"], solve-group = "default" }
-docs = { features = ["docs", "knmi"], solve-group = "default" }
-test-legacy = { features = ["dev", "knmi", "legacy-deps"], solve-group = "legacy" }
-full = { features = ["dev", "docs", "knmi"], solve-group = "default" }
+test = { features = ["test", "knmi", "gis"], solve-group = "test" }
+dev = { features = ["dev", "knmi", "gis"], solve-group = "default" }
+docs = { features = ["docs", "knmi", "gis"], solve-group = "default" }
+test-legacy = { features = ["dev", "knmi", "gis", "legacy-deps"], solve-group = "legacy" }
+full = { features = ["dev", "docs", "knmi", "gis"], solve-group = "default" }
 
 # =============================================================================
 # Pixi Tasks

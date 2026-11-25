@@ -27,10 +27,10 @@ The easiest way to install the package is through pip:
 pip install pyswap
 ```
 
-Optional data sources are installed as extras, e.g. KNMI weather data for `metfile_from_knmi`:
+Optional features are installed as extras: `knmi` (KNMI weather data for `metfile_from_knmi`) and `gis` (coordinate transformations for `Location`), e.g.:
 
 ```shell
-pip install "pyswap[knmi]"
+pip install "pyswap[knmi,gis]"
 ```
 
 You can also clone the repository from github:
