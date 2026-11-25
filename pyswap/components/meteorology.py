@@ -69,14 +69,34 @@ __all__ = [
 class MetFile(_PySWAPBaseModel, _FileMixin, _SerializableMixin):
     """Meteorological data for the .met file.
 
-    This object is created by functions fetching or loading meteorological data
-    from various sources. The data is stored as a pandas.DataFrame, but
-    is formatted with a custom field serializer of the CSVTable field type.
+    `content` is a plain pandas.DataFrame, so your own daily weather data can
+    be passed directly, e.g. `MetFile(metfil="site.met", content=df)`. The
+    helpers `metfile_from_csv` and `metfile_from_knmi` build the same object
+    from a CSV file or from KNMI data. The DataFrame is written to the .met
+    file as CSV, one row per day.
+
+    Required columns, in this order (SWAP daily weather data, Kroes et al.
+    2017, Box 3.2), with missing values given as -99.9:
+
+    * STATION - station name, in single quotes (e.g. "'260'")
+    * DD, MM, YYYY - day, month and year
+    * RAD - global solar radiation [kJ/m2/d]
+    * TMIN, TMAX - minimum and maximum air temperature [degC]
+    * HUM - actual vapour pressure [kPa]
+    * WIND - mean wind speed at 2 m height [m/s]
+    * RAIN - rainfall [mm/d]
+    * ETREF - reference evapotranspiration [mm/d]; -99.9 if SWAP should
+      compute it (Penman-Monteith, SWETR = 0)
+    * WET - fraction of the day with rainfall [d]
+
+    SWAP reads the columns by position. If the column names are exactly the
+    upper-case names above, pySWAP puts them in this order for you; with other
+    names (e.g. "Station", "Tmin") they are written in the order given.
 
     Attributes:
         metfil (str): name of the .met file, ending in .met. It is lowercased,
             as SWAP lowercases METFIL before opening the file.
-        content (CSVTable): meteorological data file
+        content (DataFrame): daily meteorological data with the columns above.
     """
 
     # None, because the extension has to be added to metfil
