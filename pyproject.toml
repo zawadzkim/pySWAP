@@ -154,6 +154,10 @@ dev-setup = { depends-on = ["install-dev", "pre-commit-install", "nbstripout-ins
 # === Package installation ===
 install-package = "pip install -e ."
 
+# === Conda alternative ===
+# Regenerate environment.yml (all dependencies) from the pixi `full` environment.
+export-env = "python scripts/export_environment.py"
+
 # =============================================================================
 # Tool Configuration
 # =============================================================================

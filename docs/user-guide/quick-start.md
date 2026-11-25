@@ -144,6 +144,10 @@ DATETIME
 
 For detailed information about all CLI commands and options, see the [CLI Reference](/user-guide/cli/).
 
+## Developing pySWAP itself
+
+The steps above set up a project that *uses* pySWAP. To work on pySWAP and run its test suite, clone the repository and use its development environment: `pixi install -e dev` and then `pixi run -e dev test`. The default environment of the repository has no test tools, so `pixi run test` without `-e dev` does not work. A conda `environment.yml` with all dependencies is provided as an alternative; see [Development environment and tasks](../contributing/makefile.md).
+
 ## Install manually and and start from scratch
 
 pySWAP can be simply installed through pip. Creation of a separate virtual environment is recommended.
