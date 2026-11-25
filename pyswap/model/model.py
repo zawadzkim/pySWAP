@@ -18,7 +18,8 @@ The four classes in this module are:
 
 Classes:
 
-    ModelBuilder: Class responsible for building the model components.
+    ModelBuilder: Collects the model's input files (writing is done by
+        Model.write).
     ModelRunner: Class responsible for running the model.
     ResultReader: Class responsible for parsing the model results.
     Model: Main class that runs the SWAP model.
@@ -98,35 +99,12 @@ class ModelBuilder:
         return inputs
 
     def write_inputs(self) -> None:
-        """Write the input files to the temporary directory."""
-        logger.info("Preparing files...")
+        """Write the input files to the temporary directory.
 
-        self.model.write_swp(self.tempdir)
-
-        if self.model.lateraldrainage.swdra in [1, 2]:
-            self.model.lateraldrainage.write_dra(self.tempdir)
-        if self.model.crop.cropfiles:
-            self.model.crop.write_crop(self.tempdir)
-            # Check if co2correction is used in any of the cropfiles
-            crops_co2corrections = [
-                cropfile.co2correction is not None
-                for cropfile in self.model.crop.cropfiles.values()
-            ]
-            # If so, copy the co2correction file to the tempdir
-            if sum(crops_co2corrections) > 0:
-                co2db = CO2concentration()
-                period = [
-                    self.model.generalsettings.tstart,
-                    self.model.generalsettings.tend,
-                ]
-                co2db.write_co2(self.tempdir, period)
-        if self.model.meteorology.metfile:
-            self.model.meteorology.write_met(self.tempdir)
-        if self.model.fixedirrigation.swirgfil == 1:
-            self.model.fixedirrigation.write_irg(self.tempdir)
-        if self.model.bottomboundary.swbbcfile == 1:
-            self.model.bottomboundary.write_bbc(self.tempdir)
-
+        Kept for backwards compatibility; the writing itself is done by
+        `Model.write`.
+        """
+        self.model.write(self.tempdir, validate=False)
         return self
 
 
@@ -258,9 +236,7 @@ class ModelRunner:
         timeout: float | None = None,
     ) -> Result:
         """Write the inputs to `workdir`, run SWAP there and read the results."""
-        builder = ModelBuilder(self.model, workdir)
-
-        builder.write_inputs()
+        self.model.write(workdir, validate=False)
 
         stdout, stderr, returncode = self.run_swap(workdir, timeout)
         reader = ResultReader(self.model, workdir)
@@ -538,6 +514,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
 
     Methods:
         write_swp: Write the .swp input file.
+        write: Write the .swp file and all component input files.
         validate: Validate the model.
         run: Run the model.
     """
@@ -663,13 +640,62 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         builder = ModelBuilder(model=self, tempdir=Path.cwd())
         return builder.get_inputs()
 
+    def write(self, path: str | Path, validate: bool = True) -> Path:
+        """Write the model to a directory: the .swp file and all component files.
+
+        Writes `swap.swp` and every input file the attached components need
+        (.dra, .crp, .met, .irg, .bbc and, when a crop uses CO2 correction, the
+        CO2 concentration file), i.e. exactly the files `run()` gives to SWAP.
+        The directory is created if it does not exist; files with the same
+        names are overwritten.
+
+        Parameters:
+            path (str | Path): Directory to write the files to.
+            validate (bool): Validate the model before writing (default True).
+
+        Returns:
+            Path: The directory the files were written to.
+        """
+        if validate:
+            self.validate()
+        path = Path(path)
+        path.mkdir(parents=True, exist_ok=True)
+        logger.info("Preparing files...")
+
+        self.write_swp(path)
+
+        if self.lateraldrainage.swdra in [1, 2]:
+            self.lateraldrainage.write_dra(path)
+        if self.crop.cropfiles:
+            self.crop.write_crop(path)
+            # Check if co2correction is used in any of the cropfiles
+            crops_co2corrections = [
+                cropfile.co2correction is not None
+                for cropfile in self.crop.cropfiles.values()
+            ]
+            # If so, write the CO2 concentration file as well
+            if sum(crops_co2corrections) > 0:
+                co2db = CO2concentration()
+                period = [
+                    self.generalsettings.tstart,
+                    self.generalsettings.tend,
+                ]
+                co2db.write_co2(path, period)
+        if self.meteorology.metfile:
+            self.meteorology.write_met(path)
+        if self.fixedirrigation.swirgfil == 1:
+            self.fixedirrigation.write_irg(path)
+        if self.bottomboundary.swbbcfile == 1:
+            self.bottomboundary.write_bbc(path)
+
+        return path
+
     def to_classic_swap(self, path: Path) -> None:
-        """Prepare all the files for a model run in user's directory."""
-        self.validate()
-        builder = ModelBuilder(model=self, tempdir=path)
+        """Prepare all the files for a model run in user's directory.
 
-        builder.write_inputs()
-
+        Same as `write(path)`; kept for backwards compatibility.
+        """
+        self.write(path)
         logger.info(f"Model files written to {path}")
 
     def run(
