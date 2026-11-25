@@ -152,6 +152,16 @@ pySWAP can be simply installed through pip. Creation of a separate virtual envir
 pip install pyswap
 ```
 
+### Optional extras
+
+Some features rely on packages that are not needed to build and run a model, and are installed only on request:
+
+| Extra | Install | Enables |
+|-------|---------|---------|
+| `knmi` | `pip install "pyswap[knmi]"` | `metfile_from_knmi`: weather data from the Dutch KNMI service |
+
+Calling a feature without its extra raises an `ImportError` that names the extra to install. The pixi environments of the repository (`test`, `dev`, `docs`, `full`) include all extras.
+
 ### Run a test case
 
 After installation, you can test if everthing is OK by running a testcase:

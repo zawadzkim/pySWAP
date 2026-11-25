@@ -21,10 +21,6 @@ from typing import (
     Literal as _Literal,
 )
 
-from knmi import (
-    get_day_data_dataframe as _get_day_data_dataframe,
-    get_hour_data_dataframe as _get_hour_data_dataframe,
-)
 from numpy import exp as _exp
 from pydantic import (
     Field as _Field,
@@ -278,6 +274,10 @@ def metfile_from_knmi(
     !!! note:
         Currently, only daily data can be retrieved.
 
+    !!! note:
+        KNMI support is optional. It needs the `knmi` extra:
+        `pip install "pyswap[knmi]"`.
+
     Parameters:
         metfil (str): name of the .met file
         stations (str | list): station number(s) to retrieve data from
@@ -288,6 +288,18 @@ def metfile_from_knmi(
     Returns:
         MetFile object.
     """
+
+    try:
+        from knmi import (
+            get_day_data_dataframe as _get_day_data_dataframe,
+            get_hour_data_dataframe as _get_hour_data_dataframe,
+        )
+    except ImportError as e:
+        msg = (
+            "metfile_from_knmi needs the optional KNMI dependency (knmi-py). "
+            'Install it with: pip install "pyswap[knmi]"'
+        )
+        raise ImportError(msg) from e
 
     if not isinstance(stations, list):
         stations = [stations]

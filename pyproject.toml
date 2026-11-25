@@ -20,10 +20,13 @@ dependencies = [
     "typer>=0.9,<1",
     "seaborn>=0.13,<1",
     "pyyaml>=6.0,<7",
-    "knmi-py>=0.2.0,<0.3",
 ]
 
 [project.optional-dependencies]
+# Optional data sources: `pip install "pyswap[knmi]"`
+knmi = [
+    "knmi-py>=0.2.0,<0.3",
+]
 test = [
     "pytest>=8.2.2",
     "pytest-cov>=5.0.0",
@@ -88,11 +91,11 @@ pandera = ">=0.24,<0.31"
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
-test = { features = ["test"], solve-group = "test" }
-dev = { features = ["dev"], solve-group = "default" }
-docs = { features = ["docs"], solve-group = "default" }
-test-legacy = { features = ["dev", "legacy-deps"], solve-group = "legacy" }
-full = { features = ["dev", "docs"], solve-group = "default" }
+test = { features = ["test", "knmi"], solve-group = "test" }
+dev = { features = ["dev", "knmi"], solve-group = "default" }
+docs = { features = ["docs", "knmi"], solve-group = "default" }
+test-legacy = { features = ["dev", "knmi", "legacy-deps"], solve-group = "legacy" }
+full = { features = ["dev", "docs", "knmi"], solve-group = "default" }
 
 # =============================================================================
 # Pixi Tasks
