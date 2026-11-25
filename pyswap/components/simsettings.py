@@ -115,10 +115,39 @@ class GeneralSettings(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin)
         extensions (list): List of file extensions SWAP should return.
             Available options are: ["wba", "end", "vap", "bal", "blc", "sba", "ate",
             "bma", "drf", "swb", "ini", "inc", "crp", "str", "irg", "csv", "csv_tz"]
-        inlist_csv (Optional[StringList]): List of variables for the csv output.
-            Available options are: TODO
-        inlist_csv_tz (Optional[StringList]): List of variables over depth for
-            the csv tz output. Available options are:
+        inlist_csv (Optional[StringList]): Variables written as time series to
+            `<outfil>_output.csv`; required when "csv" is in `extensions`
+            (SWCSV = 1). Names are case-insensitive. Available options (SWAP
+            4.1 and newer; Heinen and Mulder, 2022, "SWAP 4 - Description
+            additional features", section 5):
+            * Water balance of the soil column [cm]: rain, snow, irrig,
+              interc, runon, runoff, tact, eact, sublim, drainage, volact,
+              dstor, qbottom
+            * Ponding and groundwater: rain_net, irrig_net, ssnow, pond [cm];
+              gwl [cm relative to soil surface]
+            * Evapotranspiration [cm]: tpot, tact, epot, eact, interc;
+              reduction of transpiration: treddry, tredwet, tredsol, tredfrs
+            * Crop growth, general: tsum, dvs, height, crpfac, laipot, lai,
+              rdpot, rd
+            * WOFOST [kg/ha]: pgasspot, pgass, cpwdm, cwdm, cpwso, cwso, pwlv,
+              wlv, pwst, wst, pwrt, wrt, dwso, dwlv, dwlvpot, dwst, dwstpot,
+              dwrt, dwrtpot
+            * GRASS [kg/ha]: pgrassdm, grassdm, pmowdm, mowdm, pgrazdm,
+              grazdm, plossdm, lossdm
+            * Solute transport [g/cm2]: sqprec, sqirrig, sqbot, sqdra, dectot,
+              rottot, sampro, solbal
+            * Soil-profile variables at given depths or compartments: h, wc,
+              temp, k, conc, concads, o2top, heacap, heacon, rwu, prwu, rdens,
+              lrv. Give up to 5 depths (negative floats with a decimal point)
+              or compartments (positive integers), separated by semicolons in
+              square brackets, without mixing the two, e.g. "h[-10.0;-25.0]"
+              or "wc[5;8;30]".
+        inlist_csv_tz (Optional[StringList]): Variables written for every soil
+            compartment (time-depth series) to `<outfil>_output_tz.csv`;
+            required when "csv_tz" is in `extensions` (SWCSV_TZ = 1).
+            Available options are the soil-profile variables listed under
+            `inlist_csv`, without depths: h, wc, temp, k, conc, concads, o2top,
+            heacap, heacon, rwu, prwu, rdens, lrv.
         swafo (Literal[0, 1, 2]): Switch, output file with formatted hydrological data:
             * 0 - no output
             * 1 - output to a file named *.AFO
