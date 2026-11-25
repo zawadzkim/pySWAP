@@ -1,26 +1,31 @@
 """Interact with ASCII files.
 
 Functions:
-    open_ascii: Open an ASCII file and detect its encoding.
+    open_ascii: Open a SWAP text file (UTF-8, falling back to Latin-1).
     save_ascii: Save a string to an ASCII file.
 """
 
 from pathlib import Path
 
-import chardet
-
 
 def open_ascii(file_path: Path) -> str:
-    """Open file and detect encoding.
+    """Open a SWAP text file and return its content.
+
+    SWAP input and output files are plain ASCII, except for a few characters
+    in comments and headers written by SWAP or Windows editors in Latin-1
+    (e.g. the degree sign in "ºC" in the .vap output). The file is decoded as
+    UTF-8 (which covers ASCII) and, if that fails, as Latin-1, which accepts
+    any byte. This replaces encoding detection with chardet and gives the same
+    text for the bundled inputs and SWAP outputs.
 
     Arguments:
         file_path (str): Path to the file to be opened.
     """
-    with open(file_path, "rb") as f:
-        raw_data = f.read()
-    encoding = chardet.detect(raw_data)["encoding"]
-
-    return raw_data.decode(encoding)
+    raw_data = Path(file_path).read_bytes()
+    try:
+        return raw_data.decode("utf-8")
+    except UnicodeDecodeError:
+        return raw_data.decode("latin-1")
 
 
 def save_ascii(
