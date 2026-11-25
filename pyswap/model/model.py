@@ -56,6 +56,7 @@ from pyswap.components.transport import HeatFlow, SoluteTransport
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.fields import Subsection
 from pyswap.core.io.io_ascii import open_ascii
+from pyswap.core.io.process_ascii import parse_ascii_file
 from pyswap.db.co2concentration import CO2concentration
 from pyswap.model.result import Result
 from pyswap.utils.executables import get_swap
@@ -515,6 +516,7 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     Methods:
         write_swp: Write the .swp input file.
         write: Write the .swp file and all component input files.
+        load: Load a model from a .swp file and the files it references.
         validate: Validate the model.
         run: Run the model.
     """
@@ -689,6 +691,123 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
             self.bottomboundary.write_bbc(path)
 
         return path
+
+    @classmethod
+    def load(cls, swp_path: str | Path, metadata: Metadata | None = None) -> Model:
+        """Load a model from a classic SWAP input directory, starting at its .swp file.
+
+        Parses the .swp file and loads the files it references, looked up in
+        the directory of the .swp file (where `write()` puts them):
+
+        * crop files (.crp) listed in the crop rotation, as simple, WOFOST or
+          grass crops according to CROPTYPE;
+        * the drainage file (.dra) if SWDRA is 1 or 2;
+        * the bottom boundary file (.bbc) if SWBBCFILE is 1;
+        * the meteorological file named by METFIL if it is a single .met file.
+
+        Not loaded (a warning is logged and the component is left for you to
+        set): a separate irrigation file (SWIRGFIL = 1, no loader exists yet),
+        yearly meteorological files (METFIL without the .met extension), and
+        referenced files that are missing. SWAP outputs are never loaded. Paths
+        in PATHATM, PATHCROP and PATHDRAIN are not followed.
+
+        Parameters:
+            swp_path (str | Path): Path to the .swp file.
+            metadata (Metadata | None): Model metadata. If None, the project
+                name is taken from PROJECT in the .swp file and the other
+                fields are set to "unknown" (they are not written to SWAP
+                input files).
+
+        Returns:
+            Model: The loaded model.
+        """
+        # imported here: the loaders module imports Model
+        from pyswap.components.meteorology import metfile_from_csv
+        from pyswap.utils.loaders import load_bbc, load_crp, load_dra, load_swp
+
+        swp_path = Path(swp_path)
+        folder = swp_path.parent
+        params = parse_ascii_file(open_ascii(swp_path))
+
+        def _name(value) -> str:
+            return str(value).strip().strip("'\"").strip()
+
+        def _find(fname: str) -> Path | None:
+            for candidate in (fname, fname.lower(), fname.upper()):
+                if (folder / candidate).exists():
+                    return folder / candidate
+            logger.warning(
+                f"{fname} is referenced in {swp_path.name} but not found in {folder}; not loaded."
+            )
+            return None
+
+        if metadata is None:
+            metadata = Metadata(
+                author="unknown",
+                institution="unknown",
+                email="unknown",
+                project=_name(params.get("project", "unknown")),
+                swap_ver="unknown",
+            )
+
+        ml = load_swp(swp_path, metadata)
+
+        rotation = ml.crop.croprotation if ml.crop is not None else None
+        if (
+            ml.crop is not None
+            and ml.crop.swcrop == 1
+            and isinstance(rotation, DataFrame)
+        ):
+            crptypes = {1: "fixed", 2: "wofost", 3: "grass"}
+            cropfiles = {}
+            for cropfil, croptype in (
+                rotation[["CROPFIL", "CROPTYPE"]]
+                .drop_duplicates()
+                .itertuples(index=False)
+            ):
+                name = _name(cropfil)
+                crp_path = _find(f"{name}.crp")
+                if crp_path is not None:
+                    cropfiles[name] = load_crp(
+                        crp_path, crptype=crptypes[int(croptype)], name=name
+                    )
+            ml.crop.cropfiles = cropfiles
+
+        if ml.lateraldrainage is not None and ml.lateraldrainage.swdra in [1, 2]:
+            dra_path = _find(f"{_name(ml.lateraldrainage.drfil)}.dra")
+            if dra_path is not None:
+                ml.lateraldrainage.drafile = load_dra(dra_path)
+
+        if ml.bottomboundary is not None and ml.bottomboundary.swbbcfile == 1:
+            bbc_path = _find(f"{_name(ml.bottomboundary.bbcfil)}.bbc")
+            if bbc_path is not None:
+                ml.bottomboundary = load_bbc(bbc_path, ml.bottomboundary)
+
+        metfil = _name(params.get("metfil", ""))
+        if metfil.lower().endswith(".met"):
+            met_path = _find(metfil)
+            if met_path is not None:
+                # .met files are CSV with a header block of "*" comment lines
+                header = 0
+                with open(met_path) as f:
+                    for line in f:
+                        if not line.startswith("*"):
+                            break
+                        header += 1
+                ml.meteorology.metfile = metfile_from_csv(
+                    metfil, met_path, skiprows=header or None
+                )
+        elif metfil:
+            logger.warning(
+                f"METFIL '{metfil}' refers to yearly meteorological files, which Model.load does not read; set meteorology.metfile yourself."
+            )
+
+        if ml.fixedirrigation is not None and ml.fixedirrigation.swirgfil == 1:
+            logger.warning(
+                "The irrigation file (SWIRGFIL = 1) is not loaded: pySWAP has no .irg loader yet; set fixedirrigation yourself."
+            )
+
+        return ml
 
     def to_classic_swap(self, path: Path) -> None:
         """Prepare all the files for a model run in user's directory.
