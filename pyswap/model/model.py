@@ -220,6 +220,7 @@ class ModelRunner:
         path: str | Path,
         silence_warnings: bool = False,
         timeout: float | None = None,
+        run_dir: str | Path | None = None,
     ) -> Result:
         """Main function that runs the model.
 
@@ -229,93 +230,112 @@ class ModelRunner:
         Result object.
 
         Parameters:
-            path (str | Path): The path to the temporary directory.
+            path (str | Path): The directory in which the temporary run
+                directory is created. Ignored when `run_dir` is given.
             silence_warnings (bool): If True, warnings are not raised.
             timeout (float | None): Maximum SWAP run time in seconds.
+            run_dir (str | Path | None): Directory to write the input files to
+                and run SWAP in. It is created if needed and kept after the
+                run, with the inputs and all SWAP outputs. If None (default),
+                a temporary directory is used and deleted after the run.
 
         Returns:
             Result: The parsed model results.
         """
 
+        if run_dir is not None:
+            run_dir = Path(run_dir)
+            run_dir.mkdir(parents=True, exist_ok=True)
+            return self._run_in(run_dir, silence_warnings, timeout)
+
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
-            builder = ModelBuilder(self.model, tempdir)
+            return self._run_in(Path(tempdir), silence_warnings, timeout)
 
-            builder.write_inputs()
+    def _run_in(
+        self,
+        workdir: Path,
+        silence_warnings: bool = False,
+        timeout: float | None = None,
+    ) -> Result:
+        """Write the inputs to `workdir`, run SWAP there and read the results."""
+        builder = ModelBuilder(self.model, workdir)
 
-            stdout, stderr, returncode = self.run_swap(tempdir, timeout)
-            reader = ResultReader(self.model, tempdir)
+        builder.write_inputs()
 
-            if "normal completion" not in stdout.lower():
-                # Build a comprehensive error message
-                error_parts = ["SWAP model run failed."]
+        stdout, stderr, returncode = self.run_swap(workdir, timeout)
+        reader = ResultReader(self.model, workdir)
 
-                if returncode != 0:
-                    error_parts.append(f"\nReturn code: {returncode}")
+        if "normal completion" not in stdout.lower():
+            # Build a comprehensive error message
+            error_parts = ["SWAP model run failed."]
 
-                    # Check for specific Windows error codes
-                    if returncode == 3221225781 or returncode == -1073741515:
-                        # 0xC0000135 = STATUS_DLL_NOT_FOUND
-                        error_parts.append(
-                            "\nThis error indicates MISSING DLL FILES (Windows error 0xC0000135)."
-                            "\nThe SWAP executable cannot find required runtime libraries."
-                            "\nRun 'pyswap check-swap' to diagnose which DLLs are missing."
-                            "\n\nCommon solution: Install Microsoft Visual C++ Redistributable:"
-                            "\n  https://aka.ms/vs/17/release/vc_redist.x64.exe"
-                        )
+            if returncode != 0:
+                error_parts.append(f"\nReturn code: {returncode}")
 
-                if stderr:
-                    error_parts.append(f"\nStderr output:\n{stderr}")
+                # Check for specific Windows error codes
+                if returncode == 3221225781 or returncode == -1073741515:
+                    # 0xC0000135 = STATUS_DLL_NOT_FOUND
+                    error_parts.append(
+                        "\nThis error indicates MISSING DLL FILES (Windows error 0xC0000135)."
+                        "\nThe SWAP executable cannot find required runtime libraries."
+                        "\nRun 'pyswap check-swap' to diagnose which DLLs are missing."
+                        "\n\nCommon solution: Install Microsoft Visual C++ Redistributable:"
+                        "\n  https://aka.ms/vs/17/release/vc_redist.x64.exe"
+                    )
 
-                if stdout:
-                    error_parts.append(f"\nStdout output:\n{stdout}")
+            if stderr:
+                error_parts.append(f"\nStderr output:\n{stderr}")
 
-                # Try to read error file
-                err_content = reader.read_error_file()
-                if err_content:
-                    error_parts.append(f"\nError file (.err):\n{err_content}")
+            if stdout:
+                error_parts.append(f"\nStdout output:\n{stdout}")
 
-                # Try to read log file
-                try:
-                    log = reader.read_swap_log()
-                    error_parts.append(f"\nLog file (.log):\n{log}")
-                except FileNotFoundError:
-                    error_parts.append("\nLog file (.log): Not found - executable may have crashed before writing log file")
+            # Try to read error file
+            err_content = reader.read_error_file()
+            if err_content:
+                error_parts.append(f"\nError file (.err):\n{err_content}")
 
-                # Try to read warning file
-                wrn_content = reader.read_warning_file()
-                if wrn_content:
-                    error_parts.append(f"\nWarning file (.wrn):\n{wrn_content}")
+            # Try to read log file
+            try:
+                log = reader.read_swap_log()
+                error_parts.append(f"\nLog file (.log):\n{log}")
+            except FileNotFoundError:
+                error_parts.append("\nLog file (.log): Not found - executable may have crashed before writing log file")
 
-                msg = "\n".join(error_parts)
-                logger.error(msg)
-                raise RuntimeError(msg)
+            # Try to read warning file
+            wrn_content = reader.read_warning_file()
+            if wrn_content:
+                error_parts.append(f"\nWarning file (.wrn):\n{wrn_content}")
 
-            logger.info(stdout)
+            msg = "\n".join(error_parts)
+            logger.error(msg)
+            raise RuntimeError(msg)
 
-            # --- Handle the results ---
-            result: Result = Result()
+        logger.info(stdout)
 
-            log = reader.read_swap_log()
-            result.log = log
+        # --- Handle the results ---
+        result: Result = Result()
 
-            warnings = reader.identify_warnings(log)
-            result.warning = warnings
+        log = reader.read_swap_log()
+        result.log = log
 
-            if warnings and not silence_warnings:
-                self.raise_swap_warning(warnings=warnings)
+        warnings = reader.identify_warnings(log)
+        result.warning = warnings
 
-            if "csv" in self.model.generalsettings.extensions:
-                output = reader.read_csv_output(which="csv")
-                result.output.update({"csv": output})
+        if warnings and not silence_warnings:
+            self.raise_swap_warning(warnings=warnings)
 
-            if "csv_tz" in self.model.generalsettings.extensions:
-                output_tz = reader.read_csv_output(which="csv_tz")
-                result.output.update({"csv_tz": output_tz})
+        if "csv" in self.model.generalsettings.extensions:
+            output = reader.read_csv_output(which="csv")
+            result.output.update({"csv": output})
 
-            ascii_files = reader.read_ascii_output()
+        if "csv_tz" in self.model.generalsettings.extensions:
+            output_tz = reader.read_csv_output(which="csv_tz")
+            result.output.update({"csv_tz": output_tz})
 
-            result.output.update(ascii_files)
-            return result
+        ascii_files = reader.read_ascii_output()
+
+        result.output.update(ascii_files)
+        return result
 
 
 class ResultReader:
@@ -657,11 +677,31 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         path: str | Path | None = None,
         silence_warnings: bool = False,
         timeout: float | None = None,
+        run_dir: str | Path | None = None,
     ) -> Result:
-        """Run the model using ModelRunner."""
+        """Run the model using ModelRunner.
+
+        Parameters:
+            path (str | Path | None): Directory in which the temporary run
+                directory is created (default: the current working directory).
+                Ignored when `run_dir` is given.
+            silence_warnings (bool): If True, SWAP warnings are not logged.
+            timeout (float | None): Maximum SWAP run time in seconds.
+            run_dir (str | Path | None): Directory to run the model in and keep
+                afterwards. pySWAP writes the input files (.swp, .met, .crp,
+                ...) there, runs SWAP in it and leaves all inputs and outputs in
+                place, so the run can be inspected, archived or rerun with the
+                SWAP executable. The directory is created if it does not exist;
+                files with the same names are overwritten. If None (default),
+                the model runs in a temporary directory that is deleted
+                afterwards.
+
+        Returns:
+            Result: The parsed model results.
+        """
         self.validate()
         path = Path.cwd() if path is None else path
-        return ModelRunner(self).run(path, silence_warnings, timeout)
+        return ModelRunner(self).run(path, silence_warnings, timeout, run_dir=run_dir)
 
 
 def _run_model_with_params(args) -> Result:
