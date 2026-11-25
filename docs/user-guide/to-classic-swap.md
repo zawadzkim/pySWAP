@@ -1,6 +1,6 @@
 # Saving models to a directory
 
-When you call `.run()` method on a `Model` instance, in the final step before executing step, pyswap prepares a temporary directory with all input files the model needs and runs the SWAP executable in it. `.write(path)` skips the model run and saves those input files (`swap.swp` and every component file) to a given directory; `.to_classic_swap(path)` does the same and is kept for existing scripts. Then you can run the SWAP executable in that directory (what is done in the case of SWAP Tools R package) or zip it and share with someone.
+When you call `.run()` method on a `Model` instance, in the final step before executing step, pyswap prepares a temporary directory with all input files the model needs and runs the SWAP executable in it. `.write(path)` skips the model run and saves those input files (`swap.swp` and every component file) to a given directory; `.to_classic_swap(path)` does the same but is deprecated and will be removed in a future release, so use `.write(path)` in new code. Then you can run the SWAP executable in that directory (what is done in the case of SWAP Tools R package) or zip it and share with someone.
 
 ## Keeping the files of a model run
 

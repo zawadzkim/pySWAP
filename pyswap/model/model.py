@@ -31,6 +31,7 @@ import logging
 import os
 import subprocess
 import tempfile
+import warnings
 from multiprocessing import Pool
 from pathlib import Path
 from typing import Literal
@@ -812,8 +813,15 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
     def to_classic_swap(self, path: Path) -> None:
         """Prepare all the files for a model run in user's directory.
 
-        Same as `write(path)`; kept for backwards compatibility.
+        Deprecated: use `write(path)`, which does the same. This method will be
+        removed in a future release.
         """
+        warnings.warn(
+            "Model.to_classic_swap() is deprecated and will be removed in a future "
+            "release; use Model.write(path) instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.write(path)
         logger.info(f"Model files written to {path}")
 

@@ -24,3 +24,13 @@ def test_model_builder_still_writes_inputs(tmp_path):
     assert sorted(p.name for p in (tmp_path / "builder").iterdir()) == sorted(
         p.name for p in (tmp_path / "write").iterdir()
     )
+
+
+def test_to_classic_swap_is_deprecated_but_still_writes(tmp_path):
+    model = testcase.get("hupselbrook")
+    with pytest.warns(DeprecationWarning, match=r"Model\.write"):
+        model.to_classic_swap(tmp_path / "classic")
+    model.write(tmp_path / "write")
+    assert sorted(p.name for p in (tmp_path / "classic").iterdir()) == sorted(
+        p.name for p in (tmp_path / "write").iterdir()
+    )
