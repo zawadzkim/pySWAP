@@ -121,6 +121,24 @@ soil_profile = psp.components.soilwater.SOILPROFILE.create({
 1. Table schemas are imported from the same component group as the class they should be assigned to. So `SOILPROFILE` will be imported from `soilwater` component.
 2. Here, for example, if we tried to set one of the elements in `ISUBLAY` column to 0, we would get an error.
 
+You can also pass a plain pandas DataFrame directly to the component; it is validated with the same schema (column names are upper-cased), so an invalid table raises the same error:
+
+```py
+import pandas as pd
+
+profile = pd.DataFrame({
+    "isublay": [1, 2, 3, 4],
+    "isoillay": [1, 1, 2, 2],
+    "hsublay": [10.0, 20.0, 30.0, 140.0],
+    "hcomp": [1.0, 5.0, 5.0, 10.0],
+    "ncomp": [10, 4, 6, 14],
+})
+
+soilprofile = psp.components.SoilProfile(soilprofile=profile, ...)  # (1)!
+```
+
+1. Any table field works this way: the field `soilprofile` is checked against the `SOILPROFILE` schema, `gctb` against `GCTB`, and so on. `.create()` remains available as a shortcut from a dictionary.
+
 ### Output
 
 All output from the model is captured in a `Result` object. This includes requested output ascii files (e.g., .blc) and CSV files. The CSV output files are automatically converted to a pandas DataFrame with DateTime index.
