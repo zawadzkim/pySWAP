@@ -1,6 +1,8 @@
 # pySWAP Tutorials
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SWAP-model/pyswap-tutorials/main)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/zawadzkim/pySWAP)
+
+The badge opens the repository in GitHub Codespaces, a development environment in the browser with pySWAP, Jupyter and the tutorials ready to run (the environment is set up on first start, which takes a few minutes).
 
 Here you can find jupyter notebooks explaining in more detail the most important elements of the package. The notebooks are part of the pySWAP repository (`docs/tutorials/notebooks/`) and run from a clone of it; they are executed every time the documentation is built.
 

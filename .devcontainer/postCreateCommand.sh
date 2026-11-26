@@ -1,14 +1,17 @@
-#! /usr/bin/env bash
-git config --global --add safe.directory /workspaces/$(basename $(pwd))
+#!/usr/bin/env bash
+set -euo pipefail
 
-pipx install poetry
-poetry config virtualenvs.in-project true
-poetry install
+git config --global --add safe.directory "$(pwd)"
 
-# Install the Jupyter kernel for this environment
-poetry run python -m ipykernel install --user --name=pyswap --display-name "Python (pyswap)"
+# The WOFOST crop parameters are a git submodule.
+git submodule update --init --recursive
 
-# Install pre-commit hooks
-poetry run pre-commit install --install-hooks
+# pixi manages the environments (see pyproject.toml).
+curl -fsSL https://pixi.sh/install.sh | bash
+export PATH="$HOME/.pixi/bin:$PATH"
 
-mkdir -p .logs
+pixi install -e dev
+
+# Jupyter kernel for the notebooks.
+pixi run -e dev python -m ipykernel install --user --name pyswap --display-name "Python (pyswap)"
+
