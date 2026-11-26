@@ -5,7 +5,9 @@ search:
 
 # .MET
 
-Originally, the meteorological data was passed to SWAP in files that had extensions equal to the last three digits of the year. However, the option to use one file (csv-like) with .met extension seems to be the best choice for simplicity. Therefore, for now, pySWAP only allows to use the .met file.
+SWAP 4 user manual: section 3.7.2 Weather data, [page 52](https://edepot.wur.nl/416321#page=54).
+
+Originally, the meteorological data was passed to SWAP in files that had extensions equal to the last three digits of the year. However, the option to use one file (csv-like) with .met extension seems to be the best choice for simplicity. Therefore pySWAP writes a single .met file. `Model.load` and `load_met` also read the yearly files.
 
 Depending on the selected option, the .met file will have a different set of headers.
 
