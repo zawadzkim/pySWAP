@@ -144,6 +144,10 @@ DATETIME
 
 For detailed information about all CLI commands and options, see the [CLI Reference](/user-guide/cli/).
 
+## Developing pySWAP itself
+
+The steps above set up a project that *uses* pySWAP. To work on pySWAP and run its test suite, clone the repository and use its development environment: `pixi install -e dev` and then `pixi run -e dev test`. The default environment of the repository has no test tools, so `pixi run test` without `-e dev` does not work. A conda `environment.yml` with all dependencies is provided as an alternative; see [Development environment and tasks](../contributing/makefile.md).
+
 ## Install manually and and start from scratch
 
 pySWAP can be simply installed through pip. Creation of a separate virtual environment is recommended.
@@ -151,6 +155,17 @@ pySWAP can be simply installed through pip. Creation of a separate virtual envir
 ```sh
 pip install pyswap
 ```
+
+### Optional extras
+
+Some features rely on packages that are not needed to build and run a model, and are installed only on request:
+
+| Extra | Install | Enables |
+|-------|---------|---------|
+| `knmi` | `pip install "pyswap[knmi]"` | `metfile_from_knmi`: weather data from the Dutch KNMI service |
+| `gis` | `pip install "pyswap[gis]"` | `Location.to_crs`, `Location.point` and coordinate systems other than EPSG:4326 (pyproj, shapely). Plain latitude, longitude and altitude need no extra. |
+
+Calling a feature without its extra raises an `ImportError` that names the extra to install. The pixi environments of the repository (`test`, `dev`, `docs`, `full`) include all extras.
 
 ### Run a test case
 

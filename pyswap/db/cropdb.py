@@ -10,7 +10,6 @@ Classes:
 """
 
 from pathlib import Path
-from pprint import pprint
 
 from pydantic import BaseModel, computed_field
 
@@ -137,10 +136,15 @@ class WOFOSTCropDB(BaseModel):
 
     libdir: Path = crop_params
 
-    @computed_field(return_type=None)
-    def croptypes(self):
-        """Print the list of available files"""
-        pprint(load_yaml(crop_params / "crops.yaml")["available_crops"])
+    @property
+    def croptypes(self) -> list[str]:
+        """List the available crop types (one YAML file per crop type).
+
+        A plain property rather than a pydantic computed field, so that it is
+        not evaluated, and nothing is printed, on every repr, serialisation or
+        debugger view of the database object.
+        """
+        return list(load_yaml(crop_params / "crops.yaml")["available_crops"])
 
     def load_crop_file(self, crop: str) -> WOFOSTCropFile:
         """Load a specific crop file and return the content as a dictionary"""
