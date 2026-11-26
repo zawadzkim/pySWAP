@@ -1,5 +1,6 @@
 nav:
-    - quick-start.md
+    - installation.md
+    - getting-started.ipynb
     - cli.md
     - ascii-vs-classes.md
     - data-structures.md

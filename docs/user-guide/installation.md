@@ -1,6 +1,6 @@
-# Quickstart
+# Installation
 
-If you know a lot already about SWAP and pySWAP, jump straight to the installation, running the test case and setting up your own model.
+This page covers installing pySWAP and running a SWAP test case. To build a first model of your own, continue with [Getting started](getting-started.ipynb).
 
 ## (Recommended) Start your project with pixi and pyswap CLI tool
 
