@@ -1600,7 +1600,7 @@
   <span class="md-ellipsis">
     
   
-    Pixi Tasks
+    Development environment and Pixi tasks
   
 
     
@@ -1791,6 +1791,22 @@
 <ol>
 <li>Table schemas are imported from the same component group as the class they should be assigned to. So <code>SOILPROFILE</code> will be imported from <code>soilwater</code> component.</li>
 <li>Here, for example, if we tried to set one of the elements in <code>ISUBLAY</code> column to 0, we would get an error.</li>
+</ol>
+<p>You can also pass a plain pandas DataFrame directly to the component; it is validated with the same schema (column names are upper-cased), so an invalid table raises the same error:</p>
+<div class="language-py highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">profile</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="s2">&quot;isublay&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="s2">&quot;isoillay&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="s2">&quot;hsublay&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">,</span> <span class="mf">140.0</span><span class="p">],</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="s2">&quot;hcomp&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">],</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="s2">&quot;ncomp&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="p">})</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="n">soilprofile</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">SoilProfile</span><span class="p">(</span><span class="n">soilprofile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>  <span class="c1"># (1)!</span>
+</span></code></pre></div>
+<ol>
+<li>Any table field works this way: the field <code>soilprofile</code> is checked against the <code>SOILPROFILE</code> schema, <code>gctb</code> against <code>GCTB</code>, and so on. <code>.create()</code> remains available as a shortcut from a dictionary.</li>
 </ol>
 <h3 id="output">Output<a class="headerlink" href="#output" title="Permanent link">&para;</a></h3>
 <p>All output from the model is captured in a <code>Result</code> object. This includes requested output ascii files (e.g., .blc) and CSV files. The CSV output files are automatically converted to a pandas DataFrame with DateTime index.</p>

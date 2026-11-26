@@ -21,7 +21,7 @@
     
     
       
-        <title>Pixi Tasks - pySWAP documentation</title>
+        <title>Development environment and Pixi tasks - pySWAP documentation</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#pixi_tasks" class="md-skip">
+        <a href="#development_environment_and_pixi_tasks" class="md-skip">
           Skip to content
         </a>
       
@@ -125,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Pixi Tasks
+              Development environment and Pixi tasks
             
           </span>
         </div>
@@ -1538,7 +1538,7 @@
   <span class="md-ellipsis">
     
   
-    Pixi Tasks
+    Development environment and Pixi tasks
   
 
     
@@ -1556,7 +1556,7 @@
   <span class="md-ellipsis">
     
   
-    Pixi Tasks
+    Development environment and Pixi tasks
   
 
     
@@ -1580,6 +1580,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setting_up_a_development_environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setting up a development environment
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#available_tasks" class="md-nav__link">
@@ -1657,6 +1668,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#setting_up_a_development_environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setting up a development environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#available_tasks" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1709,26 +1731,71 @@
   
 
 
-<h1 id="pixi_tasks">Pixi Tasks<a class="headerlink" href="#pixi_tasks" title="Permanent link">&para;</a></h1>
+<h1 id="development_environment_and_pixi_tasks">Development environment and Pixi tasks<a class="headerlink" href="#development_environment_and_pixi_tasks" title="Permanent link">&para;</a></h1>
 <p>This project uses <a href="https://pixi.sh">Pixi</a> for dependency management and task automation. Pixi provides a more modern, cross-platform alternative to Makefiles with built-in environment isolation.</p>
+<h2 id="setting_up_a_development_environment">Setting up a development environment<a class="headerlink" href="#setting_up_a_development_environment" title="Permanent link">&para;</a></h2>
+<p><strong>pixi (default).</strong> Clone the repository with its submodules and install the development environment, which contains the package (editable) and the test and lint tools:</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>--recurse-submodules<span class="w"> </span>https://github.com/zawadzkim/pySWAP.git
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>pySWAP
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>pixi<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>dev
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>pixi<span class="w"> </span>run<span class="w"> </span>-e<span class="w"> </span>dev<span class="w"> </span><span class="nb">test</span>
+</span></code></pre></div>
+<p>Tasks run in the <code>default</code> environment unless you name another one with <code>-e</code>. The default environment holds only the package and its core dependencies, so run the tests and code checks in the <code>dev</code> environment (<code>pixi run -e dev test</code>, <code>pixi run -e dev lint</code>) and the documentation tasks in <code>docs</code>. The environments are:</p>
+<table>
+<thead>
+<tr>
+<th>Environment</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>default</code></td>
+<td>pySWAP and its core dependencies</td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td>+ pytest and the optional extras</td>
+</tr>
+<tr>
+<td><code>dev</code></td>
+<td>+ test, lint, type-checking and build tools, and the optional extras</td>
+</tr>
+<tr>
+<td><code>docs</code></td>
+<td>+ MkDocs and its plugins, and the optional extras</td>
+</tr>
+<tr>
+<td><code>full</code></td>
+<td>dev + docs</td>
+</tr>
+</tbody>
+</table>
+<p>To use the environment in your IDE, select the interpreter in <code>.pixi/envs/dev</code> (in VS Code: <em>Python: Select Interpreter</em>).</p>
+<p><strong>conda (alternative).</strong> <code>environment.yml</code> in the repository root lists the same dependencies as the <code>full</code> pixi environment (the package in editable mode with all test, dev and docs dependencies and extras):</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yml
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>conda<span class="w"> </span>activate<span class="w"> </span>pyswap
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>pytest
+</span></code></pre></div>
+<p><code>environment.yml</code> is generated from <code>pyproject.toml</code> with <code>pixi run export-env</code>; regenerate it whenever dependencies change instead of editing it by hand.</p>
 <h2 id="available_tasks">Available Tasks<a class="headerlink" href="#available_tasks" title="Permanent link">&para;</a></h2>
-<p>Run any task with <code>pixi run &lt;task-name&gt;</code> or <code>pixi run -e &lt;environment&gt; &lt;task-name&gt;</code>:</p>
+<p>Run any task with <code>pixi run -e &lt;environment&gt; &lt;task-name&gt;</code> (without <code>-e</code>, tasks run in the <code>default</code> environment). Tests and code checks need the <code>dev</code> environment, documentation tasks the <code>docs</code> environment:</p>
 <h3 id="development_tasks">Development Tasks<a class="headerlink" href="#development_tasks" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>test</strong>: <code>pixi run test</code> - Run basic tests</li>
-<li><strong>test-cov</strong>: <code>pixi run test-cov</code> - Run tests with coverage reporting</li>
-<li><strong>test-verbose</strong>: <code>pixi run test-verbose</code> - Run tests with verbose output</li>
+<li><strong>test</strong>: <code>pixi run -e dev test</code> - Run basic tests</li>
+<li><strong>test-cov</strong>: <code>pixi run -e dev test-cov</code> - Run tests with coverage reporting</li>
+<li><strong>test-verbose</strong>: <code>pixi run -e dev test-verbose</code> - Run tests with verbose output</li>
 </ul>
 <h3 id="code_quality">Code Quality<a class="headerlink" href="#code_quality" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>lint</strong>: <code>pixi run lint</code> - Check code with ruff</li>
-<li><strong>lint-fix</strong>: <code>pixi run lint-fix</code> - Auto-fix linting issues</li>
-<li><strong>format</strong>: <code>pixi run format</code> - Format code with ruff</li>
-<li><strong>format-check</strong>: <code>pixi run format-check</code> - Check if code is formatted</li>
-<li><strong>mypy</strong>: <code>pixi run mypy</code> - Run static type checking</li>
-<li><strong>check-deps</strong>: <code>pixi run check-deps</code> - Check for obsolete dependencies</li>
-<li><strong>check-all</strong>: <code>pixi run check-all</code> - Run all quality checks</li>
-<li><strong>fix-all</strong>: <code>pixi run fix-all</code> - Auto-fix formatting and linting</li>
+<li><strong>lint</strong>: <code>pixi run -e dev lint</code> - Check code with ruff</li>
+<li><strong>lint-fix</strong>: <code>pixi run -e dev lint-fix</code> - Auto-fix linting issues</li>
+<li><strong>format</strong>: <code>pixi run -e dev format</code> - Format code with ruff</li>
+<li><strong>format-check</strong>: <code>pixi run -e dev format-check</code> - Check if code is formatted</li>
+<li><strong>mypy</strong>: <code>pixi run -e dev mypy</code> - Run static type checking</li>
+<li><strong>check-deps</strong>: <code>pixi run -e dev check-deps</code> - Check for obsolete dependencies</li>
+<li><strong>check-all</strong>: <code>pixi run -e dev check-all</code> - Run all quality checks</li>
+<li><strong>fix-all</strong>: <code>pixi run -e dev fix-all</code> - Auto-fix formatting and linting</li>
 </ul>
 <h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
 <ul>
@@ -1739,6 +1806,7 @@
 <h3 id="project_management">Project Management<a class="headerlink" href="#project_management" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>install-package</strong>: <code>pixi run install-package</code> - Install package in development mode</li>
+<li><strong>export-env</strong>: <code>pixi run export-env</code> - Regenerate <code>environment.yml</code> (conda alternative) from <code>pyproject.toml</code></li>
 <li><strong>clean-cache</strong>: <code>pixi run clean-cache</code> - Clean pytest/mypy caches</li>
 <li><strong>clean-build</strong>: <code>pixi run clean-build</code> - Clean build artifacts</li>
 <li><strong>clean-all</strong>: <code>pixi run clean-all</code> - Clean everything</li>

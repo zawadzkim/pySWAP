@@ -571,6 +571,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#developing_pyswap_itself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Developing pySWAP itself
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install_manually_and_and_start_from_scratch" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1600,7 +1611,7 @@
   <span class="md-ellipsis">
     
   
-    Pixi Tasks
+    Development environment and Pixi tasks
   
 
     
@@ -1652,6 +1663,17 @@
     <span class="md-ellipsis">
       
         (Recommended) Start your project with pixi and pyswap CLI tool
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developing_pyswap_itself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Developing pySWAP itself
       
     </span>
   </a>
@@ -1791,10 +1813,36 @@
 </span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="m">2004</span>-12-31<span class="w">  </span><span class="m">80</span>.55<span class="w">    </span><span class="m">0</span>.0<span class="w">  </span><span class="m">4</span>.91521<span class="w">     </span><span class="m">0</span>.0<span class="w">  </span><span class="m">29</span>.89227<span class="w">  </span><span class="m">17</span>.88916<span class="w">  </span><span class="m">24</span>.76607<span class="w">      </span><span class="m">0</span>.0<span class="w"> </span>-1036.76085<span class="w">  </span><span class="m">32</span>.57266<span class="w">  </span><span class="m">32</span>.56927<span class="w">  </span><span class="m">0</span>.41030
 </span></code></pre></div>
 <p>For detailed information about all CLI commands and options, see the <a href="/user-guide/cli/">CLI Reference</a>.</p>
+<h2 id="developing_pyswap_itself">Developing pySWAP itself<a class="headerlink" href="#developing_pyswap_itself" title="Permanent link">&para;</a></h2>
+<p>The steps above set up a project that <em>uses</em> pySWAP. To work on pySWAP and run its test suite, clone the repository and use its development environment: <code>pixi install -e dev</code> and then <code>pixi run -e dev test</code>. The default environment of the repository has no test tools, so <code>pixi run test</code> without <code>-e dev</code> does not work. A conda <code>environment.yml</code> with all dependencies is provided as an alternative; see <a href="../../contributing/makefile/">Development environment and tasks</a>.</p>
 <h2 id="install_manually_and_and_start_from_scratch">Install manually and and start from scratch<a class="headerlink" href="#install_manually_and_and_start_from_scratch" title="Permanent link">&para;</a></h2>
 <p>pySWAP can be simply installed through pip. Creation of a separate virtual environment is recommended.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>pip<span class="w"> </span>install<span class="w"> </span>pyswap
 </span></code></pre></div>
+<h3 id="optional_extras">Optional extras<a class="headerlink" href="#optional_extras" title="Permanent link">&para;</a></h3>
+<p>Some features rely on packages that are not needed to build and run a model, and are installed only on request:</p>
+<table>
+<thead>
+<tr>
+<th>Extra</th>
+<th>Install</th>
+<th>Enables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>knmi</code></td>
+<td><code>pip install "pyswap[knmi]"</code></td>
+<td><code>metfile_from_knmi</code>: weather data from the Dutch KNMI service</td>
+</tr>
+<tr>
+<td><code>gis</code></td>
+<td><code>pip install "pyswap[gis]"</code></td>
+<td><code>Location.to_crs</code>, <code>Location.point</code> and coordinate systems other than EPSG:4326 (pyproj, shapely). Plain latitude, longitude and altitude need no extra.</td>
+</tr>
+</tbody>
+</table>
+<p>Calling a feature without its extra raises an <code>ImportError</code> that names the extra to install. The pixi environments of the repository (<code>test</code>, <code>dev</code>, <code>docs</code>, <code>full</code>) include all extras.</p>
 <h3 id="run_a_test_case_1">Run a test case<a class="headerlink" href="#run_a_test_case_1" title="Permanent link">&para;</a></h3>
 <p>After installation, you can test if everthing is OK by running a testcase:</p>
 <div class="language-py highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">pyswap</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="n">vscode</span> <span class="err">➜</span> <span class="o">/</span><span class="n">workspaces</span><span class="o">/</span><span class="n">pySWAP</span> <span class="p">(</span><span class="n">dev</span><span class="p">)</span> <span class="err">$</span> <span class="n">python</span>
