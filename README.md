@@ -13,7 +13,7 @@ pySWAP is a Python wrapper (not Python implementation) for the SWAP hydrological
 
 ## Contributing
 
-pySWAP is in the early stages of development so any contributions are highly encouraged. You can open issues, submit pull requests, or initiate discussions on GitHub. For more details on how you can contribute, visit the [CONTRIBUTE](./docs/CONTRIBUTING.md) section and get involved!
+pySWAP is in the early stages of development so any contributions are highly encouraged. You can open issues, submit pull requests, or initiate discussions on GitHub. For more details on how you can contribute, see the [contributing guide](./docs/contributing/index.md) ([online](https://zawadzkim.github.io/pySWAP/contributing/)) and get involved!
 
 ## Help
 
