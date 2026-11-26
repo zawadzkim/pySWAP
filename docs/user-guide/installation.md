@@ -146,7 +146,7 @@ For detailed information about all CLI commands and options, see the [CLI Refere
 
 ## Developing pySWAP itself
 
-The steps above set up a project that *uses* pySWAP. To work on pySWAP and run its test suite, clone the repository and use its development environment: `pixi install -e dev` and then `pixi run -e dev test`. The default environment of the repository has no test tools, so `pixi run test` without `-e dev` does not work. A conda `environment.yml` with all dependencies is provided as an alternative; see [Development environment and tasks](../contributing/makefile.md).
+The steps above set up a project that *uses* pySWAP. To work on pySWAP, run its test suite or the tutorials from a clone, clone the repository with its submodule (`git clone --recurse-submodules https://github.com/zawadzkim/pySWAP.git`; without it, the bundled WOFOST crop parameters in `pyswap/libs/WOFOST_crop_parameters` are missing) and use its development environment: `pixi install -e dev` and then `pixi run -e dev test`. The default environment of the repository has no test tools, so `pixi run test` without `-e dev` does not work. A conda `environment.yml` with all dependencies is provided as an alternative; see [Development environment and tasks](../contributing/makefile.md).
 
 ## Install manually and and start from scratch
 
