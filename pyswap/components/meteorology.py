@@ -248,8 +248,16 @@ def metfile_from_csv(metfil: str, csv_path: str, **kwargs) -> MetFile:
     Returns:
         MetFile object.
     """
-    # Create table from csv
     df = load_csv(csv_path, **kwargs)
+    return _daily_metfile(metfil, df)
+
+
+def _daily_metfile(metfil: str, df) -> MetFile:
+    """Build a MetFile from a DataFrame of daily weather data.
+
+    Column names are matched case-insensitively to DAILYMETEODATA and the
+    station names are put in single quotes, as SWAP expects.
+    """
     table = DAILYMETEODATA.create(data=df.to_dict())
 
     # Make sure Station column has quotes

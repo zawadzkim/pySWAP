@@ -704,13 +704,16 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
           grass crops according to CROPTYPE;
         * the drainage file (.dra) if SWDRA is 1 or 2;
         * the bottom boundary file (.bbc) if SWBBCFILE is 1;
-        * the meteorological file named by METFIL if it is a single .met file.
+        * the irrigation file (.irg) if SWIRGFIL is 1;
+        * the daily weather data named by METFIL: a single .met file, or the
+          yearly files `<METFIL>.yyy` for every year from TSTART to TEND, which
+          are merged into one `<METFIL>.met` (SWAP reads that since 4.2.0).
 
         Not loaded (a warning is logged and the component is left for you to
-        set): a separate irrigation file (SWIRGFIL = 1, no loader exists yet),
-        yearly meteorological files (METFIL without the .met extension), and
-        referenced files that are missing. SWAP outputs are never loaded. Paths
-        in PATHATM, PATHCROP and PATHDRAIN are not followed.
+        set): sub-daily weather data (SWMETDETAIL = 1), detailed rainfall
+        files (SWRAIN = 3), and referenced files that are missing. SWAP outputs
+        are never loaded. Paths in PATHATM, PATHCROP and PATHDRAIN are not
+        followed.
 
         Parameters:
             swp_path (str | Path): Path to the .swp file.
@@ -723,8 +726,14 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
             Model: The loaded model.
         """
         # imported here: the loaders module imports Model
-        from pyswap.components.meteorology import metfile_from_csv
-        from pyswap.utils.loaders import load_bbc, load_crp, load_dra, load_swp
+        from pyswap.utils.loaders import (
+            load_bbc,
+            load_crp,
+            load_dra,
+            load_irg,
+            load_met,
+            load_swp,
+        )
 
         swp_path = Path(swp_path)
         folder = swp_path.parent
@@ -784,28 +793,35 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
             if bbc_path is not None:
                 ml.bottomboundary = load_bbc(bbc_path, ml.bottomboundary)
 
+        if ml.fixedirrigation is not None and ml.fixedirrigation.swirgfil == 1:
+            irg_path = _find(f"{_name(ml.fixedirrigation.irgfil)}.irg")
+            if irg_path is not None:
+                ml.fixedirrigation = load_irg(irg_path, ml.fixedirrigation)
+
         metfil = _name(params.get("metfil", ""))
-        if metfil.lower().endswith(".met"):
+        if metfil and ml.meteorology.swmetdetail == 1:
+            logger.warning(
+                f"METFIL '{metfil}' holds sub-daily weather data (SWMETDETAIL = 1), which Model.load does not read; set meteorology.metfile yourself."
+            )
+        elif metfil.lower().endswith(".met"):
             met_path = _find(metfil)
             if met_path is not None:
-                # .met files are CSV with a header block of "*" comment lines
-                header = 0
-                with open(met_path) as f:
-                    for line in f:
-                        if not line.startswith("*"):
-                            break
-                        header += 1
-                ml.meteorology.metfile = metfile_from_csv(
-                    metfil, met_path, skiprows=header or None
-                )
+                ml.meteorology.metfile = load_met(met_path)
         elif metfil:
-            logger.warning(
-                f"METFIL '{metfil}' refers to yearly meteorological files, which Model.load does not read; set meteorology.metfile yourself."
+            # yearly files: extension is the last 3 digits of the year
+            years = range(
+                ml.generalsettings.tstart.year, ml.generalsettings.tend.year + 1
             )
+            met_paths = [_find(f"{metfil}.{year % 1000:03d}") for year in years]
+            if all(met_path is not None for met_path in met_paths):
+                ml.meteorology.metfile = load_met(met_paths)
+                logger.info(
+                    f"Yearly weather files {metfil}.* merged into {ml.meteorology.metfile.metfil}."
+                )
 
-        if ml.fixedirrigation is not None and ml.fixedirrigation.swirgfil == 1:
+        if ml.meteorology.swrain == 3:
             logger.warning(
-                "The irrigation file (SWIRGFIL = 1) is not loaded: pySWAP has no .irg loader yet; set fixedirrigation yourself."
+                f"Detailed rainfall files (SWRAIN = 3, RAINFIL '{_name(ml.meteorology.rainfil)}') are not loaded: pySWAP does not write them."
             )
 
         return ml
