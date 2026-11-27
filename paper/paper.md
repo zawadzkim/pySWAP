@@ -125,7 +125,7 @@ pySWAP is used in three ongoing research projects, listed alphabetically; public
 - [Project GROW](https://project-grow.be) - modelling soil moisture conditions at an experimental field where treated wastewater is reused for subirrigation, and
 - [WaterScape](https://waterscape.sites.uu.nl/) - determining the role of soil-water-plant-atmosphere interactions in shallow groundwater and rooting zones for local water availability and land-use practices.
 
-Since its public introduction at EGU 2024 [@zawadzki2024pyswap], the package has received 22 GitHub stars and grown through 21 releases. It has attracted contributions and community feedback from SWAP modellers across the Netherlands, Belgium, and beyond — via GitHub issues and direct contact. As pySWAP lowers the barrier to adoption and connects SWAP to the broader Python ecosystem, it is expected to expand the active user base — accelerating community-driven development and making the model more robust through collective feedback and contribution. Active development continues, with planned extensions for spatial support, sensitivity analysis, and improved multicore processing.
+Since its public introduction at EGU 2024 [@zawadzki2024pyswap], pySWAP has received contributions and feedback from SWAP modellers in the Netherlands, Belgium and beyond, through GitHub issues and direct contact. Development continues, with planned extensions for spatial support, sensitivity analysis and improved multicore processing.
 
 # AI usage disclosure
 
