@@ -5,6 +5,8 @@ search:
 
 # .DRA
 
+SWAP 4 user manual: section 4.5.3 Drainage (user instructions), [page 73](https://edepot.wur.nl/416321#page=75).
+
 There are two types of drainage files: simple and extended. The templates can be found below.
 
 ## Simple drainage

@@ -1,8 +1,10 @@
 nav:
-    - quick-start.md
+    - installation.md
+    - getting-started.ipynb
     - cli.md
     - ascii-vs-classes.md
     - data-structures.md
+    - wofost-crop-parameters.md
     - run-parallel.md
     - to-classic-swap.md
     - hdf5.md
