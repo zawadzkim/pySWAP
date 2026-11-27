@@ -59,7 +59,7 @@ Users primarily interact with the `components` and `model` modules. Each compone
 
 ## Modelling workflow
 
-We recommend using the `pyswap` command-line interface to start new projects. Running `pyswap init` prompts users for project metadata and generates a structured directory with a default Jupyter notebook and pixi.toml file for dependency management. To get started with pySWAP, users can consult the documentation's quick start section or preview the interactive Binder environment with documentation notebooks. The following example illustrates a minimal model setup:
+pySWAP generally does not needs any setup step before a script or notebook can use it. The SWAP executable is downloaded automatically the first time a model is run. The optional CLI commands (e.g., `pyswap init`) scaffolds a project directory with a default Jupyter notebook and a pixi.toml file for dependency management. To get started with pySWAP, users can consult the documentation's quick start section or preview the interactive Binder environment with documentation notebooks. The following example illustrates a minimal model setup:
 
 ```Python
 import pyswap as ps
