@@ -43,7 +43,7 @@ class SnowAndFrost(_PySWAPBaseModel, _SerializableMixin, _YAMLValidatorMixin):
 
 Attributes of each class generally correspond to the names of the variables in the SWAP input files. Each attribute has an assigned type and validation rules (e.g., lower and upper bounds). Many of these types are custom annotated types with specific serialization and validation rules. These rules tell the class constructor how to interpret a value when it's provided and how to format the data when it is saved to a file.
 
-Below are examples of types with their validation and serialization rules. For more details, see the [validation and serialization section](/reference/developer/#validation_and_serialization).
+Below are examples of types with their validation and serialization rules. For more details, see the [validation and serialization section](../reference/developer.md#validation_and_serialization).
 
 ```py
 FloatList = Annotated[
@@ -58,7 +58,7 @@ FloatList = Annotated[
 """Serialize list of floats to a string with elements separated by spaces."""
 ```
 
-1. Normally, the input should be a list of floats, but if provided as a string, `parse_float_list` will convert it into a list. This is useful when a formatted string from SWAP input files is passed directly. For details, see [reference](/reference/developer/#pyswap.core.parsers.parse_float_list).
+1. Normally, the input should be a list of floats, but if provided as a string, `parse_float_list` will convert it into a list. This is useful when a formatted string from SWAP input files is passed directly. For details, see [reference](../reference/developer.md#pyswap.core.parsers.parse_float_list).
 2. `PlainSerializer` ensures that during serialization (when input variables are written to a file), the list is converted into a properly formatted string representing the floats with two decimal points using a lambda function.
 
 Here is another example of a field:
@@ -72,8 +72,8 @@ Decimal2f = Annotated[
 """Serialize float to a string with 2 decimal places."""
 ```
 
-1. [parse_decimal](/reference/developer/#pyswap.core.parsers.parse_decimal) ensures that the string from the input file is actually a float. It removes any Fortran-compatible notation like "d" or "e" to ensure it coerces to a float.
-2. [serialize_decimal](/reference/developer/#pyswap.core.serializers.serialize_decimal) ensures that the float is saved to the input file with two decimal points.
+1. [parse_decimal](../reference/developer.md#pyswap.core.parsers.parse_decimal) ensures that the string from the input file is actually a float. It removes any Fortran-compatible notation like "d" or "e" to ensure it coerces to a float.
+2. [serialize_decimal](../reference/developer.md#validation_and_serialization) ensures that the float is saved to the input file with two decimal points.
 
 ## Tables
 
@@ -120,6 +120,24 @@ soil_profile = psp.components.soilwater.SOILPROFILE.create({
 
 1. Table schemas are imported from the same component group as the class they should be assigned to. So `SOILPROFILE` will be imported from `soilwater` component.
 2. Here, for example, if we tried to set one of the elements in `ISUBLAY` column to 0, we would get an error.
+
+You can also pass a plain pandas DataFrame directly to the component; it is validated with the same schema (column names are upper-cased), so an invalid table raises the same error:
+
+```py
+import pandas as pd
+
+profile = pd.DataFrame({
+    "isublay": [1, 2, 3, 4],
+    "isoillay": [1, 1, 2, 2],
+    "hsublay": [10.0, 20.0, 30.0, 140.0],
+    "hcomp": [1.0, 5.0, 5.0, 10.0],
+    "ncomp": [10, 4, 6, 14],
+})
+
+soilprofile = psp.components.SoilProfile(soilprofile=profile, ...)  # (1)!
+```
+
+1. Any table field works this way: the field `soilprofile` is checked against the `SOILPROFILE` schema, `gctb` against `GCTB`, and so on. `.create()` remains available as a shortcut from a dictionary.
 
 ### Output
 

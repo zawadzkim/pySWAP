@@ -4,8 +4,11 @@ Covers pyswap.db.cropdb (WOFOSTCropDB, WOFOSTCropFile, CropVariety) by loading
 a real crop file (potato) from the WOFOST_crop_parameters library.
 """
 
+import warnings
+
 import pytest
 
+from pyswap.db import cropdb
 from pyswap.db.cropdb import CropVariety, WOFOSTCropDB, WOFOSTCropFile
 from pyswap.libs import crop_params
 
@@ -41,9 +44,19 @@ def test_load_crop_file_missing_raises():
         WOFOSTCropDB().load_crop_file("nonexistent_crop")
 
 
-def test_croptypes_prints_available_crops(capsys):
-    _ = WOFOSTCropDB().croptypes
-    assert "potato" in capsys.readouterr().out
+def test_croptypes_returns_available_crops(capsys):
+    croptypes = WOFOSTCropDB().croptypes
+    assert isinstance(croptypes, list)
+    assert "potato" in croptypes
+    assert capsys.readouterr().out == ""
+
+
+def test_inspecting_cropdb_prints_nothing(capsys):
+    db = WOFOSTCropDB()
+    repr(db)
+    db.model_dump()
+    assert capsys.readouterr().out == ""
+    assert "croptypes" not in db.model_dump()
 
 
 # --- WOFOSTCropFile ---------------------------------------------------------
@@ -88,3 +101,15 @@ def test_variety_parameters_formats_tables(potato_variety):
 
 def test_variety_metadata(potato_variety):
     assert "Title" in potato_variety.metadata
+
+
+# --- provenance warning -------------------------------------------------------
+
+
+def test_first_crop_load_warns_about_provenance_once(monkeypatch):
+    monkeypatch.setattr(cropdb, "_provenance_warned", False)
+    with pytest.warns(UserWarning, match="WOFOST_crop_parameters"):
+        WOFOSTCropDB().load_crop_file("potato")
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        WOFOSTCropDB().load_crop_file("maize")

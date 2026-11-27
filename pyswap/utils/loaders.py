@@ -4,8 +4,12 @@
 # dictionarties in _parse_ascii_file. This was not a priority to fix.
 
 import re
+from collections.abc import Sequence
+from io import StringIO
 from pathlib import Path
 from typing import Literal as _Literal
+
+import pandas as pd
 
 from pyswap import Model
 from pyswap.components.boundary import BottomBoundary
@@ -26,7 +30,7 @@ from pyswap.components.crop import (
 )
 from pyswap.components.drainage import DraFile, Drainage, Flux
 from pyswap.components.irrigation import FixedIrrigation, ScheduledIrrigation
-from pyswap.components.meteorology import Meteorology
+from pyswap.components.meteorology import Meteorology, MetFile, _daily_metfile
 from pyswap.components.simsettings import GeneralSettings, RichardsSettings
 from pyswap.components.soilwater import (
     Evaporation,
@@ -41,7 +45,7 @@ from pyswap.core.defaults import EXTENSION_SWITCHES
 from pyswap.core.io.io_ascii import open_ascii
 from pyswap.core.io.process_ascii import parse_ascii_file
 
-__all__ = ["load_swp"]
+__all__ = ["load_bbc", "load_crp", "load_dra", "load_irg", "load_met", "load_swp"]
 
 
 def load_swp(path: Path, metadata: PySWAPBaseModel) -> Model:
@@ -178,3 +182,59 @@ def load_bbc(path: Path, bottomboundary: BottomBoundary | None = None):
     botbound = bottomboundary.update(params)
 
     return botbound
+
+
+def load_met(path: Path | Sequence[Path], metfil: str | None = None) -> MetFile:
+    """Load daily weather data from a .met file or from yearly weather files.
+
+    Reads the SWAP daily weather format (Kroes et al. 2017, Box 3.2): comment
+    lines starting with "*" and blank lines are skipped, the first other line
+    is the header, and values are separated by commas or by whitespace (the
+    older yearly files). Yearly files (`<name>.998`, `<name>.999`, ...) are
+    concatenated in the order given into one .met file, which SWAP reads
+    since version 4.2.0.
+
+    Parameters:
+        path (Path | Sequence[Path]): A .met file, or the yearly files.
+        metfil (str | None): Name of the .met file to write. Defaults to the
+            file name for a .met file, or `<name>.met` for yearly files.
+
+    Returns:
+        MetFile: the weather data, with metfil set.
+    """
+    paths = [Path(path)] if isinstance(path, str | Path) else [Path(p) for p in path]
+    if metfil is None:
+        first = paths[0]
+        metfil = first.name if first.suffix.lower() == ".met" else f"{first.stem}.met"
+
+    tables = []
+    for met_path in paths:
+        lines = [
+            line.strip()
+            for line in open_ascii(met_path).splitlines()
+            if line.strip() and not line.lstrip().startswith("*")
+        ]
+        sep = "," if "," in lines[0] else r"\s+"
+        table = pd.read_csv(StringIO("\n".join(lines)), sep=sep, dtype={0: str})
+        # header case differs between files (e.g. "wet" and "Wet")
+        table.columns = table.columns.str.upper()
+        tables.append(table)
+    df = pd.concat(tables, ignore_index=True)
+
+    return _daily_metfile(metfil, df)
+
+
+def load_irg(path: Path, fixedirrigation: FixedIrrigation | None = None):
+    """Load fixed irrigation events from a .irg file.
+
+    Like `load_bbc`, this either returns a new FixedIrrigation (with SWIRFIX
+    and SWIRGFIL set to 1) or updates the one given, e.g. the one read from
+    the .swp file.
+    """
+    irg = open_ascii(path)
+    params = parse_ascii_file(irg)
+
+    if fixedirrigation is None:
+        fixedirrigation = FixedIrrigation(swirfix=1, swirgfil=1)
+
+    return fixedirrigation.update(params)

@@ -129,6 +129,47 @@ class PySWAPBaseModel(BaseModel):
                 return value
         return value
 
+    @field_validator("*", mode="after")
+    @classmethod
+    def validate_table(cls, value: Any, info: Any) -> Any:
+        """Validate a DataFrame against the table schema of the same name.
+
+        A table field (e.g. `gctb`) can be given a plain pandas DataFrame
+        instead of the result of `GCTB.create(...)`. Column names are
+        upper-cased and the DataFrame is validated (and coerced) with the
+        pandera schema named after the field, exactly as `create` does, so
+        both ways give the same table. Fields without a schema of that name
+        are left as they are.
+        """
+        if not isinstance(value, pd.DataFrame) or info.field_name is None:
+            return value
+        schema = _table_schemas().get(info.field_name.upper())
+        if schema is None:
+            return value
+        df = value.copy()
+        df.columns = [str(c).upper() for c in df.columns]
+        return schema.validate(df)
+
+
+def _table_schemas() -> dict[str, type[BaseTableModel]]:
+    """Table schemas by name, e.g. {"GCTB": GCTB} (imported lazily: the
+    tables module itself imports this module)."""
+    global _TABLE_SCHEMAS
+    if _TABLE_SCHEMAS is None:
+        from pyswap.components import tables
+
+        _TABLE_SCHEMAS = {
+            name: obj
+            for name, obj in vars(tables).items()
+            if isinstance(obj, type)
+            and issubclass(obj, BaseTableModel)
+            and obj is not BaseTableModel
+        }
+    return _TABLE_SCHEMAS
+
+
+_TABLE_SCHEMAS: dict[str, type[BaseTableModel]] | None = None
+
 
 class BaseTableModel(pa.DataFrameModel):
     """Base model for pandas DataFrames.

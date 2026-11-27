@@ -18,7 +18,8 @@ The four classes in this module are:
 
 Classes:
 
-    ModelBuilder: Class responsible for building the model components.
+    ModelBuilder: Collects the model's input files (writing is done by
+        Model.write).
     ModelRunner: Class responsible for running the model.
     ResultReader: Class responsible for parsing the model results.
     Model: Main class that runs the SWAP model.
@@ -30,6 +31,7 @@ import logging
 import os
 import subprocess
 import tempfile
+import warnings
 from multiprocessing import Pool
 from pathlib import Path
 from typing import Literal
@@ -55,6 +57,7 @@ from pyswap.components.transport import HeatFlow, SoluteTransport
 from pyswap.core.basemodel import PySWAPBaseModel
 from pyswap.core.fields import Subsection
 from pyswap.core.io.io_ascii import open_ascii
+from pyswap.core.io.process_ascii import parse_ascii_file
 from pyswap.db.co2concentration import CO2concentration
 from pyswap.model.result import Result
 from pyswap.utils.executables import get_swap
@@ -98,35 +101,12 @@ class ModelBuilder:
         return inputs
 
     def write_inputs(self) -> None:
-        """Write the input files to the temporary directory."""
-        logger.info("Preparing files...")
+        """Write the input files to the temporary directory.
 
-        self.model.write_swp(self.tempdir)
-
-        if self.model.lateraldrainage.swdra in [1, 2]:
-            self.model.lateraldrainage.write_dra(self.tempdir)
-        if self.model.crop.cropfiles:
-            self.model.crop.write_crop(self.tempdir)
-            # Check if co2correction is used in any of the cropfiles
-            crops_co2corrections = [
-                cropfile.co2correction is not None
-                for cropfile in self.model.crop.cropfiles.values()
-            ]
-            # If so, copy the co2correction file to the tempdir
-            if sum(crops_co2corrections) > 0:
-                co2db = CO2concentration()
-                period = [
-                    self.model.generalsettings.tstart,
-                    self.model.generalsettings.tend,
-                ]
-                co2db.write_co2(self.tempdir, period)
-        if self.model.meteorology.metfile:
-            self.model.meteorology.write_met(self.tempdir)
-        if self.model.fixedirrigation.swirgfil == 1:
-            self.model.fixedirrigation.write_irg(self.tempdir)
-        if self.model.bottomboundary.swbbcfile == 1:
-            self.model.bottomboundary.write_bbc(self.tempdir)
-
+        Kept for backwards compatibility; the writing itself is done by
+        `Model.write`.
+        """
+        self.model.write(self.tempdir, validate=False)
         return self
 
 
@@ -220,6 +200,7 @@ class ModelRunner:
         path: str | Path,
         silence_warnings: bool = False,
         timeout: float | None = None,
+        run_dir: str | Path | None = None,
     ) -> Result:
         """Main function that runs the model.
 
@@ -229,93 +210,110 @@ class ModelRunner:
         Result object.
 
         Parameters:
-            path (str | Path): The path to the temporary directory.
+            path (str | Path): The directory in which the temporary run
+                directory is created. Ignored when `run_dir` is given.
             silence_warnings (bool): If True, warnings are not raised.
             timeout (float | None): Maximum SWAP run time in seconds.
+            run_dir (str | Path | None): Directory to write the input files to
+                and run SWAP in. It is created if needed and kept after the
+                run, with the inputs and all SWAP outputs. If None (default),
+                a temporary directory is used and deleted after the run.
 
         Returns:
             Result: The parsed model results.
         """
 
+        if run_dir is not None:
+            run_dir = Path(run_dir)
+            run_dir.mkdir(parents=True, exist_ok=True)
+            return self._run_in(run_dir, silence_warnings, timeout)
+
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
-            builder = ModelBuilder(self.model, tempdir)
+            return self._run_in(Path(tempdir), silence_warnings, timeout)
 
-            builder.write_inputs()
+    def _run_in(
+        self,
+        workdir: Path,
+        silence_warnings: bool = False,
+        timeout: float | None = None,
+    ) -> Result:
+        """Write the inputs to `workdir`, run SWAP there and read the results."""
+        self.model.write(workdir, validate=False)
 
-            stdout, stderr, returncode = self.run_swap(tempdir, timeout)
-            reader = ResultReader(self.model, tempdir)
+        stdout, stderr, returncode = self.run_swap(workdir, timeout)
+        reader = ResultReader(self.model, workdir)
 
-            if "normal completion" not in stdout.lower():
-                # Build a comprehensive error message
-                error_parts = ["SWAP model run failed."]
+        if "normal completion" not in stdout.lower():
+            # Build a comprehensive error message
+            error_parts = ["SWAP model run failed."]
 
-                if returncode != 0:
-                    error_parts.append(f"\nReturn code: {returncode}")
+            if returncode != 0:
+                error_parts.append(f"\nReturn code: {returncode}")
 
-                    # Check for specific Windows error codes
-                    if returncode == 3221225781 or returncode == -1073741515:
-                        # 0xC0000135 = STATUS_DLL_NOT_FOUND
-                        error_parts.append(
-                            "\nThis error indicates MISSING DLL FILES (Windows error 0xC0000135)."
-                            "\nThe SWAP executable cannot find required runtime libraries."
-                            "\nRun 'pyswap check-swap' to diagnose which DLLs are missing."
-                            "\n\nCommon solution: Install Microsoft Visual C++ Redistributable:"
-                            "\n  https://aka.ms/vs/17/release/vc_redist.x64.exe"
-                        )
+                # Check for specific Windows error codes
+                if returncode == 3221225781 or returncode == -1073741515:
+                    # 0xC0000135 = STATUS_DLL_NOT_FOUND
+                    error_parts.append(
+                        "\nThis error indicates MISSING DLL FILES (Windows error 0xC0000135)."
+                        "\nThe SWAP executable cannot find required runtime libraries."
+                        "\nRun 'pyswap check-swap' to diagnose which DLLs are missing."
+                        "\n\nCommon solution: Install Microsoft Visual C++ Redistributable:"
+                        "\n  https://aka.ms/vs/17/release/vc_redist.x64.exe"
+                    )
 
-                if stderr:
-                    error_parts.append(f"\nStderr output:\n{stderr}")
+            if stderr:
+                error_parts.append(f"\nStderr output:\n{stderr}")
 
-                if stdout:
-                    error_parts.append(f"\nStdout output:\n{stdout}")
+            if stdout:
+                error_parts.append(f"\nStdout output:\n{stdout}")
 
-                # Try to read error file
-                err_content = reader.read_error_file()
-                if err_content:
-                    error_parts.append(f"\nError file (.err):\n{err_content}")
+            # Try to read error file
+            err_content = reader.read_error_file()
+            if err_content:
+                error_parts.append(f"\nError file (.err):\n{err_content}")
 
-                # Try to read log file
-                try:
-                    log = reader.read_swap_log()
-                    error_parts.append(f"\nLog file (.log):\n{log}")
-                except FileNotFoundError:
-                    error_parts.append("\nLog file (.log): Not found - executable may have crashed before writing log file")
+            # Try to read log file
+            try:
+                log = reader.read_swap_log()
+                error_parts.append(f"\nLog file (.log):\n{log}")
+            except FileNotFoundError:
+                error_parts.append("\nLog file (.log): Not found - executable may have crashed before writing log file")
 
-                # Try to read warning file
-                wrn_content = reader.read_warning_file()
-                if wrn_content:
-                    error_parts.append(f"\nWarning file (.wrn):\n{wrn_content}")
+            # Try to read warning file
+            wrn_content = reader.read_warning_file()
+            if wrn_content:
+                error_parts.append(f"\nWarning file (.wrn):\n{wrn_content}")
 
-                msg = "\n".join(error_parts)
-                logger.error(msg)
-                raise RuntimeError(msg)
+            msg = "\n".join(error_parts)
+            logger.error(msg)
+            raise RuntimeError(msg)
 
-            logger.info(stdout)
+        logger.info(stdout)
 
-            # --- Handle the results ---
-            result: Result = Result()
+        # --- Handle the results ---
+        result: Result = Result()
 
-            log = reader.read_swap_log()
-            result.log = log
+        log = reader.read_swap_log()
+        result.log = log
 
-            warnings = reader.identify_warnings(log)
-            result.warning = warnings
+        warnings = reader.identify_warnings(log)
+        result.warning = warnings
 
-            if warnings and not silence_warnings:
-                self.raise_swap_warning(warnings=warnings)
+        if warnings and not silence_warnings:
+            self.raise_swap_warning(warnings=warnings)
 
-            if "csv" in self.model.generalsettings.extensions:
-                output = reader.read_csv_output(which="csv")
-                result.output.update({"csv": output})
+        if "csv" in self.model.generalsettings.extensions:
+            output = reader.read_csv_output(which="csv")
+            result.output.update({"csv": output})
 
-            if "csv_tz" in self.model.generalsettings.extensions:
-                output_tz = reader.read_csv_output(which="csv_tz")
-                result.output.update({"csv_tz": output_tz})
+        if "csv_tz" in self.model.generalsettings.extensions:
+            output_tz = reader.read_csv_output(which="csv_tz")
+            result.output.update({"csv_tz": output_tz})
 
-            ascii_files = reader.read_ascii_output()
+        ascii_files = reader.read_ascii_output()
 
-            result.output.update(ascii_files)
-            return result
+        result.output.update(ascii_files)
+        return result
 
 
 class ResultReader:
@@ -518,6 +516,8 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
 
     Methods:
         write_swp: Write the .swp input file.
+        write: Write the .swp file and all component input files.
+        load: Load a model from a .swp file and the files it references.
         validate: Validate the model.
         run: Run the model.
     """
@@ -643,13 +643,202 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         builder = ModelBuilder(model=self, tempdir=Path.cwd())
         return builder.get_inputs()
 
+    def write(self, path: str | Path, validate: bool = True) -> Path:
+        """Write the model to a directory: the .swp file and all component files.
+
+        Writes `swap.swp` and every input file the attached components need
+        (.dra, .crp, .met, .irg, .bbc and, when a crop uses CO2 correction, the
+        CO2 concentration file), i.e. exactly the files `run()` gives to SWAP.
+        The directory is created if it does not exist; files with the same
+        names are overwritten.
+
+        Parameters:
+            path (str | Path): Directory to write the files to.
+            validate (bool): Validate the model before writing (default True).
+
+        Returns:
+            Path: The directory the files were written to.
+        """
+        if validate:
+            self.validate()
+        path = Path(path)
+        path.mkdir(parents=True, exist_ok=True)
+        logger.info("Preparing files...")
+
+        self.write_swp(path)
+
+        if self.lateraldrainage.swdra in [1, 2]:
+            self.lateraldrainage.write_dra(path)
+        if self.crop.cropfiles:
+            self.crop.write_crop(path)
+            # Check if co2correction is used in any of the cropfiles
+            crops_co2corrections = [
+                cropfile.co2correction is not None
+                for cropfile in self.crop.cropfiles.values()
+            ]
+            # If so, write the CO2 concentration file as well
+            if sum(crops_co2corrections) > 0:
+                co2db = CO2concentration()
+                period = [
+                    self.generalsettings.tstart,
+                    self.generalsettings.tend,
+                ]
+                co2db.write_co2(path, period)
+        if self.meteorology.metfile:
+            self.meteorology.write_met(path)
+        if self.fixedirrigation.swirgfil == 1:
+            self.fixedirrigation.write_irg(path)
+        if self.bottomboundary.swbbcfile == 1:
+            self.bottomboundary.write_bbc(path)
+
+        return path
+
+    @classmethod
+    def load(cls, swp_path: str | Path, metadata: Metadata | None = None) -> Model:
+        """Load a model from a classic SWAP input directory, starting at its .swp file.
+
+        Parses the .swp file and loads the files it references, looked up in
+        the directory of the .swp file (where `write()` puts them):
+
+        * crop files (.crp) listed in the crop rotation, as simple, WOFOST or
+          grass crops according to CROPTYPE;
+        * the drainage file (.dra) if SWDRA is 1 or 2;
+        * the bottom boundary file (.bbc) if SWBBCFILE is 1;
+        * the irrigation file (.irg) if SWIRGFIL is 1;
+        * the daily weather data named by METFIL: a single .met file, or the
+          yearly files `<METFIL>.yyy` for every year from TSTART to TEND, which
+          are merged into one `<METFIL>.met` (SWAP reads that since 4.2.0).
+
+        Not loaded (a warning is logged and the component is left for you to
+        set): sub-daily weather data (SWMETDETAIL = 1), detailed rainfall
+        files (SWRAIN = 3), and referenced files that are missing. SWAP outputs
+        are never loaded. Paths in PATHATM, PATHCROP and PATHDRAIN are not
+        followed.
+
+        Parameters:
+            swp_path (str | Path): Path to the .swp file.
+            metadata (Metadata | None): Model metadata. If None, the project
+                name is taken from PROJECT in the .swp file and the other
+                fields are set to "unknown" (they are not written to SWAP
+                input files).
+
+        Returns:
+            Model: The loaded model.
+        """
+        # imported here: the loaders module imports Model
+        from pyswap.utils.loaders import (
+            load_bbc,
+            load_crp,
+            load_dra,
+            load_irg,
+            load_met,
+            load_swp,
+        )
+
+        swp_path = Path(swp_path)
+        folder = swp_path.parent
+        params = parse_ascii_file(open_ascii(swp_path))
+
+        def _name(value) -> str:
+            return str(value).strip().strip("'\"").strip()
+
+        def _find(fname: str) -> Path | None:
+            for candidate in (fname, fname.lower(), fname.upper()):
+                if (folder / candidate).exists():
+                    return folder / candidate
+            logger.warning(
+                f"{fname} is referenced in {swp_path.name} but not found in {folder}; not loaded."
+            )
+            return None
+
+        if metadata is None:
+            metadata = Metadata(
+                author="unknown",
+                institution="unknown",
+                email="unknown",
+                project=_name(params.get("project", "unknown")),
+                swap_ver="unknown",
+            )
+
+        ml = load_swp(swp_path, metadata)
+
+        rotation = ml.crop.croprotation if ml.crop is not None else None
+        if (
+            ml.crop is not None
+            and ml.crop.swcrop == 1
+            and isinstance(rotation, DataFrame)
+        ):
+            crptypes = {1: "fixed", 2: "wofost", 3: "grass"}
+            cropfiles = {}
+            for cropfil, croptype in (
+                rotation[["CROPFIL", "CROPTYPE"]]
+                .drop_duplicates()
+                .itertuples(index=False)
+            ):
+                name = _name(cropfil)
+                crp_path = _find(f"{name}.crp")
+                if crp_path is not None:
+                    cropfiles[name] = load_crp(
+                        crp_path, crptype=crptypes[int(croptype)], name=name
+                    )
+            ml.crop.cropfiles = cropfiles
+
+        if ml.lateraldrainage is not None and ml.lateraldrainage.swdra in [1, 2]:
+            dra_path = _find(f"{_name(ml.lateraldrainage.drfil)}.dra")
+            if dra_path is not None:
+                ml.lateraldrainage.drafile = load_dra(dra_path)
+
+        if ml.bottomboundary is not None and ml.bottomboundary.swbbcfile == 1:
+            bbc_path = _find(f"{_name(ml.bottomboundary.bbcfil)}.bbc")
+            if bbc_path is not None:
+                ml.bottomboundary = load_bbc(bbc_path, ml.bottomboundary)
+
+        if ml.fixedirrigation is not None and ml.fixedirrigation.swirgfil == 1:
+            irg_path = _find(f"{_name(ml.fixedirrigation.irgfil)}.irg")
+            if irg_path is not None:
+                ml.fixedirrigation = load_irg(irg_path, ml.fixedirrigation)
+
+        metfil = _name(params.get("metfil", ""))
+        if metfil and ml.meteorology.swmetdetail == 1:
+            logger.warning(
+                f"METFIL '{metfil}' holds sub-daily weather data (SWMETDETAIL = 1), which Model.load does not read; set meteorology.metfile yourself."
+            )
+        elif metfil.lower().endswith(".met"):
+            met_path = _find(metfil)
+            if met_path is not None:
+                ml.meteorology.metfile = load_met(met_path)
+        elif metfil:
+            # yearly files: extension is the last 3 digits of the year
+            years = range(
+                ml.generalsettings.tstart.year, ml.generalsettings.tend.year + 1
+            )
+            met_paths = [_find(f"{metfil}.{year % 1000:03d}") for year in years]
+            if all(met_path is not None for met_path in met_paths):
+                ml.meteorology.metfile = load_met(met_paths)
+                logger.info(
+                    f"Yearly weather files {metfil}.* merged into {ml.meteorology.metfile.metfil}."
+                )
+
+        if ml.meteorology.swrain == 3:
+            logger.warning(
+                f"Detailed rainfall files (SWRAIN = 3, RAINFIL '{_name(ml.meteorology.rainfil)}') are not loaded: pySWAP does not write them."
+            )
+
+        return ml
+
     def to_classic_swap(self, path: Path) -> None:
-        """Prepare all the files for a model run in user's directory."""
-        self.validate()
-        builder = ModelBuilder(model=self, tempdir=path)
+        """Prepare all the files for a model run in user's directory.
 
-        builder.write_inputs()
-
+        Deprecated: use `write(path)`, which does the same. This method will be
+        removed in a future release.
+        """
+        warnings.warn(
+            "Model.to_classic_swap() is deprecated and will be removed in a future "
+            "release; use Model.write(path) instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.write(path)
         logger.info(f"Model files written to {path}")
 
     def run(
@@ -657,11 +846,31 @@ class Model(PySWAPBaseModel, FileMixin, SerializableMixin):
         path: str | Path | None = None,
         silence_warnings: bool = False,
         timeout: float | None = None,
+        run_dir: str | Path | None = None,
     ) -> Result:
-        """Run the model using ModelRunner."""
+        """Run the model using ModelRunner.
+
+        Parameters:
+            path (str | Path | None): Directory in which the temporary run
+                directory is created (default: the current working directory).
+                Ignored when `run_dir` is given.
+            silence_warnings (bool): If True, SWAP warnings are not logged.
+            timeout (float | None): Maximum SWAP run time in seconds.
+            run_dir (str | Path | None): Directory to run the model in and keep
+                afterwards. pySWAP writes the input files (.swp, .met, .crp,
+                ...) there, runs SWAP in it and leaves all inputs and outputs in
+                place, so the run can be inspected, archived or rerun with the
+                SWAP executable. The directory is created if it does not exist;
+                files with the same names are overwritten. If None (default),
+                the model runs in a temporary directory that is deleted
+                afterwards.
+
+        Returns:
+            Result: The parsed model results.
+        """
         self.validate()
         path = Path.cwd() if path is None else path
-        return ModelRunner(self).run(path, silence_warnings, timeout)
+        return ModelRunner(self).run(path, silence_warnings, timeout, run_dir=run_dir)
 
 
 def _run_model_with_params(args) -> Result:

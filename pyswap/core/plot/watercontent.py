@@ -8,9 +8,11 @@ Functions:
     water_content: Plot water content as heatmap.
 """
 
+import numpy as np
 import pandas as pd
-import seaborn as sns
 from matplotlib import pyplot as plt
+
+from pyswap.core.plot._style import POSTER
 
 
 def water_content(
@@ -34,8 +36,6 @@ def water_content(
         title (str, optional): Title of the plot. Defaults to 'Water content'.
     """
 
-    sns.set_context("poster")
-
     df_wcont = df[[depth_col, date_col, wcontent_col]]
 
     df_wcont.loc[:, date_col] = pd.to_datetime(df_wcont[date_col])
@@ -45,17 +45,26 @@ def water_content(
     pivot_table = df_wcont.pivot(columns=date_col, index=depth_col, values=wcontent_col)
     pivot_table = pivot_table.sort_index(axis=1)
 
-    plt.figure(figsize=(34, 8))
-    sns.heatmap(pivot_table, cmap="YlGnBu")
-    plt.title(title)
-    plt.xlabel("Date")
-    plt.ylabel("Depth (cm)")
+    with plt.rc_context(POSTER):
+        fig, ax = plt.subplots(figsize=(34, 8))
+        # One cell per depth (rows) and date (columns); the first row of the
+        # pivot table (smallest depth value) is drawn at the bottom.
+        mesh = ax.pcolormesh(pivot_table.to_numpy(dtype=float), cmap="YlGnBu")
+        fig.colorbar(mesh, ax=ax)
 
-    plt.gca().invert_yaxis()
+        n_depths, n_dates = pivot_table.shape
+        ystep = max(1, n_depths // 20)
+        xstep = max(1, n_dates // 20)
+        ax.set_yticks(
+            np.arange(0, n_depths, ystep) + 0.5,
+            labels=[f"{d:g}" for d in pivot_table.index[::ystep]],
+        )
+        ax.set_xticks(
+            np.arange(0, n_dates, xstep) + 0.5,
+            labels=[d.strftime("%Y-%m") for d in pivot_table.columns[::xstep]],
+            rotation=45,
+        )
 
-    plt.xticks(rotation=45)
-
-    def format_months(x, p):
-        return pivot_table.columns[int(x)].strftime("%Y-%m")
-
-    plt.gca().xaxis.set_major_formatter(plt.FuncFormatter(format_months))
+        ax.set_title(title)
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Depth (cm)")

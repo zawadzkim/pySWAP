@@ -5,6 +5,8 @@ search:
 
 # .CRP
 
+SWAP 4 user manual: section 7.8 User instructions (crop growth), [page 131](https://edepot.wur.nl/416321#page=133).
+
 A .crp file defines crop parameters for different crop models. There are three types of crop modules in SWAP: simple (fixed) crop, WOFOST implementation, and dynamic grass growth. Each module requires a specific set of variables, which are outlined in their respective .crp file templates.
 
 - Simple (fixed) crop - This module uses a fixed set of parameters for crop growth.
