@@ -55,6 +55,11 @@ def test_cli_init_script(setup_and_teardown):
             "metadata = psp.components.Metadata(" in content
         ), "Content of main.py is incorrect."
 
+    # The generated script must run as it is
+    namespace: dict = {}
+    exec(content, namespace)  # noqa: S102 (runs the generated template code)
+    assert namespace["metadata"].author == "John Doe"
+
 
 def test_cli_init_notebook(setup_and_teardown):
     folder_path = setup_and_teardown
@@ -83,8 +88,13 @@ def test_cli_init_notebook(setup_and_teardown):
         code_cell_source = notebook_content["cells"][2]["source"]
         full_code_content = "".join(code_cell_source)
         assert (
-            "metadata = ps.Metadata(" in full_code_content
+            "metadata = ps.components.Metadata(" in full_code_content
         ), "Content of main.ipynb is incorrect."
+
+    # The generated cell must run as it is
+    namespace: dict = {}
+    exec(full_code_content, namespace)  # noqa: S102 (runs the generated template code)
+    assert namespace["metadata"].author == "John Doe"
 
 
 def test_git_initialization_and_gitignore(setup_and_teardown):
@@ -176,6 +186,10 @@ def test_pixi_default_behavior(setup_and_teardown):
         assert "John Doe" in pixi_content
         assert "john.doe@example.com" in pixi_content
         assert "pyswap = \"*\"" in pixi_content
+        assert "osx-arm64" in pixi_content
+
+    # A starter test, so that `pixi run test` has something to run
+    assert (folder_path / "tests" / "test_swap.py").exists()
 
 
 def test_no_pixi_option(setup_and_teardown):
