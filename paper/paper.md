@@ -32,7 +32,7 @@ bibliography: paper.bib
 # Summary
 pySWAP is an open-source Python package for creating, running, analysing, and sharing Soil–Water–Atmosphere–Plant (SWAP) agrohydrological models.
 SWAP calculates crop water requirements and simulates interactions between water balance components such as evaporation and groundwater storage [@kroes_swap_2017].
-The primary purpose of pySWAP is to eliminate the need for plain-text input files that SWAP requires, enabling smoother automation and seamless integration of modelling workflows with the variety of analytical tools the Python ecosystem offers.
+SWAP reads and writes plain-text ASCII files; the primary purpose of pySWAP is to build, validate and read these files from Python, enabling smoother automation and seamless integration of modelling workflows with the variety of analytical tools the Python ecosystem offers.
 pySWAP was first presented as a concept at the European Geosciences Union (EGU) General Assembly in
 2024 [@zawadzki2024pyswap] and has since matured into a production-ready
 package with documentation, a test suite, and active research use.
@@ -40,59 +40,73 @@ package with documentation, a test suite, and active research use.
 # Statement of need
 SWAP has played an important role in the advancement of agrohydrological research over the last 50 years and has been widely applied in studies focusing on agricultural water management and irrigation optimisation [@heinen_swap_2024; @kroes_swap_2017].
 The model is particularly valuable in agricultural applications due to its integration with the dynamic crop growth model WOFOST [@boogaard_wofost_2014], which enables the simulation of crop responses to varying water and nutrient conditions.
-SWAP is part of tools used for policy making in the European Union (e.g. the pesticide leaching model FOCUSPEARL [@focuspearl_2019]) and the Netherlands (e.g. WaterVision Agriculture [@watervision_2019]). SWAP code and compiler settings are open-source under the GNU General Public License, and version 4.2.0 is distributed with supplementary materials and documentation via [swap.wur.nl](https://swap.wur.nl). 
+SWAP is part of tools used for policy making at the European level (e.g. the pesticide leaching model FOCUSPEARL [@focuspearl_2019]) and nationally in the Netherlands (e.g. WaterVision Agriculture [@watervision_2019]). SWAP code and compiler settings are open-source under the GNU General Public License, and version 4.2.0 is distributed with supplementary materials and documentation via [swap.wur.nl](https://swap.wur.nl). 
 
-Like many Fortran programs, SWAP requires a set of plain-text ASCII files with custom extensions. At execution, the TTUTIL library [@vankraalingen2000ttutil] parses these files and loads variables into memory. After completion, the program writes output files to disk. Although this workflow is sufficient for small projects, it becomes cumbersome when managing multiple models — particularly for sensitivity analysis, scenario analysis, or auto-calibration procedures across multiple field sites on high-performance computing systems. As the community grows and research questions become more complex, each modeller inevitably develops their own ad-hoc wrapper, creating inconsistency and poor sharability of workflows.
+Like many Fortran programs, SWAP requires a set of plain-text ASCII files with custom extensions. At execution, the TTUTIL library [@vankraalingen2000ttutil] parses these files and loads variables into memory. After completion, the program writes output files to disk. The ASCII format itself is not the problem: MODFLOW and HYDRUS, for instance, use it too. A SWAP model, however, spreads its variables, including array data like rainfall or irrigation, over several fixed-format files. Generating and varying these files by hand or with ad-hoc scripts is tedious and error-prone — particularly for sensitivity analysis, scenario analysis or auto-calibration, and on high-performance computing systems. As the community grows and research questions become more complex, each modeller inevitably develops their own ad-hoc wrapper, creating inconsistency and poor sharability of workflows. A graphical user interface for SWAP is used in teaching [@vandam_swap_gui_2024], but scripted, reproducible workflows with many model runs need a programmatic interface.
 
 # State of the field
 
 The only published tools for SWAP input/output handling are currently written in R (e.g., rSWAP [@moritzshore_rswap_2023] and SWAPTools, distributed with SWAP 4.2.0). Prior to pySWAP, no structured, tested, and peer-reviewed Python library for SWAP model interaction existed. Given that Python has become the dominant language for scientific data analysis and hydrological modelling workflows, this gap limits the accessibility of SWAP and therefore the potential for community-driven model development.
 
-The precedent for wrapping Fortran-based hydrological models in Python is well established — most notably by FloPy [@bakker_flopy_2016; @bakker_flopy_2025; @hughes_flopy_2024], which demonstrated that an object-oriented Python interface to MODFLOW significantly lowers barriers to automation, reproducibility, and community adoption. Beyond file handling, a native Python interface unlocks the full scientific ecosystem — from statistical analysis and machine learning to visualisation and model coupling — enabling modellers to integrate SWAP directly into their broader research workflows without manual data exchange [@hughesMODFLOWApplicationProgramming2022]. The pySWAP architecture is also designed to anticipate the evolution of SWAP itself: as the SWAP Fortran codebase is currently maturing toward a callable library interface, tools such as f2py will allow direct in-memory coupling, eliminating file-based execution entirely.
+The precedent for wrapping Fortran-based hydrological models in Python is well established — most notably by FloPy [@bakker_flopy_2016; @hughes_flopy_2024], which demonstrated that an object-oriented Python interface to MODFLOW significantly lowers barriers to automation, reproducibility, and community adoption. Closer to SWAP, pHYDRUS runs the one-dimensional variably saturated flow model HYDRUS-1D from Python [@collenteur_phydrus_2020].
+
+Beyond file handling, a native Python interface unlocks the full scientific ecosystem — from statistical analysis and machine learning to visualisation and model coupling — enabling modellers to integrate SWAP directly into their broader research workflows without manual data exchange [@hughesMODFLOWApplicationProgramming2022].
 
 # Software design
 
-pySWAP's object-oriented design is inspired by FloPy [@bakker_flopy_2016; @bakker_flopy_2025; @hughes_flopy_2024], with functionality split into modules for intuitive access. The design is guided by three principles: (1) map SWAP's conceptual structure directly onto Python objects so the model is readable and auditable without consulting raw input files, (2) leverage the Python scientific ecosystem (NumPy, pandas, Pydantic) rather than reimplementing standard functionality, and (3) maintain separation between model definition, execution, and result analysis for easier extensibility.
+pySWAP's object-oriented design is inspired by FloPy [@bakker_flopy_2016; @hughes_flopy_2024], with functionality split into modules for intuitive access. The design is guided by three principles: (1) map SWAP's conceptual structure directly onto Python objects so the model is readable and auditable without consulting raw input files, (2) leverage the Python scientific ecosystem (NumPy [@harris_numpy_2020], pandas [@mckinney_pandas_2010; @pandas_zenodo], Pydantic [@pydantic_zenodo]) rather than reimplementing standard functionality, and (3) maintain separation between model definition, execution, and result analysis for easier extensibility.
 
 Users primarily interact with the `components` and `model` modules. Each component (e.g., `meteorology`, `crop`) groups co-dependent attributes corresponding to sections of the original SWAP input files, with input validation handled via Pydantic to catch incorrect model setups before any files are written or the model is executed. Once assembled into a `Model` object, these components build input files directory, call the SWAP executable, and return a structured `Result` object used in further analysis.
 
 
 ## Modelling workflow
 
-We recommend using the `pyswap` command-line interface to start new projects. Running `pyswap init` prompts users for project metadata and generates a structured directory with a default Jupyter notebook and pixi.toml file for dependency management. To get started with pySWAP, users can consult the documentation's quick start section or preview the interactive Binder environment with documentation notebooks. The following example illustrates a minimal model setup:
+pySWAP generally does not needs any setup step before a script or notebook can use it. The SWAP executable is downloaded automatically the first time a model is run. The optional CLI commands (e.g., `pyswap init`) scaffolds a project directory with a default Jupyter notebook and a pixi.toml file for dependency management. To get started with pySWAP, users can consult the documentation's quick start section or preview the interactive Binder environment with documentation notebooks. The following example, condensed from the Getting started page of the documentation (which has the complete code and plots), builds a model from scratch in the four steps of a modelling study:
 
 ```Python
+import pandas as pd
 import pyswap as ps
-from pyswap import testcase
 
-# Reading CSV data:
-# metfile_from_csv will return a MetFile object, a file class
-meteo_data = ps.components.meteorology.metfile_from_csv(
-    metfil="283.met", csv_path=testcase.get_path("hupselbrook", "met")
+# 1. Preprocessing: daily weather from your own data
+weather = pd.read_csv("weather.csv")  # STATION, DD, MM, YYYY, RAD, ...
+meteorology = ps.components.Meteorology(
+    metfile=ps.components.MetFile(metfil="site.met", content=weather),
+    lat=52.0, alt=21.0, altw=10.0, swetr=0, swdivide=1, swmetdetail=0,
+    angstroma=0.25, angstromb=0.5,
 )
 
-# Defining components:
-# Meteorology object is an example of a section class
-meteo = ps.components.meteorology.Meteorology(
-    lat=52.0,
-    alt=21.0,
-    swetr=0,
-    metfile=meteo_data,
-    swdivide=1,
-    swmetdetail=0,
-    altw=10.0,
-    angstroma=0.25,
-    angstromb=0.5,
+# 2. Model input: sand over clay over sand above a fixed groundwater level
+soilprofile = ps.components.SoilProfile(
+    swsophy=0, swhyst=0, swmacro=0,
+    soilprofile=pd.DataFrame({
+        "ISUBLAY": [1, 2, 3], "ISOILLAY": [1, 2, 3],
+        "HSUBLAY": [40.0, 40.0, 120.0],  # layer thickness [cm]
+        "HCOMP": [1.0, 2.0, 5.0], "NCOMP": [40, 20, 24],
+    }),
+    soilhydrfunc=vangenuchten,  # DataFrame, one parameter row per layer
 )
-
-# Composing Model class:
-
-ml = ps.Model(
-	meteorology=meteo,
-	# Other elements...
+bottomboundary = ps.components.BottomBoundary(
+    swbbcfile=0, swbotb=1,
+    gwlevel=pd.DataFrame({"DATE1": ["2003-01-01", "2003-12-31"],
+                          "GWLEVEL": [-120.0, -120.0]}),  # [cm]
 )
+ml = ps.Model(meteorology=meteorology, soilprofile=soilprofile,
+              bottomboundary=bottomboundary, **settings)  # other components
 
+# 3. Run, and run three rainfall scenarios in parallel
 result = ml.run()
+
+def scale_rain(f):
+    met = ps.components.MetFile(metfil="site.met",
+                                content=weather.assign(RAIN=weather.RAIN * f))
+    return ml.update({"meteorology": meteorology.update({"metfile": met})})
+
+results = ps.run_parallel([scale_rain(f) for f in (0.8, 1.0, 1.2)])
+
+# 4. Postprocessing: water content over depth and time, yearly drainage
+ps.plot.water_content(result.csv_tz.reset_index(), depth_col="DEPTH",
+                      date_col="DATE", wcontent_col="WC")
+drainage = [r.csv["QBOTTOM"].sum() for r in results]
 ```
 
 ## Integrations
@@ -104,30 +118,26 @@ Users can inspect parameter content, modify them, and update their pySWAP crop s
 ### HDF5 database
 
 pySWAP models and results can be stored in HDF5 format, a versatile scientific computing standard.
+This storage is on the pySWAP side only, for keeping many model variants and their results in one file; SWAP itself reads and writes ASCII files as before.
 Each model is saved (optionally with results) as a pickled object with metadata.
 
 ### Belgian and Dutch soil databases
 
 Packages `dovwms` [@zawadzki_dovwms], `simplesoilprofile` [@zawadzki_simplesoilprofile], and DutchSoils [@vandenbrink_dutchsoils] provide quick access to Belgian and Dutch soil databases, enabling workflow automation and reducing potential errors.
 
-# Testing
+# Quality assurance
 
-The current version has 84\ % code coverage using the pytest testing framework.
-Tests target specific features and validate model results against known benchmarks within acceptable error margins.
-
-# Continuous integration and deployment
-
-The package implements robust continuous integration and deployment. Package and documentation builds are tested before each release, and documentation is automatically deployed with each new software version.
+A pytest suite (84\ % code coverage) checks individual features and validates model results against known benchmarks. Continuous integration runs the tests on every pull request, both with current dependencies and with the oldest supported Python and pandas versions (Python 3.11, pandas 2), and each new version is released to PyPI with its documentation automatically.
 
 # Research impact statement
 
-pySWAP has been successfully used in two research projects, with publications in preparation and will be adopted in a newly started European project:
+pySWAP is used in three ongoing research projects, listed alphabetically; publications from GROW and WaterScape are in preparation:
 
-- [Project GROW](https://project-grow.be) - modelling soil moisture conditions at an experimental field where treated wastewater is reused for subirrigation,
-- [WaterScape](https://waterscape.sites.uu.nl/) - determining the role of soil-water-plant-atmosphere interactions in shallow groundwater and rooting zones for local water availability and land-use practices, and
-- AquiCirc - funded under the Water4All initiative, focused on Managed Aquifer Recharge for a Circular Water Future, where pySWAP will be used to simulate vadose zone dynamics under recharge scenarios.
+- [AquiCirc](https://aquicirc.eu/) - funded under the Water4All initiative, focused on Managed Aquifer Recharge for a Circular Water Future, where pySWAP will be used to set up and run SWAP simulations of vadose zone dynamics under recharge scenarios,
+- [Project GROW](https://project-grow.be) - modelling soil moisture conditions at an experimental field where treated wastewater is reused for subirrigation, and
+- [WaterScape](https://waterscape.sites.uu.nl/) - determining the role of soil-water-plant-atmosphere interactions in shallow groundwater and rooting zones for local water availability and land-use practices.
 
-Since its public introduction at EGU 2024 [@zawadzki2024pyswap], the package has received 22 GitHub stars and grown through 21 releases. It has attracted contributions and community feedback from SWAP modellers across the Netherlands, Belgium, and beyond — via GitHub issues and direct contact. As pySWAP lowers the barrier to adoption and connects SWAP to the broader Python ecosystem, it is expected to expand the active user base — accelerating community-driven development and making the model more robust through collective feedback and contribution. Active development continues, with planned extensions for spatial support, sensitivity analysis, and improved multicore processing.
+Since its public introduction at EGU 2024 [@zawadzki2024pyswap], pySWAP has received contributions and feedback from SWAP modellers in the Netherlands, Belgium and beyond, through GitHub issues and direct contact. Development continues, with planned extensions for spatial support, sensitivity analysis and improved multicore processing.
 
 # AI usage disclosure
 
