@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../user-guide/quick-start/" class="md-tabs__link">
+        <a href="../../../user-guide/installation/" class="md-tabs__link">
           
   
   
@@ -495,14 +495,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user-guide/quick-start/" class="md-nav__link">
+      <a href="../../../user-guide/installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Quickstart
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
   
 
     
@@ -587,6 +615,34 @@
     
   
     Data Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/wofost-crop-parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WOFOST crop parameters
   
 
     
@@ -2205,8 +2261,8 @@ cropdb.croptypes</div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2227,6 +2283,20 @@ cropdb.croptypes</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">cropfile</span> <span class="o">=</span> <span class="n">cropdb</span><span class="o">.</span><span class="n">load_crop_file</span><span class="p">(</span><span class="s2">"rice"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3">cropfile = cropdb.load_crop_file("rice")</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/tmp/ipykernel_2869/2899331447.py:1: UserWarning: The WOFOST crop parameters bundled with pySWAP come from https://github.com/ajwdewit/WOFOST_crop_parameters. Each parameter set was calibrated for particular conditions, which the repository and the variety metadata (`.metadata`) describe; check that they fit your site and calibrate your own parameters if they do not. This message is shown once per session.
+  cropfile = cropdb.load_crop_file("rice")
+</pre>
 </div>
 </div>
 </div>
@@ -2398,7 +2468,7 @@ print(cropfile.varieties)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">potato_prep</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">Preparation</span><span class="p">(</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">potato_prep</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Preparation</span><span class="p">(</span>
     <span class="n">swprep</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">swsow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">swgerm</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -2413,10 +2483,10 @@ print(cropfile.varieties)</div>
     <span class="n">swharv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">scheduled_irrigation</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">irrigation</span><span class="o">.</span><span class="n">ScheduledIrrigation</span><span class="p">(</span><span class="n">schedule</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">interception</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">Interception</span><span class="p">(</span><span class="n">swinter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cofab</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">scheduled_irrigation</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ScheduledIrrigation</span><span class="p">(</span><span class="n">schedule</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">interception</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Interception</span><span class="p">(</span><span class="n">swinter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cofab</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
 
-<span class="n">potato_ox_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">OxygenStress</span><span class="p">(</span>
+<span class="n">potato_ox_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">OxygenStress</span><span class="p">(</span>
     <span class="n">swoxygen</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">swwrtnonox</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">aeratecrit</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
@@ -2427,7 +2497,7 @@ print(cropfile.varieties)</div>
     <span class="n">root_radiuso2</span><span class="o">=</span><span class="mf">0.00015</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">potato_dr_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">DroughtStress</span><span class="p">(</span>
+<span class="n">potato_dr_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">DroughtStress</span><span class="p">(</span>
     <span class="n">swdrought</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">hlim3h</span><span class="o">=-</span><span class="mf">300.0</span><span class="p">,</span>
     <span class="n">hlim3l</span><span class="o">=-</span><span class="mf">500.0</span><span class="p">,</span>
@@ -2436,7 +2506,7 @@ print(cropfile.varieties)</div>
     <span class="n">adcrl</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7">potato_prep = psp.components.crop.Preparation(
+<div class="clipboard-copy-txt" id="cell-7">potato_prep = psp.components.Preparation(
     swprep=0,
     swsow=0,
     swgerm=2,
@@ -2451,10 +2521,10 @@ print(cropfile.varieties)</div>
     swharv=0,
 )
 
-scheduled_irrigation = psp.components.irrigation.ScheduledIrrigation(schedule=0)
-interception = psp.components.crop.Interception(swinter=1, cofab=0.25)
+scheduled_irrigation = psp.components.ScheduledIrrigation(schedule=0)
+interception = psp.components.Interception(swinter=1, cofab=0.25)
 
-potato_ox_stress = psp.components.crop.OxygenStress(
+potato_ox_stress = psp.components.OxygenStress(
     swoxygen=1,
     swwrtnonox=1,
     aeratecrit=0.5,
@@ -2465,7 +2535,7 @@ potato_ox_stress = psp.components.crop.OxygenStress(
     root_radiuso2=0.00015,
 )
 
-potato_dr_stress = psp.components.crop.DroughtStress(
+potato_dr_stress = psp.components.DroughtStress(
     swdrought=1,
     hlim3h=-300.0,
     hlim3l=-500.0,
@@ -2512,7 +2582,7 @@ potato_dr_stress = psp.components.crop.DroughtStress(
 <span class="n">potato</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">load_crop_file</span><span class="p">(</span><span class="s2">"potato"</span><span class="p">)</span>
 <span class="n">potato_params</span> <span class="o">=</span> <span class="n">potato</span><span class="o">.</span><span class="n">get_variety</span><span class="p">(</span><span class="s2">"Potato_701"</span><span class="p">)</span>
 
-<span class="n">potato_cropdev_settings</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">CropDevelopmentSettingsWOFOST</span><span class="p">(</span>
+<span class="n">potato_cropdev_settings</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">CropDevelopmentSettingsWOFOST</span><span class="p">(</span>
     <span class="n">wofost_variety</span><span class="o">=</span><span class="n">potato_params</span><span class="p">,</span>
     <span class="n">swcf</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">albedo</span><span class="o">=</span><span class="mf">0.19</span><span class="p">,</span>
@@ -2537,7 +2607,7 @@ potato_dr_stress = psp.components.crop.DroughtStress(
 potato = db.load_crop_file("potato")
 potato_params = potato.get_variety("Potato_701")
 
-potato_cropdev_settings = psp.components.crop.CropDevelopmentSettingsWOFOST(
+potato_cropdev_settings = psp.components.CropDevelopmentSettingsWOFOST(
     wofost_variety=potato_params,
     swcf=2,
     albedo=0.19,
@@ -2568,84 +2638,84 @@ potato_cropdev_settings.update_from_wofost()</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - No matching array schema found for: ssatb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:49 - WARNING - No matching array schema found for: ssatb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - Failed to process parameter from WOFOST: ssatb, removing from update
+<pre>20:05:49 - WARNING - Failed to process parameter from WOFOST: ssatb, removing from update
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - No matching array schema found for: kdiftb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:49 - WARNING - No matching array schema found for: kdiftb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - Failed to process parameter from WOFOST: kdiftb, removing from update
+<pre>20:05:49 - WARNING - Failed to process parameter from WOFOST: kdiftb, removing from update
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - No matching array schema found for: efftb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:49 - WARNING - No matching array schema found for: efftb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - Failed to process parameter from WOFOST: efftb, removing from update
+<pre>20:05:49 - WARNING - Failed to process parameter from WOFOST: efftb, removing from update
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - No matching array schema found for: nmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:49 - WARNING - No matching array schema found for: nmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - Failed to process parameter from WOFOST: nmaxlv_tb, removing from update
+<pre>20:05:49 - WARNING - Failed to process parameter from WOFOST: nmaxlv_tb, removing from update
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - No matching array schema found for: pmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:49 - WARNING - No matching array schema found for: pmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - Failed to process parameter from WOFOST: pmaxlv_tb, removing from update
+<pre>20:05:49 - WARNING - Failed to process parameter from WOFOST: pmaxlv_tb, removing from update
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - No matching array schema found for: kmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:49 - WARNING - No matching array schema found for: kmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:34 - WARNING - Failed to process parameter from WOFOST: kmaxlv_tb, removing from update
+<pre>20:05:49 - WARNING - Failed to process parameter from WOFOST: kmaxlv_tb, removing from update
 </pre>
 </div>
 </div>
@@ -2829,7 +2899,7 @@ print(potato_cropdev_settings.rdctb)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">crppotato</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">CropFile</span><span class="p">(</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">crppotato</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">CropFile</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">"potatod"</span><span class="p">,</span>
     <span class="n">prep</span><span class="o">=</span><span class="n">potato_prep</span><span class="p">,</span>
     <span class="n">cropdev_settings</span><span class="o">=</span><span class="n">potato_cropdev_settings</span><span class="p">,</span>
@@ -2839,7 +2909,7 @@ print(potato_cropdev_settings.rdctb)</div>
     <span class="n">scheduledirrigation</span><span class="o">=</span><span class="n">scheduled_irrigation</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12">crppotato = psp.components.crop.CropFile(
+<div class="clipboard-copy-txt" id="cell-12">crppotato = psp.components.CropFile(
     name="potatod",
     prep=potato_prep,
     cropdev_settings=potato_cropdev_settings,

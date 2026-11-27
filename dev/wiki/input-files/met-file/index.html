@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../user-guide/quick-start/" class="md-tabs__link">
+        <a href="../../../user-guide/installation/" class="md-tabs__link">
           
   
   
@@ -497,14 +497,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user-guide/quick-start/" class="md-nav__link">
+      <a href="../../../user-guide/installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Quickstart
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
   
 
     
@@ -589,6 +617,34 @@
     
   
     Data Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/wofost-crop-parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WOFOST crop parameters
   
 
     
@@ -1675,7 +1731,8 @@
 
 
 <h1 id="met">.MET<a class="headerlink" href="#met" title="Permanent link">&para;</a></h1>
-<p>Originally, the meteorological data was passed to SWAP in files that had extensions equal to the last three digits of the year. However, the option to use one file (csv-like) with .met extension seems to be the best choice for simplicity. Therefore, for now, pySWAP only allows to use the .met file.</p>
+<p>SWAP 4 user manual: section 3.7.2 Weather data, <a href="https://edepot.wur.nl/416321#page=54">page 52</a>.</p>
+<p>Originally, the meteorological data was passed to SWAP in files that had extensions equal to the last three digits of the year. However, the option to use one file (csv-like) with .met extension seems to be the best choice for simplicity. Therefore pySWAP writes a single .met file. <code>Model.load</code> and <code>load_met</code> also read the yearly files.</p>
 <p>Depending on the selected option, the .met file will have a different set of headers.</p>
 <h2 id="using_your_own_weather_data">Using your own weather data<a class="headerlink" href="#using_your_own_weather_data" title="Permanent link">&para;</a></h2>
 <p>You do not need a SWAP-formatted file or a testcase to provide weather data: <code>MetFile</code> takes a pandas DataFrame with your own daily records, one row per day, with the columns <code>STATION, DD, MM, YYYY, RAD, TMIN, TMAX, HUM, WIND, RAIN, ETREF, WET</code> (units and the missing-value convention are listed in the <code>MetFile</code> docstring).</p>

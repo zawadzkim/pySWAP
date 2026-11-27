@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../user-guide/quick-start/" class="md-tabs__link">
+        <a href="../../../user-guide/installation/" class="md-tabs__link">
           
   
   
@@ -495,14 +495,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user-guide/quick-start/" class="md-nav__link">
+      <a href="../../../user-guide/installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Quickstart
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
   
 
     
@@ -587,6 +615,34 @@
     
   
     Data Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/wofost-crop-parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WOFOST crop parameters
   
 
     
@@ -2142,8 +2198,8 @@ psp.log.set_log_level("INFO")</div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2164,6 +2220,20 @@ psp.log.set_log_level("INFO")</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ml</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">testcase</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"hupselbrook"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-2">ml = psp.testcase.get("hupselbrook")</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/home/runner/work/pySWAP/pySWAP/pyswap/testcase/hupselbrook.py:198: UserWarning: The WOFOST crop parameters bundled with pySWAP come from https://github.com/ajwdewit/WOFOST_crop_parameters. Each parameter set was calibrated for particular conditions, which the repository and the variety metadata (`.metadata`) describe; check that they fit your site and calibrate your own parameters if they do not. This message is shown once per session.
+  potato = db.load_crop_file("potato")
+</pre>
 </div>
 </div>
 </div>
@@ -2572,7 +2642,7 @@ SWSOLU = 0
 * File content:  detailed overview of water balance components (cm)
 * File name:     ./result.blc
 * Model version: Swap 4.2.0
-* Generated at:  2026-11-26 14:48:24
+* Generated at:  2026-11-27 20:05:39
 
 Period             :  2002-01-01  until  2002-12-31 
 Depth soil profile :  200.00 cm
@@ -2729,7 +2799,7 @@ None
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="alternative-way-to-load-a-model">Alternative way to load a model<a class="anchor-link" href="#alternative-way-to-load-a-model">¶</a></h2><p>Since pyswap 0.2.0, it is possible to load an entire model from the classic ascii configuration files. In order to do that, you need to create the swp and other relevant files separately and then put them together in a model. You can see it in the tutorial on <a href="/tutorials/loading-classic-swap">loading classic SWAP model</a>.</p>
+<h2 id="alternative-way-to-load-a-model">Alternative way to load a model<a class="anchor-link" href="#alternative-way-to-load-a-model">¶</a></h2><p>Since pyswap 0.2.0, it is possible to load an entire model from the classic ascii configuration files. In order to do that, you need to create the swp and other relevant files separately and then put them together in a model. You can see it in the tutorial on <a href="../004-loading-classic-swap/">loading classic SWAP model</a>.</p>
 </div>
 </div>
 </div>
@@ -2856,7 +2926,7 @@ water_content(wc_df, "DEPTH", "DATE", "WC")</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="alternative-way-to-setup-the-model">Alternative way to setup the model<a class="anchor-link" href="#alternative-way-to-setup-the-model">¶</a></h2><p>Initially it was only possible to directly assign generated model components to the Model object attributes. Since the newest release (February 2025) it is possible to set up and run the model by loading the plain text files used traditionally to set up the model. See <a href="/tutorials/004-loading-classic-swap/">this notebook</a> to see how to do it!</p>
+<h2 id="alternative-way-to-setup-the-model">Alternative way to setup the model<a class="anchor-link" href="#alternative-way-to-setup-the-model">¶</a></h2><p>Initially it was only possible to directly assign generated model components to the Model object attributes. Since the newest release (February 2025) it is possible to set up and run the model by loading the plain text files used traditionally to set up the model. See <a href="../004-loading-classic-swap/">this notebook</a> to see how to do it!</p>
 </div>
 </div>
 </div>

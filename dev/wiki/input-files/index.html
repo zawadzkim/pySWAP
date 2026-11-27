@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../user-guide/quick-start/" class="md-tabs__link">
+        <a href="../../user-guide/installation/" class="md-tabs__link">
           
   
   
@@ -497,14 +497,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/quick-start/" class="md-nav__link">
+      <a href="../../user-guide/installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Quickstart
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
   
 
     
@@ -589,6 +617,34 @@
     
   
     Data Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/wofost-crop-parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WOFOST crop parameters
   
 
     
@@ -1610,18 +1666,19 @@
 <h1 id="input_files">Input files<a class="headerlink" href="#input_files" title="Permanent link">&para;</a></h1>
 <p>In pySWAP, you won't directly interact with the classic SWAP configuration files, but it's helpful to understand the input files the model uses. The SWAP model relies on ASCII input files with custom extensions for simulation parameters. These files include:</p>
 <ul>
-<li><a href="/wiki/input-files/swp-file.md"><strong>.swp</strong></a> - Main configuration file.</li>
-<li><a href="/wiki/input-files/crp-file.md"><strong>.crp</strong></a> - Crop growth parameters.</li>
-<li><a href="/wiki/input-files/dra-file.md"><strong>.dra</strong></a> - Lateral drainage parameters.</li>
-<li><a href="/wiki/input-files/bbc-file.md"><strong>.bbc</strong></a> - Bottom boundary condition settings.</li>
+<li><a href="swp-file/"><strong>.swp</strong></a> - Main configuration file.</li>
+<li><a href="crp-file/"><strong>.crp</strong></a> - Crop growth parameters.</li>
+<li><a href="dra-file/"><strong>.dra</strong></a> - Lateral drainage parameters.</li>
+<li><a href="bbc-file/"><strong>.bbc</strong></a> - Bottom boundary condition settings.</li>
 </ul>
 <p>There are also files with comma-separated values for simulations:</p>
 <ul>
-<li><a href="/wiki/input-files/met-file.md"><strong>.met</strong></a> - Meteorological data (all years in one file).</li>
-<li><strong>.yyy</strong> - Meteorological data (last 3 digits of the year; not used in pySWAP).</li>
-<li><a href="/wiki/input-files/irg-file.md"><strong>.irg</strong></a> - Irrigation data.</li>
+<li><a href="met-file/"><strong>.met</strong></a> - Meteorological data (all years in one file).</li>
+<li><strong>.yyy</strong> - Meteorological data, one file per year (the extension is the last 3 digits of the year); pySWAP reads these with <code>Model.load</code> and <code>load_met</code> but writes a single .met file.</li>
+<li><a href="irg-file/"><strong>.irg</strong></a> - Irrigation data.</li>
 </ul>
 <p>ASCII files are easy to create and edit, making data input straightforward. Scripting can help generate and run multiple model scenarios efficiently. The following sections provide more documentation, with each template file explaining available parameters and switches. These templates are from the R package (SWAP Tools).</p>
+<p>The full description of every input variable is in the SWAP 4 user manual: Kroes et al. (2017), <em>SWAP version 4: Theory description and user manual</em>, <a href="https://edepot.wur.nl/416321">PDF</a>. Each page below links to the matching section.</p>
 
 
 

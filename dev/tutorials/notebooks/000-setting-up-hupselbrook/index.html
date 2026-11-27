@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../user-guide/quick-start/" class="md-tabs__link">
+        <a href="../../../user-guide/installation/" class="md-tabs__link">
           
   
   
@@ -495,14 +495,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user-guide/quick-start/" class="md-nav__link">
+      <a href="../../../user-guide/installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Quickstart
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
   
 
     
@@ -587,6 +615,34 @@
     
   
     Data Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/wofost-crop-parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WOFOST crop parameters
   
 
     
@@ -2234,7 +2290,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="hupselbrook-model-setup">Hupselbrook Model Setup<a class="anchor-link" href="#hupselbrook-model-setup">¶</a></h1><p>SWAP plain-text configuration files (.swp, .crp, .dra, .bbc) consist of various switches (parameters with "SW" prefix), key-value pairs, and tables. These elements are grouped into sections corresponding to specific parts of the model. For example, the meteorological section includes parameters for climatological calculations, while the crop section handles parameters related to, e.g., crop water uptake. You can see the structure of the classic template of SWAP file inputs in the <a href="/wiki/input-files/1-input-files/">wiki section</a>.</p>
+<h1 id="hupselbrook-model-setup">Hupselbrook Model Setup<a class="anchor-link" href="#hupselbrook-model-setup">¶</a></h1><p>SWAP plain-text configuration files (.swp, .crp, .dra, .bbc) consist of various switches (parameters with "SW" prefix), key-value pairs, and tables. These elements are grouped into sections corresponding to specific parts of the model. For example, the meteorological section includes parameters for climatological calculations, while the crop section handles parameters related to, e.g., crop water uptake. You can see the structure of the classic template of SWAP file inputs in the <a href="../../../wiki/input-files/">wiki section</a>.</p>
 <p>pyswap is built on Object Oriented Programming principle, similar to <a href="https://flopy.readthedocs.io/en/stable/">flopy</a> package for MODFLOW model. Different parts of the model, or model components, are represented by separate classes (<code>GeneralSettings</code>, <code>Meteorology</code>, etc.). These components are then stacked together like lego blocks to build a complete model. This approach allows to easily build variants of a model by modifying or replacing individual components without changing the overall structure.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -2410,7 +2466,7 @@ psp.setup_logging("INFO")</div>
     <span class="n">swap_ver</span><span class="o">=</span><span class="s2">"4.2"</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">simset</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">simsettings</span><span class="o">.</span><span class="n">GeneralSettings</span><span class="p">(</span>
+<span class="n">simset</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">GeneralSettings</span><span class="p">(</span>
     <span class="n">tstart</span><span class="o">=</span><span class="s2">"2002-01-01"</span><span class="p">,</span>
     <span class="n">tend</span><span class="o">=</span><span class="s2">"2004-12-31"</span><span class="p">,</span>
     <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"vap"</span><span class="p">,</span> <span class="s2">"blc"</span><span class="p">,</span> <span class="s2">"sba"</span><span class="p">,</span> <span class="s2">"inc"</span><span class="p">,</span> <span class="s2">"csv"</span><span class="p">],</span>
@@ -2452,7 +2508,7 @@ meta = psp.components.Metadata(
     swap_ver="4.2",
 )
 
-simset = psp.components.simsettings.GeneralSettings(
+simset = psp.components.GeneralSettings(
     tstart="2002-01-01",
     tend="2004-12-31",
     extensions=["vap", "blc", "sba", "inc", "csv"],
@@ -2628,11 +2684,11 @@ SWSOLU = 0
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># here we additionally need to load the meteo data from testcase library</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyswap</span><span class="w"> </span><span class="kn">import</span> <span class="n">testcase</span>
 
-<span class="n">meteo_data</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">meteorology</span><span class="o">.</span><span class="n">metfile_from_csv</span><span class="p">(</span>
+<span class="n">meteo_data</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">metfile_from_csv</span><span class="p">(</span>
     <span class="n">metfil</span><span class="o">=</span><span class="s2">"283.met"</span><span class="p">,</span> <span class="n">csv_path</span><span class="o">=</span><span class="n">testcase</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"hupselbrook"</span><span class="p">,</span> <span class="s2">"met"</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">meteo</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">meteorology</span><span class="o">.</span><span class="n">Meteorology</span><span class="p">(</span>
+<span class="n">meteo</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Meteorology</span><span class="p">(</span>
     <span class="n">lat</span><span class="o">=</span><span class="mf">52.0</span><span class="p">,</span>
     <span class="n">alt</span><span class="o">=</span><span class="mf">21.0</span><span class="p">,</span>
     <span class="n">swetr</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -2649,11 +2705,11 @@ SWSOLU = 0
 <div class="clipboard-copy-txt" id="cell-5"># here we additionally need to load the meteo data from testcase library
 from pyswap import testcase
 
-meteo_data = psp.components.meteorology.metfile_from_csv(
+meteo_data = psp.components.metfile_from_csv(
     metfil="283.met", csv_path=testcase.get_path("hupselbrook", "met")
 )
 
-meteo = psp.components.meteorology.Meteorology(
+meteo = psp.components.Meteorology(
     lat=52.0,
     alt=21.0,
     swetr=0,
@@ -2727,11 +2783,11 @@ ml.meteorology = meteo</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Option [1] to define the tables and CropDevelopment object</span>
 
-<span class="n">maize_prep</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">Preparation</span><span class="p">(</span>
+<span class="n">maize_prep</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Preparation</span><span class="p">(</span>
     <span class="n">swprep</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">swsow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">swgerm</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dvsend</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">swharv</span><span class="o">=</span><span class="mi">0</span>
 <span class="p">)</span>
 
-<span class="n">scheduled_irrigation</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">irrigation</span><span class="o">.</span><span class="n">ScheduledIrrigation</span><span class="p">(</span><span class="n">schedule</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">scheduled_irrigation</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ScheduledIrrigation</span><span class="p">(</span><span class="n">schedule</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="n">DVS</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
 
@@ -2764,7 +2820,7 @@ ml.meteorology = meteo</div>
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">maize_cropdev_settings</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">CropDevelopmentSettingsFixed</span><span class="p">(</span>
+<span class="n">maize_cropdev_settings</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">CropDevelopmentSettingsFixed</span><span class="p">(</span>
     <span class="n">idev</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">lcc</span><span class="o">=</span><span class="mi">168</span><span class="p">,</span>
     <span class="n">kdif</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
@@ -2783,11 +2839,11 @@ ml.meteorology = meteo</div>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-6"># Option [1] to define the tables and CropDevelopment object
 
-maize_prep = psp.components.crop.Preparation(
+maize_prep = psp.components.Preparation(
     swprep=0, swsow=0, swgerm=0, dvsend=3.0, swharv=0
 )
 
-scheduled_irrigation = psp.components.irrigation.ScheduledIrrigation(schedule=0)
+scheduled_irrigation = psp.components.ScheduledIrrigation(schedule=0)
 
 DVS = [0.0, 0.3, 0.5, 0.7, 1.0, 1.4, 2.0]
 
@@ -2820,7 +2876,7 @@ maize_rdctb = psp.components.crop.RDCTB.create(
     }
 )
 
-maize_cropdev_settings = psp.components.crop.CropDevelopmentSettingsFixed(
+maize_cropdev_settings = psp.components.CropDevelopmentSettingsFixed(
     idev=1,
     lcc=168,
     kdif=0.6,
@@ -2912,7 +2968,7 @@ maize_cropdev_settings = psp.components.crop.CropDevelopmentSettingsFixed(
 
 <span class="n">maize_tables</span> <span class="o">=</span> <span class="n">get_path</span><span class="p">(</span><span class="s2">"hupselbrook"</span><span class="p">,</span> <span class="s2">"maize_tables_yaml"</span><span class="p">)</span>
 
-<span class="n">maize_cropdev_settings</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">CropDevelopmentSettingsFixed</span><span class="p">(</span>
+<span class="n">maize_cropdev_settings</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">CropDevelopmentSettingsFixed</span><span class="p">(</span>
     <span class="n">idev</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">lcc</span><span class="o">=</span><span class="mi">168</span><span class="p">,</span>
     <span class="n">kdif</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
@@ -2932,7 +2988,7 @@ from pyswap.testcase import get_path
 
 maize_tables = get_path("hupselbrook", "maize_tables_yaml")
 
-maize_cropdev_settings = psp.components.crop.CropDevelopmentSettingsFixed(
+maize_cropdev_settings = psp.components.CropDevelopmentSettingsFixed(
     idev=1,
     lcc=168,
     kdif=0.6,
@@ -3010,7 +3066,7 @@ maize_cropdev_settings.update_from_yaml(maize_tables)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">maize_ox_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">OxygenStress</span><span class="p">(</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">maize_ox_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">OxygenStress</span><span class="p">(</span>
     <span class="n">swoxygen</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">swwrtnonox</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">aeratecrit</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
@@ -3019,7 +3075,7 @@ maize_cropdev_settings.update_from_yaml(maize_tables)</div>
     <span class="n">hlim2l</span><span class="o">=-</span><span class="mf">30.0</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">maize_dr_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">DroughtStress</span><span class="p">(</span>
+<span class="n">maize_dr_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">DroughtStress</span><span class="p">(</span>
     <span class="n">swdrought</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">hlim3h</span><span class="o">=-</span><span class="mf">325.0</span><span class="p">,</span>
     <span class="n">hlim3l</span><span class="o">=-</span><span class="mf">600.0</span><span class="p">,</span>
@@ -3030,9 +3086,9 @@ maize_cropdev_settings.update_from_yaml(maize_tables)</div>
 
 <span class="c1"># shared with the fixed crop settings</span>
 
-<span class="n">maize_interception</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">Interception</span><span class="p">(</span><span class="n">swinter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cofab</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">maize_interception</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Interception</span><span class="p">(</span><span class="n">swinter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cofab</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
 
-<span class="n">crpmaize</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">CropFile</span><span class="p">(</span>
+<span class="n">crpmaize</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">CropFile</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">"maizes"</span><span class="p">,</span>
     <span class="n">prep</span><span class="o">=</span><span class="n">maize_prep</span><span class="p">,</span>
     <span class="n">scheduledirrigation</span><span class="o">=</span><span class="n">scheduled_irrigation</span><span class="p">,</span>
@@ -3042,7 +3098,7 @@ maize_cropdev_settings.update_from_yaml(maize_tables)</div>
     <span class="n">interception</span><span class="o">=</span><span class="n">maize_interception</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-10">maize_ox_stress = psp.components.crop.OxygenStress(
+<div class="clipboard-copy-txt" id="cell-10">maize_ox_stress = psp.components.OxygenStress(
     swoxygen=1,
     swwrtnonox=0,
     aeratecrit=0.5,
@@ -3051,7 +3107,7 @@ maize_cropdev_settings.update_from_yaml(maize_tables)</div>
     hlim2l=-30.0,
 )
 
-maize_dr_stress = psp.components.crop.DroughtStress(
+maize_dr_stress = psp.components.DroughtStress(
     swdrought=1,
     hlim3h=-325.0,
     hlim3l=-600.0,
@@ -3062,9 +3118,9 @@ maize_dr_stress = psp.components.crop.DroughtStress(
 
 # shared with the fixed crop settings
 
-maize_interception = psp.components.crop.Interception(swinter=1, cofab=0.25)
+maize_interception = psp.components.Interception(swinter=1, cofab=0.25)
 
-crpmaize = psp.components.crop.CropFile(
+crpmaize = psp.components.CropFile(
     name="maizes",
     prep=maize_prep,
     scheduledirrigation=scheduled_irrigation,
@@ -3089,8 +3145,8 @@ crpmaize = psp.components.crop.CropFile(
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3125,6 +3181,20 @@ potato_params = potato.get_variety("Potato_701")</div>
 </div>
 </div>
 </div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/tmp/ipykernel_2777/1351655252.py:5: UserWarning: The WOFOST crop parameters bundled with pySWAP come from https://github.com/ajwdewit/WOFOST_crop_parameters. Each parameter set was calibrated for particular conditions, which the repository and the variety metadata (`.metadata`) describe; check that they fit your site and calibrate your own parameters if they do not. This message is shown once per session.
+  potato = db.load_crop_file("potato")
+</pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
 <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
@@ -3145,7 +3215,7 @@ potato_params = potato.get_variety("Potato_701")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">potato_prep</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">Preparation</span><span class="p">(</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">potato_prep</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Preparation</span><span class="p">(</span>
     <span class="n">swprep</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">swsow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">swgerm</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -3160,7 +3230,7 @@ potato_params = potato.get_variety("Potato_701")</div>
     <span class="n">swharv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">potato_cropdev_settings</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">CropDevelopmentSettingsWOFOST</span><span class="p">(</span>
+<span class="n">potato_cropdev_settings</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">CropDevelopmentSettingsWOFOST</span><span class="p">(</span>
     <span class="n">wofost_variety</span><span class="o">=</span><span class="n">potato_params</span><span class="p">,</span>
     <span class="n">swcf</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">albedo</span><span class="o">=</span><span class="mf">0.19</span><span class="p">,</span>
@@ -3181,7 +3251,7 @@ potato_params = potato.get_variety("Potato_701")</div>
 <span class="n">potato_tables</span> <span class="o">=</span> <span class="n">get_path</span><span class="p">(</span><span class="s2">"hupselbrook"</span><span class="p">,</span> <span class="s2">"potato_tables_yaml"</span><span class="p">)</span>
 <span class="n">potato_cropdev_settings</span><span class="o">.</span><span class="n">update_from_yaml</span><span class="p">(</span><span class="n">potato_tables</span><span class="p">)</span>
 
-<span class="n">potato_ox_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">OxygenStress</span><span class="p">(</span>
+<span class="n">potato_ox_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">OxygenStress</span><span class="p">(</span>
     <span class="n">swoxygen</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">swwrtnonox</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">aeratecrit</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
@@ -3192,7 +3262,7 @@ potato_params = potato.get_variety("Potato_701")</div>
     <span class="n">root_radiuso2</span><span class="o">=</span><span class="mf">0.00015</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">potato_dr_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">DroughtStress</span><span class="p">(</span>
+<span class="n">potato_dr_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">DroughtStress</span><span class="p">(</span>
     <span class="n">swdrought</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">hlim3h</span><span class="o">=-</span><span class="mf">300.0</span><span class="p">,</span>
     <span class="n">hlim3l</span><span class="o">=-</span><span class="mf">500.0</span><span class="p">,</span>
@@ -3201,7 +3271,7 @@ potato_params = potato.get_variety("Potato_701")</div>
     <span class="n">adcrl</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">crppotato</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">CropFile</span><span class="p">(</span>
+<span class="n">crppotato</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">CropFile</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">"potatod"</span><span class="p">,</span>
     <span class="n">prep</span><span class="o">=</span><span class="n">potato_prep</span><span class="p">,</span>
     <span class="n">cropdev_settings</span><span class="o">=</span><span class="n">potato_cropdev_settings</span><span class="p">,</span>
@@ -3212,7 +3282,7 @@ potato_params = potato.get_variety("Potato_701")</div>
     <span class="n">scheduledirrigation</span><span class="o">=</span><span class="n">scheduled_irrigation</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12">potato_prep = psp.components.crop.Preparation(
+<div class="clipboard-copy-txt" id="cell-12">potato_prep = psp.components.Preparation(
     swprep=0,
     swsow=0,
     swgerm=2,
@@ -3227,7 +3297,7 @@ potato_params = potato.get_variety("Potato_701")</div>
     swharv=0,
 )
 
-potato_cropdev_settings = psp.components.crop.CropDevelopmentSettingsWOFOST(
+potato_cropdev_settings = psp.components.CropDevelopmentSettingsWOFOST(
     wofost_variety=potato_params,
     swcf=2,
     albedo=0.19,
@@ -3248,7 +3318,7 @@ potato_cropdev_settings.update_from_wofost()
 potato_tables = get_path("hupselbrook", "potato_tables_yaml")
 potato_cropdev_settings.update_from_yaml(potato_tables)
 
-potato_ox_stress = psp.components.crop.OxygenStress(
+potato_ox_stress = psp.components.OxygenStress(
     swoxygen=1,
     swwrtnonox=1,
     aeratecrit=0.5,
@@ -3259,7 +3329,7 @@ potato_ox_stress = psp.components.crop.OxygenStress(
     root_radiuso2=0.00015,
 )
 
-potato_dr_stress = psp.components.crop.DroughtStress(
+potato_dr_stress = psp.components.DroughtStress(
     swdrought=1,
     hlim3h=-300.0,
     hlim3l=-500.0,
@@ -3268,7 +3338,7 @@ potato_dr_stress = psp.components.crop.DroughtStress(
     adcrl=0.1,
 )
 
-crppotato = psp.components.crop.CropFile(
+crppotato = psp.components.CropFile(
     name="potatod",
     prep=potato_prep,
     cropdev_settings=potato_cropdev_settings,
@@ -3289,84 +3359,84 @@ crppotato = psp.components.crop.CropFile(
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - No matching array schema found for: ssatb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:36 - WARNING - No matching array schema found for: ssatb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - Failed to process parameter from WOFOST: ssatb, removing from update
+<pre>20:05:36 - WARNING - Failed to process parameter from WOFOST: ssatb, removing from update
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - No matching array schema found for: kdiftb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:36 - WARNING - No matching array schema found for: kdiftb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - Failed to process parameter from WOFOST: kdiftb, removing from update
+<pre>20:05:36 - WARNING - Failed to process parameter from WOFOST: kdiftb, removing from update
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - No matching array schema found for: efftb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:36 - WARNING - No matching array schema found for: efftb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - Failed to process parameter from WOFOST: efftb, removing from update
+<pre>20:05:36 - WARNING - Failed to process parameter from WOFOST: efftb, removing from update
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - No matching array schema found for: nmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:36 - WARNING - No matching array schema found for: nmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - Failed to process parameter from WOFOST: nmaxlv_tb, removing from update
+<pre>20:05:36 - WARNING - Failed to process parameter from WOFOST: nmaxlv_tb, removing from update
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - No matching array schema found for: pmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:36 - WARNING - No matching array schema found for: pmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - Failed to process parameter from WOFOST: pmaxlv_tb, removing from update
+<pre>20:05:36 - WARNING - Failed to process parameter from WOFOST: pmaxlv_tb, removing from update
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - No matching array schema found for: kmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
+<pre>20:05:36 - WARNING - No matching array schema found for: kmaxlv_tb. Available array schemas: AMAXTB, CFTB, CHTB, CO2AMAXTB, CO2EFFTB, CO2TRATB, CROPROTATION, CSEEPARR, DAILYMETEODATA, DATEHARVEST...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:20 - WARNING - Failed to process parameter from WOFOST: kmaxlv_tb, removing from update
+<pre>20:05:36 - WARNING - Failed to process parameter from WOFOST: kmaxlv_tb, removing from update
 </pre>
 </div>
 </div>
@@ -3384,8 +3454,8 @@ crppotato = psp.components.crop.CropFile(
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3413,7 +3483,7 @@ crppotato = psp.components.crop.CropFile(
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">grass_settings</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">CropDevelopmentSettingsGrass</span><span class="p">(</span>
+<span class="n">grass_settings</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">CropDevelopmentSettingsGrass</span><span class="p">(</span>
     <span class="n">swcf</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">albedo</span><span class="o">=</span><span class="mf">0.23</span><span class="p">,</span>
     <span class="n">rsc</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
@@ -3440,14 +3510,13 @@ crppotato = psp.components.crop.CropFile(
     <span class="n">swdmi2rd</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">wrtmax</span><span class="o">=</span><span class="mf">3000.0</span><span class="p">,</span>
     <span class="n">swrdc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">lsda</span><span class="o">=</span><span class="n">grass_lsda</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">grass_ox_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">OxygenStress</span><span class="p">(</span>
+<span class="n">grass_ox_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">OxygenStress</span><span class="p">(</span>
     <span class="n">swoxygen</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hlim1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">hlim2u</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">hlim2l</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">swwrtnonox</span><span class="o">=</span><span class="mi">0</span>
 <span class="p">)</span>
 
-<span class="n">grass_drought_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">DroughtStress</span><span class="p">(</span>
+<span class="n">grass_drought_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">DroughtStress</span><span class="p">(</span>
     <span class="n">swdrought</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">swjarvis</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">alphcrit</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
@@ -3458,14 +3527,14 @@ crppotato = psp.components.crop.CropFile(
     <span class="n">adcrl</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">grass_salt_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">SaltStress</span><span class="p">(</span><span class="n">swsalinity</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">grass_salt_stress</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">SaltStress</span><span class="p">(</span><span class="n">swsalinity</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="n">grass_interception</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">Interception</span><span class="p">(</span><span class="n">swinter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cofab</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">grass_interception</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Interception</span><span class="p">(</span><span class="n">swinter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cofab</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
 
-<span class="n">grass_co2</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">CO2Correction</span><span class="p">(</span><span class="n">swco2</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">grass_co2</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">CO2Correction</span><span class="p">(</span><span class="n">swco2</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 
-<span class="n">grass_management</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">GrasslandManagement</span><span class="p">(</span>
+<span class="n">grass_management</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">GrasslandManagement</span><span class="p">(</span>
     <span class="n">seqgrazmow</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">20</span><span class="p">,</span>
     <span class="n">swharvest</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">swdmmow</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -3484,9 +3553,9 @@ crppotato = psp.components.crop.CropFile(
 <span class="n">grass_settings</span><span class="o">.</span><span class="n">update_from_yaml</span><span class="p">(</span><span class="n">grass_tables</span><span class="p">,</span> <span class="n">grass</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">grass_management</span><span class="o">.</span><span class="n">update_from_yaml</span><span class="p">(</span><span class="n">grass_tables</span><span class="p">,</span> <span class="n">grass</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">grass_irrigation</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">irrigation</span><span class="o">.</span><span class="n">ScheduledIrrigation</span><span class="p">(</span><span class="n">schedule</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">grass_irrigation</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ScheduledIrrigation</span><span class="p">(</span><span class="n">schedule</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="n">crpgrass</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">CropFile</span><span class="p">(</span>
+<span class="n">crpgrass</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">CropFile</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">"grassd"</span><span class="p">,</span>
     <span class="n">cropdev_settings</span><span class="o">=</span><span class="n">grass_settings</span><span class="p">,</span>
     <span class="n">oxygenstress</span><span class="o">=</span><span class="n">grass_ox_stress</span><span class="p">,</span>
@@ -3508,7 +3577,7 @@ grass_lsda = psp.components.crop.LSDA.create(
     }
 )
 
-grass_settings = psp.components.crop.CropDevelopmentSettingsGrass(
+grass_settings = psp.components.CropDevelopmentSettingsGrass(
     swcf=2,
     albedo=0.23,
     rsc=100.0,
@@ -3535,14 +3604,13 @@ grass_settings = psp.components.crop.CropDevelopmentSettingsGrass(
     swdmi2rd=1,
     wrtmax=3000.0,
     swrdc=0,
-    lsda=grass_lsda,
 )
 
-grass_ox_stress = psp.components.crop.OxygenStress(
+grass_ox_stress = psp.components.OxygenStress(
     swoxygen=1, hlim1=0.0, hlim2u=1.0, hlim2l=-1.0, swwrtnonox=0
 )
 
-grass_drought_stress = psp.components.crop.DroughtStress(
+grass_drought_stress = psp.components.DroughtStress(
     swdrought=1,
     swjarvis=4,
     alphcrit=0.7,
@@ -3553,14 +3621,14 @@ grass_drought_stress = psp.components.crop.DroughtStress(
     adcrl=0.1,
 )
 
-grass_salt_stress = psp.components.crop.SaltStress(swsalinity=0)
+grass_salt_stress = psp.components.SaltStress(swsalinity=0)
 
-grass_interception = psp.components.crop.Interception(swinter=1, cofab=0.25)
+grass_interception = psp.components.Interception(swinter=1, cofab=0.25)
 
-grass_co2 = psp.components.crop.CO2Correction(swco2=0)
+grass_co2 = psp.components.CO2Correction(swco2=0)
 
 
-grass_management = psp.components.crop.GrasslandManagement(
+grass_management = psp.components.GrasslandManagement(
     seqgrazmow=[2] * 20,
     swharvest=1,
     swdmmow=2,
@@ -3579,9 +3647,9 @@ grass_tables = get_path("hupselbrook", "grass_tables_yaml")
 grass_settings.update_from_yaml(grass_tables, grass=True)
 grass_management.update_from_yaml(grass_tables, grass=True)
 
-grass_irrigation = psp.components.irrigation.ScheduledIrrigation(schedule=0)
+grass_irrigation = psp.components.ScheduledIrrigation(schedule=0)
 
-crpgrass = psp.components.crop.CropFile(
+crpgrass = psp.components.CropFile(
     name="grassd",
     cropdev_settings=grass_settings,
     oxygenstress=grass_ox_stress,
@@ -3592,86 +3660,6 @@ crpgrass = psp.components.crop.CropFile(
     grasslandmanagement=grass_management,
     scheduledirrigation=grass_irrigation,
 )</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ValidationError</span>                           Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[13]</span><span class="ansi-green-fg">, line 11</span>
-<span class="ansi-green-fg">      1</span> <span style="color: rgb(95,135,135)"># I keep this here as a nice example of hybrid definition of model variables: all</span>
-<span class="ansi-green-fg">      2</span> <span style="color: rgb(95,135,135)"># tables, except this one, which is kind of annoyingly long and simple, are defined</span>
-<span class="ansi-green-fg">      3</span> <span style="color: rgb(95,135,135)"># in the yaml file.</span>
-<span class="ansi-green-fg">      4</span> grass_lsda = psp.components.crop.LSDA.create(
-<span class="ansi-green-fg">      5</span>     {
-<span class="ansi-green-fg">      6</span>         <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">SEQNR</span><span class="ansi-yellow-fg">"</span>: [<span style="color: rgb(0,135,0)">float</span>(i) <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> i <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> <span style="color: rgb(0,135,0)">range</span>(<span class="ansi-green-fg">1</span>, <span class="ansi-green-fg">21</span>)],
-<span class="ansi-green-fg">      7</span>         <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">LSDA</span><span class="ansi-yellow-fg">"</span>: [<span class="ansi-green-fg">21.25</span>] * <span class="ansi-green-fg">20</span>,
-<span class="ansi-green-fg">      8</span>     }
-<span class="ansi-green-fg">      9</span> )
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">11</span> grass_settings = <span class="ansi-yellow-bg">psp</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">components</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">crop</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">CropDevelopmentSettingsGrass</span><span class="ansi-yellow-bg">(</span>
-<span class="ansi-green-fg">     12</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">swcf</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">2</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     13</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">albedo</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.23</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     14</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">rsc</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">100.0</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     15</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">rsw</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.0</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     16</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">tdwi</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">1000.00</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     17</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">laiem</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.63000</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     18</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">rgrlai</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.00700</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     19</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">swtsum</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">1</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     20</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">ssa</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.0004</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     21</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">span</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">30.00</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     22</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">tbase</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.00</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     23</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">kdif</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.60</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     24</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">kdir</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.75</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     25</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">eff</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.50</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     26</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">cvl</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.6850</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     27</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">cvr</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.6940</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     28</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">cvs</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.6620</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     29</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">q10</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">2.0000</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     30</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">rml</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.0300</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     31</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">rmr</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.0150</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     32</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">rms</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.0150</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     33</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">perdl</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0.050</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     34</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">swrd</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">3</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     35</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">swdmi2rd</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">1</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     36</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">wrtmax</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">3000.0</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     37</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">swrdc</span><span class="ansi-yellow-bg">=</span><span class="ansi-green-fg ansi-yellow-bg">0</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     38</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">lsda</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">grass_lsda</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">     39</span> <span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">     41</span> grass_ox_stress = psp.components.crop.OxygenStress(
-<span class="ansi-green-fg">     42</span>     swoxygen=<span class="ansi-green-fg">1</span>, hlim1=<span class="ansi-green-fg">0.0</span>, hlim2u=<span class="ansi-green-fg">1.0</span>, hlim2l=-<span class="ansi-green-fg">1.0</span>, swwrtnonox=<span class="ansi-green-fg">0</span>
-<span class="ansi-green-fg">     43</span> )
-<span class="ansi-green-fg">     45</span> grass_drought_stress = psp.components.crop.DroughtStress(
-<span class="ansi-green-fg">     46</span>     swdrought=<span class="ansi-green-fg">1</span>,
-<span class="ansi-green-fg">     47</span>     swjarvis=<span class="ansi-green-fg">4</span>,
-<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">     53</span>     adcrl=<span class="ansi-green-fg">0.1</span>,
-<span class="ansi-green-fg">     54</span> )
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/work/pySWAP/pySWAP/.pixi/envs/docs/lib/python3.11/site-packages/pydantic/main.py:250</span>, in <span class="ansi-cyan-fg">BaseModel.__init__</span><span class="ansi-blue-fg">(self, **data)</span>
-<span class="ansi-green-fg">    248</span> <span style="color: rgb(95,135,135)"># `__tracebackhide__` tells pytest and some other tools to omit this function from tracebacks</span>
-<span class="ansi-green-fg">    249</span> __tracebackhide__ = <span class="ansi-bold" style="color: rgb(0,135,0)">True</span>
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">250</span> validated_self = <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">__pydantic_validator__</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">validate_python</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">data</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">self_instance</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    251</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">self</span> <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> <span class="ansi-bold" style="color: rgb(175,0,255)">not</span> validated_self:
-<span class="ansi-green-fg">    252</span>     warnings.warn(
-<span class="ansi-green-fg">    253</span>         <span class="ansi-yellow-fg">'</span><span class="ansi-yellow-fg">A custom validator is returning a value other than `self`.</span><span class="ansi-bold" style="color: rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">'</span>
-<span class="ansi-green-fg">    254</span>         <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">Returning anything other than `self` from a top level model validator isn</span><span class="ansi-yellow-fg">'</span><span class="ansi-yellow-fg">t supported when validating via `__init__`.</span><span class="ansi-bold" style="color: rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">"</span>
-<span class="ansi-green-fg">    255</span>         <span class="ansi-yellow-fg">'</span><span class="ansi-yellow-fg">See the `model_validator` docs (https://docs.pydantic.dev/latest/concepts/validators/#model-validators) for more details.</span><span class="ansi-yellow-fg">'</span>,
-<span class="ansi-green-fg">    256</span>         stacklevel=<span class="ansi-green-fg">2</span>,
-<span class="ansi-green-fg">    257</span>     )
-
-<span class="ansi-red-fg">ValidationError</span>: 1 validation error for CropDevelopmentSettingsGrass
-lsda
-  Extra inputs are not permitted [type=extra_forbidden, input_value=    SEQNR   LSDA
-0       ...  21.25
-19     20  21.25, input_type=DataFrame]
-    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden</pre>
 </div>
 </div>
 </div>
@@ -3688,8 +3676,8 @@ lsda
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3716,7 +3704,7 @@ lsda
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">crop</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">crop</span><span class="o">.</span><span class="n">Crop</span><span class="p">(</span>
+<span class="n">crop</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Crop</span><span class="p">(</span>
     <span class="n">swcrop</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">rds</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span>
     <span class="n">croprotation</span><span class="o">=</span><span class="n">croprotation</span><span class="p">,</span>
@@ -3734,7 +3722,7 @@ lsda
     }
 )
 
-crop = psp.components.crop.Crop(
+crop = psp.components.Crop(
     swcrop=1,
     rds=200.0,
     croprotation=croprotation,
@@ -3742,35 +3730,6 @@ crop = psp.components.crop.Crop(
 )
 
 ml.crop = crop</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[14]</span><span class="ansi-green-fg">, line 14</span>
-<span class="ansi-green-fg">      1</span> croprotation = psp.components.crop.CROPROTATION.create(
-<span class="ansi-green-fg">      2</span>     {
-<span class="ansi-green-fg">      3</span>         <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">CROPSTART</span><span class="ansi-yellow-fg">"</span>: [dt(<span class="ansi-green-fg">2002</span>, <span class="ansi-green-fg">5</span>, <span class="ansi-green-fg">1</span>), dt(<span class="ansi-green-fg">2003</span>, <span class="ansi-green-fg">5</span>, <span class="ansi-green-fg">10</span>), dt(<span class="ansi-green-fg">2004</span>, <span class="ansi-green-fg">1</span>, <span class="ansi-green-fg">1</span>)],
-<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">      7</span>     }
-<span class="ansi-green-fg">      8</span> )
-<span class="ansi-green-fg">     10</span> crop = psp.components.crop.Crop(
-<span class="ansi-green-fg">     11</span>     swcrop=<span class="ansi-green-fg">1</span>,
-<span class="ansi-green-fg">     12</span>     rds=<span class="ansi-green-fg">200.0</span>,
-<span class="ansi-green-fg">     13</span>     croprotation=croprotation,
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">14</span>     cropfiles={<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">maizes</span><span class="ansi-yellow-fg">"</span>: crpmaize, <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">potatod</span><span class="ansi-yellow-fg">"</span>: crppotato, <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">grassd</span><span class="ansi-yellow-fg">"</span>: <span class="ansi-yellow-bg">crpgrass</span>},
-<span class="ansi-green-fg">     15</span> )
-<span class="ansi-green-fg">     17</span> ml.crop = crop
-
-<span class="ansi-red-fg">NameError</span>: name 'crpgrass' is not defined</pre>
 </div>
 </div>
 </div>
@@ -3806,16 +3765,10 @@ ml.crop = crop</div>
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[15]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> <span class="ansi-yellow-bg">crop</span>.cropfiles[<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">maizes</span><span class="ansi-yellow-fg">"</span>].crp
-
-<span class="ansi-red-fg">NameError</span>: name 'crop' is not defined</pre>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>'SWPREP = 0\nSWSOW = 0\nSWGERM = 0\nSWHARV = 0\nDVSEND = 3.0\nSWCF = 2\n DVS    CH\n 0.0   1.0\n 0.3  15.0\n 0.5  40.0\n 0.7 140.0\n 1.0 170.0\n 1.4 180.0\n 2.0 175.0\n\nALBEDO = 0.23\nRSC = 61.00\nRSW = 0.00\nKDIF = 0.60\nKDIR = 0.75\nSWRD = 1\nRDTB = \n0.0   5.0\n0.3  20.0\n0.5  50.0\n0.7  80.0\n1.0  90.0\n2.0 100.0\n\nRDCTB = \n0.0 1.0\n1.0 0.0\n\nIDEV = 1\nLCC = 168\nSWGC = 1\nGCTB = \n0.0 0.05\n0.3 0.14\n0.5 0.61\n0.7 4.10\n1.0 5.00\n1.4 5.80\n2.0 5.20\n\nSWOXYGEN = 1\nSWWRTNONOX = 0\nAERATECRIT = 0.5\nHLIM1 = -15.0\nHLIM2U = -30.0\nHLIM2L = -30.0\nSWDROUGHT = 1\nHLIM3H = -325.0\nHLIM3L = -600.0\nHLIM4 = -8000.0\nADCRH = 0.5\nADCRL = 0.1\nSWSALINITY = 0\nSWCOMPENSATE = 0\nSWINTER = 1\nCOFAB = 0.25\nSCHEDULE = 0'</pre>
 </div>
 </div>
 </div>
@@ -3860,7 +3813,7 @@ ml.crop = crop</div>
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">fixed_irrigation</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">irrigation</span><span class="o">.</span><span class="n">FixedIrrigation</span><span class="p">(</span>
+<span class="n">fixed_irrigation</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">FixedIrrigation</span><span class="p">(</span>
     <span class="n">swirfix</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">swirgfil</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">irrigevents</span><span class="o">=</span><span class="n">irrig_events</span>
 <span class="p">)</span>
 
@@ -3875,7 +3828,7 @@ ml.crop = crop</div>
     }
 )
 
-fixed_irrigation = psp.components.irrigation.FixedIrrigation(
+fixed_irrigation = psp.components.FixedIrrigation(
     swirfix=1, swirgfil=0, irrigevents=irrig_events
 )
 
@@ -3926,10 +3879,10 @@ ml.fixedirrigation = fixed_irrigation</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">soilmoisture</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">soilwater</span><span class="o">.</span><span class="n">SoilMoisture</span><span class="p">(</span><span class="n">swinco</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gwli</span><span class="o">=-</span><span class="mf">75.0</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">soilmoisture</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">SoilMoisture</span><span class="p">(</span><span class="n">swinco</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gwli</span><span class="o">=-</span><span class="mf">75.0</span><span class="p">)</span>
 <span class="n">ml</span><span class="o">.</span><span class="n">soilmoisture</span> <span class="o">=</span> <span class="n">soilmoisture</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-17">soilmoisture = psp.components.soilwater.SoilMoisture(swinco=2, gwli=-75.0)
+<div class="clipboard-copy-txt" id="cell-17">soilmoisture = psp.components.SoilMoisture(swinco=2, gwli=-75.0)
 ml.soilmoisture = soilmoisture</div>
 </div>
 </div>
@@ -3966,13 +3919,13 @@ ml.soilmoisture = soilmoisture</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">surfaceflow</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">soilwater</span><span class="o">.</span><span class="n">SurfaceFlow</span><span class="p">(</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">surfaceflow</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">SurfaceFlow</span><span class="p">(</span>
     <span class="n">swpondmx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pondmx</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">rsro</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">rsroexp</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">swrunon</span><span class="o">=</span><span class="mi">0</span>
 <span class="p">)</span>
 
 <span class="n">ml</span><span class="o">.</span><span class="n">surfaceflow</span> <span class="o">=</span> <span class="n">surfaceflow</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-18">surfaceflow = psp.components.soilwater.SurfaceFlow(
+<div class="clipboard-copy-txt" id="cell-18">surfaceflow = psp.components.SurfaceFlow(
     swpondmx=0, pondmx=0.2, rsro=0.5, rsroexp=1.0, swrunon=0
 )
 
@@ -4012,13 +3965,13 @@ ml.surfaceflow = surfaceflow</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">evaporation</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">soilwater</span><span class="o">.</span><span class="n">Evaporation</span><span class="p">(</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">evaporation</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Evaporation</span><span class="p">(</span>
     <span class="n">cfevappond</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span> <span class="n">swcfbs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rsoil</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">swredu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cofredbl</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span> <span class="n">rsigni</span><span class="o">=</span><span class="mf">0.5</span>
 <span class="p">)</span>
 
 <span class="n">ml</span><span class="o">.</span><span class="n">evaporation</span> <span class="o">=</span> <span class="n">evaporation</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-19">evaporation = psp.components.soilwater.Evaporation(
+<div class="clipboard-copy-txt" id="cell-19">evaporation = psp.components.Evaporation(
     cfevappond=1.25, swcfbs=0, rsoil=30.0, swredu=1, cofredbl=0.35, rsigni=0.5
 )
 
@@ -4083,7 +4036,7 @@ ml.evaporation = evaporation</div>
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">soilprofile</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">soilwater</span><span class="o">.</span><span class="n">SoilProfile</span><span class="p">(</span>
+<span class="n">soilprofile</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">SoilProfile</span><span class="p">(</span>
     <span class="n">swsophy</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">soilprofile</span><span class="o">=</span><span class="n">soil_profile</span><span class="p">,</span>
     <span class="n">swhyst</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -4119,7 +4072,7 @@ soil_hydraulic_functions = psp.components.soilwater.SOILHYDRFUNC.create(
     }
 )
 
-soilprofile = psp.components.soilwater.SoilProfile(
+soilprofile = psp.components.SoilProfile(
     swsophy=0,
     soilprofile=soil_profile,
     swhyst=0,
@@ -4164,7 +4117,7 @@ ml.soilprofile = soilprofile</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">dra</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">drainage</span><span class="o">.</span><span class="n">DraFile</span><span class="p">(</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">dra</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">DraFile</span><span class="p">(</span>
     <span class="n">dramet</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">swdivd</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">cofani</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
@@ -4179,11 +4132,11 @@ ml.soilprofile = soilprofile</div>
     <span class="n">khtop</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">drainage</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">drainage</span><span class="o">.</span><span class="n">Drainage</span><span class="p">(</span><span class="n">swdra</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">drafile</span><span class="o">=</span><span class="n">dra</span><span class="p">)</span>
+<span class="n">drainage</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Drainage</span><span class="p">(</span><span class="n">swdra</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">drafile</span><span class="o">=</span><span class="n">dra</span><span class="p">)</span>
 
 <span class="n">ml</span><span class="o">.</span><span class="n">lateraldrainage</span> <span class="o">=</span> <span class="n">drainage</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-21">dra = psp.components.drainage.DraFile(
+<div class="clipboard-copy-txt" id="cell-21">dra = psp.components.DraFile(
     dramet=2,
     swdivd=1,
     cofani=[1.0, 1.0],
@@ -4198,7 +4151,7 @@ ml.soilprofile = soilprofile</div>
     khtop=25.0,
 )
 
-drainage = psp.components.drainage.Drainage(swdra=1, drafile=dra)
+drainage = psp.components.Drainage(swdra=1, drafile=dra)
 
 ml.lateraldrainage = drainage</div>
 </div>
@@ -4236,11 +4189,11 @@ ml.lateraldrainage = drainage</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">bottom_boundary</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">BottomBoundary</span><span class="p">(</span><span class="n">swbbcfile</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">swbotb</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">bottom_boundary</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">BottomBoundary</span><span class="p">(</span><span class="n">swbbcfile</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">swbotb</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 
 <span class="n">ml</span><span class="o">.</span><span class="n">bottomboundary</span> <span class="o">=</span> <span class="n">bottom_boundary</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-22">bottom_boundary = psp.components.boundary.BottomBoundary(swbbcfile=0, swbotb=6)
+<div class="clipboard-copy-txt" id="cell-22">bottom_boundary = psp.components.BottomBoundary(swbbcfile=0, swbotb=6)
 
 ml.bottomboundary = bottom_boundary</div>
 </div>
@@ -4281,60 +4234,81 @@ ml.bottomboundary = bottom_boundary</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>14:48:21 - INFO - Validation successful.
+<pre>20:05:36 - INFO - Validation successful.
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ValidationError</span>                           Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[23]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> result = <span class="ansi-yellow-bg">ml</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">run</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
+<pre>20:05:36 - INFO - Preparing files...
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>20:05:36 - INFO - swap.swp saved successfully.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>20:05:36 - INFO - swap.dra saved successfully.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>20:05:36 - INFO - maizes.crp saved successfully.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>20:05:36 - INFO - potatod.crp saved successfully.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>20:05:36 - INFO - grassd.crp saved successfully.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>20:05:36 - INFO - Atmospheric.co2 saved successfully.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>20:05:36 - INFO - 283.met saved successfully.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>20:05:37 - INFO - 
+  running swap ....
+ Swap normal completion!
 
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/model/model.py:871</span>, in <span class="ansi-cyan-fg">Model.run</span><span class="ansi-blue-fg">(self, path, silence_warnings, timeout, run_dir)</span>
-<span class="ansi-green-fg">    844</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-fg">run</span>(
-<span class="ansi-green-fg">    845</span>     <span style="color: rgb(0,135,0)">self</span>,
-<span class="ansi-green-fg">    846</span>     path: <span style="color: rgb(0,135,0)">str</span> | Path | <span class="ansi-bold" style="color: rgb(0,135,0)">None</span> = <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
-<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">    849</span>     run_dir: <span style="color: rgb(0,135,0)">str</span> | Path | <span class="ansi-bold" style="color: rgb(0,135,0)">None</span> = <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
-<span class="ansi-green-fg">    850</span> ) -&gt; Result:
-<span class="ansi-green-fg">    851</span> <span style="color: rgb(188,188,188)">    </span><span class="ansi-yellow-fg">"""Run the model using ModelRunner.</span>
-<span class="ansi-green-fg">    852</span> 
-<span class="ansi-green-fg">    853</span> <span class="ansi-yellow-fg">    Parameters:</span>
-<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">    869</span> <span class="ansi-yellow-fg">        Result: The parsed model results.</span>
-<span class="ansi-green-fg">    870</span> <span class="ansi-yellow-fg">    """</span>
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">871</span>     <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">validate</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    872</span>     path = Path.cwd() <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> path <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span> path
-<span class="ansi-green-fg">    873</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> ModelRunner(<span style="color: rgb(0,135,0)">self</span>).run(path, silence_warnings, timeout, run_dir=run_dir)
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/work/pySWAP/pySWAP/pyswap/model/model.py:628</span>, in <span class="ansi-cyan-fg">Model.validate</span><span class="ansi-blue-fg">(self)</span>
-<span class="ansi-green-fg">    626</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">    627</span>     <span style="color: rgb(0,135,0)">self</span>._validate_on_run = <span class="ansi-bold" style="color: rgb(0,135,0)">True</span>
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">628</span>     <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">model_validate</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    629</span> <span class="ansi-bold" style="color: rgb(0,135,0)">finally</span>:
-<span class="ansi-green-fg">    630</span>     <span style="color: rgb(0,135,0)">self</span>._validate_on_run = <span class="ansi-bold" style="color: rgb(0,135,0)">False</span>
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/work/pySWAP/pySWAP/.pixi/envs/docs/lib/python3.11/site-packages/pydantic/main.py:716</span>, in <span class="ansi-cyan-fg">BaseModel.model_validate</span><span class="ansi-blue-fg">(cls, obj, strict, extra, from_attributes, context, by_alias, by_name)</span>
-<span class="ansi-green-fg">    710</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> by_alias <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> <span class="ansi-bold" style="color: rgb(0,135,0)">False</span> <span class="ansi-bold" style="color: rgb(175,0,255)">and</span> by_name <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> <span class="ansi-bold" style="color: rgb(175,0,255)">not</span> <span class="ansi-bold" style="color: rgb(0,135,0)">True</span>:
-<span class="ansi-green-fg">    711</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> PydanticUserError(
-<span class="ansi-green-fg">    712</span>         <span class="ansi-yellow-fg">'</span><span class="ansi-yellow-fg">At least one of `by_alias` or `by_name` must be set to True.</span><span class="ansi-yellow-fg">'</span>,
-<span class="ansi-green-fg">    713</span>         code=<span class="ansi-yellow-fg">'</span><span class="ansi-yellow-fg">validate-by-alias-and-name-false</span><span class="ansi-yellow-fg">'</span>,
-<span class="ansi-green-fg">    714</span>     )
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">716</span> <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">cls</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">__pydantic_validator__</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">validate_python</span><span class="ansi-yellow-bg">(</span>
-<span class="ansi-green-fg">    717</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">obj</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">    718</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">strict</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">strict</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">    719</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">extra</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">extra</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">    720</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">from_attributes</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">from_attributes</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">    721</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">context</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">context</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">    722</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">by_alias</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">by_alias</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">    723</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">by_name</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">by_name</span><span class="ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">    724</span> <span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-red-fg">ValidationError</span>: 1 validation error for Model
-  Value error, Missing required components: crop [type=value_error, input_value=Model(version='base'), input_type=Model]
-    For further information visit https://errors.pydantic.dev/2.12/v/value_error</pre>
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>20:05:37 - WARNING - Warning from module Readswap : simulation with additonal Ksat value (Ksatexm)
+</pre>
 </div>
 </div>
 </div>
@@ -4370,16 +4344,16 @@ ml.bottomboundary = bottom_boundary</div>
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[24]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>&lt;Axes: xlabel='DATETIME'&gt;</pre>
+</div>
+</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[24]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> <span class="ansi-yellow-bg">result</span>.yearly_summary[<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">EPOT</span><span class="ansi-yellow-fg">"</span>].plot()
-
-<span class="ansi-red-fg">NameError</span>: name 'result' is not defined</pre>
+<div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
+<img alt="No description has been provided for this image" class="" src="data:image/png;base64,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BIC1a9dy/vx5+vbtC8Bdd93Fm2++WeF1hoeHExAQUP5o06ZNpWT9/e9/z1tvvQXAvHnzGDBgwCVndb5v5MiRl2QICAjg6NGjlZJDRMyjr5BEBLh41sVisQAXv5IZMWJE+XiYkSNH8sgjj3Dw4EGioqIue50bNmwgMDCw/N9eXl6VkvWuu+7iscce49ChQ8ybN4/Zs2f/7LIzZ86kd+/elzzXpEmTSskhIuZRgRERAL7++muaN29Obm4uS5YsobS0lLlz55a/7nQ6eeutt3j22Wcve53NmzevkgGzISEhDBo0iPvuu4/i4mL69+9PYWHhTy4bFhZGixYtKj2DiJhLXyGJCJ999hnp6ekMHTqUd999l/DwcHbu3ElaWlr548UXX2TevHnlVw+Z7fe//z3r1q1j9OjReHh4mB1HRKqZzsCI1DEOh4Ps7OxLLqOeOnUqgwYNYvTo0XTs2JFhw4bRtm3bS94XERFBUlISK1euZODAgZe1rZycHIqLiy95LiQkpFK+SurXrx+nT5/+0WXaP5SXl0d2dvYlzwUGBlKvXr2rziAi5lGBEaljVq5cSePGjfH09KR+/frExcUxe/Zs7r77blJTU9m5cyevv/76j95nt9vp1asXb7755mUXmNatW//ouc2bN18yh8uVslgsNGjQ4FeXu/fee3/03NSpU3nssceuOoOImMdiGIZhdggRERGRitAYGBEREXE7KjAiIiLidlRgRERExO2owIiIiIjbUYERERERt6MCIyIiIm5HBUZERETcjgqMiIiIuB0VGBEREXE7KjAiIiLidlRgRERExO38f98OS0NdIS9RAAAAAElFTkSuQmCC"/>
 </div>
 </div>
 </div>

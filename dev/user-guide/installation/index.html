@@ -12,7 +12,7 @@
         <link rel="prev" href="../..">
       
       
-        <link rel="next" href="../cli/">
+        <link rel="next" href="../getting-started/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>Quickstart - pySWAP documentation</title>
+        <title>Installation - pySWAP documentation</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#quickstart" class="md-skip">
+        <a href="#installation" class="md-skip">
           Skip to content
         </a>
       
@@ -127,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Quickstart
+              Installation
             
           </span>
         </div>
@@ -516,7 +516,7 @@
   <span class="md-ellipsis">
     
   
-    Quickstart
+    Installation
   
 
     
@@ -534,7 +534,7 @@
   <span class="md-ellipsis">
     
   
-    Quickstart
+    Installation
   
 
     
@@ -596,6 +596,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -672,6 +700,34 @@
     
   
     Data Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wofost-crop-parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WOFOST crop parameters
   
 
     
@@ -1711,8 +1767,8 @@
   
 
 
-<h1 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">&para;</a></h1>
-<p>If you know a lot already about SWAP and pySWAP, jump straight to the installation, running the test case and setting up your own model.</p>
+<h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
+<p>This page covers installing pySWAP and running a SWAP test case. To build a first model of your own, continue with <a href="../getting-started/">Getting started</a>.</p>
 <h2 id="recommended_start_your_project_with_pixi_and_pyswap_cli_tool">(Recommended) Start your project with pixi and pyswap CLI tool<a class="headerlink" href="#recommended_start_your_project_with_pixi_and_pyswap_cli_tool" title="Permanent link">&para;</a></h2>
 <p>We highly recommend using pixi as your dependency management system. Installation is very easy, just follow the installation steps:</p>
 <h3 id="if_you_dont_have_pixi_installed_yet">If you don't have Pixi installed yet<a class="headerlink" href="#if_you_dont_have_pixi_installed_yet" title="Permanent link">&para;</a></h3>
@@ -1814,7 +1870,7 @@
 </span></code></pre></div>
 <p>For detailed information about all CLI commands and options, see the <a href="/user-guide/cli/">CLI Reference</a>.</p>
 <h2 id="developing_pyswap_itself">Developing pySWAP itself<a class="headerlink" href="#developing_pyswap_itself" title="Permanent link">&para;</a></h2>
-<p>The steps above set up a project that <em>uses</em> pySWAP. To work on pySWAP and run its test suite, clone the repository and use its development environment: <code>pixi install -e dev</code> and then <code>pixi run -e dev test</code>. The default environment of the repository has no test tools, so <code>pixi run test</code> without <code>-e dev</code> does not work. A conda <code>environment.yml</code> with all dependencies is provided as an alternative; see <a href="../../contributing/makefile/">Development environment and tasks</a>.</p>
+<p>The steps above set up a project that <em>uses</em> pySWAP. To work on pySWAP, run its test suite or the tutorials from a clone, clone the repository with its submodule (<code>git clone --recurse-submodules https://github.com/zawadzkim/pySWAP.git</code>; without it, the bundled WOFOST crop parameters in <code>pyswap/libs/WOFOST_crop_parameters</code> are missing) and use its development environment: <code>pixi install -e dev</code> and then <code>pixi run -e dev test</code>. The default environment of the repository has no test tools, so <code>pixi run test</code> without <code>-e dev</code> does not work. A conda <code>environment.yml</code> with all dependencies is provided as an alternative; see <a href="../../contributing/makefile/">Development environment and tasks</a>.</p>
 <h2 id="install_manually_and_and_start_from_scratch">Install manually and and start from scratch<a class="headerlink" href="#install_manually_and_and_start_from_scratch" title="Permanent link">&para;</a></h2>
 <p>pySWAP can be simply installed through pip. Creation of a separate virtual environment is recommended.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>pip<span class="w"> </span>install<span class="w"> </span>pyswap
@@ -1913,13 +1969,13 @@
         
         
           
-          <a href="../cli/" class="md-footer__link md-footer__link--next" aria-label="Next: CLI Reference">
+          <a href="../getting-started/" class="md-footer__link md-footer__link--next" aria-label="Next: Getting started">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                CLI Reference
+                Getting started
               </div>
             </div>
             <div class="md-footer__button md-icon">

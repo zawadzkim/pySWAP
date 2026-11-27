@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../user-guide/quick-start/" class="md-tabs__link">
+        <a href="../../../user-guide/installation/" class="md-tabs__link">
           
   
   
@@ -495,14 +495,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user-guide/quick-start/" class="md-nav__link">
+      <a href="../../../user-guide/installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Quickstart
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
   
 
     
@@ -587,6 +615,34 @@
     
   
     Data Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/wofost-crop-parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WOFOST crop parameters
   
 
     
@@ -2106,7 +2162,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="using-hdf5-database">Using HDF5 database<a class="anchor-link" href="#using-hdf5-database">¶</a></h1><p>This tutorial shows how to store and retrieve models and their results from an HDF5 database (<a href="/user-guide/hdf5/">see more</a>) integrated in pySWAP. We are going to:</p>
+<h1 id="using-hdf5-database">Using HDF5 database<a class="anchor-link" href="#using-hdf5-database">¶</a></h1><p>This tutorial shows how to store and retrieve models and their results from an HDF5 database (<a href="../../../user-guide/hdf5/">see more</a>) integrated in pySWAP. We are going to:</p>
 <ul>
 <li>Load a test case model.</li>
 <li>Create an HDF5 database and save a model inside it.</li>
@@ -2158,6 +2214,14 @@ result.csv.head()</div>
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/home/runner/work/pySWAP/pySWAP/pyswap/testcase/hupselbrook.py:198: UserWarning: The WOFOST crop parameters bundled with pySWAP come from https://github.com/ajwdewit/WOFOST_crop_parameters. Each parameter set was calibrated for particular conditions, which the repository and the variety metadata (`.metadata`) describe; check that they fit your site and calibrate your own parameters if they do not. This message is shown once per session.
+  potato = db.load_crop_file("potato")
+</pre>
+</div>
+</div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[1]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
