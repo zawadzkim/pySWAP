@@ -5,14 +5,19 @@
   <title>pySWAP documentation</title>
   <script>
     // Links from before the docs were versioned (/pySWAP/<page>) are sent to
-    // the same page of the latest version (/pySWAP/latest/<page>).
+    // the same page of the latest version (/pySWAP/latest/<page>). Pages that
+    // were moved since are sent to their new address.
     var parts = window.location.pathname.split("/");
     var base = "/" + parts[1] + "/";
-    var first = parts[2] || "";
-    if (!/^(latest|dev|\d+\.\d+)$/.test(first)) {
+    var versioned = /^(latest|dev|\d+\.\d+)$/.test(parts[2] || "");
+    var version = versioned ? parts[2] : "latest";
+    var page = parts.slice(versioned ? 3 : 2).join("/");
+    var moved = page
+      .replace(/^user-guide\/quick-start(\/|$)/, "user-guide/installation$1")
+      .replace(/^tutorials\/(\d{3}-)/, "tutorials/notebooks/$1");
+    if (!versioned || moved !== page) {
       window.location.replace(
-        base + "latest/" + parts.slice(2).join("/") +
-        window.location.search + window.location.hash
+        base + version + "/" + moved + window.location.search + window.location.hash
       );
     }
   </script>
