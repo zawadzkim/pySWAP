@@ -1,0 +1,46 @@
+# Conda environment for pySWAP development: the package (editable) with the
+# test, dev and docs dependencies and all optional extras.
+#   conda env create -f environment.yml && conda activate pyswap
+# Generated from pyproject.toml by `pixi run export-env`; do not edit by hand.
+name: pyswap
+channels:
+- conda-forge
+- pyviz
+- nodefaults
+dependencies:
+- python >=3.11
+- pip
+- pip:
+  - pytest>=8.2.2
+  - pytest-cov>=5.0.0
+  - mypy>=1.11.0
+  - nbstripout>=0.7.1
+  - pre-commit>=3.8.0
+  - ruff>=0.7.4
+  - deptry>=0.16.2
+  - types-pyyaml>=6.0.12
+  - pandas-stubs>=2.2.3
+  - h5py-stubs>=0.1.1
+  - build
+  - twine
+  - jupyter
+  - mkdocs-material>=9.7.0
+  - mkdocs-jupyter
+  - mkdocs-include-markdown-plugin>=6.2.0
+  - mkdocs-autorefs>=1.0.1
+  - mkdocstrings-python>=1.10.3
+  - mkdocs-awesome-pages-plugin>=2.10.1
+  - mkdocs-exclude-search>=0.6.6
+  - mike>=2.1
+  - knmi-py>=0.2.0, <0.3
+  - shapely>=2.0, <3
+  - pyproj>=3.6, <4
+  - -e .
+  - pandas>=2.0, <4
+  - numpy>=1.26, <3
+  - h5py>=3.10, <4
+  - pydantic>=2.0, <3
+  - pandera[strategies]>=0.24, <1
+  - matplotlib>=3.8, <4
+  - typer>=0.9, <1
+  - pyyaml>=6.0, <7

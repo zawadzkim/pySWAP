@@ -8,15 +8,16 @@ When it comes to imports, there's a balance between keeping them concise and cle
 
 ## 1. Components
 
-Individual classes from the components library are not exposed directly at the package level. To access them, use the following approach:
+The component classes (and the helpers that build a meteorological file) are available from `pyswap.components`, but not from the top-level `pyswap` namespace:
 
 ```python
 import pyswap as psp
 
-simset = psp.components.simsettings.GeneralSettings(...)
+simset = psp.components.GeneralSettings(...)
+meteo = psp.components.Meteorology(...)
 ```
 
-While some modules may contain only one or two classes, others include many tables, which would clutter the hinting.
+They remain importable from their submodules (`psp.components.simsettings.GeneralSettings`). The table schemas stay in their submodules only (e.g. `psp.components.crop.GCTB`), because some modules hold many tables, which would clutter the hinting.
 
 ## 2. Special modules
 

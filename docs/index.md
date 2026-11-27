@@ -12,13 +12,14 @@ The model variables are based on the original input files from SWAP developers, 
 
 <div class="grid cards" markdown>
 
-- :octicons-zap-16:{ .lg .middle } **Quickstart**
+- :octicons-zap-16:{ .lg .middle } **Getting started**
 
       ***
 
-      Learn how to install the package and get you started with your first model.
+      Install the package and build your first model from scratch.
 
-      [:octicons-arrow-right-24: Installation](user-guide/quick-start.md)
+      [:octicons-arrow-right-24: Installation](user-guide/installation.md) ·
+      [:octicons-arrow-right-24: Getting started](user-guide/getting-started.ipynb)
 
 - :octicons-checklist-16:{ .lg .middle } **Input validation**
 

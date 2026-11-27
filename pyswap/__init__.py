@@ -10,7 +10,14 @@ from pyswap.core import io, plot
 from pyswap.log import set_log_level, setup_logging
 from pyswap.model.model import Model, run_parallel
 from pyswap.utils.executables import check_swap, get_swap, show_info
-from pyswap.utils.loaders import load_bbc, load_crp, load_dra, load_swp
+from pyswap.utils.loaders import (
+    load_bbc,
+    load_crp,
+    load_dra,
+    load_irg,
+    load_met,
+    load_swp,
+)
 
 __version__ = importlib.metadata.version("pyswap")
 
@@ -25,6 +32,8 @@ __all__ = [
     "load_bbc",
     "load_crp",
     "load_dra",
+    "load_irg",
+    "load_met",
     "load_swp",
     "plot",
     "run_parallel",

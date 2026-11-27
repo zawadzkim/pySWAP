@@ -1,44 +1,34 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/python
+// Development container for pySWAP, used by GitHub Codespaces
+// (https://codespaces.new/zawadzkim/pySWAP). The environment is the pixi `dev`
+// environment of the repository, which includes Jupyter, so the tutorials in
+// docs/tutorials/notebooks run as they are.
+// Format: https://aka.ms/devcontainer.json
 {
   "name": "pyswap",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bullseye",
-  "features": {
-    "ghcr.io/devcontainers-extra/features/poetry:2": {},
-    "ghcr.io/devcontainers/features/common-utils:2.5.4": {}
-  },
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
 
-  // Set Poetry to create virtualenv in project directory
-  "containerEnv": {
-    "POETRY_VIRTUALENVS_IN_PROJECT": "true"
-  },
+  // Installs pixi and the dev environment, fetches the crop-parameter
+  // submodule and registers the Jupyter kernel.
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
 
-  // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
-
-  // Configure tool-specific properties.
   "customizations": {
+    "codespaces": {
+      "openFiles": ["docs/tutorials/README.md"]
+    },
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "ms-toolsai.jupyter@2025.7.0",
+        "ms-toolsai.jupyter",
         "editorconfig.editorconfig",
-        "ms-vscode.makefile-tools",
         "github.vscode-pull-request-github"
       ],
       "settings": {
         "files.eol": "\n",
-        "editor.rulers": [80],
-        // This below is a bugfix related to the new "native" Python locator issue in VSCode
-        // see https://stackoverflow.com/questions/78886125/vscode-python-extension-loading-forever-saying-reactivating-terminals
-        "python.locator": "js",
+        "editor.rulers": [88],
+        "python.defaultInterpreterPath": "${containerWorkspaceFolder}/.pixi/envs/dev/bin/python",
         "python.testing.pytestArgs": ["tests"],
         "python.testing.unittestEnabled": false,
-        "python.testing.pytestEnabled": true,
-        "python.defaultInterpreterPath": "/workspaces/pyswap/.venv/bin/python",
-        "python.testing.pytestPath": "/workspaces/pyswap/.venv/bin/pytest",
-        "extensions.autoUpdate": false
+        "python.testing.pytestEnabled": true
       }
     }
   }

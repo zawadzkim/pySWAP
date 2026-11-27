@@ -9,13 +9,35 @@ Classes:
     WOFOSTCropDB: Manage a single WOFOST crop file content.
 """
 
+import warnings
 from pathlib import Path
-from pprint import pprint
 
 from pydantic import BaseModel, computed_field
 
 from pyswap.core.io.io_yaml import load_yaml
 from pyswap.libs import crop_params
+
+CROP_PARAMETERS_URL = "https://github.com/ajwdewit/WOFOST_crop_parameters"
+
+_provenance_warned = False
+
+
+def _warn_provenance_once() -> None:
+    """Point to the source of the crop parameters, once per session."""
+    global _provenance_warned
+    if _provenance_warned:
+        return
+    _provenance_warned = True
+    warnings.warn(
+        "The WOFOST crop parameters bundled with pySWAP come from "
+        f"{CROP_PARAMETERS_URL}. Each parameter set was calibrated for "
+        "particular conditions, which the repository and the variety metadata "
+        "(`.metadata`) describe; check that they fit your site and calibrate "
+        "your own parameters if they do not. This message is shown once per "
+        "session.",
+        UserWarning,
+        stacklevel=3,
+    )
 
 
 class WOFOSTCropFile(BaseModel):
@@ -137,13 +159,23 @@ class WOFOSTCropDB(BaseModel):
 
     libdir: Path = crop_params
 
-    @computed_field(return_type=None)
-    def croptypes(self):
-        """Print the list of available files"""
-        pprint(load_yaml(crop_params / "crops.yaml")["available_crops"])
+    @property
+    def croptypes(self) -> list[str]:
+        """List the available crop types (one YAML file per crop type).
+
+        A plain property rather than a pydantic computed field, so that it is
+        not evaluated, and nothing is printed, on every repr, serialisation or
+        debugger view of the database object.
+        """
+        return list(load_yaml(crop_params / "crops.yaml")["available_crops"])
 
     def load_crop_file(self, crop: str) -> WOFOSTCropFile:
-        """Load a specific crop file and return the content as a dictionary"""
+        """Load a specific crop file and return the content as a dictionary.
+
+        The first call in a session warns where the parameter sets come from
+        (see `CROP_PARAMETERS_URL`) and that they may need calibration.
+        """
+        _warn_provenance_once()
         path = (
             self.libdir / f"{crop}"
             if crop.endswith(".yaml")
