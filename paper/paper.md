@@ -61,40 +61,52 @@ Users primarily interact with the `components` and `model` modules. Each compone
 
 ## Modelling workflow
 
-pySWAP generally does not needs any setup step before a script or notebook can use it. The SWAP executable is downloaded automatically the first time a model is run. The optional CLI commands (e.g., `pyswap init`) scaffolds a project directory with a default Jupyter notebook and a pixi.toml file for dependency management. To get started with pySWAP, users can consult the documentation's quick start section or preview the interactive Binder environment with documentation notebooks. The following example illustrates a minimal model setup:
+pySWAP generally does not needs any setup step before a script or notebook can use it. The SWAP executable is downloaded automatically the first time a model is run. The optional CLI commands (e.g., `pyswap init`) scaffolds a project directory with a default Jupyter notebook and a pixi.toml file for dependency management. To get started with pySWAP, users can consult the documentation's quick start section or preview the interactive Binder environment with documentation notebooks. The following example, condensed from the Getting started page of the documentation (which has the complete code and plots), builds a model from scratch in the four steps of a modelling study:
 
 ```Python
+import pandas as pd
 import pyswap as ps
-from pyswap import testcase
 
-# Reading CSV data:
-# metfile_from_csv will return a MetFile object, a file class
-meteo_data = ps.components.meteorology.metfile_from_csv(
-    metfil="283.met", csv_path=testcase.get_path("hupselbrook", "met")
+# 1. Preprocessing: daily weather from your own data
+weather = pd.read_csv("weather.csv")  # STATION, DD, MM, YYYY, RAD, ...
+meteorology = ps.components.Meteorology(
+    metfile=ps.components.MetFile(metfil="site.met", content=weather),
+    lat=52.0, alt=21.0, altw=10.0, swetr=0, swdivide=1, swmetdetail=0,
+    angstroma=0.25, angstromb=0.5,
 )
 
-# Defining components:
-# Meteorology object is an example of a section class
-meteo = ps.components.meteorology.Meteorology(
-    lat=52.0,
-    alt=21.0,
-    swetr=0,
-    metfile=meteo_data,
-    swdivide=1,
-    swmetdetail=0,
-    altw=10.0,
-    angstroma=0.25,
-    angstromb=0.5,
+# 2. Model input: sand over clay over sand above a fixed groundwater level
+soilprofile = ps.components.SoilProfile(
+    swsophy=0, swhyst=0, swmacro=0,
+    soilprofile=pd.DataFrame({
+        "ISUBLAY": [1, 2, 3], "ISOILLAY": [1, 2, 3],
+        "HSUBLAY": [40.0, 40.0, 120.0],  # layer thickness [cm]
+        "HCOMP": [1.0, 2.0, 5.0], "NCOMP": [40, 20, 24],
+    }),
+    soilhydrfunc=vangenuchten,  # DataFrame, one parameter row per layer
 )
-
-# Composing Model class:
-
-ml = ps.Model(
-	meteorology=meteo,
-	# Other elements...
+bottomboundary = ps.components.BottomBoundary(
+    swbbcfile=0, swbotb=1,
+    gwlevel=pd.DataFrame({"DATE1": ["2003-01-01", "2003-12-31"],
+                          "GWLEVEL": [-120.0, -120.0]}),  # [cm]
 )
+ml = ps.Model(meteorology=meteorology, soilprofile=soilprofile,
+              bottomboundary=bottomboundary, **settings)  # other components
 
+# 3. Run, and run three rainfall scenarios in parallel
 result = ml.run()
+
+def scale_rain(f):
+    met = ps.components.MetFile(metfil="site.met",
+                                content=weather.assign(RAIN=weather.RAIN * f))
+    return ml.update({"meteorology": meteorology.update({"metfile": met})})
+
+results = ps.run_parallel([scale_rain(f) for f in (0.8, 1.0, 1.2)])
+
+# 4. Postprocessing: water content over depth and time, yearly drainage
+ps.plot.water_content(result.csv_tz.reset_index(), depth_col="DEPTH",
+                      date_col="DATE", wcontent_col="WC")
+drainage = [r.csv["QBOTTOM"].sum() for r in results]
 ```
 
 ## Integrations
