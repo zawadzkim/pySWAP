@@ -119,11 +119,11 @@ A pytest suite (84\ % code coverage) checks individual features and validates mo
 
 # Research impact statement
 
-pySWAP has been successfully used in two research projects, with publications in preparation and will be adopted in a newly started European project:
+pySWAP is used in three ongoing research projects, listed alphabetically; publications from GROW and WaterScape are in preparation:
 
-- [Project GROW](https://project-grow.be) - modelling soil moisture conditions at an experimental field where treated wastewater is reused for subirrigation,
-- [WaterScape](https://waterscape.sites.uu.nl/) - determining the role of soil-water-plant-atmosphere interactions in shallow groundwater and rooting zones for local water availability and land-use practices, and
-- AquiCirc - funded under the Water4All initiative, focused on Managed Aquifer Recharge for a Circular Water Future, where pySWAP will be used to simulate vadose zone dynamics under recharge scenarios.
+- [AquiCirc](https://aquicirc.eu/) - funded under the Water4All initiative, focused on Managed Aquifer Recharge for a Circular Water Future, where pySWAP will be used to simulate vadose zone dynamics under recharge scenarios,
+- [Project GROW](https://project-grow.be) - modelling soil moisture conditions at an experimental field where treated wastewater is reused for subirrigation, and
+- [WaterScape](https://waterscape.sites.uu.nl/) - determining the role of soil-water-plant-atmosphere interactions in shallow groundwater and rooting zones for local water availability and land-use practices.
 
 Since its public introduction at EGU 2024 [@zawadzki2024pyswap], the package has received 22 GitHub stars and grown through 21 releases. It has attracted contributions and community feedback from SWAP modellers across the Netherlands, Belgium, and beyond — via GitHub issues and direct contact. As pySWAP lowers the barrier to adoption and connects SWAP to the broader Python ecosystem, it is expected to expand the active user base — accelerating community-driven development and making the model more robust through collective feedback and contribution. Active development continues, with planned extensions for spatial support, sensitivity analysis, and improved multicore processing.
 
