@@ -106,6 +106,7 @@ Users can inspect parameter content, modify them, and update their pySWAP crop s
 ### HDF5 database
 
 pySWAP models and results can be stored in HDF5 format, a versatile scientific computing standard.
+This storage is on the pySWAP side only, for keeping many model variants and their results in one file; SWAP itself reads and writes ASCII files as before.
 Each model is saved (optionally with results) as a pickled object with metadata.
 
 ### Belgian and Dutch soil databases
