@@ -61,7 +61,7 @@ Users primarily interact with the `components` and `model` modules. Each compone
 
 ## Modelling workflow
 
-pySWAP generally does not needs any setup step before a script or notebook can use it. The SWAP executable is downloaded automatically the first time a model is run. The optional CLI commands (e.g., `pyswap init`) scaffolds a project directory with a default Jupyter notebook and a pixi.toml file for dependency management. To get started with pySWAP, users can consult the documentation's quick start section or preview the interactive Binder environment with documentation notebooks. The following example, condensed from the Getting started page of the documentation (which has the complete code and plots), builds a model from scratch in the four steps of a modelling study:
+pySWAP does not need a setup step before a script or notebook can use it: the SWAP executable is downloaded automatically the first time a model is run. The optional `pyswap init` command scaffolds a project directory with a default Jupyter notebook and a pixi.toml file for dependency management. The documentation ([zawadzkim.github.io/pySWAP](https://zawadzkim.github.io/pySWAP/)) covers installation, and its tutorial notebooks can be run in GitHub Codespaces from the repository. The following example, condensed from the Getting started page of the documentation (which has the complete code and plots), builds a model from scratch in the four steps of a modelling study:
 
 ```Python
 import pandas as pd
