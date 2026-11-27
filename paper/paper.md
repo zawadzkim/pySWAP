@@ -50,7 +50,7 @@ The only published tools for SWAP input/output handling are currently written in
 
 The precedent for wrapping Fortran-based hydrological models in Python is well established — most notably by FloPy [@bakker_flopy_2016; @hughes_flopy_2024], which demonstrated that an object-oriented Python interface to MODFLOW significantly lowers barriers to automation, reproducibility, and community adoption.
 
-Beyond file handling, a native Python interface unlocks the full scientific ecosystem — from statistical analysis and machine learning to visualisation and model coupling — enabling modellers to integrate SWAP directly into their broader research workflows without manual data exchange [@hughesMODFLOWApplicationProgramming2022]. The pySWAP architecture is also designed to anticipate the evolution of SWAP itself: as the SWAP Fortran codebase is currently maturing toward a callable library interface, tools such as f2py will allow direct in-memory coupling, eliminating file-based execution entirely.
+Beyond file handling, a native Python interface unlocks the full scientific ecosystem — from statistical analysis and machine learning to visualisation and model coupling — enabling modellers to integrate SWAP directly into their broader research workflows without manual data exchange [@hughesMODFLOWApplicationProgramming2022].
 
 # Software design
 
