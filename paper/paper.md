@@ -121,7 +121,7 @@ A pytest suite (84\ % code coverage) checks individual features and validates mo
 
 pySWAP is used in three ongoing research projects, listed alphabetically; publications from GROW and WaterScape are in preparation:
 
-- [AquiCirc](https://aquicirc.eu/) - funded under the Water4All initiative, focused on Managed Aquifer Recharge for a Circular Water Future, where pySWAP will be used to simulate vadose zone dynamics under recharge scenarios,
+- [AquiCirc](https://aquicirc.eu/) - funded under the Water4All initiative, focused on Managed Aquifer Recharge for a Circular Water Future, where pySWAP will be used to set up and run SWAP simulations of vadose zone dynamics under recharge scenarios,
 - [Project GROW](https://project-grow.be) - modelling soil moisture conditions at an experimental field where treated wastewater is reused for subirrigation, and
 - [WaterScape](https://waterscape.sites.uu.nl/) - determining the role of soil-water-plant-atmosphere interactions in shallow groundwater and rooting zones for local water availability and land-use practices.
 
