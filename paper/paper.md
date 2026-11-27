@@ -113,14 +113,9 @@ Each model is saved (optionally with results) as a pickled object with metadata.
 
 Packages `dovwms` [@zawadzki_dovwms], `simplesoilprofile` [@zawadzki_simplesoilprofile], and DutchSoils [@vandenbrink_dutchsoils] provide quick access to Belgian and Dutch soil databases, enabling workflow automation and reducing potential errors.
 
-# Testing
+# Quality assurance
 
-The current version has 84\ % code coverage using the pytest testing framework.
-Tests target specific features and validate model results against known benchmarks within acceptable error margins.
-
-# Continuous integration and deployment
-
-The package implements robust continuous integration and deployment. Package and documentation builds are tested before each release, and documentation is automatically deployed with each new software version.
+A pytest suite (84\ % code coverage) checks individual features and validates model results against known benchmarks. Continuous integration runs the tests on every pull request, both with current dependencies and with the oldest supported Python and pandas versions (Python 3.11, pandas 2), and each new version is released to PyPI with its documentation automatically.
 
 # Research impact statement
 
