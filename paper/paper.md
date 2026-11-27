@@ -32,7 +32,7 @@ bibliography: paper.bib
 # Summary
 pySWAP is an open-source Python package for creating, running, analysing, and sharing Soil–Water–Atmosphere–Plant (SWAP) agrohydrological models.
 SWAP calculates crop water requirements and simulates interactions between water balance components such as evaporation and groundwater storage [@kroes_swap_2017].
-The primary purpose of pySWAP is to eliminate the need for plain-text input files that SWAP requires, enabling smoother automation and seamless integration of modelling workflows with the variety of analytical tools the Python ecosystem offers.
+SWAP reads and writes plain-text ASCII files; the primary purpose of pySWAP is to build, validate and read these files from Python, enabling smoother automation and seamless integration of modelling workflows with the variety of analytical tools the Python ecosystem offers.
 pySWAP was first presented as a concept at the European Geosciences Union (EGU) General Assembly in
 2024 [@zawadzki2024pyswap] and has since matured into a production-ready
 package with documentation, a test suite, and active research use.
