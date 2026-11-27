@@ -29,7 +29,7 @@
       "outputs": [],
       "source": [
         "import pyswap as ps\n\n",
-        "metadata = ps.Metadata(\n",
+        "metadata = ps.components.Metadata(\n",
         "{formatted_string}\n",
         ")\n"
       ]

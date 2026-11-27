@@ -117,6 +117,10 @@ def copy_crop_parameter_yaml(templates_path, models_dir):
     return "Successfully created crop_tables_template.yaml in the models directory."
 
 
+def copy_starter_test(templates_path, tests_dir):
+    shutil.copy(templates_path / "test_swap.py", tests_dir / "test_swap.py")
+
+
 def create_inits(project_root, models_dir, scripts_dir):
     (project_root / "__init__.py").touch()
     (models_dir / "__init__.py").touch()
@@ -196,6 +200,7 @@ def init(
         models_dir=folders_to_create_paths[0],
         scripts_dir=folders_to_create_paths[1],
     )
+    copy_starter_test(templates_path, folders_to_create_paths[3])
 
     # Create pixi.toml if requested
     if pixi:

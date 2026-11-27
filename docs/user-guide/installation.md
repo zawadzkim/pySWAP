@@ -58,8 +58,10 @@ your-project/
 ├── models/                 # Your SWAP models
 │   ├── __init__.py
 │   └── main.ipynb         # Main notebook to get started
-└── scripts/               # Helper scripts
-    └── __init__.py
+├── scripts/               # Helper scripts
+│   └── __init__.py
+└── tests/                 # Tests, run with pixi run test
+    └── test_swap.py       # Starter test: checks that SWAP runs
 ```
 
 ### Environment setup with Pixi
@@ -142,7 +144,7 @@ DATETIME
 2004-12-31  80.55    0.0  4.91521     0.0  29.89227  17.88916  24.76607      0.0 -1036.76085  32.57266  32.56927  0.41030
 ```
 
-For detailed information about all CLI commands and options, see the [CLI Reference](/user-guide/cli/).
+For detailed information about all CLI commands and options, see the [CLI Reference](cli.md).
 
 ## Developing pySWAP itself
 

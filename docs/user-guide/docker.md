@@ -102,6 +102,6 @@ docker run --rm -v "$PWD":/workspace pyswap python your-script.py
 
 ## Next Steps
 
-- Try running the [tutorials](/tutorials/) in Docker
-- Explore the [user guide](/user-guide/) for more pySWAP features
-- Check the [contributing guidelines](/contributing/) if you want to help improve Docker support
+- Try running the [tutorials](../tutorials/README.md) in Docker
+- Explore the [user guide](getting-started.ipynb) for more pySWAP features
+- Check the [contributing guidelines](../contributing/index.md) if you want to help improve Docker support
